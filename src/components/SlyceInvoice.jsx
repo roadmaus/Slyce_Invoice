@@ -1079,43 +1079,68 @@ const IconPicker = ({ value, onChange }) => {
 
               <div className="grid grid-cols-3 gap-4">
                 {customers.map((customer, index) => (
-                  <Card key={index}>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
+                  <Card key={index} className="group relative overflow-hidden">
+                    <CardContent className="p-6">
+                      {/* Header with Name and Actions */}
+                      <div className="flex justify-between items-start mb-4">
                         <div>
-                          <h3 className="font-medium">
+                          <h3 className="text-lg font-semibold text-gray-900">
                             {customer.title === 'Divers' ? (
                               `${customer.zusatz} ${customer.name}`
                             ) : (
                               `${customer.title} ${customer.zusatz} ${customer.name}`
                             )}
                           </h3>
-                          <p className="text-sm text-gray-500">
-                            {customer.street}, {customer.postal_code} {customer.city}
-                          </p>
+                          {customer.firma && (
+                            <span className="inline-flex items-center px-2 py-1 mt-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              Business Customer
+                            </span>
+                          )}
                         </div>
-                        <div className="flex space-x-2">
+                        <div className="flex gap-1">
                           <Button
                             variant="ghost"
                             size="icon"
+                            className="h-8 w-8 hover:bg-gray-100"
                             onClick={() => {
                               setEditingCustomer(customer);
                               setShowEditCustomerDialog(true);
                             }}
                           >
-                            <Edit className="h-4 w-4" />
+                            <Edit className="h-4 w-4 text-gray-600" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
+                            className="h-8 w-8 hover:bg-gray-100"
                             onClick={() => {
                               const updatedCustomers = customers.filter((_, i) => i !== index);
                               setCustomers(updatedCustomers);
                             }}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4 text-gray-600" />
                           </Button>
                         </div>
+                      </div>
+
+                      {/* Contact Information */}
+                      <div className="space-y-3">
+                        <div className="space-y-1">
+                          <div className="text-sm font-medium text-gray-500">Address</div>
+                          <div className="text-sm text-gray-700">
+                            {customer.street}
+                            <br />
+                            {customer.postal_code} {customer.city}
+                          </div>
+                        </div>
+
+                        {/* Additional Details - can be expanded based on your needs */}
+                        {customer.zusatz && (
+                          <div className="space-y-1">
+                            <div className="text-sm font-medium text-gray-500">Academic Title</div>
+                            <div className="text-sm text-gray-700">{customer.zusatz}</div>
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -1223,49 +1248,89 @@ const IconPicker = ({ value, onChange }) => {
 
               <div className="grid grid-cols-3 gap-4">
                 {businessProfiles.map((profile, index) => (
-                  <Card key={index}>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium">{profile.company_name}</h3>
-                          <p className="text-sm text-gray-500">
-                            {profile.company_street}, {profile.company_postalcode} {profile.company_city}
-                          </p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <div className="flex items-center mr-2">
+                  <Card key={index} className="group relative overflow-hidden">
+                    <CardContent className="p-6">
+                      {/* Header with Name and Actions */}
+                      <div className="flex justify-between items-start mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900">{profile.company_name}</h3>
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center">
                             <Switch
                               checked={defaultProfileId === profile.company_name}
                               onCheckedChange={(checked) => {
                                 setDefaultProfileId(checked ? profile.company_name : null);
                               }}
+                              className="data-[state=checked]:bg-blue-600"
                             />
-                            <Label className="ml-2">Default</Label>
+                            <span className="ml-2 text-sm text-gray-600">Default</span>
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              setEditingProfile(profile);
-                              setShowEditProfileDialog(true);
-                            }}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              const updatedProfiles = businessProfiles.filter((_, i) => i !== index);
-                              setBusinessProfiles(updatedProfiles);
-                              if (defaultProfileId === profile.company_name) {
-                                setDefaultProfileId(null);
-                              }
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 hover:bg-gray-100"
+                              onClick={() => {
+                                setEditingProfile(profile);
+                                setShowEditProfileDialog(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4 text-gray-600" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 hover:bg-gray-100"
+                              onClick={() => {
+                                const updatedProfiles = businessProfiles.filter((_, i) => i !== index);
+                                setBusinessProfiles(updatedProfiles);
+                                if (defaultProfileId === profile.company_name) {
+                                  setDefaultProfileId(null);
+                                }
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4 text-gray-600" />
+                            </Button>
+                          </div>
                         </div>
+                      </div>
+
+                      {/* Contact Information */}
+                      <div className="space-y-3">
+                        <div className="space-y-1">
+                          <div className="text-sm font-medium text-gray-500">Address</div>
+                          <div className="text-sm text-gray-700">
+                            {profile.company_street}
+                            <br />
+                            {profile.company_postalcode} {profile.company_city}
+                          </div>
+                        </div>
+
+                        {(profile.tax_number || profile.tax_id) && (
+                          <div className="space-y-1">
+                            <div className="text-sm font-medium text-gray-500">Tax Information</div>
+                            {profile.tax_number && (
+                              <div className="text-sm text-gray-700">Tax Number: {profile.tax_number}</div>
+                            )}
+                            {profile.tax_id && (
+                              <div className="text-sm text-gray-700">Tax ID: {profile.tax_id}</div>
+                            )}
+                          </div>
+                        )}
+
+                        {(profile.bank_institute || profile.bank_iban || profile.bank_bic) && (
+                          <div className="space-y-1">
+                            <div className="text-sm font-medium text-gray-500">Banking Details</div>
+                            {profile.bank_institute && (
+                              <div className="text-sm text-gray-700">{profile.bank_institute}</div>
+                            )}
+                            {profile.bank_iban && (
+                              <div className="text-sm text-gray-700">IBAN: {profile.bank_iban}</div>
+                            )}
+                            {profile.bank_bic && (
+                              <div className="text-sm text-gray-700">BIC: {profile.bank_bic}</div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
