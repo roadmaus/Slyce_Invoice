@@ -8,11 +8,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { PlusCircle, Trash2, Save, Settings, Users, Tags, FileText, Edit, Check, Upload } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import { Textarea } from '@/components/ui/textarea';
 import ReactSelect from 'react-select';
-
+import * as Icons from 'lucide-react';
+import { 
+  PlusCircle, 
+  Trash2, 
+  Edit, 
+  Save, 
+  Upload, 
+  FileText, 
+  Users, 
+  Settings, 
+  Tags 
+} from 'lucide-react';
 // Helper Functions
 const generateInvoiceNumber = (lastNumber) => {
   const year = new Date().getFullYear();
@@ -35,6 +45,52 @@ const validateCustomer = (customer) => {
   const required = ['name', 'street', 'postal_code', 'city'];
   return required.every(field => customer[field]?.trim());
 };
+
+// Add this near other constants
+const PREDEFINED_COLORS = [
+  { name: 'Slate', value: '#cbd5e1' },    // Slate-300
+  { name: 'Gray', value: '#d1d5db' },     // Gray-300
+  { name: 'Red', value: '#fca5a5' },      // Red-300
+  { name: 'Orange', value: '#fdba74' },   // Orange-300
+  { name: 'Amber', value: '#fcd34d' },    // Amber-300
+  { name: 'Yellow', value: '#fde047' },   // Yellow-300
+  { name: 'Lime', value: '#bef264' },     // Lime-300
+  { name: 'Green', value: '#86efac' },    // Green-300
+  { name: 'Emerald', value: '#6ee7b7' },  // Emerald-300
+  { name: 'Teal', value: '#5eead4' },     // Teal-300
+  { name: 'Cyan', value: '#67e8f9' },     // Cyan-300
+  { name: 'Sky', value: '#7dd3fc' },      // Sky-300
+  { name: 'Blue', value: '#93c5fd' },     // Blue-300
+  { name: 'Indigo', value: '#a5b4fc' },   // Indigo-300
+  { name: 'Violet', value: '#c4b5fd' },   // Violet-300
+  { name: 'Purple', value: '#d8b4fe' },   // Purple-300
+  { name: 'Fuchsia', value: '#f0abfc' },  // Fuchsia-300
+  { name: 'Pink', value: '#f9a8d4' },     // Pink-300
+  { name: 'Rose', value: '#fda4af' },     // Rose-300
+];
+
+// Create an object with all the icons we want to use (or just use Icons directly)
+const AVAILABLE_ICONS = {
+  Tag: Icons.Tag,
+  Clock: Icons.Clock
+};
+
+// Even better, if you want ALL icons:
+const ALL_ICONS = Object.entries(Icons).reduce((acc, [name, Icon]) => {
+  // Filter out non-icon exports and ensure it's a valid component
+  if (
+    typeof Icon === 'function' && 
+    /^[A-Z]/.test(name) && 
+    name !== 'createReactComponent' && 
+    name !== 'default'
+  ) {
+    acc[name] = Icon;
+  }
+  return acc;
+}, {});
+
+// Add this line temporarily to debug
+console.log('Available icons:', Object.keys(ALL_ICONS));
 
 const SlyceInvoice = () => {
   // Business Profiles State
@@ -74,7 +130,7 @@ const SlyceInvoice = () => {
     description: '',
     rate: '',
     quantity: '',
-    color: '#e2e8f0',
+    color: PREDEFINED_COLORS[0].value,
     hasDateRange: true,
     visible: true,
     personas: [],
@@ -106,6 +162,10 @@ const SlyceInvoice = () => {
 
   // Default Profile State
   const [defaultProfileId, setDefaultProfileId] = useState(null);
+
+  // Add a new state for the warning dialog
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
+  const [pendingTag, setPendingTag] = useState(null);
 
 // Load saved data on component mount
   useEffect(() => {
@@ -229,9 +289,24 @@ const SlyceInvoice = () => {
       return;
     }
 
+    // Check if rate or quantity is empty
+    if (!newTag.rate || !newTag.quantity) {
+      setPendingTag(newTag);
+      setShowWarningDialog(true);
+      return;
+    }
+
+    // If all fields are filled, proceed with adding the tag
+    proceedWithAddingTag(newTag);
+  };
+
+  // Add a new function to handle the actual tag addition
+  const proceedWithAddingTag = (tagToAdd) => {
     const tagWithPersona = {
-      ...newTag,
-      personas: Array.isArray(newTag.personas) ? newTag.personas : [],
+      ...tagToAdd,
+      rate: tagToAdd.rate === '' ? '0' : tagToAdd.rate,
+      quantity: tagToAdd.quantity === '' ? '0' : tagToAdd.quantity,
+      personas: Array.isArray(tagToAdd.personas) ? tagToAdd.personas : [],
     };
 
     if (!tagWithPersona.personas.includes(selectedProfile.company_name)) {
@@ -244,12 +319,14 @@ const SlyceInvoice = () => {
       description: '',
       rate: '',
       quantity: '',
-      color: '#e2e8f0',
+      color: PREDEFINED_COLORS[0].value,
       hasDateRange: true,
       visible: true,
       personas: [],
     });
     setShowNewTagDialog(false);
+    setShowWarningDialog(false);
+    setPendingTag(null);
   };
 
 // Invoice Management Functions
@@ -645,6 +722,43 @@ const renderCustomerForm = (customer, setCustomer) => (
     return true;
   };
 
+// Add this component for the color picker
+const ColorPicker = ({ value, onChange }) => (
+  <div className="grid grid-cols-10 gap-2">
+    {PREDEFINED_COLORS.map((color) => (
+      <div
+        key={color.value}
+        className={`w-8 h-8 rounded-full cursor-pointer border-2 ${
+          value === color.value ? 'border-black' : 'border-transparent'
+        }`}
+        style={{ backgroundColor: color.value }}
+        onClick={() => onChange(color.value)}
+        title={color.name}
+      />
+    ))}
+  </div>
+);
+
+// Update the IconPicker component
+const IconPicker = ({ value, onChange }) => {
+  return (
+    <div className="grid grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2">
+      {Object.entries(ALL_ICONS).map(([iconName, IconComponent]) => (
+        <div
+          key={iconName}
+          className={`p-2 rounded cursor-pointer hover:bg-gray-100 flex items-center justify-center ${
+            value === iconName ? 'bg-gray-200' : ''
+          }`}
+          onClick={() => onChange(iconName)}
+          title={iconName}
+        >
+          <IconComponent className="w-5 h-5" />
+        </div>
+      ))}
+    </div>
+  );
+};
+
 // Main Render
   return (
     <div className="p-4">
@@ -812,19 +926,23 @@ const renderCustomerForm = (customer, setCustomer) => (
                         selectedProfile && 
                         (tag.personas || []).includes(selectedProfile.company_name)
                       )
-                      .map((tag, index) => (
-                        <div
-                          key={index}
-                          onClick={() => handleQuickTagClick(tag)}
-                          className="cursor-pointer flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium"
-                          style={{
-                            backgroundColor: tag.color || '#e2e8f0',
-                            color: '#1a202c',
-                          }}
-                        >
-                          <span>{tag.name}</span>
-                        </div>
-                    ))}
+                      .map((tag, index) => {
+                        const TagIcon = Icons[tag.icon];
+                        return (
+                          <div
+                            key={index}
+                            onClick={() => handleQuickTagClick(tag)}
+                            className="cursor-pointer flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium"
+                            style={{
+                              backgroundColor: tag.color || '#e2e8f0',
+                              color: '#1a202c',
+                            }}
+                          >
+                            {TagIcon && <TagIcon className="w-4 h-4 mr-1" />}
+                            <span>{tag.name}</span>
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               </div>
@@ -1164,8 +1282,11 @@ const renderCustomerForm = (customer, setCustomer) => (
                           <Label>Rate (€)</Label>
                           <Input
                             type="number"
-                            value={newTag.rate}
-                            onChange={(e) => setNewTag({ ...newTag, rate: e.target.value })}
+                            value={newTag.rate === '' ? '' : Number(newTag.rate)}
+                            onChange={(e) => setNewTag({ 
+                              ...newTag, 
+                              rate: e.target.value === '' ? '' : e.target.value 
+                            })}
                             min="0"
                             step="0.01"
                             placeholder="Price in €"
@@ -1175,20 +1296,21 @@ const renderCustomerForm = (customer, setCustomer) => (
                           <Label>Quantity</Label>
                           <Input
                             type="number"
-                            value={newTag.quantity}
-                            onChange={(e) => setNewTag({ ...newTag, quantity: e.target.value })}
+                            value={newTag.quantity === '' ? '' : Number(newTag.quantity)}
+                            onChange={(e) => setNewTag({ 
+                              ...newTag, 
+                              quantity: e.target.value === '' ? '' : e.target.value 
+                            })}
                             min="0"
                             step="0.5"
                           />
                         </div>
                       </div>
-                      <div>
+                      <div className="space-y-2">
                         <Label>Color</Label>
-                        <Input
-                          type="color"
+                        <ColorPicker
                           value={newTag.color}
-                          onChange={(e) => setNewTag({ ...newTag, color: e.target.value })}
-                          className="h-10"
+                          onChange={(color) => setNewTag({ ...newTag, color })}
                         />
                       </div>
                       <div className="flex items-center space-x-2">
@@ -1245,8 +1367,10 @@ const renderCustomerForm = (customer, setCustomer) => (
                           className="flex-1 p-3 rounded"
                           style={{ backgroundColor: tag.color }}
                         >
-                          <h3 className="font-medium">{tag.name}</h3>
-                          <p className="text-sm text-gray-500">{tag.description}</p>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Tags className="h-5 w-5" />
+                            <h3 className="font-medium">{tag.name}</h3>
+                          </div>
                           <div className="text-sm mt-2">
                             <p>Rate (€): €{parseFloat(tag.rate).toFixed(2)}</p>
                             <p>Quantity: {tag.quantity}</p>
@@ -1381,8 +1505,11 @@ const renderCustomerForm = (customer, setCustomer) => (
                   <Label>Rate (€)</Label>
                   <Input
                     type="number"
-                    value={editingTag.rate}
-                    onChange={(e) => setEditingTag({ ...editingTag, rate: e.target.value })}
+                    value={editingTag?.rate === undefined || editingTag?.rate === '' ? '' : Number(editingTag.rate)}
+                    onChange={(e) => setEditingTag({ 
+                      ...editingTag, 
+                      rate: e.target.value === '' ? '' : e.target.value 
+                    })}
                     min="0"
                     step="0.01"
                   />
@@ -1391,8 +1518,11 @@ const renderCustomerForm = (customer, setCustomer) => (
                   <Label>Quantity</Label>
                   <Input
                     type="number"
-                    value={editingTag.quantity}
-                    onChange={(e) => setEditingTag({ ...editingTag, quantity: e.target.value })}
+                    value={editingTag?.quantity === undefined || editingTag?.quantity === '' ? '' : Number(editingTag.quantity)}
+                    onChange={(e) => setEditingTag({ 
+                      ...editingTag, 
+                      quantity: e.target.value === '' ? '' : e.target.value 
+                    })}
                     min="0"
                     step="0.5"
                   />
@@ -1400,11 +1530,9 @@ const renderCustomerForm = (customer, setCustomer) => (
               </div>
               <div>
                 <Label>Color</Label>
-                <Input
-                  type="color"
+                <ColorPicker
                   value={editingTag.color}
-                  onChange={(e) => setEditingTag({ ...editingTag, color: e.target.value })}
-                  className="h-10"
+                  onChange={(color) => setEditingTag({ ...editingTag, color })}
                 />
               </div>
               <div className="flex items-center space-x-2">
@@ -1457,6 +1585,29 @@ const renderCustomerForm = (customer, setCustomer) => (
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Add this dialog component near your other dialogs */}
+      <Dialog open={showWarningDialog} onOpenChange={setShowWarningDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Missing Values</DialogTitle>
+            <DialogDescription>
+              Rate or quantity is empty. Would you like to set them to 0 and continue?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => {
+              setShowWarningDialog(false);
+              setPendingTag(null);
+            }}>
+              Cancel
+            </Button>
+            <Button onClick={() => proceedWithAddingTag(pendingTag)}>
+              Set to 0 and Continue
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
