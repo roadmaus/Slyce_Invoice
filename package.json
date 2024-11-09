@@ -91,7 +91,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "cross-env NODE_ENV=development concurrently -k \"npm run dev\" \"wait-on tcp:5173 && electron .\"",
-    "electron:dev": "cross-env NODE_ENV=development electron ."
+    "electron:dev": "cross-env NODE_ENV=development electron .",
+    "dist": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac"
   },
   "browserslist": {
     "production": [
@@ -104,5 +106,47 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "build": {
+    "appId": "com.yourdomain.slyce-invoice",
+    "productName": "Slyce Invoice",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist_electron"
+    },
+    "files": [
+      "dist/**/*",
+      "main.cjs",
+      "preload.js",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.business",
+      "icon": "build/icon.icns",
+      "target": {
+        "target": "dmg",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      }
+    },
+    "dmg": {
+      "background": "build/background.png",
+      "icon": "build/icon.icns",
+      "iconSize": 100,
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
   }
 }
