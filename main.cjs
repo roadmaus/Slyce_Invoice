@@ -3,12 +3,8 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
-
-let store;
-(async () => {
-  const Store = await import('electron-store');
-  store = new Store.default();
-})();
+const Store = require('electron-store');
+const store = new Store();
 
 let mainWindow;
 
@@ -19,13 +15,13 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
-    }
+      preload: path.join(__dirname, 'preload.js'),
+    },
   });
 
   if (process.env.NODE_ENV === 'development') {
     setTimeout(() => {
-      mainWindow.loadURL('http://localhost:5173').catch(err => {
+      mainWindow.loadURL('http://localhost:5173').catch((err) => {
         console.error('Failed to connect to dev server:', err);
         mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'));
       });
@@ -41,9 +37,8 @@ function createWindow() {
   });
 }
 
-(async () => {
-  await app.whenReady();
-  
+app.whenReady().then(() => {
+  // Register IPC handlers
   ipcMain.handle('getData', async (event, key) => {
     return store.get(key);
   });
@@ -158,7 +153,7 @@ function createWindow() {
   });
 
   createWindow();
-})();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

@@ -37,7 +37,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
-    "electron-store": "^10.0.0",
+    "electron-store": "7.0.3",
     "embla-carousel-react": "^8.1.6",
     "html2pdf.js": "^0.10.2",
     "input-otp": "^1.2.4",
@@ -132,7 +132,6 @@
       }
     },
     "dmg": {
-      "background": "build/background.png",
       "icon": "build/icon.icns",
       "iconSize": 100,
       "contents": [
