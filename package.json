@@ -50,7 +50,7 @@
     "react-resizable-panels": "^2.0.20",
     "react-select": "^5.8.2",
     "recharts": "^2.12.7",
-    "sonner": "^1.5.0",
+    "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.1",

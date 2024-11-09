@@ -23,6 +23,8 @@ import {
   Settings, 
   Tags 
 } from 'lucide-react';
+import { Toaster, toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 // Helper Functions
 const generateInvoiceNumber = (lastNumber) => {
   const year = new Date().getFullYear();
@@ -154,7 +156,6 @@ const SlyceInvoice = () => {
   const [showNewProfileDialog, setShowNewProfileDialog] = useState(false);
   const [showNewCustomerDialog, setShowNewCustomerDialog] = useState(false);
   const [showNewTagDialog, setShowNewTagDialog] = useState(false);
-  const [showAlert, setShowAlert] = useState({ show: false, message: '' });
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Edit State
@@ -171,6 +172,16 @@ const SlyceInvoice = () => {
   // Add a new state for the warning dialog
   const [showWarningDialog, setShowWarningDialog] = useState(false);
   const [pendingTag, setPendingTag] = useState(null);
+
+  // Add new loading states
+  const [isLoading, setIsLoading] = useState({
+    invoice: false,
+    export: false,
+    import: false,
+  });
+
+  // Add this state to track if we've shown the notification
+  const [hasShownLoadingNotification, setHasShownLoadingNotification] = useState(false);
 
 // Load saved data on component mount
   useEffect(() => {
@@ -226,18 +237,12 @@ const SlyceInvoice = () => {
   // Business Profile Management
   const addBusinessProfile = () => {
     if (!validateBusinessProfile(newProfile)) {
-      setShowAlert({
-        show: true,
-        message: 'Please fill in all required fields.',
-      });
+      toast.error('Please fill in all required fields.');
       return;
     }
 
     if (businessProfiles.length >= 20) {
-      setShowAlert({
-        show: true,
-        message: 'Maximum of 20 business profiles reached.',
-      });
+      toast.error('Maximum of 20 business profiles reached.');
       return;
     }
 
@@ -261,10 +266,7 @@ const SlyceInvoice = () => {
   // Customer Management
   const addCustomer = () => {
     if (!validateCustomer(newCustomer)) {
-      setShowAlert({
-        show: true,
-        message: 'Please fill in all required fields.',
-      });
+      toast.error('Please fill in all required fields.');
       return;
     }
 
@@ -290,18 +292,12 @@ const SlyceInvoice = () => {
   // Quick Tags Management
   const addQuickTag = () => {
     if (quickTags.length >= 20) {
-      setShowAlert({
-        show: true,
-        message: 'Maximum of 20 quick tags reached.',
-      });
+      toast.error('Maximum of 20 quick tags reached.');
       return;
     }
 
     if (!selectedProfile) {
-      setShowAlert({
-        show: true,
-        message: 'Please select a business profile first.',
-      });
+      toast.error('Please select a business profile first.');
       return;
     }
 
@@ -380,10 +376,10 @@ const SlyceInvoice = () => {
   };
 
   const generateInvoice = async () => {
-    if (!validateInvoice()) {
-      return;
-    }
+    if (!validateInvoice()) return;
 
+    setIsLoading(prev => ({ ...prev, invoice: true }));
+    
     try {
       // Load your invoice template
       const template = await window.electronAPI.getInvoiceTemplate();
@@ -461,22 +457,15 @@ const SlyceInvoice = () => {
         setCurrentInvoiceNumber(generateInvoiceNumber(currentInvoiceNumber));
         setInvoiceItems([]);
         setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
-        setShowAlert({
-          show: true,
-          message: 'Invoice generated and saved successfully!',
-        });
+        toast.success('Invoice generated and saved successfully!');
       } else {
-        setShowAlert({
-          show: true,
-          message: 'Error saving invoice. Please try again.',
-        });
+        toast.error('Error saving invoice. Please try again.');
       }
     } catch (error) {
       console.error('Error generating invoice:', error);
-      setShowAlert({
-        show: true,
-        message: 'Error generating invoice. Please try again.',
-      });
+      toast.error('Error generating invoice');
+    } finally {
+      setIsLoading(prev => ({ ...prev, invoice: false }));
     }
   };
 
@@ -701,42 +690,27 @@ const renderCustomerForm = (customer, setCustomer) => (
 
   const validateInvoice = () => {
     if (!selectedCustomer) {
-      setShowAlert({
-        show: true,
-        message: 'Please select a customer.',
-      });
+      toast.error('Please select a customer.');
       return false;
     }
 
     if (!selectedProfile) {
-      setShowAlert({
-        show: true,
-        message: 'Please select a business profile.',
-      });
+      toast.error('Please select a business profile.');
       return false;
     }
 
     if (invoiceDates.hasDateRange && (!invoiceDates.startDate || !invoiceDates.endDate)) {
-      setShowAlert({
-        show: true,
-        message: 'Please set invoice date range.',
-      });
+      toast.error('Please set invoice date range.');
       return false;
     }
 
     if (!invoiceDates.hasDateRange && !invoiceDates.startDate) {
-      setShowAlert({
-        show: true,
-        message: 'Please set invoice date.',
-      });
+      toast.error('Please set invoice date.');
       return false;
     }
 
     if (invoiceItems.length === 0) {
-      setShowAlert({
-        show: true,
-        message: 'Please add at least one invoice item.',
-      });
+      toast.error('Please add at least one invoice item.');
       return false;
     }
 
@@ -783,11 +757,7 @@ const IconPicker = ({ value, onChange }) => {
 // Main Render
   return (
     <div className="container mx-auto p-4 max-w-7xl space-y-6">
-      {showAlert.show && (
-        <Alert className="mb-4">
-          <AlertDescription>{showAlert.message}</AlertDescription>
-        </Alert>
-      )}
+      <Toaster position="top-right" expand={true} richColors />
 
       <Tabs defaultValue="invoice" className="w-full">
         <TabsList>
@@ -811,7 +781,7 @@ const IconPicker = ({ value, onChange }) => {
 
         <TabsContent value="invoice">
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-6 min-h-[800px]">
               <div className="grid grid-cols-12 gap-6 mb-6">
                 {/* Customer Selection Section */}
                 <div className="col-span-4 space-y-4">
@@ -1053,9 +1023,22 @@ const IconPicker = ({ value, onChange }) => {
                   Total: €{calculateTotal()}
                 </div>
                 <div className="space-x-2">
-                  <Button onClick={generateInvoice}>
-                    <Save className="h-4 w-4 mr-2" />
-                    Generate Invoice
+                  <Button 
+                    onClick={generateInvoice} 
+                    disabled={isLoading.invoice}
+                    className="min-w-[200px]"
+                  >
+                    {isLoading.invoice ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4 mr-2" />
+                        Generate Invoice
+                      </>
+                    )}
                   </Button>
                 </div>
               </div>
@@ -1153,46 +1136,63 @@ const IconPicker = ({ value, onChange }) => {
                     <Button
                       variant="outline"
                       onClick={async () => {
-                        const success = await window.electronAPI.exportData();
-                        setShowAlert({
-                          show: true,
-                          message: success ? 'Data exported successfully!' : 'Failed to export data',
-                        });
+                        setIsLoading(prev => ({ ...prev, export: true }));
+                        try {
+                          const success = await window.electronAPI.exportData();
+                          if (success) {
+                            toast.success('Data exported successfully!');
+                          } else {
+                            toast.error('Failed to export data');
+                          }
+                        } catch (error) {
+                          toast.error('Error exporting data');
+                        } finally {
+                          setIsLoading(prev => ({ ...prev, export: false }));
+                        }
                       }}
                     >
-                      <Save className="h-4 w-4 mr-2" />
-                      Export Data
+                      {isLoading.export ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <Save className="h-4 w-4 mr-2" />
+                      )}
+                      {isLoading.export ? 'Exporting...' : 'Export Data'}
                     </Button>
                     <Button
                       variant="outline"
                       onClick={async () => {
-                        const importedData = await window.electronAPI.importData();
-                        if (importedData) {
-                          setCustomers(importedData.customers || []);
-                          setBusinessProfiles(importedData.businessProfiles || []);
-                          setQuickTags(importedData.quickTags || []);
-                          setCurrentInvoiceNumber(generateInvoiceNumber(importedData.lastInvoiceNumber));
-                          if (importedData.defaultProfileId) {
-                            setDefaultProfileId(importedData.defaultProfileId);
-                            const defaultProfile = importedData.businessProfiles.find(
-                              p => p.company_name === importedData.defaultProfileId
-                            );
-                            if (defaultProfile) setSelectedProfile(defaultProfile);
+                        setIsLoading(prev => ({ ...prev, import: true }));
+                        try {
+                          const importedData = await window.electronAPI.importData();
+                          if (importedData) {
+                            setCustomers(importedData.customers || []);
+                            setBusinessProfiles(importedData.businessProfiles || []);
+                            setQuickTags(importedData.quickTags || []);
+                            setCurrentInvoiceNumber(generateInvoiceNumber(importedData.lastInvoiceNumber));
+                            if (importedData.defaultProfileId) {
+                              setDefaultProfileId(importedData.defaultProfileId);
+                              const defaultProfile = importedData.businessProfiles.find(
+                                p => p.company_name === importedData.defaultProfileId
+                              );
+                              if (defaultProfile) setSelectedProfile(defaultProfile);
+                            }
+                            toast.success('Data imported successfully!');
+                          } else {
+                            toast.error('Failed to import data');
                           }
-                          setShowAlert({
-                            show: true,
-                            message: 'Data imported successfully!',
-                          });
-                        } else {
-                          setShowAlert({
-                            show: true,
-                            message: 'Failed to import data',
-                          });
+                        } catch (error) {
+                          toast.error('Error importing data');
+                        } finally {
+                          setIsLoading(prev => ({ ...prev, import: false }));
                         }
                       }}
                     >
-                      <Upload className="h-4 w-4 mr-2" />
-                      Import Data
+                      {isLoading.import ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <Upload className="h-4 w-4 mr-2" />
+                      )}
+                      {isLoading.import ? 'Importing...' : 'Import Data'}
                     </Button>
                   </div>
                 </div>
