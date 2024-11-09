@@ -1,4 +1,3 @@
-// File: src/App.jsx - Part 1: Imports and Setup
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -569,9 +568,9 @@ const renderCustomerForm = (customer, setCustomer) => (
       quantity: parseFloat(tag.quantity),
       rate: parseFloat(tag.rate),
       total: parseFloat(tag.quantity) * parseFloat(tag.rate),
-      hasDateRange: tag.hasDateRange
+      hasDateRange: tag.hasDateRange,
     };
-    
+
     const newItems = [...invoiceItems, newItem];
     setInvoiceItems(newItems);
     updateDateRangeToggle(newItems);
@@ -783,15 +782,17 @@ const renderCustomerForm = (customer, setCustomer) => (
                   <h3 className="text-lg font-medium">Quick Entry</h3>
                   <div className="flex flex-wrap gap-2">
                     {quickTags.map((tag, index) => (
-                      <Button
+                      <div
                         key={index}
-                        variant="outline"
-                        className="p-2"
-                        style={{ backgroundColor: tag.color }}
                         onClick={() => handleQuickTagClick(tag)}
+                        className="cursor-pointer flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium"
+                        style={{
+                          backgroundColor: tag.color || '#e2e8f0',
+                          color: '#1a202c',
+                        }}
                       >
-                        {tag.description}
-                      </Button>
+                        <span>{tag.description}</span>
+                      </div>
                     ))}
                   </div>
                 </div>
