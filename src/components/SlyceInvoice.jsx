@@ -92,6 +92,11 @@ const ALL_ICONS = Object.entries(Icons).reduce((acc, [name, Icon]) => {
 // Add this line temporarily to debug
 console.log('Available icons:', Object.keys(ALL_ICONS));
 
+// Add this helper function at the top with other helper functions
+const generateUniqueId = () => {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+};
+
 const SlyceInvoice = () => {
   // Business Profiles State
   const [businessProfiles, setBusinessProfiles] = useState([]);
@@ -178,7 +183,12 @@ const SlyceInvoice = () => {
         const savedDefaultProfileId = await window.electronAPI.getData('defaultProfileId');
 
         if (savedProfiles) setBusinessProfiles(savedProfiles);
-        if (savedCustomers) setCustomers(savedCustomers);
+        if (savedCustomers) {
+          const customersWithIds = savedCustomers.map(customer => 
+            customer.id ? customer : { ...customer, id: generateUniqueId() }
+          );
+          setCustomers(customersWithIds);
+        }
         if (savedTags) setQuickTags(savedTags);
         if (lastInvoiceNumber) setCurrentInvoiceNumber(generateInvoiceNumber(lastInvoiceNumber));
         
@@ -258,8 +268,14 @@ const SlyceInvoice = () => {
       return;
     }
 
-    setCustomers([...customers, newCustomer]);
+    const customerWithId = {
+      ...newCustomer,
+      id: generateUniqueId(),
+    };
+
+    setCustomers([...customers, customerWithId]);
     setNewCustomer({
+      id: '',
       title: '',
       zusatz: '',
       name: '',
@@ -548,13 +564,13 @@ const renderCustomerForm = (customer, setCustomer) => (
             value={customer.title}
             onValueChange={(value) => setCustomer({ ...customer, title: value })}
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-white dark:bg-slate-950">
               <SelectValue placeholder="Select title" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Herr">Herr</SelectItem>
-              <SelectItem value="Frau">Frau</SelectItem>
-              <SelectItem value="Divers">Divers</SelectItem>
+            <SelectContent className="select-content">
+              <SelectItem className="select-item" value="Herr">Herr</SelectItem>
+              <SelectItem className="select-item" value="Frau">Frau</SelectItem>
+              <SelectItem className="select-item" value="Divers">Divers</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -564,14 +580,14 @@ const renderCustomerForm = (customer, setCustomer) => (
             value={customer.zusatz}
             onValueChange={(value) => setCustomer({ ...customer, zusatz: value })}
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-white dark:bg-slate-950">
               <SelectValue placeholder="Select title" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Dr.">Dr.</SelectItem>
-              <SelectItem value="Prof.">Prof.</SelectItem>
-              <SelectItem value="Prof. Dr.">Prof. Dr.</SelectItem>
-              <SelectItem value="Dr. h.c.">Dr. h.c.</SelectItem>
+            <SelectContent className="select-content">
+              <SelectItem className="select-item" value="Dr.">Dr.</SelectItem>
+              <SelectItem className="select-item" value="Prof.">Prof.</SelectItem>
+              <SelectItem className="select-item" value="Prof. Dr.">Prof. Dr.</SelectItem>
+              <SelectItem className="select-item" value="Dr. h.c.">Dr. h.c.</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -619,34 +635,39 @@ const renderCustomerForm = (customer, setCustomer) => (
   // Edit Functions
   const editCustomer = (updatedCustomer) => {
     const newCustomers = customers.map(c => 
-      c === editingCustomer ? updatedCustomer : c
+      c.id === editingCustomer.id ? updatedCustomer : c
     );
     setCustomers(newCustomers);
-    if (selectedCustomer === editingCustomer) {
+    if (selectedCustomer?.id === editingCustomer.id) {
       setSelectedCustomer(updatedCustomer);
     }
     setShowEditCustomerDialog(false);
     setEditingCustomer(null);
   };
 
-  const editProfile = (updatedProfile) => {
-    const newProfiles = businessProfiles.map(p => 
-      p === editingProfile ? updatedProfile : p
+  const editProfile = async (updatedProfile) => {
+    const newProfiles = businessProfiles.map((profile) =>
+      profile.company_name === updatedProfile.company_name ? updatedProfile : profile
     );
+    
+    // Update local state
     setBusinessProfiles(newProfiles);
-    if (selectedProfile === editingProfile) {
+    
+    // If this is the currently selected profile, update it too
+    if (selectedProfile?.company_name === updatedProfile.company_name) {
       setSelectedProfile(updatedProfile);
     }
-    if (defaultProfileId === editingProfile.company_name) {
-      setDefaultProfileId(updatedProfile.company_name);
-    }
+
+    // Save to electron-store using the correct API method
+    await window.electronAPI.setData('businessProfiles', newProfiles);
+    
     setShowEditProfileDialog(false);
     setEditingProfile(null);
   };
 
   const editTag = (updatedTag) => {
     const newTags = quickTags.map((t) =>
-      t === editingTag ? updatedTag : t
+      t.name === updatedTag.name ? { ...updatedTag } : t
     );
     setQuickTags(newTags);
     setShowEditTagDialog(false);
@@ -802,12 +823,16 @@ const IconPicker = ({ value, onChange }) => {
                       setSelectedCustomer(customer);
                     }}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white">
                       <SelectValue placeholder="Select customer" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       {customers.map((customer) => (
-                        <SelectItem key={customer.name} value={customer.name}>
+                        <SelectItem 
+                          key={customer.name} 
+                          value={customer.name}
+                          className="hover:bg-gray-100"
+                        >
                           {customer.title === 'Divers' ? (
                             `${customer.zusatz} ${customer.name}`
                           ) : (
@@ -851,12 +876,16 @@ const IconPicker = ({ value, onChange }) => {
                       setSelectedProfile(profile);
                     }}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white">
                       <SelectValue placeholder="Select business profile" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       {businessProfiles.map((profile) => (
-                        <SelectItem key={profile.company_name} value={profile.company_name}>
+                        <SelectItem 
+                          key={profile.company_name} 
+                          value={profile.company_name}
+                          className="hover:bg-gray-100"
+                        >
                           {profile.company_name}
                         </SelectItem>
                       ))}
@@ -1557,7 +1586,7 @@ const IconPicker = ({ value, onChange }) => {
                     value: profile.company_name,
                     label: profile.company_name,
                   }))}
-                  value={editingTag.personas.map((persona) => ({
+                  value={(editingTag?.personas || []).map((persona) => ({
                     value: persona,
                     label: persona,
                   }))}
