@@ -15,6 +15,21 @@ A modern, desktop invoice generation application built with Electron and React. 
 - 🖨️ PDF generation with customizable templates
 - 🌍 German language support
 
+## TODO
+
+- 🎨 Template System Improvements
+  - Multiple template designs for different business sizes
+  - Template preview functionality
+  - Enhanced customization options
+- 👋 Enhanced Customer Interaction
+  - Improved title handling and formal/informal greeting options
+  - Customizable salutations based on locale
+- 💫 UI Feedback Improvements
+  - Non-intrusive success/error notifications
+  - Visual indicators for action completion
+  - Status indicators for ongoing processes
+  - Subtle animation feedback for user interactions
+
 ## Installation
 
 1. Clone the repository:

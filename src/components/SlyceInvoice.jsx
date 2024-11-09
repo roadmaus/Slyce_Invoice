@@ -782,7 +782,7 @@ const IconPicker = ({ value, onChange }) => {
 
 // Main Render
   return (
-    <div className="p-4">
+    <div className="container mx-auto p-4 max-w-7xl space-y-6">
       {showAlert.show && (
         <Alert className="mb-4">
           <AlertDescription>{showAlert.message}</AlertDescription>
@@ -948,7 +948,7 @@ const IconPicker = ({ value, onChange }) => {
                 {/* Quick Tags Section */}
                 <div className="col-span-4 space-y-4">
                   <h3 className="text-lg font-medium">Quick Entry</h3>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 max-h-[200px] overflow-y-auto">
                     {quickTags
                       .filter(tag => 
                         tag.visible && 
@@ -978,69 +978,73 @@ const IconPicker = ({ value, onChange }) => {
 
               {/* Invoice Items Section */}
               <div className="mt-6">
-                <div className="grid grid-cols-12 gap-4 mb-2 font-medium">
-                  <div className="col-span-6">Description</div>
-                  <div className="col-span-2">Quantity</div>
-                  <div className="col-span-2">Rate (€)</div>
-                  <div className="col-span-1">Total</div>
-                  <div className="col-span-1"></div>
-                </div>
+                <div className="overflow-x-auto">
+                  <div className="min-w-[600px]">
+                    <div className="grid grid-cols-12 gap-4 mb-2 font-medium">
+                      <div className="col-span-6">Description</div>
+                      <div className="col-span-2">Quantity</div>
+                      <div className="col-span-2">Rate (€)</div>
+                      <div className="col-span-1">Total</div>
+                      <div className="col-span-1"></div>
+                    </div>
 
-                {invoiceItems.map((item, index) => (
-                  <div key={index} className="grid grid-cols-12 gap-4 mb-2">
-                    <div className="col-span-6">
-                      <Input
-                        value={item.description}
-                        onChange={(e) => updateInvoiceItem(index, 'description', e.target.value)}
-                        placeholder="Description"
-                      />
-                    </div>
-                    <div className="col-span-2">
-                      <Input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) => updateInvoiceItem(index, 'quantity', parseFloat(e.target.value))}
-                        min="0"
-                        step="0.5"
-                      />
-                    </div>
-                    <div className="col-span-2">
-                      <Input
-                        type="number"
-                        value={item.rate}
-                        onChange={(e) => updateInvoiceItem(index, 'rate', parseFloat(e.target.value))}
-                        min="0"
-                        step="0.01"
-                        placeholder="Rate in €"
-                      />
-                    </div>
-                    <div className="col-span-1">
-                      <Input
-                        value={`€${(item.quantity * item.rate).toFixed(2)}`}
-                        readOnly
-                        className="bg-gray-50"
-                      />
-                    </div>
-                    <div className="col-span-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => deleteInvoiceItem(index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    {invoiceItems.map((item, index) => (
+                      <div key={index} className="grid grid-cols-12 gap-4 mb-2">
+                        <div className="col-span-6">
+                          <Input
+                            value={item.description}
+                            onChange={(e) => updateInvoiceItem(index, 'description', e.target.value)}
+                            placeholder="Description"
+                          />
+                        </div>
+                        <div className="col-span-2">
+                          <Input
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) => updateInvoiceItem(index, 'quantity', parseFloat(e.target.value))}
+                            min="0"
+                            step="0.5"
+                          />
+                        </div>
+                        <div className="col-span-2">
+                          <Input
+                            type="number"
+                            value={item.rate}
+                            onChange={(e) => updateInvoiceItem(index, 'rate', parseFloat(e.target.value))}
+                            min="0"
+                            step="0.01"
+                            placeholder="Rate in €"
+                          />
+                        </div>
+                        <div className="col-span-1">
+                          <Input
+                            value={`€${(item.quantity * item.rate).toFixed(2)}`}
+                            readOnly
+                            className="bg-gray-50"
+                          />
+                        </div>
+                        <div className="col-span-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => deleteInvoiceItem(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+
+                    <Button
+                      variant="outline"
+                      onClick={() => addInvoiceItem(invoiceDates.hasDateRange)}
+                      className="mt-4"
+                    >
+                      <PlusCircle className="h-4 w-4 mr-2" />
+                      Add Item
+                    </Button>
                   </div>
-                ))}
-
-                <Button
-                  variant="outline"
-                  onClick={() => addInvoiceItem(invoiceDates.hasDateRange)}
-                  className="mt-4"
-                >
-                  <PlusCircle className="h-4 w-4 mr-2" />
-                  Add Item
-                </Button>
+                </div>
               </div>
 
               {/* Total and Generate Section */}
