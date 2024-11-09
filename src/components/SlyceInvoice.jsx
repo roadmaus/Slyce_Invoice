@@ -10,6 +10,8 @@ import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { PlusCircle, Trash2, Save, Settings, Users, Tags, FileText, Edit, Check, Upload } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
+import { Textarea } from '@/components/ui/textarea';
+import ReactSelect from 'react-select';
 
 // Helper Functions
 const generateInvoiceNumber = (lastNumber) => {
@@ -68,11 +70,14 @@ const SlyceInvoice = () => {
   // Quick Tags State
   const [quickTags, setQuickTags] = useState([]);
   const [newTag, setNewTag] = useState({
+    name: '',
     description: '',
     rate: '',
     quantity: '',
     color: '#e2e8f0',
     hasDateRange: true,
+    visible: true,
+    personas: [],
   });
 
   // Invoice State
@@ -216,13 +221,29 @@ const SlyceInvoice = () => {
       return;
     }
 
-    setQuickTags([...quickTags, newTag]);
+    if (!selectedProfile) {
+      setShowAlert({
+        show: true,
+        message: 'Please select a business profile first.',
+      });
+      return;
+    }
+
+    const tagWithPersona = {
+      ...newTag,
+      personas: [selectedProfile.company_name],
+    };
+
+    setQuickTags([...quickTags, tagWithPersona]);
     setNewTag({
+      name: '',
       description: '',
       rate: '',
       quantity: '',
       color: '#e2e8f0',
       hasDateRange: true,
+      visible: true,
+      personas: [],
     });
     setShowNewTagDialog(false);
   };
@@ -543,7 +564,7 @@ const renderCustomerForm = (customer, setCustomer) => (
   };
 
   const editTag = (updatedTag) => {
-    const newTags = quickTags.map(t => 
+    const newTags = quickTags.map((t) =>
       t === editingTag ? updatedTag : t
     );
     setQuickTags(newTags);
@@ -781,18 +802,24 @@ const renderCustomerForm = (customer, setCustomer) => (
                 <div className="col-span-4 space-y-4">
                   <h3 className="text-lg font-medium">Quick Entry</h3>
                   <div className="flex flex-wrap gap-2">
-                    {quickTags.map((tag, index) => (
-                      <div
-                        key={index}
-                        onClick={() => handleQuickTagClick(tag)}
-                        className="cursor-pointer flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium"
-                        style={{
-                          backgroundColor: tag.color || '#e2e8f0',
-                          color: '#1a202c',
-                        }}
-                      >
-                        <span>{tag.description}</span>
-                      </div>
+                    {quickTags
+                      .filter(tag => 
+                        tag.visible && 
+                        selectedProfile && 
+                        tag.personas.includes(selectedProfile.company_name)
+                      )
+                      .map((tag, index) => (
+                        <div
+                          key={index}
+                          onClick={() => handleQuickTagClick(tag)}
+                          className="cursor-pointer flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium"
+                          style={{
+                            backgroundColor: tag.color || '#e2e8f0',
+                            color: '#1a202c',
+                          }}
+                        >
+                          <span>{tag.name}</span>
+                        </div>
                     ))}
                   </div>
                 </div>
@@ -803,7 +830,7 @@ const renderCustomerForm = (customer, setCustomer) => (
                 <div className="grid grid-cols-12 gap-4 mb-2 font-medium">
                   <div className="col-span-6">Description</div>
                   <div className="col-span-2">Quantity</div>
-                  <div className="col-span-2">Rate</div>
+                  <div className="col-span-2">Rate (€)</div>
                   <div className="col-span-1">Total</div>
                   <div className="col-span-1"></div>
                 </div>
@@ -833,6 +860,7 @@ const renderCustomerForm = (customer, setCustomer) => (
                         onChange={(e) => updateInvoiceItem(index, 'rate', parseFloat(e.target.value))}
                         min="0"
                         step="0.01"
+                        placeholder="Rate in €"
                       />
                     </div>
                     <div className="col-span-1">
@@ -1114,21 +1142,29 @@ const renderCustomerForm = (customer, setCustomer) => (
                     </DialogHeader>
                     <div className="space-y-4">
                       <div>
-                        <Label>Description</Label>
+                        <Label>Name</Label>
                         <Input
+                          value={newTag.name}
+                          onChange={(e) => setNewTag({ ...newTag, name: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <Label>Description (will show on invoice)</Label>
+                        <Textarea
                           value={newTag.description}
                           onChange={(e) => setNewTag({ ...newTag, description: e.target.value })}
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <Label>Rate</Label>
+                          <Label>Rate (€)</Label>
                           <Input
                             type="number"
                             value={newTag.rate}
                             onChange={(e) => setNewTag({ ...newTag, rate: e.target.value })}
                             min="0"
                             step="0.01"
+                            placeholder="Price in €"
                           />
                         </div>
                         <div>
@@ -1153,13 +1189,40 @@ const renderCustomerForm = (customer, setCustomer) => (
                       </div>
                       <div className="flex items-center space-x-2">
                         <Switch
+                          checked={newTag.visible}
+                          onCheckedChange={(checked) => setNewTag({ ...newTag, visible: checked })}
+                        />
+                        <Label>Visible in Quick Entry</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Switch
                           checked={newTag.hasDateRange}
                           onCheckedChange={(checked) => setNewTag({ ...newTag, hasDateRange: checked })}
                         />
                         <Label>Uses Date Range</Label>
                       </div>
+                      <div>
+                        <Label>Associated Personas</Label>
+                        <ReactSelect
+                          isMulti
+                          options={businessProfiles.map((profile) => ({
+                            value: profile.company_name,
+                            label: profile.company_name,
+                          }))}
+                          value={newTag.personas.map((persona) => ({
+                            value: persona,
+                            label: persona,
+                          }))}
+                          onChange={(selectedOptions) => {
+                            setNewTag({
+                              ...newTag,
+                              personas: selectedOptions ? selectedOptions.map((option) => option.value) : [],
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div className="flex justify-end space-x-2">
+                    <div className="flex justify-end space-x-2 mt-4">
                       <Button variant="outline" onClick={() => setShowNewTagDialog(false)}>
                         Cancel
                       </Button>
@@ -1174,17 +1237,47 @@ const renderCustomerForm = (customer, setCustomer) => (
                   <Card key={index}>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
-                        <div 
+                        <div
                           className="flex-1 p-3 rounded"
                           style={{ backgroundColor: tag.color }}
                         >
-                          <h3 className="font-medium">{tag.description}</h3>
-                          <div className="text-sm">
-                            <p>Rate: €{parseFloat(tag.rate).toFixed(2)}</p>
+                          <h3 className="font-medium">{tag.name}</h3>
+                          <p className="text-sm text-gray-500">{tag.description}</p>
+                          <div className="text-sm mt-2">
+                            <p>Rate (€): €{parseFloat(tag.rate).toFixed(2)}</p>
                             <p>Quantity: {tag.quantity}</p>
                           </div>
+                          <div className="text-sm mt-2">
+                            <p>Associated Personas:</p>
+                            <ul className="list-disc list-inside">
+                              {tag.personas.map((persona) => (
+                                <li key={persona}>{persona}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="flex items-center mt-2">
+                            <Switch
+                              checked={tag.visible}
+                              onCheckedChange={(checked) => {
+                                const updatedTags = [...quickTags];
+                                updatedTags[index].visible = checked;
+                                setQuickTags(updatedTags);
+                              }}
+                            />
+                            <Label className="ml-2">Visible in Quick Entry</Label>
+                          </div>
                         </div>
-                        <div className="ml-2">
+                        <div className="ml-2 flex flex-col space-y-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setEditingTag(tag);
+                              setShowEditTagDialog(true);
+                            }}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="icon"
@@ -1266,15 +1359,22 @@ const renderCustomerForm = (customer, setCustomer) => (
           {editingTag && (
             <div className="space-y-4">
               <div>
-                <Label>Description</Label>
+                <Label>Name</Label>
                 <Input
+                  value={editingTag.name}
+                  onChange={(e) => setEditingTag({ ...editingTag, name: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Description (will show on invoice)</Label>
+                <Textarea
                   value={editingTag.description}
                   onChange={(e) => setEditingTag({ ...editingTag, description: e.target.value })}
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <Label>Rate</Label>
+                  <Label>Rate (€)</Label>
                   <Input
                     type="number"
                     value={editingTag.rate}
@@ -1303,19 +1403,56 @@ const renderCustomerForm = (customer, setCustomer) => (
                   className="h-10"
                 />
               </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={editingTag.visible}
+                  onCheckedChange={(checked) => setEditingTag({ ...editingTag, visible: checked })}
+                />
+                <Label>Visible in Quick Entry</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={editingTag.hasDateRange}
+                  onCheckedChange={(checked) => setEditingTag({ ...editingTag, hasDateRange: checked })}
+                />
+                <Label>Uses Date Range</Label>
+              </div>
+              <div>
+                <Label>Associated Personas</Label>
+                <ReactSelect
+                  isMulti
+                  options={businessProfiles.map((profile) => ({
+                    value: profile.company_name,
+                    label: profile.company_name,
+                  }))}
+                  value={editingTag.personas.map((persona) => ({
+                    value: persona,
+                    label: persona,
+                  }))}
+                  onChange={(selectedOptions) => {
+                    setEditingTag({
+                      ...editingTag,
+                      personas: selectedOptions ? selectedOptions.map((option) => option.value) : [],
+                    });
+                  }}
+                />
+              </div>
+              <div className="flex justify-end space-x-2 mt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowEditTagDialog(false);
+                    setEditingTag(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={() => editTag(editingTag)}>
+                  Save Changes
+                </Button>
+              </div>
             </div>
           )}
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={() => {
-              setShowEditTagDialog(false);
-              setEditingTag(null);
-            }}>
-              Cancel
-            </Button>
-            <Button onClick={() => editTag(editingTag)}>
-              Save Changes
-            </Button>
-          </div>
         </DialogContent>
       </Dialog>
     </div>
