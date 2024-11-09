@@ -231,8 +231,12 @@ const SlyceInvoice = () => {
 
     const tagWithPersona = {
       ...newTag,
-      personas: [selectedProfile.company_name],
+      personas: Array.isArray(newTag.personas) ? newTag.personas : [],
     };
+
+    if (!tagWithPersona.personas.includes(selectedProfile.company_name)) {
+      tagWithPersona.personas = [...tagWithPersona.personas, selectedProfile.company_name];
+    }
 
     setQuickTags([...quickTags, tagWithPersona]);
     setNewTag({
@@ -806,7 +810,7 @@ const renderCustomerForm = (customer, setCustomer) => (
                       .filter(tag => 
                         tag.visible && 
                         selectedProfile && 
-                        tag.personas.includes(selectedProfile.company_name)
+                        (tag.personas || []).includes(selectedProfile.company_name)
                       )
                       .map((tag, index) => (
                         <div
@@ -1209,7 +1213,7 @@ const renderCustomerForm = (customer, setCustomer) => (
                             value: profile.company_name,
                             label: profile.company_name,
                           }))}
-                          value={newTag.personas.map((persona) => ({
+                          value={(newTag.personas || []).map((persona) => ({
                             value: persona,
                             label: persona,
                           }))}
@@ -1250,7 +1254,7 @@ const renderCustomerForm = (customer, setCustomer) => (
                           <div className="text-sm mt-2">
                             <p>Associated Personas:</p>
                             <ul className="list-disc list-inside">
-                              {tag.personas.map((persona) => (
+                              {(tag.personas || []).map((persona) => (
                                 <li key={persona}>{persona}</li>
                               ))}
                             </ul>
