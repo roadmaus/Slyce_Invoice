@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechnung</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        
+        :root {
+            --primary-blue: #1a2942;
+            --secondary-blue: #516885;
+            --text-color: #000000;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px;
+            color: var(--text-color);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-blue);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40%;
+            height: 100%;
+            background: var(--secondary-blue);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .company-address {
+            text-align: right;
+        }
+
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .recipient-info {
+            max-width: 250px;
+        }
+
+        .invoice-info {
+            text-align: right;
+        }
+
+        .invoice-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .greeting-section {
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-weight: 600;
+        }
+
+        .amount-summary {
+            width: 300px;
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        .amount-summary tr td:last-child {
+            text-align: right;
+        }
+
+        .payment-info {
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .banking-info {
+            margin-top: 30px;
+        }
+
+        .contact-details {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 10px;
+            color: var(--secondary-blue);
+        }
+
+        .page-number {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 10px;
+        }
+
+        .medium-bold {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <div class="logo-text">SEELOS</div>
+        </div>
+        <div class="company-address">
+            {company_name}<br>
+            {company_street}<br>
+            {company_postalcode} {company_city}<br>
+            <p>Steuernummer: {tax_number}<br>
+            SteuerID: {tax_id}</p>
+        </div>
+    </div>
+
+    <div class="invoice-details">
+        <div class="recipient-info">
+            {customer_address}
+        </div>
+        <div class="invoice-info">
+            {invoice_number_date}
+        </div>
+    </div>
+
+    <div class="greeting-section">
+        <p>{greeting}</p>
+        <p>Für den Leistungszeitraum {period} stelle ich Ihnen folgendes in Rechnung:</p>
+    </div>
+
+    <table>
+        <tr>
+            <th>{quantity_label}</th>
+            <th>Description</th>
+            <th>{unit_price_label}</th>
+            <th>Total</th>
+        </tr>
+        {invoice_items}
+    </table>
+
+    <div class="total">Gesamt: {total_amount}</div>
+
+    <div class="payment-info">
+        <p>Bitte überweisen Sie den Betrag von <span class="medium-bold">{total_amount}</span> innerhalb der nächsten 7 Werktage auf folgendes Konto:</p>
+        
+        <div class="banking-info">
+            <p><span class="medium-bold">Name:</span> {company_name}</p>
+            <p><span class="medium-bold">Institut:</span> {bank_institute}</p>
+            <p><span class="medium-bold">IBAN:</span> {bank_iban}</p>
+            <p><span class="medium-bold">BIC:</span> {bank_bic}</p>
+        </div>
+
+        <p>Ich bedanke mich für den Auftrag und freue mich auf weitere Zusammenarbeit.</p>
+        <p>Mit Besten Grüßen<br>{company_name}</p>
+    </div>
+
+    <div class="contact-details">
+        {contact_details}
+    </div>
+
+    <div class="page-number">1/1</div>
+</body>
+</html>
