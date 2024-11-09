@@ -1393,79 +1393,121 @@ const IconPicker = ({ value, onChange }) => {
 
               <div className="grid grid-cols-4 gap-4">
                 {quickTags.map((tag, index) => (
-                  <Card key={index}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div
-                          className="flex-1 p-3 rounded"
-                          style={{ backgroundColor: tag.color }}
+                  <Card key={index} className="group relative h-[320px]">
+                    <CardContent className="p-4 h-full flex flex-col">
+                      {/* Action Buttons - Outside colored card */}
+                      <div className="absolute top-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 bg-white hover:bg-gray-100 shadow-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingTag(tag);
+                            setShowEditTagDialog(true);
+                          }}
                         >
-                          <div className="flex items-center gap-2 mb-2">
-                            <Tags className="h-5 w-5" />
-                            <h3 className="font-medium">{tag.name}</h3>
-                          </div>
-                          <div className="text-sm mt-2">
-                            <p>Rate (€): €{parseFloat(tag.rate).toFixed(2)}</p>
-                            <p>Quantity: {tag.quantity}</p>
-                          </div>
-                          <div className="text-sm mt-2">
-                            <p>Associated Personas:</p>
-                            <ul className="list-disc list-inside">
-                              {(tag.personas || []).map((persona) => (
-                                <li key={persona}>{persona}</li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div className="flex items-center mt-2">
-                            <Switch
-                              checked={tag.visible}
-                              onCheckedChange={(checked) => {
-                                const updatedTags = [...quickTags];
-                                updatedTags[index].visible = checked;
-                                setQuickTags(updatedTags);
-                              }}
-                            />
-                            <Label className="ml-2">Visible in Quick Entry</Label>
+                          <Edit className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 bg-white hover:bg-gray-100 shadow-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const updatedTags = quickTags.filter((_, i) => i !== index);
+                            setQuickTags(updatedTags);
+                          }}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+
+                      {/* Visibility Toggle - Outside colored card */}
+                      <div className="absolute top-2 left-2">
+                        <Switch
+                          checked={tag.visible}
+                          onCheckedChange={(checked) => {
+                            const updatedTags = [...quickTags];
+                            updatedTags[index].visible = checked;
+                            setQuickTags(updatedTags);
+                          }}
+                          className="data-[state=checked]:bg-gray-700"
+                        />
+                      </div>
+
+                      {/* Colored Card Content */}
+                      <div 
+                        className="mt-8 rounded-lg p-4 flex-1 flex flex-col mx-[-0.5rem]"
+                        style={{ 
+                          backgroundColor: tag.color,
+                          boxShadow: `inset 0 0 0 1px rgba(0,0,0,0.05)`
+                        }}
+                      >
+                        {/* Tag Header */}
+                        <div className="mb-3">
+                          <div className="flex items-center gap-2">
+                            <Tags className="h-4 w-4 text-gray-700 flex-shrink-0" />
+                            <h3 className="font-medium text-gray-800 truncate max-w-[180px]" title={tag.name}>
+                              {tag.name}
+                            </h3>
                           </div>
                         </div>
-                        <div className="ml-2 flex flex-col space-y-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              setEditingTag(tag);
-                              setShowEditTagDialog(true);
-                            }}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              const updatedTags = quickTags.filter((_, i) => i !== index);
-                              setQuickTags(updatedTags);
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+
+                        {/* Description Preview - Fixed height */}
+                        <div className="h-[60px] mb-4">
+                          <p className="text-sm text-gray-700 line-clamp-3" title={tag.description}>
+                            {tag.description || "No description"}
+                          </p>
+                        </div>
+
+                        {/* Tag Details */}
+                        <div className="space-y-2 mb-3">
+                          <div className="flex items-center justify-between text-sm text-gray-700">
+                            <span>Rate:</span>
+                            <span className="font-medium">€{parseFloat(tag.rate).toFixed(2)}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm text-gray-700">
+                            <span>Quantity:</span>
+                            <span className="font-medium">{tag.quantity}</span>
+                          </div>
+                        </div>
+
+                        {/* Associated Personas */}
+                        <div className="space-y-1">
+                          <div className="text-xs font-medium text-gray-600">Associated Personas:</div>
+                          <div className="flex flex-wrap gap-1">
+                            {tag.personas?.map((persona, idx) => (
+                              <span
+                                key={idx}
+                                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/50 truncate max-w-[120px]"
+                                title={persona}
+                              >
+                                {persona}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
                 ))}
-              </div>
 
-              {/* Empty State */}
-              {quickTags.length === 0 && (
-                <div className="text-center py-12">
-                  <Tags className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Quick Tags</h3>
-                  <p className="text-gray-500">
-                    Create quick entry tags to speed up your invoice creation process.
-                  </p>
-                </div>
-              )}
+                {/* Empty State */}
+                {quickTags.length === 0 && (
+                  <div className="col-span-4 text-center py-12 bg-gray-50/50 rounded-lg border-2 border-dashed border-gray-200">
+                    <Tags className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No Quick Tags</h3>
+                    <p className="text-gray-500 mb-4">
+                      Create quick entry tags to speed up your invoice creation process.
+                    </p>
+                    <Button onClick={() => setShowNewTagDialog(true)}>
+                      <PlusCircle className="h-4 w-4 mr-2" />
+                      Add Your First Tag
+                    </Button>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

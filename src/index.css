@@ -112,6 +112,13 @@
   .grid-auto-fill {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }
 
 /* Add these styles to your CSS */
@@ -122,4 +129,21 @@
 .invoice-items {
   transition: all 0.3s ease;
   min-height: 100px; /* Adjust based on your needs */
+}
+
+/* Add these to your existing CSS */
+.tag-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.tag-card:hover {
+  transform: translateY(-2px);
+}
+
+.persona-tag {
+  transition: background-color 0.2s ease;
+}
+
+.persona-tag:hover {
+  background-color: rgba(255, 255, 255, 0.8);
 }
