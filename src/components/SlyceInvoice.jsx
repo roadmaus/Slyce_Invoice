@@ -99,6 +99,23 @@ const generateUniqueId = () => {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 };
 
+// Add this helper function at the top
+const formatDuration = (totalDays) => {
+  const months = Math.floor(totalDays / 31);
+  const days = totalDays % 31;
+  const parts = [];
+  if (months > 0) parts.push(`${months} ${months === 1 ? 'month' : 'months'}`);
+  if (days > 0) parts.push(`${days} ${days === 1 ? 'day' : 'days'}`);
+  return parts.join(' ');
+};
+
+const daysToMonthsDays = (totalDays) => ({
+  months: Math.floor(totalDays / 31),
+  days: totalDays % 31
+});
+
+const monthsDaysToDays = (months, days) => (months * 31) + days;
+
 const SlyceInvoice = () => {
   // Business Profiles State
   const [businessProfiles, setBusinessProfiles] = useState([]);
@@ -682,6 +699,18 @@ const renderCustomerForm = (customer, setCustomer) => (
       total: parseFloat(tag.quantity) * parseFloat(tag.rate),
       hasDateRange: tag.hasDateRange,
     };
+
+    // If the tag has a duration, calculate the end date
+    if (tag.duration && invoiceDates.startDate) {
+      const startDate = new Date(invoiceDates.startDate);
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + tag.duration - 1); // -1 to include start date
+
+      setInvoiceDates(prev => ({
+        ...prev,
+        endDate: endDate.toISOString().split('T')[0]
+      }));
+    }
 
     const newItems = [...invoiceItems, newItem];
     setInvoiceItems(newItems);

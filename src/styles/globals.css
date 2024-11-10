@@ -1,0 +1,20 @@
+/* Range Input Styles */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+} 
