@@ -21,10 +21,13 @@ import {
   FileText, 
   Users, 
   Settings, 
-  Tags 
+  Tags, 
+  Search, 
+  X 
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import SettingsTab from './tabs/SettingsTab';
 // Helper Functions
 const generateInvoiceNumber = (lastNumber) => {
   const year = new Date().getFullYear();
@@ -188,6 +191,12 @@ const SlyceInvoice = () => {
     import: false,
   });
 
+  // Add new state for search
+  const [tagSearch, setTagSearch] = useState('');
+
+  // Add state for search visibility
+  const [showTagSearch, setShowTagSearch] = useState(false);
+
   // Load saved data on component mount
   useEffect(() => {
     const loadSavedData = async () => {
@@ -298,11 +307,6 @@ const SlyceInvoice = () => {
 
   // Quick Tags Management
   const addQuickTag = () => {
-    if (quickTags.length >= 20) {
-      toast.error('Maximum of 20 quick tags reached.');
-      return;
-    }
-
     if (!selectedProfile) {
       toast.error('Please select a business profile first.');
       return;
@@ -719,12 +723,12 @@ const renderCustomerForm = (customer, setCustomer) => (
     }
 
     if (invoiceDates.hasDateRange && (!invoiceDates.startDate || !invoiceDates.endDate)) {
-      toast.error('Please set invoice date range.');
+      toast.error('Please set the complete service period (start and end date).');
       return false;
     }
 
     if (!invoiceDates.hasDateRange && !invoiceDates.startDate) {
-      toast.error('Please set invoice date.');
+      toast.error('Please set the service date.');
       return false;
     }
 
@@ -775,7 +779,7 @@ const IconPicker = ({ value, onChange }) => {
 
 // Main Render
   return (
-    <div className="container mx-auto p-4 max-w-7xl space-y-6">
+    <div className="container-large space-y-6">
       <Toaster position="top-right" expand={true} richColors />
 
       <Tabs defaultValue="invoice" className="w-full">
@@ -796,14 +800,18 @@ const IconPicker = ({ value, onChange }) => {
             <Tags className="w-4 h-4 mr-2" />
             Quick Tags
           </TabsTrigger>
+          <TabsTrigger value="settings">
+            <Settings className="w-4 h-4 mr-2" />
+            Settings
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="invoice">
           <Card>
             <CardContent className="p-6 min-h-[800px]">
-              <div className="grid grid-cols-12 gap-6 mb-6">
+              <div className="grid grid-cols-12 responsive-gap mb-6">
                 {/* Customer Selection Section */}
-                <div className="col-span-4 space-y-4">
+                <div className="col-span-12 lg:col-span-4 xl:col-span-3 space-y-4">
                   <h3 className="text-lg font-medium">Recipient</h3>
                   <Select
                     value={selectedCustomer?.name || ''}
@@ -856,7 +864,7 @@ const IconPicker = ({ value, onChange }) => {
                 </div>
 
                 {/* Invoice Details Section */}
-                <div className="col-span-4 space-y-4">
+                <div className="col-span-12 lg:col-span-4 xl:col-span-5 space-y-4">
                   <h3 className="text-lg font-medium">Invoice Details</h3>
                   <Select
                     value={selectedProfile?.company_name || ''}
@@ -886,7 +894,11 @@ const IconPicker = ({ value, onChange }) => {
                     <Input 
                       value={currentInvoiceNumber}
                       onChange={(e) => setCurrentInvoiceNumber(e.target.value)}
+                      className="bg-gray-50"
                     />
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Auto-generated but can be modified if needed
+                    </p>
                   </div>
                   
                   <div className="space-y-2">
@@ -901,12 +913,12 @@ const IconPicker = ({ value, onChange }) => {
                         })}
                         disabled={invoiceItems.length > 0}
                       />
-                      <Label>{invoiceDates.hasDateRange ? 'Date Range' : 'Single Date'}</Label>
+                      <Label>{invoiceDates.hasDateRange ? 'Service Period (Range)' : 'Service Date'}</Label>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <Label>{invoiceDates.hasDateRange ? 'Start Date' : 'Date'}</Label>
+                        <Label>{invoiceDates.hasDateRange ? 'Start of Service' : 'Service Date'}</Label>
                         <Input 
                           type="date"
                           value={invoiceDates.startDate}
@@ -919,7 +931,7 @@ const IconPicker = ({ value, onChange }) => {
                       </div>
                       {invoiceDates.hasDateRange && (
                         <div className="space-y-1">
-                          <Label>End Date</Label>
+                          <Label>End of Service</Label>
                           <Input 
                             type="date"
                             value={invoiceDates.endDate}
@@ -935,39 +947,91 @@ const IconPicker = ({ value, onChange }) => {
                 </div>
 
                 {/* Quick Tags Section */}
-                <div className="col-span-4 space-y-4">
-                  <h3 className="text-lg font-medium">Quick Entry</h3>
-                  <div className="flex flex-wrap gap-2 max-h-[200px] overflow-y-auto">
-                    {quickTags
-                      .filter(tag => 
-                        tag.visible && 
-                        selectedProfile && 
-                        (tag.personas || []).includes(selectedProfile.company_name))
-                      .map((tag, index) => {
-                        const TagIcon = Icons[tag.icon];
-                        return (
-                          <div
-                            key={index}
-                            onClick={() => handleQuickTagClick(tag)}
-                            className="cursor-pointer flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium"
-                            style={{
-                              backgroundColor: tag.color || '#e2e8f0',
-                              color: '#1a202c',
+                <div className="col-span-12 lg:col-span-4 xl:col-span-4 space-y-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-lg font-medium">Quick Entry</h3>
+                    <div className="relative flex items-center gap-2">
+                      {showTagSearch ? (
+                        <div className="flex items-center">
+                          <Input
+                            type="text"
+                            placeholder="Search tags..."
+                            value={tagSearch}
+                            onChange={(e) => setTagSearch(e.target.value)}
+                            className="w-[200px] pl-8"
+                            // Optional: Auto-focus when search bar appears
+                            autoFocus
+                            // Optional: Close search on Escape key
+                            onKeyDown={(e) => {
+                              if (e.key === 'Escape') {
+                                setShowTagSearch(false);
+                                setTagSearch('');
+                              }
+                            }}
+                          />
+                          <Search 
+                            className="w-4 h-4 absolute left-2.5 text-gray-500" 
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 ml-1"
+                            onClick={() => {
+                              setShowTagSearch(false);
+                              setTagSearch('');
                             }}
                           >
-                            {TagIcon && <TagIcon className="w-4 h-4 mr-1" />}
-                            <span>{tag.name}</span>
-                          </div>
-                        );
-                      })}
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => setShowTagSearch(true)}
+                        >
+                          <Search className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <div className="flex flex-wrap gap-2 max-h-[200px] overflow-y-auto pr-2 pb-12">
+                      {quickTags
+                        .filter(tag => 
+                          tag.visible && 
+                          selectedProfile && 
+                          (tag.personas || []).includes(selectedProfile.company_name) &&
+                          tag.name.toLowerCase().includes(tagSearch.toLowerCase())
+                        )
+                        .map((tag, index) => {
+                          const TagIcon = Icons[tag.icon];
+                          return (
+                            <div
+                              key={index}
+                              onClick={() => handleQuickTagClick(tag)}
+                              className="cursor-pointer flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium"
+                              style={{
+                                backgroundColor: tag.color || '#e2e8f0',
+                                color: '#1a202c',
+                              }}
+                            >
+                              {TagIcon && <TagIcon className="w-4 h-4 mr-1" />}
+                              <span>{tag.name}</span>
+                            </div>
+                          );
+                        })}
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white dark:from-slate-950 to-transparent pointer-events-none" />
                   </div>
                 </div>
               </div>
 
               {/* Invoice Items Section */}
               <div className="mt-6">
-                <div className="overflow-x-auto">
-                  <div className="min-w-[600px]">
+                <div className="overflow-x-auto rounded-md">
+                  <div className="min-w-[600px] p-0.5">
                     <div className="grid grid-cols-12 gap-4 mb-2 font-medium">
                       <div className="col-span-6">Description</div>
                       <div className="col-span-2">Quantity</div>
@@ -977,12 +1041,13 @@ const IconPicker = ({ value, onChange }) => {
                     </div>
 
                     {invoiceItems.map((item, index) => (
-                      <div key={index} className="grid grid-cols-12 gap-4 mb-2">
+                      <div key={index} className="grid grid-cols-12 gap-2 mb-2 mx-0.5">
                         <div className="col-span-6">
                           <Input
                             value={item.description}
                             onChange={(e) => updateInvoiceItem(index, 'description', e.target.value)}
                             placeholder="Description"
+                            className="w-full rounded-md"
                           />
                         </div>
                         <div className="col-span-2">
@@ -1095,10 +1160,10 @@ const IconPicker = ({ value, onChange }) => {
                 </Dialog>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="responsive-grid responsive-gap">
                 {customers.map((customer, index) => (
                   <Card key={index} className="group relative overflow-hidden">
-                    <CardContent className="p-6">
+                    <CardContent className="responsive-p">
                       {/* Header with Name and Actions */}
                       <div className="flex justify-between items-start mb-4">
                         <div>
@@ -1264,10 +1329,10 @@ const IconPicker = ({ value, onChange }) => {
                 </Dialog>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="responsive-grid responsive-gap">
                 {businessProfiles.map((profile, index) => (
                   <Card key={index} className="group relative overflow-hidden">
-                    <CardContent className="p-6">
+                    <CardContent className="responsive-p">
                       {/* Header with Name and Actions */}
                       <div className="flex justify-between items-start mb-4">
                         <h3 className="text-lg font-semibold text-gray-900">{profile.company_name}</h3>
@@ -1285,7 +1350,7 @@ const IconPicker = ({ value, onChange }) => {
                                   setSelectedProfile(null);
                                 }
                               }}
-                              className="data-[state=checked]:bg-blue-600"
+                              className="data-[state=checked]:bg-green-500"
                             />
                             <span className="ml-2 text-sm text-gray-600">Default</span>
                           </div>
@@ -1481,15 +1546,13 @@ const IconPicker = ({ value, onChange }) => {
                 </Dialog>
               </div>
 
-              <div className="grid grid-cols-4 gap-4">
+              <div className="responsive-grid responsive-gap">
                 {quickTags.map((tag, index) => (
                   <div 
                     key={index} 
-                    className="group relative h-[320px] overflow-hidden"
+                    className="group relative h-[280px] xl:h-[320px] 2xl:h-[360px] overflow-hidden rounded-lg shadow-sm transition-all duration-200"
                     style={{ 
                       backgroundColor: tag.color,
-                      borderRadius: '0.5rem',
-                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
                     }}
                   >
                     {/* Action Buttons */}
@@ -1600,6 +1663,10 @@ const IconPicker = ({ value, onChange }) => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="settings">
+          <SettingsTab />
         </TabsContent>
       </Tabs>
 

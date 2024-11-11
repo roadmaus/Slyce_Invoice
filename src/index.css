@@ -119,31 +119,66 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  @screen lg {
+    .grid-auto-fit {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+  }
+  
+  @screen xl {
+    .grid-auto-fit {
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+  }
+
+  .container-large {
+    @apply container mx-auto px-4 max-w-screen-2xl;
+  }
+
+  @screen xl {
+    .container-large {
+      @apply px-6;
+    }
+  }
+
+  @screen 2xl {
+    .container-large {
+      @apply px-8;
+    }
+  }
+
+  .responsive-gap {
+    @apply gap-4 xl:gap-6 2xl:gap-8;
+  }
+
+  .responsive-p {
+    @apply p-4 xl:p-6 2xl:p-8;
+  }
+
+  .responsive-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4;
+  }
+
+  .responsive-grid-tight {
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6;
+  }
 }
 
 /* Add these styles to your CSS */
 .card-content {
-  transition: all 0.3s ease;
+  @apply transition-all duration-300 ease-in-out;
 }
 
 .invoice-items {
-  transition: all 0.3s ease;
-  min-height: 100px; /* Adjust based on your needs */
+  @apply transition-all duration-300 ease-in-out min-h-[100px] lg:min-h-[120px] xl:min-h-[140px];
 }
 
 /* Add these to your existing CSS */
 .tag-card {
-  transition: all 0.2s ease-in-out;
-}
-
-.tag-card:hover {
-  transform: translateY(-2px);
+  @apply transition-all duration-200 ease-in-out hover:-translate-y-0.5;
 }
 
 .persona-tag {
-  transition: background-color 0.2s ease;
-}
-
-.persona-tag:hover {
-  background-color: rgba(255, 255, 255, 0.8);
+  @apply transition-colors duration-200 ease-in-out hover:bg-white/80;
 }
