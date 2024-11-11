@@ -133,7 +133,8 @@
       "dist/**/*",
       "main.cjs",
       "preload.js",
-      "package.json"
+      "package.json",
+      "src/invoice_template.html"
     ],
     "mac": {
       "category": "public.app-category.business",
