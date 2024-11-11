@@ -22,8 +22,11 @@ export const QuickTagSelector = ({ tags, onSelect }) => {
                 backgroundColor: `${tag.color}10`
               }}
             >
-              <Tag className="mr-2 h-4 w-4" style={{ color: tag.color }} />
-              {tag.name}
+              <Tag 
+                className="mr-2 h-4 w-4" 
+                style={{ color: tag.color }} 
+              />
+              <span>{tag.name}</span>
             </Button>
           ))}
         </div>

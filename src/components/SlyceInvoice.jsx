@@ -58,6 +58,18 @@ const SlyceInvoice = () => {
     // ... other functions as needed
   } = useSlyceInvoice();
 
+  const setEditingCustomer = (customer) => {
+    setCustomerState(prev => ({ ...prev, editingCustomer: customer }));
+  };
+
+  const setEditingProfile = (profile) => {
+    setProfileState(prev => ({ ...prev, editingProfile: profile }));
+  };
+
+  const setEditingTag = (tag) => {
+    setTagState(prev => ({ ...prev, editingTag: tag }));
+  };
+
   return (
     <div className="container mx-auto p-4 max-w-7xl space-y-6">
       <Toaster position="top-right" expand={true} richColors />

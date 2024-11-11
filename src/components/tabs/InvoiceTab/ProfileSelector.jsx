@@ -1,6 +1,7 @@
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import PropTypes from 'prop-types';
 
 export const ProfileSelector = ({ profiles, selectedProfile, onSelect }) => {
   return (
@@ -10,7 +11,11 @@ export const ProfileSelector = ({ profiles, selectedProfile, onSelect }) => {
         value={selectedProfile?.company_name || ''}
         onValueChange={(value) => {
           const profile = profiles.find(p => p.company_name === value);
-          onSelect(profile);
+          if (typeof onSelect === 'function') {
+            onSelect(profile);
+          } else {
+            console.warn('onSelect prop is not a function');
+          }
         }}
       >
         <SelectTrigger id="profile-select">
@@ -36,4 +41,22 @@ export const ProfileSelector = ({ profiles, selectedProfile, onSelect }) => {
       )}
     </div>
   );
+};
+
+ProfileSelector.propTypes = {
+  profiles: PropTypes.arrayOf(PropTypes.shape({
+    company_name: PropTypes.string.isRequired,
+    company_street: PropTypes.string,
+    company_postalcode: PropTypes.string,
+    company_city: PropTypes.string,
+    // Add other relevant fields
+  })).isRequired,
+  selectedProfile: PropTypes.shape({
+    company_name: PropTypes.string,
+    company_street: PropTypes.string,
+    company_postalcode: PropTypes.string,
+    company_city: PropTypes.string,
+    // Add other relevant fields
+  }),
+  onSelect: PropTypes.func.isRequired,
 }; 
