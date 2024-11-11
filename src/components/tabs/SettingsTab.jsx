@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 
 const SettingsTab = () => {
   const { theme, setTheme } = useTheme();
+  const [language, setLanguage] = React.useState('en');
   const [isLoading, setIsLoading] = React.useState({
     export: false,
     import: false
@@ -80,6 +81,36 @@ const SettingsTab = () => {
     }
   };
 
+  // Load language settings on mount
+  React.useEffect(() => {
+    const loadLanguageSettings = async () => {
+      try {
+        const settings = await window.electronAPI.getData('languageSettings');
+        if (settings?.language) {
+          setLanguage(settings.language);
+        }
+      } catch (error) {
+        console.error('Error loading language settings:', error);
+        toast.error('Failed to load language settings');
+      }
+    };
+    loadLanguageSettings();
+  }, []);
+
+  const updateLanguage = async (newLanguage) => {
+    try {
+      await window.electronAPI.setData('languageSettings', { language: newLanguage });
+      setLanguage(newLanguage);
+      window.dispatchEvent(new CustomEvent('languageChanged', { 
+        detail: { language: newLanguage } 
+      }));
+      toast.success('Language updated successfully');
+    } catch (error) {
+      console.error('Error updating language:', error);
+      toast.error('Failed to update language');
+    }
+  };
+
   return (
     <div className="container max-w-4xl mx-auto">
       <Card className="border-none shadow-none">
@@ -111,6 +142,41 @@ const SettingsTab = () => {
                     <Icon className={`w-8 h-8 mb-2 ${theme === value ? 'text-primary' : 'text-muted-foreground'}`} />
                     <h3 className="font-medium mb-1">{label}</h3>
                     <p className="text-xs text-center text-muted-foreground">{description}</p>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Language Section */}
+            <section>
+              <div className="flex items-center gap-2 mb-6">
+                <h2 className="text-2xl font-semibold tracking-tight">Language</h2>
+                <Info className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <p className="text-muted-foreground mb-6">
+                Choose your preferred language for the application interface.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[
+                  { value: 'en', label: 'English', flag: '🇺🇸' },
+                  { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
+                  { value: 'es', label: 'Español', flag: '🇪🇸' },
+                  { value: 'fr', label: 'Français', flag: '🇫🇷' }
+                ].map(({ value, label, flag }) => (
+                  <button
+                    key={value}
+                    onClick={() => updateLanguage(value)}
+                    className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
+                      ${language === value 
+                        ? 'border-primary bg-primary/5 shadow-sm' 
+                        : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
+                  >
+                    <span className="text-2xl mb-2">{flag}</span>
+                    <h3 className={`font-medium ${language === value ? 'text-primary' : ''}`}>
+                      {label}
+                    </h3>
                   </button>
                 ))}
               </div>

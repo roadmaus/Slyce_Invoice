@@ -6,6 +6,10 @@ const os = require('os');
 const Store = require('electron-store');
 const store = new Store();
 
+if (process.platform === 'darwin') {
+  app.applicationSupportsSecureRestorableState = () => true;
+}
+
 let mainWindow;
 
 function createWindow() {
@@ -15,6 +19,25 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
+      sandbox: true,
+      webSecurity: true,
+      allowRunningInsecureContent: false,
+      enableRemoteModule: false,
+      contentSecurityPolicy: {
+        policy: {
+          'default-src': ["'self'"],
+          'script-src': ["'self'"],
+          'style-src': ["'self'", "'unsafe-inline'"],
+          'img-src': ["'self'", 'data:'],
+          'font-src': ["'self'"],
+          'connect-src': ["'self'"],
+          'base-uri': ["'self'"],
+          'form-action': ["'self'"],
+          'frame-ancestors': ["'self'"],
+          'worker-src': ["'self'"],
+          'require-trusted-types-for': ["'script'"]
+        }
+      },
     },
   });
 
@@ -209,3 +232,4 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
