@@ -732,7 +732,7 @@ const ColorPicker = ({ value, onChange }) => (
 // Update the dialog trigger for editing
 const handleTagDialog = (existingTag = null) => {
   if (existingTag) {
-    setNewTag(existingTag); // Use the same state for editing
+    setNewTag(existingTag);
   } else {
     setNewTag({
       name: '',
@@ -1185,7 +1185,22 @@ useEffect(() => {
             <CardContent className="responsive-p">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-medium text-foreground">Customer Management</h2>
-                <Dialog open={showNewCustomerDialog} onOpenChange={setShowNewCustomerDialog}>
+                <Dialog open={showNewCustomerDialog} onOpenChange={(open) => {
+                  if (!open) {
+                    // Reset state when dialog closes
+                    setNewCustomer({
+                      id: '',
+                      title: '',
+                      zusatz: '',
+                      name: '',
+                      street: '',
+                      postal_code: '',
+                      city: '',
+                      firma: false,
+                    });
+                  }
+                  setShowNewCustomerDialog(open);
+                }}>
                   <DialogTrigger asChild>
                     <Button>
                       <PlusCircle className="h-4 w-4 mr-2" />
@@ -1201,7 +1216,22 @@ useEffect(() => {
                     </DialogHeader>
                     {renderCustomerForm(newCustomer, setNewCustomer)}
                     <div className="flex justify-end space-x-2">
-                      <Button variant="outline" onClick={() => setShowNewCustomerDialog(false)}>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setNewCustomer({
+                            id: '',
+                            title: '',
+                            zusatz: '',
+                            name: '',
+                            street: '',
+                            postal_code: '',
+                            city: '',
+                            firma: false,
+                          });
+                          setShowNewCustomerDialog(false);
+                        }}
+                      >
                         Cancel
                       </Button>
                       <Button onClick={() => {
@@ -1218,6 +1248,17 @@ useEffect(() => {
                           // Handle add case
                           addCustomer();
                         }
+                        // Clear the state after saving
+                        setNewCustomer({
+                          id: '',
+                          title: '',
+                          zusatz: '',
+                          name: '',
+                          street: '',
+                          postal_code: '',
+                          city: '',
+                          firma: false,
+                        });
                         setShowNewCustomerDialog(false);
                       }}>
                         {newCustomer.id ? 'Save Changes' : 'Add Customer'}
@@ -1293,7 +1334,25 @@ useEffect(() => {
               {/* Header Section */}
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-medium text-foreground">Business Profiles</h2>
-                <Dialog open={showNewProfileDialog} onOpenChange={setShowNewProfileDialog}>
+                <Dialog open={showNewProfileDialog} onOpenChange={(open) => {
+                  if (!open) {
+                    // Reset state when dialog closes
+                    setNewProfile({
+                      company_name: '',
+                      company_street: '',
+                      company_postalcode: '',
+                      company_city: '',
+                      tax_number: '',
+                      tax_id: '',
+                      bank_institute: '',
+                      bank_iban: '',
+                      bank_bic: '',
+                      contact_details: '',
+                      invoice_save_path: '',
+                    });
+                  }
+                  setShowNewProfileDialog(open);
+                }}>
                   <DialogTrigger asChild>
                     <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                       <PlusCircle className="h-4 w-4 mr-2" />
@@ -1309,7 +1368,25 @@ useEffect(() => {
                     </DialogHeader>
                     {renderBusinessProfileForm(newProfile, setNewProfile)}
                     <div className="flex justify-end space-x-2">
-                      <Button variant="outline" onClick={() => setShowNewProfileDialog(false)}>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setNewProfile({
+                            company_name: '',
+                            company_street: '',
+                            company_postalcode: '',
+                            company_city: '',
+                            tax_number: '',
+                            tax_id: '',
+                            bank_institute: '',
+                            bank_iban: '',
+                            bank_bic: '',
+                            contact_details: '',
+                            invoice_save_path: '',
+                          });
+                          setShowNewProfileDialog(false);
+                        }}
+                      >
                         Cancel
                       </Button>
                       <Button onClick={() => {
@@ -1326,6 +1403,20 @@ useEffect(() => {
                           // Handle add case
                           addBusinessProfile();
                         }
+                        // Clear the state after saving
+                        setNewProfile({
+                          company_name: '',
+                          company_street: '',
+                          company_postalcode: '',
+                          company_city: '',
+                          tax_number: '',
+                          tax_id: '',
+                          bank_institute: '',
+                          bank_iban: '',
+                          bank_bic: '',
+                          contact_details: '',
+                          invoice_save_path: '',
+                        });
                         setShowNewProfileDialog(false);
                       }}>
                         {newProfile.company_name ? 'Save Changes' : 'Add Profile'}
@@ -1441,7 +1532,22 @@ useEffect(() => {
             <CardContent className="responsive-p">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-medium text-foreground">Quick Entry Tags</h2>
-                <Dialog open={showNewTagDialog} onOpenChange={setShowNewTagDialog}>
+                <Dialog open={showNewTagDialog} onOpenChange={(open) => {
+                  if (!open) {
+                    // Reset state when dialog closes
+                    setNewTag({
+                      name: '',
+                      description: '',
+                      rate: '',
+                      quantity: '',
+                      color: PREDEFINED_COLORS[0].value,
+                      hasDateRange: true,
+                      visible: true,
+                      personas: [],
+                    });
+                  }
+                  setShowNewTagDialog(open);
+                }}>
                   <DialogTrigger asChild>
                     <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                       <PlusCircle className="h-4 w-4 mr-2" />
@@ -1561,7 +1667,22 @@ useEffect(() => {
                     </div>
 
                     <div className="flex justify-end gap-3 mt-6">
-                      <Button variant="outline" onClick={() => setShowNewTagDialog(false)}>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setNewTag({
+                            name: '',
+                            description: '',
+                            rate: '',
+                            quantity: '',
+                            color: PREDEFINED_COLORS[0].value,
+                            hasDateRange: true,
+                            visible: true,
+                            personas: [],
+                          });
+                          setShowNewTagDialog(false);
+                        }}
+                      >
                         Cancel
                       </Button>
                       <Button onClick={() => {
@@ -1575,6 +1696,18 @@ useEffect(() => {
                           // Handle add case
                           addQuickTag();
                         }
+                        // Clear the state after saving
+                        setNewTag({
+                          name: '',
+                          description: '',
+                          rate: '',
+                          quantity: '',
+                          color: PREDEFINED_COLORS[0].value,
+                          hasDateRange: true,
+                          visible: true,
+                          personas: [],
+                        });
+                        setShowNewTagDialog(false);
                       }}>
                         {newTag.name ? 'Save Changes' : 'Add Tag'}
                       </Button>
