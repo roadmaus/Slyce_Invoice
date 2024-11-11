@@ -72,12 +72,6 @@ const PREDEFINED_COLORS = [
 ];
 
 // Create an object with all the icons we want to use (or just use Icons directly)
-const AVAILABLE_ICONS = {
-  Tag: Icons.Tag,
-  Clock: Icons.Clock
-};
-
-// Even better, if you want ALL icons:
 const ALL_ICONS = Object.entries(Icons).reduce((acc, [name, Icon]) => {
   // Filter out non-icon exports and ensure it's a valid component
   if (
@@ -90,9 +84,6 @@ const ALL_ICONS = Object.entries(Icons).reduce((acc, [name, Icon]) => {
   }
   return acc;
 }, {});
-
-// Add this line temporarily to debug
-console.log('Available icons:', Object.keys(ALL_ICONS));
 
 // Add this helper function at the top with other helper functions
 const generateUniqueId = () => {
@@ -197,10 +188,7 @@ const SlyceInvoice = () => {
     import: false,
   });
 
-  // Add this state to track if we've shown the notification
-  const [hasShownLoadingNotification, setHasShownLoadingNotification] = useState(false);
-
-// Load saved data on component mount
+  // Load saved data on component mount
   useEffect(() => {
     const loadSavedData = async () => {
       try {
@@ -952,8 +940,7 @@ const IconPicker = ({ value, onChange }) => {
                       .filter(tag => 
                         tag.visible && 
                         selectedProfile && 
-                        (tag.personas || []).includes(selectedProfile.company_name)
-                      )
+                        (tag.personas || []).includes(selectedProfile.company_name))
                       .map((tag, index) => {
                         const TagIcon = Icons[tag.icon];
                         return (
@@ -1487,104 +1474,104 @@ const IconPicker = ({ value, onChange }) => {
 
               <div className="grid grid-cols-4 gap-4">
                 {quickTags.map((tag, index) => (
-                  <Card key={index} className="group relative h-[320px]">
-                    <CardContent className="p-4 h-full flex flex-col">
-                      {/* Action Buttons - Outside colored card */}
-                      <div className="absolute top-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 bg-white hover:bg-gray-100 shadow-sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingTag(tag);
-                            setShowEditTagDialog(true);
-                          }}
-                        >
-                          <Edit className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 bg-white hover:bg-gray-100 shadow-sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const updatedTags = quickTags.filter((_, i) => i !== index);
-                            setQuickTags(updatedTags);
-                          }}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-
-                      {/* Visibility Toggle - Outside colored card */}
-                      <div className="absolute top-2 left-2">
-                        <Switch
-                          checked={tag.visible}
-                          onCheckedChange={(checked) => {
-                            const updatedTags = [...quickTags];
-                            updatedTags[index].visible = checked;
-                            setQuickTags(updatedTags);
-                          }}
-                          className="data-[state=checked]:bg-gray-700"
-                        />
-                      </div>
-
-                      {/* Colored Card Content */}
-                      <div 
-                        className="mt-8 rounded-lg p-4 flex-1 flex flex-col mx-[-0.5rem]"
-                        style={{ 
-                          backgroundColor: tag.color,
-                          boxShadow: `inset 0 0 0 1px rgba(0,0,0,0.05)`
+                  <div 
+                    key={index} 
+                    className="group relative h-[320px] overflow-hidden"
+                    style={{ 
+                      backgroundColor: tag.color,
+                      borderRadius: '0.5rem',
+                      boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+                    }}
+                  >
+                    {/* Action Buttons */}
+                    <div className="absolute top-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 bg-white hover:bg-gray-100 shadow-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingTag(tag);
+                          setShowEditTagDialog(true);
                         }}
                       >
-                        {/* Tag Header */}
-                        <div className="mb-3">
-                          <div className="flex items-center gap-2">
-                            <Tags className="h-4 w-4 text-gray-700 flex-shrink-0" />
-                            <h3 className="font-medium text-gray-800 truncate max-w-[180px]" title={tag.name}>
-                              {tag.name}
-                            </h3>
-                          </div>
-                        </div>
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 bg-white hover:bg-gray-100 shadow-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const updatedTags = quickTags.filter((_, i) => i !== index);
+                          setQuickTags(updatedTags);
+                        }}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
 
-                        {/* Description Preview - Fixed height */}
-                        <div className="h-[60px] mb-4">
-                          <p className="text-sm text-gray-700 line-clamp-3" title={tag.description}>
-                            {tag.description || "No description"}
-                          </p>
-                        </div>
+                    {/* Visibility Toggle */}
+                    <div className="absolute top-2 left-2">
+                      <Switch
+                        checked={tag.visible}
+                        onCheckedChange={(checked) => {
+                          const updatedTags = [...quickTags];
+                          updatedTags[index].visible = checked;
+                          setQuickTags(updatedTags);
+                        }}
+                        className="data-[state=checked]:bg-gray-700"
+                      />
+                    </div>
 
-                        {/* Tag Details */}
-                        <div className="space-y-2 mb-3">
-                          <div className="flex items-center justify-between text-sm text-gray-700">
-                            <span>Rate:</span>
-                            <span className="font-medium">€{parseFloat(tag.rate).toFixed(2)}</span>
-                          </div>
-                          <div className="flex items-center justify-between text-sm text-gray-700">
-                            <span>Quantity:</span>
-                            <span className="font-medium">{tag.quantity}</span>
-                          </div>
-                        </div>
-
-                        {/* Associated Personas */}
-                        <div className="space-y-1">
-                          <div className="text-xs font-medium text-gray-600">Associated Personas:</div>
-                          <div className="flex flex-wrap gap-1">
-                            {tag.personas?.map((persona, idx) => (
-                              <span
-                                key={idx}
-                                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/50 truncate max-w-[120px]"
-                                title={persona}
-                              >
-                                {persona}
-                              </span>
-                            ))}
-                          </div>
+                    {/* Content */}
+                    <div className="p-4 mt-8 flex flex-col h-[calc(100%-3rem)]">
+                      {/* Tag Header */}
+                      <div className="mb-3">
+                        <div className="flex items-center gap-2">
+                          <Tags className="h-4 w-4 text-gray-700 flex-shrink-0" />
+                          <h3 className="font-medium text-gray-800 truncate max-w-[180px]" title={tag.name}>
+                            {tag.name}
+                          </h3>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+
+                      {/* Description Preview */}
+                      <div className="mb-4 flex-shrink-0">
+                        <p className="text-sm text-gray-700 line-clamp-3" title={tag.description}>
+                          {tag.description || "No description"}
+                        </p>
+                      </div>
+
+                      {/* Tag Details */}
+                      <div className="space-y-2 mb-3 flex-shrink-0">
+                        <div className="flex items-center justify-between text-sm text-gray-700">
+                          <span>Rate:</span>
+                          <span className="font-medium">€{parseFloat(tag.rate).toFixed(2)}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-gray-700">
+                          <span>Quantity:</span>
+                          <span className="font-medium">{tag.quantity}</span>
+                        </div>
+                      </div>
+
+                      {/* Associated Personas */}
+                      <div className="space-y-1 mt-auto">
+                        <div className="text-xs font-medium text-gray-600">Associated Personas:</div>
+                        <div className="flex flex-wrap gap-1 overflow-y-auto max-h-[60px]">
+                          {tag.personas?.map((persona, idx) => (
+                            <span
+                              key={idx}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/50 truncate max-w-[120px]"
+                              title={persona}
+                            >
+                              {persona}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ))}
 
                 {/* Empty State */}
