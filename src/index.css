@@ -80,6 +80,105 @@
   [data-radix-popper-content-wrapper] {
     @apply z-50 !important;
   }
+
+  /* Dialog styling */
+  .dialog-content {
+    @apply bg-background p-6 rounded-lg shadow-lg border border-border;
+  }
+
+  /* Form layout */
+  .form-grid {
+    @apply grid gap-4;
+  }
+
+  /* Color picker specific styling */
+  .color-picker-grid {
+    @apply grid grid-cols-5 gap-2 mt-2;
+  }
+
+  .color-picker-item {
+    @apply w-8 h-8 rounded-full cursor-pointer transition-all hover:scale-110 ring-offset-background;
+  }
+
+  .color-picker-item[data-selected="true"] {
+    @apply ring-2 ring-primary ring-offset-2;
+  }
+
+  /* Switch container styling */
+  .switch-container {
+    @apply flex items-center space-x-2 py-2;
+  }
+
+  /* Dialog sections */
+  .dialog-section {
+    @apply space-y-4;
+  }
+
+  /* Form field styling */
+  .form-field {
+    @apply space-y-1.5;
+  }
+
+  /* React Select styling for dark mode */
+  .select-container {
+    @apply bg-background border-input rounded-md;
+  }
+
+  .select__control {
+    @apply !bg-background !border-input !shadow-none !rounded-md;
+  }
+
+  .select__value-container {
+    @apply !text-foreground;
+  }
+
+  .select__menu {
+    @apply !bg-popover !border !border-input !rounded-md !mt-1 !shadow-md;
+  }
+
+  .select__menu-list {
+    @apply !p-1;
+  }
+
+  .select__option {
+    @apply !bg-popover !text-foreground !px-2 !py-1.5 !rounded-sm;
+  }
+
+  .select__option--is-focused {
+    @apply !bg-accent !text-accent-foreground;
+  }
+
+  .select__option--is-selected {
+    @apply !bg-primary !text-primary-foreground;
+  }
+
+  .select__multi-value {
+    @apply !bg-secondary !rounded-sm !m-0.5;
+  }
+
+  .select__multi-value__label {
+    @apply !text-foreground !px-2 !py-1;
+  }
+
+  .select__multi-value__remove {
+    @apply !bg-transparent !text-foreground hover:!bg-destructive hover:!text-destructive-foreground !rounded-sm !p-1;
+  }
+
+  .select__input-container {
+    @apply !text-foreground;
+  }
+
+  .select__placeholder {
+    @apply !text-muted-foreground;
+  }
+
+  .select__indicator {
+    @apply !text-muted-foreground hover:!text-foreground;
+  }
+
+  .select__indicator-separator {
+    @apply !bg-input;
+  }
 }
 
 @media print {

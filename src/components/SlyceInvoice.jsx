@@ -7,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import html2pdf from 'html2pdf.js';
 import { Textarea } from '@/components/ui/textarea';
 import ReactSelect from 'react-select';
@@ -53,25 +52,21 @@ const validateCustomer = (customer) => {
 
 // Add this near other constants
 const PREDEFINED_COLORS = [
-  { name: 'Slate', value: '#cbd5e1' },    // Slate-300
-  { name: 'Gray', value: '#d1d5db' },     // Gray-300
-  { name: 'Red', value: '#fca5a5' },      // Red-300
-  { name: 'Orange', value: '#fdba74' },   // Orange-300
-  { name: 'Amber', value: '#fcd34d' },    // Amber-300
-  { name: 'Yellow', value: '#fde047' },   // Yellow-300
-  { name: 'Lime', value: '#bef264' },     // Lime-300
-  { name: 'Green', value: '#86efac' },    // Green-300
-  { name: 'Emerald', value: '#6ee7b7' },  // Emerald-300
-  { name: 'Teal', value: '#5eead4' },     // Teal-300
-  { name: 'Cyan', value: '#67e8f9' },     // Cyan-300
-  { name: 'Sky', value: '#7dd3fc' },      // Sky-300
-  { name: 'Blue', value: '#93c5fd' },     // Blue-300
-  { name: 'Indigo', value: '#a5b4fc' },   // Indigo-300
-  { name: 'Violet', value: '#c4b5fd' },   // Violet-300
-  { name: 'Purple', value: '#d8b4fe' },   // Purple-300
-  { name: 'Fuchsia', value: '#f0abfc' },  // Fuchsia-300
-  { name: 'Pink', value: '#f9a8d4' },     // Pink-300
-  { name: 'Rose', value: '#fda4af' },     // Rose-300
+  { name: 'Gray', value: '#E5E7EB' },
+  { name: 'Light Gray', value: '#F3F4F6' },
+  { name: 'Pink', value: '#FCE7F3' },
+  { name: 'Orange', value: '#FDDCAB' },
+  { name: 'Yellow', value: '#FEF08A' },
+  { name: 'Light Yellow', value: '#FEF9C3' },
+  { name: 'Light Green', value: '#BBF7D0' },
+  { name: 'Green', value: '#86EFAC' },
+  { name: 'Light Blue', value: '#BFDBFE' },
+  { name: 'Blue', value: '#93C5FD' },
+  { name: 'Light Purple', value: '#DDD6FE' },
+  { name: 'Purple', value: '#C4B5FD' },
+  { name: 'Light Pink', value: '#FBCFE8' },
+  { name: 'Rose', value: '#FDA4AF' },
+  { name: 'Mint', value: '#A7F3D0' },
 ];
 
 // Create an object with all the icons we want to use (or just use Icons directly)
@@ -109,6 +104,19 @@ const daysToMonthsDays = (totalDays) => ({
 });
 
 const monthsDaysToDays = (months, days) => (months * 31) + days;
+
+// Add this helper function near other helper functions
+const adjustColorForDarkMode = (hexColor, isDark) => {
+  if (!isDark) return hexColor;
+  
+  // Convert hex to RGB
+  const r = parseInt(hexColor.slice(1, 3), 16);
+  const g = parseInt(hexColor.slice(3, 5), 16);
+  const b = parseInt(hexColor.slice(5, 7), 16);
+  
+  // Add transparency for dark mode
+  return `rgba(${r}, ${g}, ${b}, 0.3)`;
+};
 
 const SlyceInvoice = () => {
   // Business Profiles State
@@ -172,10 +180,8 @@ const SlyceInvoice = () => {
   // Edit State
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [editingProfile, setEditingProfile] = useState(null);
-  const [editingTag, setEditingTag] = useState(null);
   const [showEditCustomerDialog, setShowEditCustomerDialog] = useState(false);
   const [showEditProfileDialog, setShowEditProfileDialog] = useState(false);
-  const [showEditTagDialog, setShowEditTagDialog] = useState(false);
 
   // Default Profile State
   const [defaultProfileId, setDefaultProfileId] = useState(null);
@@ -564,13 +570,13 @@ const renderCustomerForm = (customer, setCustomer) => (
             value={customer.title}
             onValueChange={(value) => setCustomer({ ...customer, title: value })}
           >
-            <SelectTrigger className="bg-white dark:bg-slate-950">
+            <SelectTrigger className="bg-background border-input">
               <SelectValue placeholder="Select title" />
             </SelectTrigger>
-            <SelectContent className="select-content">
-              <SelectItem className="select-item" value="Herr">Herr</SelectItem>
-              <SelectItem className="select-item" value="Frau">Frau</SelectItem>
-              <SelectItem className="select-item" value="Divers">Divers</SelectItem>
+            <SelectContent>
+              <SelectItem value="Herr">Herr</SelectItem>
+              <SelectItem value="Frau">Frau</SelectItem>
+              <SelectItem value="Divers">Divers</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -580,14 +586,14 @@ const renderCustomerForm = (customer, setCustomer) => (
             value={customer.zusatz}
             onValueChange={(value) => setCustomer({ ...customer, zusatz: value })}
           >
-            <SelectTrigger className="bg-white dark:bg-slate-950">
+            <SelectTrigger className="bg-background border-input">
               <SelectValue placeholder="Select title" />
             </SelectTrigger>
-            <SelectContent className="select-content">
-              <SelectItem className="select-item" value="Dr.">Dr.</SelectItem>
-              <SelectItem className="select-item" value="Prof.">Prof.</SelectItem>
-              <SelectItem className="select-item" value="Prof. Dr.">Prof. Dr.</SelectItem>
-              <SelectItem className="select-item" value="Dr. h.c.">Dr. h.c.</SelectItem>
+            <SelectContent>
+              <SelectItem value="Dr.">Dr.</SelectItem>
+              <SelectItem value="Prof.">Prof.</SelectItem>
+              <SelectItem value="Prof. Dr.">Prof. Dr.</SelectItem>
+              <SelectItem value="Dr. h.c.">Dr. h.c.</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -665,15 +671,6 @@ const renderCustomerForm = (customer, setCustomer) => (
     setEditingProfile(null);
   };
 
-  const editTag = (updatedTag) => {
-    const newTags = quickTags.map((t) =>
-      t.name === updatedTag.name ? { ...updatedTag } : t
-    );
-    setQuickTags(newTags);
-    setShowEditTagDialog(false);
-    setEditingTag(null);
-  };
-
   // Helper Functions
   const updateDateRangeToggle = (items) => {
     const needsDateRange = items.some(item => item.hasDateRange);
@@ -742,39 +739,39 @@ const renderCustomerForm = (customer, setCustomer) => (
 
 // Add this component for the color picker
 const ColorPicker = ({ value, onChange }) => (
-  <div className="grid grid-cols-10 gap-2">
+  <div className="grid grid-cols-5 gap-1">
     {PREDEFINED_COLORS.map((color) => (
-      <div
+      <button
         key={color.value}
-        className={`w-8 h-8 rounded-full cursor-pointer border-2 ${
-          value === color.value ? 'border-black' : 'border-transparent'
+        type="button"
+        onClick={() => onChange(color.value)}
+        className={`w-6 h-6 rounded-full cursor-pointer transition-all hover:scale-110 ${
+          value === color.value ? 'ring-1 ring-primary ring-offset-1' : ''
         }`}
         style={{ backgroundColor: color.value }}
-        onClick={() => onChange(color.value)}
         title={color.name}
       />
     ))}
   </div>
 );
 
-// Update the IconPicker component
-const IconPicker = ({ value, onChange }) => {
-  return (
-    <div className="grid grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2">
-      {Object.entries(ALL_ICONS).map(([iconName, IconComponent]) => (
-        <div
-          key={iconName}
-          className={`p-2 rounded cursor-pointer hover:bg-gray-100 flex items-center justify-center ${
-            value === iconName ? 'bg-gray-200' : ''
-          }`}
-          onClick={() => onChange(iconName)}
-          title={iconName}
-        >
-          <IconComponent className="w-5 h-5" />
-        </div>
-      ))}
-    </div>
-  );
+// Update the dialog trigger for editing
+const handleTagDialog = (existingTag = null) => {
+  if (existingTag) {
+    setNewTag(existingTag); // Use the same state for editing
+  } else {
+    setNewTag({
+      name: '',
+      description: '',
+      rate: '',
+      quantity: '',
+      color: PREDEFINED_COLORS[0].value,
+      hasDateRange: true,
+      visible: true,
+      personas: [],
+    });
+  }
+  setShowNewTagDialog(true);
 };
 
 // Main Render
@@ -783,52 +780,46 @@ const IconPicker = ({ value, onChange }) => {
       <Toaster position="top-right" expand={true} richColors />
 
       <Tabs defaultValue="invoice" className="w-full">
-        <TabsList>
-          <TabsTrigger value="invoice">
+        <TabsList className="bg-muted">
+          <TabsTrigger value="invoice" className="data-[state=active]:bg-background">
             <FileText className="w-4 h-4 mr-2" />
             Invoice
           </TabsTrigger>
-          <TabsTrigger value="customers">
+          <TabsTrigger value="customers" className="data-[state=active]:bg-background">
             <Users className="w-4 h-4 mr-2" />
             Customers
           </TabsTrigger>
-          <TabsTrigger value="business">
+          <TabsTrigger value="business" className="data-[state=active]:bg-background">
             <Settings className="w-4 h-4 mr-2" />
             Business Profiles
           </TabsTrigger>
-          <TabsTrigger value="tags">
+          <TabsTrigger value="tags" className="data-[state=active]:bg-background">
             <Tags className="w-4 h-4 mr-2" />
             Quick Tags
           </TabsTrigger>
-          <TabsTrigger value="settings">
+          <TabsTrigger value="settings" className="data-[state=active]:bg-background">
             <Settings className="w-4 h-4 mr-2" />
             Settings
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="invoice">
-          <Card>
-            <CardContent className="p-6 min-h-[800px]">
-              <div className="grid grid-cols-12 responsive-gap mb-6">
+          <Card className="border-border">
+            <CardContent className="responsive-p space-y-6">
+              <div className="grid grid-cols-12 gap-6">
                 {/* Customer Selection Section */}
                 <div className="col-span-12 lg:col-span-4 xl:col-span-3 space-y-4">
-                  <h3 className="text-lg font-medium">Recipient</h3>
-                  <Select
-                    value={selectedCustomer?.name || ''}
-                    onValueChange={(value) => {
-                      const customer = customers.find(c => c.name === value);
-                      setSelectedCustomer(customer);
-                    }}
-                  >
-                    <SelectTrigger className="bg-white">
+                  <h3 className="text-lg font-medium text-foreground">Recipient</h3>
+                  <Select>
+                    <SelectTrigger className="bg-background border-input">
                       <SelectValue placeholder="Select customer" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white">
+                    <SelectContent className="select-content">
                       {customers.map((customer) => (
                         <SelectItem 
                           key={customer.name} 
                           value={customer.name}
-                          className="hover:bg-gray-100"
+                          className="select-item"
                         >
                           {customer.title === 'Divers' ? (
                             `${customer.zusatz} ${customer.name}`
@@ -845,18 +836,18 @@ const IconPicker = ({ value, onChange }) => {
                       <Input 
                         value={selectedCustomer.street}
                         readOnly
-                        className="bg-gray-50"
+                        className="bg-muted"
                       />
                       <div className="grid grid-cols-2 gap-2">
                         <Input 
                           value={selectedCustomer.postal_code}
                           readOnly
-                          className="bg-gray-50"
+                          className="bg-muted"
                         />
                         <Input 
                           value={selectedCustomer.city}
                           readOnly
-                          className="bg-gray-50"
+                          className="bg-muted"
                         />
                       </div>
                     </div>
@@ -873,15 +864,14 @@ const IconPicker = ({ value, onChange }) => {
                       setSelectedProfile(profile);
                     }}
                   >
-                    <SelectTrigger className="bg-white">
+                    <SelectTrigger className="bg-background border-input">
                       <SelectValue placeholder="Select business profile" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white">
+                    <SelectContent>
                       {businessProfiles.map((profile) => (
                         <SelectItem 
                           key={profile.company_name} 
                           value={profile.company_name}
-                          className="hover:bg-gray-100"
                         >
                           {profile.company_name}
                         </SelectItem>
@@ -894,7 +884,7 @@ const IconPicker = ({ value, onChange }) => {
                     <Input 
                       value={currentInvoiceNumber}
                       onChange={(e) => setCurrentInvoiceNumber(e.target.value)}
-                      className="bg-gray-50"
+                      className="bg-background border-input"
                     />
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Auto-generated but can be modified if needed
@@ -1030,9 +1020,9 @@ const IconPicker = ({ value, onChange }) => {
 
               {/* Invoice Items Section */}
               <div className="mt-6">
-                <div className="overflow-x-auto rounded-md">
+                <div className="overflow-x-auto rounded-md border border-border">
                   <div className="min-w-[600px] p-0.5">
-                    <div className="grid grid-cols-12 gap-4 mb-2 font-medium">
+                    <div className="grid grid-cols-12 gap-4 mb-2 font-medium text-foreground">
                       <div className="col-span-6">Description</div>
                       <div className="col-span-2">Quantity</div>
                       <div className="col-span-2">Rate (€)</div>
@@ -1047,7 +1037,7 @@ const IconPicker = ({ value, onChange }) => {
                             value={item.description}
                             onChange={(e) => updateInvoiceItem(index, 'description', e.target.value)}
                             placeholder="Description"
-                            className="w-full rounded-md"
+                            className="w-full bg-background border-input"
                           />
                         </div>
                         <div className="col-span-2">
@@ -1073,7 +1063,7 @@ const IconPicker = ({ value, onChange }) => {
                           <Input
                             value={`€${(item.quantity * item.rate).toFixed(2)}`}
                             readOnly
-                            className="bg-gray-50"
+                            className="bg-background border-input"
                           />
                         </div>
                         <div className="col-span-1">
@@ -1131,10 +1121,10 @@ const IconPicker = ({ value, onChange }) => {
 
 {/* Customers Tab */}
         <TabsContent value="customers">
-          <Card>
-            <CardContent className="p-6">
+          <Card className="border-border">
+            <CardContent className="responsive-p">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-medium">Customer Management</h2>
+                <h2 className="text-xl font-medium text-foreground">Customer Management</h2>
                 <Dialog open={showNewCustomerDialog} onOpenChange={setShowNewCustomerDialog}>
                   <DialogTrigger asChild>
                     <Button>
@@ -1162,55 +1152,50 @@ const IconPicker = ({ value, onChange }) => {
 
               <div className="responsive-grid responsive-gap">
                 {customers.map((customer, index) => (
-                  <Card key={index} className="group relative overflow-hidden">
+                  <Card key={index} className="group relative overflow-hidden border-border">
                     <CardContent className="responsive-p">
-                      {/* Header with Name and Actions */}
                       <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900">
-                            {customer.title === 'Divers' ? (
-                              `${customer.zusatz} ${customer.name}`
-                            ) : (
-                              `${customer.title} ${customer.zusatz} ${customer.name}`
-                            )}
-                          </h3>
-                          {customer.firma && (
-                            <span className="inline-flex items-center px-2 py-1 mt-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              Business Customer
-                            </span>
+                        <h3 className="text-lg font-semibold text-foreground">
+                          {customer.title === 'Divers' ? (
+                            `${customer.zusatz} ${customer.name}`
+                          ) : (
+                            `${customer.title} ${customer.zusatz} ${customer.name}`
                           )}
-                        </div>
+                        </h3>
+                        {customer.firma && (
+                          <span className="inline-flex items-center px-2 py-1 mt-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                            Business Customer
+                          </span>
+                        )}
                         <div className="flex gap-1">
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 hover:bg-gray-100"
+                            className="h-8 w-8 hover:bg-secondary"
                             onClick={() => {
                               setEditingCustomer(customer);
                               setShowEditCustomerDialog(true);
                             }}
                           >
-                            <Edit className="h-4 w-4 text-gray-600" />
+                            <Edit className="h-4 w-4 text-muted-foreground" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 hover:bg-gray-100"
+                            className="h-8 w-8 hover:bg-secondary"
                             onClick={() => {
                               const updatedCustomers = customers.filter((_, i) => i !== index);
                               setCustomers(updatedCustomers);
                             }}
                           >
-                            <Trash2 className="h-4 w-4 text-gray-600" />
+                            <Trash2 className="h-4 w-4 text-muted-foreground" />
                           </Button>
                         </div>
                       </div>
-
-                      {/* Contact Information */}
                       <div className="space-y-3">
                         <div className="space-y-1">
-                          <div className="text-sm font-medium text-gray-500">Address</div>
-                          <div className="text-sm text-gray-700">
+                          <div className="text-sm font-medium text-muted-foreground">Address</div>
+                          <div className="text-sm text-foreground">
                             {customer.street}
                             <br />
                             {customer.postal_code} {customer.city}
@@ -1220,8 +1205,8 @@ const IconPicker = ({ value, onChange }) => {
                         {/* Additional Details - can be expanded based on your needs */}
                         {customer.zusatz && (
                           <div className="space-y-1">
-                            <div className="text-sm font-medium text-gray-500">Academic Title</div>
-                            <div className="text-sm text-gray-700">{customer.zusatz}</div>
+                            <div className="text-sm font-medium text-muted-foreground">Academic Title</div>
+                            <div className="text-sm text-foreground">{customer.zusatz}</div>
                           </div>
                         )}
                       </div>
@@ -1236,10 +1221,11 @@ const IconPicker = ({ value, onChange }) => {
         {/* Business Profiles Tab */}
         <TabsContent value="business">
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="responsive-p">
+              {/* Header Section */}
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-4">
-                  <h2 className="text-xl font-medium">Business Profiles</h2>
+                  <h2 className="text-xl font-medium text-foreground">Business Profiles</h2>
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
@@ -1258,6 +1244,7 @@ const IconPicker = ({ value, onChange }) => {
                           setIsLoading(prev => ({ ...prev, export: false }));
                         }
                       }}
+                      className="bg-background hover:bg-secondary"
                     >
                       {isLoading.export ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -1294,6 +1281,7 @@ const IconPicker = ({ value, onChange }) => {
                           setIsLoading(prev => ({ ...prev, import: false }));
                         }
                       }}
+                      className="bg-background hover:bg-secondary"
                     >
                       {isLoading.import ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -1306,7 +1294,7 @@ const IconPicker = ({ value, onChange }) => {
                 </div>
                 <Dialog open={showNewProfileDialog} onOpenChange={setShowNewProfileDialog}>
                   <DialogTrigger asChild>
-                    <Button>
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                       <PlusCircle className="h-4 w-4 mr-2" />
                       Add Profile
                     </Button>
@@ -1315,7 +1303,7 @@ const IconPicker = ({ value, onChange }) => {
                     <DialogHeader>
                       <DialogTitle>Add New Business Profile</DialogTitle>
                       <DialogDescription>
-                        Enter your business details to create a new profile.
+                        Enter your business profile details below.
                       </DialogDescription>
                     </DialogHeader>
                     {renderBusinessProfileForm(newProfile, setNewProfile)}
@@ -1329,13 +1317,16 @@ const IconPicker = ({ value, onChange }) => {
                 </Dialog>
               </div>
 
+              {/* Profiles Grid */}
               <div className="responsive-grid responsive-gap">
                 {businessProfiles.map((profile, index) => (
-                  <Card key={index} className="group relative overflow-hidden">
+                  <Card key={index} className="group relative overflow-hidden border-border">
                     <CardContent className="responsive-p">
-                      {/* Header with Name and Actions */}
+                      {/* Profile Header */}
                       <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">{profile.company_name}</h3>
+                        <h3 className="text-lg font-semibold text-foreground">
+                          {profile.company_name}
+                        </h3>
                         <div className="flex items-center gap-2">
                           <div className="flex items-center">
                             <Switch
@@ -1343,33 +1334,32 @@ const IconPicker = ({ value, onChange }) => {
                               onCheckedChange={(checked) => {
                                 const newDefaultId = checked ? profile.company_name : null;
                                 setDefaultProfileId(newDefaultId);
-                                // Automatically set the selected profile when setting default
                                 if (checked) {
                                   setSelectedProfile(profile);
                                 } else {
                                   setSelectedProfile(null);
                                 }
                               }}
-                              className="data-[state=checked]:bg-green-500"
+                              className="data-[state=checked]:bg-primary"
                             />
-                            <span className="ml-2 text-sm text-gray-600">Default</span>
+                            <span className="ml-2 text-sm text-muted-foreground">Default</span>
                           </div>
                           <div className="flex gap-1">
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 hover:bg-gray-100"
+                              className="h-8 w-8 hover:bg-secondary"
                               onClick={() => {
                                 setEditingProfile(profile);
                                 setShowEditProfileDialog(true);
                               }}
                             >
-                              <Edit className="h-4 w-4 text-gray-600" />
+                              <Edit className="h-4 w-4 text-muted-foreground" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 hover:bg-gray-100"
+                              className="h-8 w-8 hover:bg-secondary"
                               onClick={() => {
                                 const updatedProfiles = businessProfiles.filter((_, i) => i !== index);
                                 setBusinessProfiles(updatedProfiles);
@@ -1378,17 +1368,17 @@ const IconPicker = ({ value, onChange }) => {
                                 }
                               }}
                             >
-                              <Trash2 className="h-4 w-4 text-gray-600" />
+                              <Trash2 className="h-4 w-4 text-muted-foreground" />
                             </Button>
                           </div>
                         </div>
                       </div>
 
-                      {/* Contact Information */}
+                      {/* Profile Details */}
                       <div className="space-y-3">
                         <div className="space-y-1">
-                          <div className="text-sm font-medium text-gray-500">Address</div>
-                          <div className="text-sm text-gray-700">
+                          <div className="text-sm font-medium text-muted-foreground">Address</div>
+                          <div className="text-sm text-foreground">
                             {profile.company_street}
                             <br />
                             {profile.company_postalcode} {profile.company_city}
@@ -1397,27 +1387,27 @@ const IconPicker = ({ value, onChange }) => {
 
                         {(profile.tax_number || profile.tax_id) && (
                           <div className="space-y-1">
-                            <div className="text-sm font-medium text-gray-500">Tax Information</div>
+                            <div className="text-sm font-medium text-muted-foreground">Tax Information</div>
                             {profile.tax_number && (
-                              <div className="text-sm text-gray-700">Tax Number: {profile.tax_number}</div>
+                              <div className="text-sm text-foreground">Tax Number: {profile.tax_number}</div>
                             )}
                             {profile.tax_id && (
-                              <div className="text-sm text-gray-700">Tax ID: {profile.tax_id}</div>
+                              <div className="text-sm text-foreground">Tax ID: {profile.tax_id}</div>
                             )}
                           </div>
                         )}
 
                         {(profile.bank_institute || profile.bank_iban || profile.bank_bic) && (
                           <div className="space-y-1">
-                            <div className="text-sm font-medium text-gray-500">Banking Details</div>
+                            <div className="text-sm font-medium text-muted-foreground">Banking Details</div>
                             {profile.bank_institute && (
-                              <div className="text-sm text-gray-700">{profile.bank_institute}</div>
+                              <div className="text-sm text-foreground">{profile.bank_institute}</div>
                             )}
                             {profile.bank_iban && (
-                              <div className="text-sm text-gray-700">IBAN: {profile.bank_iban}</div>
+                              <div className="text-sm text-foreground">IBAN: {profile.bank_iban}</div>
                             )}
                             {profile.bank_bic && (
-                              <div className="text-sm text-gray-700">BIC: {profile.bank_bic}</div>
+                              <div className="text-sm text-foreground">BIC: {profile.bank_bic}</div>
                             )}
                           </div>
                         )}
@@ -1433,89 +1423,98 @@ const IconPicker = ({ value, onChange }) => {
         {/* Quick Tags Tab */}
         <TabsContent value="tags">
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="responsive-p">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-medium">Quick Entry Tags</h2>
+                <h2 className="text-xl font-medium text-foreground">Quick Entry Tags</h2>
                 <Dialog open={showNewTagDialog} onOpenChange={setShowNewTagDialog}>
                   <DialogTrigger asChild>
-                    <Button>
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                       <PlusCircle className="h-4 w-4 mr-2" />
                       Add Tag
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="dialog-content sm:max-w-[425px]">
                     <DialogHeader>
-                      <DialogTitle>Add New Quick Entry Tag</DialogTitle>
+                      <DialogTitle>{newTag.name ? 'Edit Quick Tag' : 'Add New Quick Tag'}</DialogTitle>
                       <DialogDescription>
-                        Create a new quick entry tag to speed up invoice creation.
+                        {newTag.name ? 'Edit your quick entry tag details.' : 'Create a new quick entry tag for faster invoice creation.'}
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
+                    
+                    <div className="dialog-section">
+                      <div className="form-field">
                         <Label>Name</Label>
                         <Input
                           value={newTag.name}
                           onChange={(e) => setNewTag({ ...newTag, name: e.target.value })}
                         />
                       </div>
-                      <div>
-                        <Label>Description (will show on invoice)</Label>
-                        <Textarea
+
+                      <div className="form-field">
+                        <Label>Description</Label>
+                        <Input
                           value={newTag.description}
                           onChange={(e) => setNewTag({ ...newTag, description: e.target.value })}
                         />
                       </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="form-field">
                           <Label>Rate (€)</Label>
                           <Input
                             type="number"
-                            value={newTag.rate === '' ? '' : Number(newTag.rate)}
-                            onChange={(e) => setNewTag({ 
-                              ...newTag, 
-                              rate: e.target.value === '' ? '' : e.target.value 
-                            })}
+                            value={newTag.rate}
+                            onChange={(e) => setNewTag({ ...newTag, rate: e.target.value })}
                             min="0"
                             step="0.01"
-                            placeholder="Price in €"
                           />
                         </div>
-                        <div>
+                        <div className="form-field">
                           <Label>Quantity</Label>
                           <Input
                             type="number"
-                            value={newTag.quantity === '' ? '' : Number(newTag.quantity)}
-                            onChange={(e) => setNewTag({ 
-                              ...newTag, 
-                              quantity: e.target.value === '' ? '' : e.target.value 
-                            })}
+                            value={newTag.quantity}
+                            onChange={(e) => setNewTag({ ...newTag, quantity: e.target.value })}
                             min="0"
                             step="0.5"
                           />
                         </div>
                       </div>
-                      <div className="space-y-2">
+
+                      <div className="form-field">
                         <Label>Color</Label>
-                        <ColorPicker
-                          value={newTag.color}
-                          onChange={(color) => setNewTag({ ...newTag, color })}
-                        />
+                        <div className="color-picker-grid">
+                          {PREDEFINED_COLORS.map((color) => (
+                            <button
+                              key={color.value}
+                              type="button"
+                              onClick={() => setNewTag({ ...newTag, color: color.value })}
+                              className="color-picker-item"
+                              data-selected={newTag.color === color.value}
+                              style={{ backgroundColor: color.value }}
+                              title={color.name}
+                            />
+                          ))}
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-2">
+
+                      <div className="switch-container">
                         <Switch
                           checked={newTag.visible}
                           onCheckedChange={(checked) => setNewTag({ ...newTag, visible: checked })}
                         />
                         <Label>Visible in Quick Entry</Label>
                       </div>
-                      <div className="flex items-center space-x-2">
+
+                      <div className="switch-container">
                         <Switch
                           checked={newTag.hasDateRange}
                           onCheckedChange={(checked) => setNewTag({ ...newTag, hasDateRange: checked })}
                         />
                         <Label>Uses Date Range</Label>
                       </div>
-                      <div>
+
+                      <div className="form-field">
                         <Label>Associated Personas</Label>
                         <ReactSelect
                           isMulti
@@ -1523,7 +1522,7 @@ const IconPicker = ({ value, onChange }) => {
                             value: profile.company_name,
                             label: profile.company_name,
                           }))}
-                          value={(newTag.personas || []).map((persona) => ({
+                          value={newTag.personas.map((persona) => ({
                             value: persona,
                             label: persona,
                           }))}
@@ -1533,14 +1532,37 @@ const IconPicker = ({ value, onChange }) => {
                               personas: selectedOptions ? selectedOptions.map((option) => option.value) : [],
                             });
                           }}
+                          classNamePrefix="select"
+                          className="select-container"
+                          unstyled
+                          styles={{
+                            input: (base) => ({
+                              ...base,
+                              color: 'inherit'
+                            })
+                          }}
                         />
                       </div>
                     </div>
-                    <div className="flex justify-end space-x-2 mt-4">
+
+                    <div className="flex justify-end gap-3 mt-6">
                       <Button variant="outline" onClick={() => setShowNewTagDialog(false)}>
                         Cancel
                       </Button>
-                      <Button onClick={addQuickTag}>Add Tag</Button>
+                      <Button onClick={() => {
+                        if (newTag.name && quickTags.find(t => t.name === newTag.name)) {
+                          // Handle edit case
+                          const updatedTags = quickTags.map(t => 
+                            t.name === newTag.name ? newTag : t
+                          );
+                          setQuickTags(updatedTags);
+                        } else {
+                          // Handle add case
+                          addQuickTag();
+                        }
+                      }}>
+                        {newTag.name ? 'Save Changes' : 'Add Tag'}
+                      </Button>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -1548,43 +1570,39 @@ const IconPicker = ({ value, onChange }) => {
 
               <div className="responsive-grid responsive-gap">
                 {quickTags.map((tag, index) => (
-                  <div 
-                    key={index} 
-                    className="group relative h-[280px] xl:h-[320px] 2xl:h-[360px] overflow-hidden rounded-lg shadow-sm transition-all duration-200"
+                  <Card
+                    key={index}
+                    className="group relative overflow-hidden border-border transition-all hover:shadow-md dark:bg-opacity-20"
                     style={{ 
-                      backgroundColor: tag.color,
+                      backgroundColor: adjustColorForDarkMode(tag.color || '#f3f4f6', document.documentElement.classList.contains('dark')),
+                      backdropFilter: 'blur(8px)'
                     }}
                   >
                     {/* Action Buttons */}
-                    <div className="absolute top-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                       <Button
-                        variant="ghost"
+                        variant="secondary"
                         size="icon"
-                        className="h-8 w-8 bg-white hover:bg-gray-100 shadow-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingTag(tag);
-                          setShowEditTagDialog(true);
-                        }}
+                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background"
+                        onClick={() => handleTagDialog(tag)}
                       >
-                        <Edit className="h-3 w-3" />
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant="ghost"
+                        variant="secondary"
                         size="icon"
-                        className="h-8 w-8 bg-white hover:bg-gray-100 shadow-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
+                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background"
+                        onClick={() => {
                           const updatedTags = quickTags.filter((_, i) => i !== index);
                           setQuickTags(updatedTags);
                         }}
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
 
                     {/* Visibility Toggle */}
-                    <div className="absolute top-2 left-2">
+                    <div className="absolute top-3 left-3 z-10">
                       <Switch
                         checked={tag.visible}
                         onCheckedChange={(checked) => {
@@ -1592,49 +1610,48 @@ const IconPicker = ({ value, onChange }) => {
                           updatedTags[index].visible = checked;
                           setQuickTags(updatedTags);
                         }}
-                        className="data-[state=checked]:bg-gray-700"
+                        className="data-[state=checked]:bg-primary"
                       />
                     </div>
 
-                    {/* Content */}
-                    <div className="p-4 mt-8 flex flex-col h-[calc(100%-3rem)]">
+                    <CardContent className="p-6 mt-8">
                       {/* Tag Header */}
-                      <div className="mb-3">
+                      <div className="mb-4">
                         <div className="flex items-center gap-2">
-                          <Tags className="h-4 w-4 text-gray-700 flex-shrink-0" />
-                          <h3 className="font-medium text-gray-800 truncate max-w-[180px]" title={tag.name}>
+                          <Tags className="h-5 w-5 text-foreground/70" />
+                          <h3 className="font-semibold text-lg text-foreground/90 truncate" title={tag.name}>
                             {tag.name}
                           </h3>
                         </div>
                       </div>
 
-                      {/* Description Preview */}
-                      <div className="mb-4 flex-shrink-0">
-                        <p className="text-sm text-gray-700 line-clamp-3" title={tag.description}>
-                          {tag.description || "No description"}
+                      {/* Description */}
+                      <div className="mb-6">
+                        <p className="text-sm text-foreground/70 line-clamp-2" title={tag.description}>
+                          {tag.description || "No description provided"}
                         </p>
                       </div>
 
                       {/* Tag Details */}
-                      <div className="space-y-2 mb-3 flex-shrink-0">
-                        <div className="flex items-center justify-between text-sm text-gray-700">
-                          <span>Rate:</span>
-                          <span className="font-medium">€{parseFloat(tag.rate).toFixed(2)}</span>
+                      <div className="space-y-2 mb-6">
+                        <div className="flex items-center justify-between bg-background/40 dark:bg-background/10 rounded-md p-2">
+                          <span className="text-sm text-foreground/70">Rate:</span>
+                          <span className="font-medium text-foreground">€{parseFloat(tag.rate).toFixed(2)}</span>
                         </div>
-                        <div className="flex items-center justify-between text-sm text-gray-700">
-                          <span>Quantity:</span>
-                          <span className="font-medium">{tag.quantity}</span>
+                        <div className="flex items-center justify-between bg-background/40 dark:bg-background/10 rounded-md p-2">
+                          <span className="text-sm text-foreground/70">Quantity:</span>
+                          <span className="font-medium text-foreground">{tag.quantity}</span>
                         </div>
                       </div>
 
                       {/* Associated Personas */}
-                      <div className="space-y-1 mt-auto">
-                        <div className="text-xs font-medium text-gray-600">Associated Personas:</div>
-                        <div className="flex flex-wrap gap-1 overflow-y-auto max-h-[60px]">
+                      <div className="space-y-2">
+                        <div className="text-xs font-medium text-foreground/70">Associated Personas:</div>
+                        <div className="flex flex-wrap gap-1.5 max-h-[60px] overflow-y-auto">
                           {tag.personas?.map((persona, idx) => (
                             <span
                               key={idx}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/50 truncate max-w-[120px]"
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-background/60 dark:bg-background/20 backdrop-blur-sm text-foreground/80 hover:bg-background/80 dark:hover:bg-background/30 transition-colors"
                               title={persona}
                             >
                               {persona}
@@ -1642,25 +1659,60 @@ const IconPicker = ({ value, onChange }) => {
                           ))}
                         </div>
                       </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 ))}
 
                 {/* Empty State */}
                 {quickTags.length === 0 && (
-                  <div className="col-span-4 text-center py-12 bg-gray-50/50 rounded-lg border-2 border-dashed border-gray-200">
-                    <Tags className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No Quick Tags</h3>
-                    <p className="text-gray-500 mb-4">
+                  <div className="col-span-4 text-center py-12 bg-secondary/50 rounded-lg border-2 border-dashed border-border">
+                    <Tags className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium text-foreground mb-2">No Quick Tags</h3>
+                    <p className="text-muted-foreground mb-4">
                       Create quick entry tags to speed up your invoice creation process.
                     </p>
-                    <Button onClick={() => setShowNewTagDialog(true)}>
+                    <Button 
+                      onClick={() => setShowNewTagDialog(true)}
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
                       <PlusCircle className="h-4 w-4 mr-2" />
                       Add Your First Tag
                     </Button>
                   </div>
                 )}
               </div>
+
+              {/* Search Bar */}
+              {showTagSearch && (
+                <div className="relative flex items-center">
+                  <Input
+                    type="text"
+                    placeholder="Search tags..."
+                    value={tagSearch}
+                    onChange={(e) => setTagSearch(e.target.value)}
+                    className="w-[200px] pl-8 bg-background border-input"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Escape') {
+                        setShowTagSearch(false);
+                        setTagSearch('');
+                      }
+                    }}
+                  />
+                  <Search className="w-4 h-4 absolute left-2.5 text-muted-foreground" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 ml-1 hover:bg-secondary"
+                    onClick={() => {
+                      setShowTagSearch(false);
+                      setTagSearch('');
+                    }}
+                  >
+                    <X className="h-4 w-4 text-foreground" />
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -1708,115 +1760,6 @@ const IconPicker = ({ value, onChange }) => {
               Save Changes
             </Button>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showEditTagDialog} onOpenChange={setShowEditTagDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Quick Tag</DialogTitle>
-          </DialogHeader>
-          {editingTag && (
-            <div className="space-y-4">
-              <div>
-                <Label>Name</Label>
-                <Input
-                  value={editingTag.name}
-                  onChange={(e) => setEditingTag({ ...editingTag, name: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label>Description (will show on invoice)</Label>
-                <Textarea
-                  value={editingTag.description}
-                  onChange={(e) => setEditingTag({ ...editingTag, description: e.target.value })}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <Label>Rate (€)</Label>
-                  <Input
-                    type="number"
-                    value={editingTag?.rate === undefined || editingTag?.rate === '' ? '' : Number(editingTag.rate)}
-                    onChange={(e) => setEditingTag({ 
-                      ...editingTag, 
-                      rate: e.target.value === '' ? '' : e.target.value 
-                    })}
-                    min="0"
-                    step="0.01"
-                  />
-                </div>
-                <div>
-                  <Label>Quantity</Label>
-                  <Input
-                    type="number"
-                    value={editingTag?.quantity === undefined || editingTag?.quantity === '' ? '' : Number(editingTag.quantity)}
-                    onChange={(e) => setEditingTag({ 
-                      ...editingTag, 
-                      quantity: e.target.value === '' ? '' : e.target.value 
-                    })}
-                    min="0"
-                    step="0.5"
-                  />
-                </div>
-              </div>
-              <div>
-                <Label>Color</Label>
-                <ColorPicker
-                  value={editingTag.color}
-                  onChange={(color) => setEditingTag({ ...editingTag, color })}
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={editingTag.visible}
-                  onCheckedChange={(checked) => setEditingTag({ ...editingTag, visible: checked })}
-                />
-                <Label>Visible in Quick Entry</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={editingTag.hasDateRange}
-                  onCheckedChange={(checked) => setEditingTag({ ...editingTag, hasDateRange: checked })}
-                />
-                <Label>Uses Date Range</Label>
-              </div>
-              <div>
-                <Label>Associated Personas</Label>
-                <ReactSelect
-                  isMulti
-                  options={businessProfiles.map((profile) => ({
-                    value: profile.company_name,
-                    label: profile.company_name,
-                  }))}
-                  value={(editingTag?.personas || []).map((persona) => ({
-                    value: persona,
-                    label: persona,
-                  }))}
-                  onChange={(selectedOptions) => {
-                    setEditingTag({
-                      ...editingTag,
-                      personas: selectedOptions ? selectedOptions.map((option) => option.value) : [],
-                    });
-                  }}
-                />
-              </div>
-              <div className="flex justify-end space-x-2 mt-4">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setShowEditTagDialog(false);
-                    setEditingTag(null);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button onClick={() => editTag(editingTag)}>
-                  Save Changes
-                </Button>
-              </div>
-            </div>
-          )}
         </DialogContent>
       </Dialog>
 
