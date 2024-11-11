@@ -211,7 +211,9 @@ const SlyceInvoice = () => {
         if (savedDefaultProfileId) {
           setDefaultProfileId(savedDefaultProfileId);
           const defaultProfile = savedProfiles?.find(p => p.company_name === savedDefaultProfileId);
-          if (defaultProfile) setSelectedProfile(defaultProfile);
+          if (defaultProfile) {
+            setSelectedProfile(defaultProfile);
+          }
         }
 
         setIsInitialized(true);
@@ -1274,7 +1276,14 @@ const IconPicker = ({ value, onChange }) => {
                             <Switch
                               checked={defaultProfileId === profile.company_name}
                               onCheckedChange={(checked) => {
-                                setDefaultProfileId(checked ? profile.company_name : null);
+                                const newDefaultId = checked ? profile.company_name : null;
+                                setDefaultProfileId(newDefaultId);
+                                // Automatically set the selected profile when setting default
+                                if (checked) {
+                                  setSelectedProfile(profile);
+                                } else {
+                                  setSelectedProfile(null);
+                                }
                               }}
                               className="data-[state=checked]:bg-blue-600"
                             />
@@ -1480,7 +1489,7 @@ const IconPicker = ({ value, onChange }) => {
                     style={{ 
                       backgroundColor: tag.color,
                       borderRadius: '0.5rem',
-                      boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
                     }}
                   >
                     {/* Action Buttons */}
