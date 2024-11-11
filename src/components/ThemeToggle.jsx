@@ -9,10 +9,11 @@ export function ThemeToggle() {
     <Button
       variant="outline"
       size="icon"
+      className="relative h-9 w-9 overflow-hidden rounded-full bg-background/50 backdrop-blur-sm border border-border/50 hover:border-border/80 transition-all duration-300 hover:scale-105 active:scale-95"
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <Sun className="absolute h-[1.2rem] w-[1.2rem] translate-y-0 opacity-100 transition-all duration-500 dark:-translate-y-8 dark:opacity-0 text-amber-500 hover:text-amber-400" />
+      <Moon className="absolute h-[1.2rem] w-[1.2rem] translate-y-8 opacity-0 transition-all duration-500 dark:translate-y-0 dark:opacity-100 text-blue-500 hover:text-blue-400" />
       <span className="sr-only">Toggle theme</span>
     </Button>
   );

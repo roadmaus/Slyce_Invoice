@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import html2pdf from 'html2pdf.js';
-import { Textarea } from '@/components/ui/textarea';
 import ReactSelect from 'react-select';
 import * as Icons from 'lucide-react';
 import { 
@@ -177,12 +176,6 @@ const SlyceInvoice = () => {
   const [showNewTagDialog, setShowNewTagDialog] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Edit State
-  const [editingCustomer, setEditingCustomer] = useState(null);
-  const [editingProfile, setEditingProfile] = useState(null);
-  const [showEditCustomerDialog, setShowEditCustomerDialog] = useState(false);
-  const [showEditProfileDialog, setShowEditProfileDialog] = useState(false);
-
   // Default Profile State
   const [defaultProfileId, setDefaultProfileId] = useState(null);
 
@@ -202,6 +195,11 @@ const SlyceInvoice = () => {
 
   // Add state for search visibility
   const [showTagSearch, setShowTagSearch] = useState(false);
+
+  // Add this to your state declarations
+  const [isDarkMode, setIsDarkMode] = useState(
+    document.documentElement.classList.contains('dark')
+  );
 
   // Load saved data on component mount
   useEffect(() => {
@@ -638,39 +636,6 @@ const renderCustomerForm = (customer, setCustomer) => (
     </div>
   );
 
-  // Edit Functions
-  const editCustomer = (updatedCustomer) => {
-    const newCustomers = customers.map(c => 
-      c.id === editingCustomer.id ? updatedCustomer : c
-    );
-    setCustomers(newCustomers);
-    if (selectedCustomer?.id === editingCustomer.id) {
-      setSelectedCustomer(updatedCustomer);
-    }
-    setShowEditCustomerDialog(false);
-    setEditingCustomer(null);
-  };
-
-  const editProfile = async (updatedProfile) => {
-    const newProfiles = businessProfiles.map((profile) =>
-      profile.company_name === updatedProfile.company_name ? updatedProfile : profile
-    );
-    
-    // Update local state
-    setBusinessProfiles(newProfiles);
-    
-    // If this is the currently selected profile, update it too
-    if (selectedProfile?.company_name === updatedProfile.company_name) {
-      setSelectedProfile(updatedProfile);
-    }
-
-    // Save to electron-store using the correct API method
-    await window.electronAPI.setData('businessProfiles', newProfiles);
-    
-    setShowEditProfileDialog(false);
-    setEditingProfile(null);
-  };
-
   // Helper Functions
   const updateDateRangeToggle = (items) => {
     const needsDateRange = items.some(item => item.hasDateRange);
@@ -773,6 +738,86 @@ const handleTagDialog = (existingTag = null) => {
   }
   setShowNewTagDialog(true);
 };
+
+// Update the handlers for business profiles
+const handleProfileDialog = (existingProfile = null) => {
+  if (existingProfile) {
+    setNewProfile(existingProfile);
+  } else {
+    setNewProfile({
+      company_name: '',
+      company_street: '',
+      company_postalcode: '',
+      company_city: '',
+      tax_number: '',
+      tax_id: '',
+      bank_institute: '',
+      bank_iban: '',
+      bank_bic: '',
+      contact_details: '',
+      invoice_save_path: '',
+    });
+  }
+  setShowNewProfileDialog(true);
+};
+
+// Update the handler for customers
+const handleCustomerDialog = (existingCustomer = null) => {
+  if (existingCustomer) {
+    setNewCustomer(existingCustomer);
+  } else {
+    setNewCustomer({
+      id: '',
+      title: '',
+      zusatz: '',
+      name: '',
+      street: '',
+      postal_code: '',
+      city: '',
+      firma: false,
+    });
+  }
+  setShowNewCustomerDialog(true);
+};
+
+// Add this useEffect to listen for theme changes
+useEffect(() => {
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'class') {
+        setIsDarkMode(document.documentElement.classList.contains('dark'));
+      }
+    });
+  });
+
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+  });
+
+  return () => observer.disconnect();
+}, []);
+
+// Add this to your existing useEffect hooks
+useEffect(() => {
+  const handleDataImport = (event) => {
+    const importedData = event.detail;
+    setCustomers(importedData.customers || []);
+    setBusinessProfiles(importedData.businessProfiles || []);
+    setQuickTags(importedData.quickTags || []);
+    setCurrentInvoiceNumber(generateInvoiceNumber(importedData.lastInvoiceNumber));
+    if (importedData.defaultProfileId) {
+      setDefaultProfileId(importedData.defaultProfileId);
+      const defaultProfile = importedData.businessProfiles.find(
+        p => p.company_name === importedData.defaultProfileId
+      );
+      if (defaultProfile) setSelectedProfile(defaultProfile);
+    }
+  };
+
+  window.addEventListener('dataImported', handleDataImport);
+  return () => window.removeEventListener('dataImported', handleDataImport);
+}, []);
 
 // Main Render
   return (
@@ -1134,9 +1179,9 @@ const handleTagDialog = (existingTag = null) => {
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Add New Customer</DialogTitle>
+                      <DialogTitle>{newCustomer.id ? 'Edit Customer' : 'Add New Customer'}</DialogTitle>
                       <DialogDescription>
-                        Enter the customer's details to add them to your list.
+                        {newCustomer.id ? 'Edit the customer\'s details.' : 'Enter the customer\'s details to add them to your list.'}
                       </DialogDescription>
                     </DialogHeader>
                     {renderCustomerForm(newCustomer, setNewCustomer)}
@@ -1144,7 +1189,24 @@ const handleTagDialog = (existingTag = null) => {
                       <Button variant="outline" onClick={() => setShowNewCustomerDialog(false)}>
                         Cancel
                       </Button>
-                      <Button onClick={addCustomer}>Add Customer</Button>
+                      <Button onClick={() => {
+                        if (newCustomer.id && customers.find(c => c.id === newCustomer.id)) {
+                          // Handle edit case
+                          const updatedCustomers = customers.map(c => 
+                            c.id === newCustomer.id ? newCustomer : c
+                          );
+                          setCustomers(updatedCustomers);
+                          if (selectedCustomer?.id === newCustomer.id) {
+                            setSelectedCustomer(newCustomer);
+                          }
+                        } else {
+                          // Handle add case
+                          addCustomer();
+                        }
+                        setShowNewCustomerDialog(false);
+                      }}>
+                        {newCustomer.id ? 'Save Changes' : 'Add Customer'}
+                      </Button>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -1172,10 +1234,7 @@ const handleTagDialog = (existingTag = null) => {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 hover:bg-secondary"
-                            onClick={() => {
-                              setEditingCustomer(customer);
-                              setShowEditCustomerDialog(true);
-                            }}
+                            onClick={() => handleCustomerDialog(customer)}
                           >
                             <Edit className="h-4 w-4 text-muted-foreground" />
                           </Button>
@@ -1224,74 +1283,7 @@ const handleTagDialog = (existingTag = null) => {
             <CardContent className="responsive-p">
               {/* Header Section */}
               <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-xl font-medium text-foreground">Business Profiles</h2>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={async () => {
-                        setIsLoading(prev => ({ ...prev, export: true }));
-                        try {
-                          const success = await window.electronAPI.exportData();
-                          if (success) {
-                            toast.success('Data exported successfully!');
-                          } else {
-                            toast.error('Failed to export data');
-                          }
-                        } catch (error) {
-                          toast.error('Error exporting data');
-                        } finally {
-                          setIsLoading(prev => ({ ...prev, export: false }));
-                        }
-                      }}
-                      className="bg-background hover:bg-secondary"
-                    >
-                      {isLoading.export ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ) : (
-                        <Save className="h-4 w-4 mr-2" />
-                      )}
-                      {isLoading.export ? 'Exporting...' : 'Export Data'}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={async () => {
-                        setIsLoading(prev => ({ ...prev, import: true }));
-                        try {
-                          const importedData = await window.electronAPI.importData();
-                          if (importedData) {
-                            setCustomers(importedData.customers || []);
-                            setBusinessProfiles(importedData.businessProfiles || []);
-                            setQuickTags(importedData.quickTags || []);
-                            setCurrentInvoiceNumber(generateInvoiceNumber(importedData.lastInvoiceNumber));
-                            if (importedData.defaultProfileId) {
-                              setDefaultProfileId(importedData.defaultProfileId);
-                              const defaultProfile = importedData.businessProfiles.find(
-                                p => p.company_name === importedData.defaultProfileId
-                              );
-                              if (defaultProfile) setSelectedProfile(defaultProfile);
-                            }
-                            toast.success('Data imported successfully!');
-                          } else {
-                            toast.error('Failed to import data');
-                          }
-                        } catch (error) {
-                          toast.error('Error importing data');
-                        } finally {
-                          setIsLoading(prev => ({ ...prev, import: false }));
-                        }
-                      }}
-                      className="bg-background hover:bg-secondary"
-                    >
-                      {isLoading.import ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ) : (
-                        <Upload className="h-4 w-4 mr-2" />
-                      )}
-                      {isLoading.import ? 'Importing...' : 'Import Data'}
-                    </Button>
-                  </div>
-                </div>
+                <h2 className="text-xl font-medium text-foreground">Business Profiles</h2>
                 <Dialog open={showNewProfileDialog} onOpenChange={setShowNewProfileDialog}>
                   <DialogTrigger asChild>
                     <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
@@ -1301,9 +1293,9 @@ const handleTagDialog = (existingTag = null) => {
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Add New Business Profile</DialogTitle>
+                      <DialogTitle>{newProfile.company_name ? 'Edit Business Profile' : 'Add New Business Profile'}</DialogTitle>
                       <DialogDescription>
-                        Enter your business profile details below.
+                        {newProfile.company_name ? 'Edit your business profile details.' : 'Enter your business profile details below.'}
                       </DialogDescription>
                     </DialogHeader>
                     {renderBusinessProfileForm(newProfile, setNewProfile)}
@@ -1311,7 +1303,24 @@ const handleTagDialog = (existingTag = null) => {
                       <Button variant="outline" onClick={() => setShowNewProfileDialog(false)}>
                         Cancel
                       </Button>
-                      <Button onClick={addBusinessProfile}>Add Profile</Button>
+                      <Button onClick={() => {
+                        if (newProfile.company_name && businessProfiles.find(p => p.company_name === newProfile.company_name)) {
+                          // Handle edit case
+                          const updatedProfiles = businessProfiles.map(p => 
+                            p.company_name === newProfile.company_name ? newProfile : p
+                          );
+                          setBusinessProfiles(updatedProfiles);
+                          if (selectedProfile?.company_name === newProfile.company_name) {
+                            setSelectedProfile(newProfile);
+                          }
+                        } else {
+                          // Handle add case
+                          addBusinessProfile();
+                        }
+                        setShowNewProfileDialog(false);
+                      }}>
+                        {newProfile.company_name ? 'Save Changes' : 'Add Profile'}
+                      </Button>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -1349,10 +1358,7 @@ const handleTagDialog = (existingTag = null) => {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 hover:bg-secondary"
-                              onClick={() => {
-                                setEditingProfile(profile);
-                                setShowEditProfileDialog(true);
-                              }}
+                              onClick={() => handleProfileDialog(profile)}
                             >
                               <Edit className="h-4 w-4 text-muted-foreground" />
                             </Button>
@@ -1574,7 +1580,7 @@ const handleTagDialog = (existingTag = null) => {
                     key={index}
                     className="group relative overflow-hidden border-border transition-all hover:shadow-md dark:bg-opacity-20"
                     style={{ 
-                      backgroundColor: adjustColorForDarkMode(tag.color || '#f3f4f6', document.documentElement.classList.contains('dark')),
+                      backgroundColor: adjustColorForDarkMode(tag.color || '#f3f4f6', isDarkMode),
                       backdropFilter: 'blur(8px)'
                     }}
                   >
@@ -1721,47 +1727,6 @@ const handleTagDialog = (existingTag = null) => {
           <SettingsTab />
         </TabsContent>
       </Tabs>
-
-      {/* Edit Dialogs */}
-      <Dialog open={showEditCustomerDialog} onOpenChange={setShowEditCustomerDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Customer</DialogTitle>
-          </DialogHeader>
-          {editingCustomer && renderCustomerForm(editingCustomer, setEditingCustomer)}
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={() => {
-              setShowEditCustomerDialog(false);
-              setEditingCustomer(null);
-            }}>
-              Cancel
-            </Button>
-            <Button onClick={() => editCustomer(editingCustomer)}>
-              Save Changes
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showEditProfileDialog} onOpenChange={setShowEditProfileDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Business Profile</DialogTitle>
-          </DialogHeader>
-          {editingProfile && renderBusinessProfileForm(editingProfile, setEditingProfile)}
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={() => {
-              setShowEditProfileDialog(false);
-              setEditingProfile(null);
-            }}>
-              Cancel
-            </Button>
-            <Button onClick={() => editProfile(editingProfile)}>
-              Save Changes
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Add this dialog component near your other dialogs */}
       <Dialog open={showWarningDialog} onOpenChange={setShowWarningDialog}>
