@@ -21,7 +21,8 @@ import {
   Settings, 
   Tags, 
   Search, 
-  X 
+  X,
+  Building2
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
@@ -556,6 +557,14 @@ const SlyceInvoice = () => {
           />
         </div>
       </div>
+      <div>
+        <Label>Contact Details</Label>
+        <Input
+          value={profile.contact_details}
+          onChange={(e) => setProfile({ ...profile, contact_details: e.target.value })}
+          placeholder="Phone, Email, Website, etc."
+        />
+      </div>
     </div>
   );
 
@@ -835,7 +844,7 @@ useEffect(() => {
             Customers
           </TabsTrigger>
           <TabsTrigger value="business" className="data-[state=active]:bg-background">
-            <Settings className="w-4 h-4 mr-2" />
+            <Building2 className="w-4 h-4 mr-2" />
             Business Profiles
           </TabsTrigger>
           <TabsTrigger value="tags" className="data-[state=active]:bg-background">
@@ -855,7 +864,13 @@ useEffect(() => {
                 {/* Customer Selection Section */}
                 <div className="col-span-12 lg:col-span-4 xl:col-span-3 space-y-4">
                   <h3 className="text-lg font-medium text-foreground">Recipient</h3>
-                  <Select>
+                  <Select
+                    value={selectedCustomer?.name || ''}
+                    onValueChange={(value) => {
+                      const customer = customers.find(c => c.name === value);
+                      setSelectedCustomer(customer);
+                    }}
+                  >
                     <SelectTrigger className="bg-background border-input">
                       <SelectValue placeholder="Select customer" />
                     </SelectTrigger>
@@ -1217,19 +1232,20 @@ useEffect(() => {
                   <Card key={index} className="group relative overflow-hidden border-border">
                     <CardContent className="responsive-p">
                       <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-lg font-semibold text-foreground">
-                          {customer.title === 'Divers' ? (
-                            `${customer.zusatz} ${customer.name}`
-                          ) : (
-                            `${customer.title} ${customer.zusatz} ${customer.name}`
+                        <div className="flex flex-col">
+                          <h3 className="text-lg font-semibold text-foreground">
+                            {customer.title} {customer.name}
+                          </h3>
+                          {customer.zusatz && (
+                            <span className="text-sm text-muted-foreground">
+                              {customer.zusatz}
+                            </span>
                           )}
-                        </h3>
-                        {customer.firma && (
-                          <span className="inline-flex items-center px-2 py-1 mt-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                            Business Customer
-                          </span>
-                        )}
-                        <div className="flex gap-1">
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {customer.firma && (
+                            <Icons.Building2 className="h-4 w-4 text-primary" />
+                          )}
                           <Button
                             variant="ghost"
                             size="icon"
@@ -1251,6 +1267,7 @@ useEffect(() => {
                           </Button>
                         </div>
                       </div>
+
                       <div className="space-y-3">
                         <div className="space-y-1">
                           <div className="text-sm font-medium text-muted-foreground">Address</div>
@@ -1260,14 +1277,6 @@ useEffect(() => {
                             {customer.postal_code} {customer.city}
                           </div>
                         </div>
-
-                        {/* Additional Details - can be expanded based on your needs */}
-                        {customer.zusatz && (
-                          <div className="space-y-1">
-                            <div className="text-sm font-medium text-muted-foreground">Academic Title</div>
-                            <div className="text-sm text-foreground">{customer.zusatz}</div>
-                          </div>
-                        )}
                       </div>
                     </CardContent>
                   </Card>
