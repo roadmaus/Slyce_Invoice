@@ -27,6 +27,7 @@ import {
 import { Toaster, toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import SettingsTab from './tabs/SettingsTab';
+import { PDFObject } from 'react-pdfobject';
 // Helper Functions
 const generateInvoiceNumber = (lastNumber) => {
   const year = new Date().getFullYear();
@@ -201,6 +202,18 @@ const SlyceInvoice = () => {
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.classList.contains('dark')
   );
+
+  // Add new state for PDF preview
+  const [pdfPreview, setPdfPreview] = useState({
+    show: false,
+    data: null,
+    fileName: ''
+  });
+
+  // Add this to your state declarations
+  const [previewSettings, setPreviewSettings] = React.useState({
+    showPreview: true
+  });
 
   // Load saved data on component mount
   useEffect(() => {
@@ -448,7 +461,7 @@ const SlyceInvoice = () => {
         .replaceAll('{unit_price_label}', 'Einzelpreis');
         // Add more replacements if needed
 
-      // Generate PDF as ArrayBuffer
+      // Generate PDF as both ArrayBuffer and Blob for preview
       const pdfBuffer = await html2pdf()
         .set({
           margin: 1,
@@ -459,21 +472,37 @@ const SlyceInvoice = () => {
         .from(filledTemplate)
         .outputPdf('arraybuffer');
 
+      // Create Blob for preview
+      const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
       // Construct the desired file name
       const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
 
-      // Save using Electron, pass the fileName
+      // Save using Electron
       const saved = await window.electronAPI.saveInvoice(pdfBuffer, fileName);
 
       if (saved) {
         // Update invoice number in storage
         await window.electronAPI.setData('lastInvoiceNumber', currentInvoiceNumber);
         
-        // Reset form
-        setCurrentInvoiceNumber(generateInvoiceNumber(currentInvoiceNumber));
-        setInvoiceItems([]);
-        setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
-        toast.success('Invoice generated and saved successfully!');
+        // Only show preview if enabled in settings
+        if (previewSettings.showPreview) {
+          setPdfPreview({
+            show: true,
+            data: pdfUrl,
+            fileName: fileName
+          });
+        }
+
+        toast.success('Invoice generated successfully!');
+        
+        // Reset form if not showing preview
+        if (!previewSettings.showPreview) {
+          setCurrentInvoiceNumber(generateInvoiceNumber(currentInvoiceNumber));
+          setInvoiceItems([]);
+          setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
+        }
       } else {
         toast.error('Error saving invoice. Please try again.');
       }
@@ -827,6 +856,59 @@ useEffect(() => {
   window.addEventListener('dataImported', handleDataImport);
   return () => window.removeEventListener('dataImported', handleDataImport);
 }, []);
+
+// Add this useEffect to load preview settings
+useEffect(() => {
+  const loadPreviewSettings = async () => {
+    const settings = await window.electronAPI.getData('previewSettings');
+    if (settings) {
+      setPreviewSettings(settings);
+    }
+  };
+  loadPreviewSettings();
+
+  // Listen for settings changes
+  const handleSettingsChange = (event) => {
+    setPreviewSettings(event.detail);
+  };
+  window.addEventListener('previewSettingsChanged', handleSettingsChange);
+  
+  return () => {
+    window.removeEventListener('previewSettingsChanged', handleSettingsChange);
+  };
+}, []);
+
+// Add this near your other dialogs
+const PreviewDialog = () => (
+  <Dialog 
+    open={pdfPreview.show} 
+    onOpenChange={(open) => {
+      if (!open) {
+        URL.revokeObjectURL(pdfPreview.data);
+        setPdfPreview({ show: false, data: null, fileName: '' });
+        // Reset form after closing preview
+        setCurrentInvoiceNumber(generateInvoiceNumber(currentInvoiceNumber));
+        setInvoiceItems([]);
+        setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
+      }
+    }}
+  >
+    <DialogContent className="pdf-preview-content">
+      <DialogHeader>
+        <DialogTitle>Invoice Preview - {pdfPreview.fileName}</DialogTitle>
+      </DialogHeader>
+      <div className="pdf-container">
+        <iframe
+          src={pdfPreview.data}
+          width="100%"
+          height="100%"
+          style={{ border: 'none' }}
+          title="PDF Preview"
+        />
+      </div>
+    </DialogContent>
+  </Dialog>
+);
 
 // Main Render
   return (
@@ -1892,6 +1974,9 @@ useEffect(() => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Add these dialogs at the bottom */}
+      <PreviewDialog />
     </div>
   );
 };

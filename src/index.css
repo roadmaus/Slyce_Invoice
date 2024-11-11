@@ -179,6 +179,28 @@
   .select__indicator-separator {
     @apply !bg-input;
   }
+
+  /* PDF Preview Dialog styles */
+  .pdf-preview-dialog {
+    @apply !max-w-[95vw] !w-[95vw] !h-[95vh];
+  }
+
+  .pdf-preview-content {
+    @apply !p-0 !max-w-[95vw] !w-[95vw] !h-[95vh];
+  }
+
+  .pdf-container {
+    @apply w-full h-[calc(95vh-4rem)] bg-white dark:bg-slate-900;
+  }
+
+  /* PDF Object styles */
+  .pdfobject-container {
+    @apply h-full w-full;
+  }
+
+  .pdfobject {
+    @apply h-full w-full border-none;
+  }
 }
 
 @media print {

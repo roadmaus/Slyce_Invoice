@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 
 const SettingsTab = () => {
   const { theme, setTheme } = useTheme();
@@ -14,6 +15,30 @@ const SettingsTab = () => {
     export: false,
     import: false
   });
+  const [previewSettings, setPreviewSettings] = React.useState({
+    showPreview: true
+  });
+
+  // Load preview settings on mount
+  React.useEffect(() => {
+    const loadPreviewSettings = async () => {
+      const settings = await window.electronAPI.getData('previewSettings');
+      if (settings) {
+        setPreviewSettings(settings);
+      }
+    };
+    loadPreviewSettings();
+  }, []);
+
+  // Save preview settings when changed
+  const updatePreviewSettings = async (newSettings) => {
+    setPreviewSettings(newSettings);
+    await window.electronAPI.setData('previewSettings', newSettings);
+    // Dispatch event to notify other components
+    window.dispatchEvent(new CustomEvent('previewSettingsChanged', { 
+      detail: newSettings 
+    }));
+  };
 
   return (
     <div className="container max-w-4xl mx-auto">
@@ -48,6 +73,35 @@ const SettingsTab = () => {
                     <p className="text-xs text-center text-muted-foreground">{description}</p>
                   </button>
                 ))}
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* PDF Preview Settings Section */}
+            <section>
+              <div className="flex items-center gap-2 mb-6">
+                <h2 className="text-2xl font-semibold tracking-tight">PDF Preview</h2>
+                <Info className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <p className="text-muted-foreground mb-6">
+                Configure how PDF previews are handled after generating invoices.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Show PDF Preview</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Automatically show preview dialog after generating invoices
+                    </p>
+                  </div>
+                  <Switch
+                    checked={previewSettings.showPreview}
+                    onCheckedChange={(checked) => 
+                      updatePreviewSettings({ ...previewSettings, showPreview: checked })
+                    }
+                  />
+                </div>
               </div>
             </section>
 
