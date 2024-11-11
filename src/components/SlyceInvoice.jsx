@@ -119,6 +119,55 @@ const adjustColorForDarkMode = (hexColor, isDark) => {
   return `rgba(${r}, ${g}, ${b}, 0.3)`;
 };
 
+// Add this helper function
+const formatInvoiceItems = (items) => {
+  return items.map(item => `
+    <tr>
+      <td>${item.quantity}</td>
+      <td>${item.description}</td>
+      <td>€${item.rate.toFixed(2)}</td>
+      <td>€${(item.quantity * item.rate).toFixed(2)}</td>
+    </tr>
+  `).join('');
+};
+
+// Add this new component near your other components
+const InvoiceTotals = ({ items, profile }) => {
+  const netTotal = items.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
+  const vatRate = profile?.vat_enabled ? (profile.vat_rate || 19) : 0;
+  const vatAmount = profile?.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
+  const totalAmount = netTotal + vatAmount;
+
+  return (
+    <div className="mt-6 space-y-2 w-[300px] ml-auto">
+      <div className="flex justify-between items-center p-2 bg-secondary/50 rounded-md">
+        <span className="text-sm text-muted-foreground">Nettobetrag:</span>
+        <span className="font-medium">€{netTotal.toFixed(2)}</span>
+      </div>
+      
+      {profile?.vat_enabled && (
+        <div className="flex justify-between items-center p-2 bg-secondary/50 rounded-md">
+          <span className="text-sm text-muted-foreground">
+            Mehrwertsteuer ({vatRate}%):
+          </span>
+          <span className="font-medium">€{vatAmount.toFixed(2)}</span>
+        </div>
+      )}
+      
+      <div className="flex justify-between items-center p-2 bg-primary/10 rounded-md font-medium">
+        <span className="text-sm">Gesamtbetrag:</span>
+        <span>€{totalAmount.toFixed(2)}</span>
+      </div>
+
+      <div className="text-xs text-muted-foreground italic mt-2">
+        {profile?.vat_enabled 
+          ? "Umsatzsteuer wird gemäß § 19 UStG berechnet."
+          : "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet."}
+      </div>
+    </div>
+  );
+};
+
 const SlyceInvoice = () => {
   // Business Profiles State
   const [businessProfiles, setBusinessProfiles] = useState([]);
@@ -135,6 +184,8 @@ const SlyceInvoice = () => {
     bank_bic: '',
     contact_details: '',
     invoice_save_path: '',
+    vat_enabled: false,
+    vat_rate: 19,
   });
 
   // Customers State
@@ -293,6 +344,8 @@ const SlyceInvoice = () => {
       bank_bic: '',
       contact_details: '',
       invoice_save_path: '',
+      vat_enabled: false,
+      vat_rate: 19,
     });
     setShowNewProfileDialog(false);
   };
@@ -389,7 +442,12 @@ const SlyceInvoice = () => {
 
   const updateInvoiceItem = (index, field, value) => {
     const newItems = [...invoiceItems];
-    newItems[index][field] = value;
+    if (field === 'quantity' || field === 'rate') {
+      // Ensure these are numbers
+      newItems[index][field] = parseFloat(value) || 0;
+    } else {
+      newItems[index][field] = value;
+    }
     newItems[index].total = newItems[index].quantity * newItems[index].rate;
     setInvoiceItems(newItems);
   };
@@ -401,7 +459,7 @@ const SlyceInvoice = () => {
   };
 
   const calculateTotal = () => {
-    return invoiceItems.reduce((sum, item) => sum + item.quantity * item.rate, 0).toFixed(2);
+    return invoiceItems.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
   };
 
   const generateInvoice = async () => {
@@ -410,9 +468,8 @@ const SlyceInvoice = () => {
     setIsLoading(prev => ({ ...prev, invoice: true }));
     
     try {
-      // Load your invoice template
       const template = await window.electronAPI.getInvoiceTemplate();
-
+      
       // Format customer address
       const customerAddress = `${selectedCustomer.title !== 'Divers' ? selectedCustomer.title : ''} ${selectedCustomer.zusatz} ${selectedCustomer.name}<br>
         ${selectedCustomer.street}<br>
@@ -427,17 +484,29 @@ const SlyceInvoice = () => {
         ? `Sehr geehrte(r) ${selectedCustomer.zusatz} ${selectedCustomer.name},`
         : `Sehr ${selectedCustomer.title === 'Herr' ? 'geehrter Herr' : 'geehrte Frau'} ${selectedCustomer.zusatz} ${selectedCustomer.name},`;
 
-      // Format invoice items
-      const formattedInvoiceItems = invoiceItems.map(item => `
-        <tr>
-          <td>${item.quantity}</td>
-          <td>${item.description}</td>
-          <td>€${item.rate.toFixed(2)}</td>
-          <td>€${(item.quantity * item.rate).toFixed(2)}</td>
-        </tr>
-      `).join('');
+      // Calculate amounts
+      const netTotal = calculateTotal();
+      const vatRate = selectedProfile.vat_enabled ? (selectedProfile.vat_rate || 19) : 0;
+      const vatAmount = selectedProfile.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
+      const totalAmount = netTotal + vatAmount;
 
-      // Replace template placeholders using replaceAll()
+      // Create VAT row HTML if VAT is enabled
+      const vatRowHtml = selectedProfile.vat_enabled 
+        ? `<tr>
+            <td>Mehrwertsteuer (${vatRate}%):</td>
+            <td>€${vatAmount.toFixed(2)}</td>
+          </tr>`
+        : '';
+
+      // Create VAT notice based on profile settings
+      const vatNoticeHtml = selectedProfile.vat_enabled
+        ? `<p class="vat-notice">Umsatzsteuer wird gemäß § 19 UStG berechnet.</p>`
+        : `<p class="vat-notice">Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>`;
+
+      // Format invoice items
+      const formattedInvoiceItems = formatInvoiceItems(invoiceItems);
+
+      // Replace template placeholders
       let filledTemplate = template
         .replaceAll('{company_name}', selectedProfile.company_name)
         .replaceAll('{company_street}', selectedProfile.company_street)
@@ -452,7 +521,10 @@ const SlyceInvoice = () => {
           ? `${invoiceDates.startDate} bis ${invoiceDates.endDate}`
           : invoiceDates.startDate)
         .replaceAll('{invoice_items}', formattedInvoiceItems)
-        .replaceAll('{total_amount}', `€${calculateTotal()}`)
+        .replaceAll('{net_amount}', `€${netTotal.toFixed(2)}`)
+        .replaceAll('{vat_row}', vatRowHtml)
+        .replaceAll('{vat_notice}', vatNoticeHtml)
+        .replaceAll('{total_amount}', `€${totalAmount.toFixed(2)}`)
         .replaceAll('{bank_institute}', selectedProfile.bank_institute)
         .replaceAll('{bank_iban}', selectedProfile.bank_iban)
         .replaceAll('{bank_bic}', selectedProfile.bank_bic)
@@ -593,6 +665,37 @@ const SlyceInvoice = () => {
           onChange={(e) => setProfile({ ...profile, contact_details: e.target.value })}
           placeholder="Phone, Email, Website, etc."
         />
+      </div>
+      <div className="space-y-2">
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={profile.vat_enabled}
+            onCheckedChange={(checked) => setProfile({ 
+              ...profile, 
+              vat_enabled: checked,
+              vat_rate: checked ? (profile.vat_rate || 19) : 0
+            })}
+          />
+          <Label>Enable VAT (Umsatzsteuer)</Label>
+        </div>
+        
+        {profile.vat_enabled && (
+          <div className="flex items-center space-x-2">
+            <Input
+              type="number"
+              value={profile.vat_rate || 19}
+              onChange={(e) => setProfile({ 
+                ...profile, 
+                vat_rate: parseFloat(e.target.value) 
+              })}
+              min="0"
+              max="100"
+              step="0.1"
+              className="w-20"
+            />
+            <Label>VAT Rate (%)</Label>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -794,6 +897,8 @@ const handleProfileDialog = (existingProfile = null) => {
       bank_bic: '',
       contact_details: '',
       invoice_save_path: '',
+      vat_enabled: false,
+      vat_rate: 19,
     });
   }
   setShowNewProfileDialog(true);
@@ -1242,30 +1347,33 @@ const LoadingOverlay = () => (
                 </div>
               </div>
 
+              {/* Add the totals component */}
+              {invoiceItems.length > 0 && (
+                <InvoiceTotals 
+                  items={invoiceItems} 
+                  profile={selectedProfile} 
+                />
+              )}
+
               {/* Total and Generate Section */}
-              <div className="mt-6 flex justify-between items-center">
-                <div className="text-lg font-medium">
-                  Total: €{calculateTotal()}
-                </div>
-                <div className="space-x-2">
-                  <Button 
-                    onClick={generateInvoice} 
-                    disabled={isLoading.invoice}
-                    className="min-w-[200px]"
-                  >
-                    {isLoading.invoice ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="h-4 w-4 mr-2" />
-                        Generate Invoice
-                      </>
-                    )}
-                  </Button>
-                </div>
+              <div className="mt-6 flex justify-end items-center">
+                <Button 
+                  onClick={generateInvoice} 
+                  disabled={isLoading.invoice}
+                  className="min-w-[200px]"
+                >
+                  {isLoading.invoice ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 mr-2" />
+                      Generate Invoice
+                    </>
+                  )}
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -1441,6 +1549,8 @@ const LoadingOverlay = () => (
                       bank_bic: '',
                       contact_details: '',
                       invoice_save_path: '',
+                      vat_enabled: false,
+                      vat_rate: 19,
                     });
                   }
                   setShowNewProfileDialog(open);
@@ -1475,6 +1585,8 @@ const LoadingOverlay = () => (
                             bank_bic: '',
                             contact_details: '',
                             invoice_save_path: '',
+                            vat_enabled: false,
+                            vat_rate: 19,
                           });
                           setShowNewProfileDialog(false);
                         }}
@@ -1508,6 +1620,8 @@ const LoadingOverlay = () => (
                           bank_bic: '',
                           contact_details: '',
                           invoice_save_path: '',
+                          vat_enabled: false,
+                          vat_rate: 19,
                         });
                         setShowNewProfileDialog(false);
                       }}>

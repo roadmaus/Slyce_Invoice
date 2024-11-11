@@ -181,10 +181,22 @@
         {invoice_items}
     </table>
 
-    <div class="total">Gesamt: {total_amount}</div>
+    <table class="amount-summary">
+        <tr>
+            <td>Nettobetrag:</td>
+            <td>{net_amount}</td>
+        </tr>
+        {vat_row}
+        <tr class="medium-bold">
+            <td>Gesamtbetrag:</td>
+            <td>{total_amount}</td>
+        </tr>
+    </table>
 
     <div class="payment-info">
         <p>Bitte überweisen Sie den Betrag von <span class="medium-bold">{total_amount}</span> innerhalb der nächsten 7 Werktage auf folgendes Konto:</p>
+        
+        {vat_notice}
         
         <div class="banking-info">
             <p><span class="medium-bold">Name:</span> {company_name}</p>
