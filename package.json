@@ -2,6 +2,11 @@
   "name": "slyce-invoice-electron",
   "version": "1.0.0",
   "private": true,
+  "description": "Professional invoice creation and management application",
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com"
+  },
   "main": "main.cjs",
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -96,7 +101,14 @@
     "start": "cross-env NODE_ENV=development concurrently -k \"npm run dev\" \"wait-on tcp:5173 && electron .\"",
     "electron:dev": "cross-env NODE_ENV=development electron .",
     "dist": "npm run build && electron-builder",
-    "dist:mac": "npm run build && electron-builder --mac"
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:linux-x64": "npm run build && electron-builder --linux --x64",
+    "dist:linux-arm64": "npm run build && electron-builder --linux --arm64",
+    "dist:win-x64": "npm run build && electron-builder --win --x64",
+    "dist:win-arm64": "npm run build && electron-builder --win --arm64",
+    "dist:all": "npm run build && electron-builder -mwl --x64 --arm64"
   },
   "browserslist": {
     "production": [
@@ -137,10 +149,16 @@
     "dmg": {
       "icon": "build/icon.icns",
       "iconSize": 100,
+      "background": "build/background.png",
+      "window": {
+        "width": 540,
+        "height": 380
+      },
       "contents": [
         {
           "x": 130,
-          "y": 220
+          "y": 220,
+          "type": "file"
         },
         {
           "x": 410,
@@ -149,6 +167,30 @@
           "path": "/Applications"
         }
       ]
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "arm64"]
+        }
+      ]
+    },
+    "linux": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "category": "Office",
+      "maintainer": "Your Name <your.email@example.com>"
     }
   }
 }
