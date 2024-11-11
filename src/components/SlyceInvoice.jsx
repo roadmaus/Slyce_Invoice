@@ -483,8 +483,8 @@ const SlyceInvoice = () => {
       const saved = await window.electronAPI.saveInvoice(pdfBuffer, fileName);
 
       if (saved) {
-        // Update invoice number in storage
-        await window.electronAPI.setData('lastInvoiceNumber', currentInvoiceNumber);
+        // Add an artificial delay before hiding the loading overlay
+        await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5 seconds delay
         
         // Only show preview if enabled in settings
         if (previewSettings.showPreview) {
