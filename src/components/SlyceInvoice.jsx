@@ -910,10 +910,20 @@ const PreviewDialog = () => (
   </Dialog>
 );
 
+const LoadingOverlay = () => (
+  <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-50 flex items-center justify-center">
+    <div className="text-center space-y-4">
+      <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+      <p className="text-lg font-medium text-foreground">Generating Invoice...</p>
+    </div>
+  </div>
+);
+
 // Main Render
   return (
     <div className="container-large space-y-6">
       <Toaster position="top-right" expand={true} richColors />
+      {isLoading.invoice && <LoadingOverlay />}
 
       <Tabs defaultValue="invoice" className="w-full">
         <TabsList className="bg-muted">

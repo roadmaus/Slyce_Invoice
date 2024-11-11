@@ -6,5 +6,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setData: (key, data) => ipcRenderer.invoke('setData', key, data),
   getInvoiceTemplate: () => ipcRenderer.invoke('getInvoiceTemplate'),
   exportData: () => ipcRenderer.invoke('export-data'),
-  importData: () => ipcRenderer.invoke('import-data')
+  importData: () => ipcRenderer.invoke('import-data'),
+  selectDirectory: async () => {
+    try {
+      const result = await ipcRenderer.invoke('dialog:selectDirectory');
+      return result || '';
+    } catch (error) {
+      console.error('Error in selectDirectory:', error);
+      throw error;
+    }
+  }
 });

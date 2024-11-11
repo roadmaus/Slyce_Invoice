@@ -39,7 +39,25 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
+function registerIpcHandlers() {
+  ipcMain.handle('dialog:selectDirectory', async () => {
+    try {
+      const result = await dialog.showOpenDialog({
+        properties: ['openDirectory'],
+        title: 'Select Invoice Save Location',
+        buttonLabel: 'Select Folder'
+      });
+
+      if (!result.canceled && result.filePaths.length > 0) {
+        return result.filePaths[0];
+      }
+      return '';
+    } catch (error) {
+      console.error('Error selecting directory:', error);
+      throw error;
+    }
+  });
+
   // Register IPC handlers
   ipcMain.handle('getData', async (event, key) => {
     return store.get(key);
@@ -70,28 +88,45 @@ app.whenReady().then(() => {
   ipcMain.handle('save-invoice', async (event, pdfArrayBuffer, fileName) => {
     try {
       const pdfBuffer = Buffer.from(pdfArrayBuffer);
+      
+      // Get the settings from store
+      const settings = store.get('previewSettings');
+      const customPath = settings?.savePath;
 
-      // Get the user's home directory
-      const homeDir = os.homedir();
-
-      // Construct the path to the Documents/Invoices/<year>/ directory
-      const year = new Date().getFullYear();
-      const invoicesDir = path.join(homeDir, 'Documents', 'Invoices', year.toString());
-
-      // Create the directory if it doesn't exist
-      fs.mkdirSync(invoicesDir, { recursive: true });
-
-      // Construct the full file path
-      const safeFileName = fileName.replace(/[/\\?%*:|"<>]/g, '-'); // Remove illegal filename characters
-      const filePath = path.join(invoicesDir, `${safeFileName}.pdf`);
+      let savePath;
+      if (customPath && customPath.trim() !== '') {
+        // Use custom path if set and not empty
+        const year = new Date().getFullYear().toString();
+        const yearDir = path.join(customPath, year);
+        
+        // Create year directory in custom path if it doesn't exist
+        fs.mkdirSync(yearDir, { recursive: true });
+        
+        const safeFileName = fileName.replace(/[/\\?%*:|"<>]/g, '-');
+        savePath = path.join(yearDir, `${safeFileName}.pdf`);
+      } else {
+        // Use default path (Documents/Invoices/<year>/)
+        const homeDir = os.homedir();
+        const year = new Date().getFullYear().toString();
+        const baseDir = path.join(homeDir, 'Documents', 'Invoices');
+        const yearDir = path.join(baseDir, year);
+        
+        // Create the full directory structure if it doesn't exist
+        fs.mkdirSync(baseDir, { recursive: true });
+        fs.mkdirSync(yearDir, { recursive: true });
+        
+        const safeFileName = fileName.replace(/[/\\?%*:|"<>]/g, '-');
+        savePath = path.join(yearDir, `${safeFileName}.pdf`);
+      }
 
       // Write the PDF buffer to the file
-      fs.writeFileSync(filePath, pdfBuffer);
-
+      fs.writeFileSync(savePath, pdfBuffer);
+      
+      console.log('Invoice saved to:', savePath); // Debug log
       return true;
     } catch (error) {
       console.error('Error saving invoice:', error);
-      return false;
+      throw error; // Throw error to handle it in the renderer
     }
   });
 
@@ -153,7 +188,13 @@ app.whenReady().then(() => {
       return null;
     }
   });
+}
 
+app.whenReady().then(() => {
+  // Register all IPC handlers first
+  registerIpcHandlers();
+
+  // Then create the window
   createWindow();
 });
 
