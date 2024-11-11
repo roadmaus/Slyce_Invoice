@@ -533,26 +533,38 @@ const SlyceInvoice = () => {
         .replaceAll('{unit_price_label}', 'Einzelpreis');
         // Add more replacements if needed
 
-      // Generate PDF as both ArrayBuffer and Blob for preview
-      const pdfBuffer = await html2pdf()
-        .set({
-          margin: 1,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' },
-        })
-        .from(filledTemplate)
-        .outputPdf('arraybuffer');
+      // Remove the static page number from the template
+      filledTemplate = filledTemplate.replace(
+        '<div class="page-number">1/1</div>',
+        '<div class="page-number" id="page-counter"></div>'
+      );
+
+      // Generate PDF with page numbers
+      const pdf = await html2pdf().set({
+        margin: 1,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: 'css', before: '.page-break' },
+        footer: {
+          height: '20px',
+          contents: {
+            default: '<div style="text-align: center; font-size: 10px; font-family: Inter, sans-serif;" class="page-number">{{page}}/{{pages}}</div>'
+          }
+        }
+      })
+      .from(filledTemplate)
+      .outputPdf('arraybuffer');
 
       // Create Blob for preview
-      const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
+      const pdfBlob = new Blob([pdf], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
 
       // Construct the desired file name
       const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
 
       // Save using Electron
-      const saved = await window.electronAPI.saveInvoice(pdfBuffer, fileName);
+      const saved = await window.electronAPI.saveInvoice(pdf, fileName);
 
       if (saved) {
         // Add an artificial delay before hiding the loading overlay
