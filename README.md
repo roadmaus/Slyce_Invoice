@@ -2,7 +2,7 @@
 
 A modern, desktop invoice generation application built with Electron and React. Slyce Invoice helps freelancers and small businesses create, manage, and track invoices efficiently.
 
-![Slyce Invoice Logo](build/icon.icns)
+![Slyce Invoice Logo](build/icon.png)
 
 ## Features
 
