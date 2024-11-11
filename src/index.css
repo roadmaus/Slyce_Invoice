@@ -32,30 +32,30 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --background: 220 6% 10%;
+    --foreground: 0 0% 98%;
+    --card: 220 6% 10%;
+    --card-foreground: 0 0% 98%;
+    --popover: 220 6% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 220 6% 10%;
+    --secondary: 220 5% 13%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 220 5% 13%;
+    --muted-foreground: 220 5% 65%;
+    --accent: 213 100% 50%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 90% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 6% 13%;
+    --input: 220 6% 13%;
+    --ring: 213 100% 50%;
+    --chart-1: 213 100% 50%;
+    --chart-2: 160 100% 40%;
+    --chart-3: 40 100% 50%;
+    --chart-4: 345 85% 55%;
+    --chart-5: 280 100% 50%;
   }
 }
 
@@ -70,7 +70,8 @@
 
 @layer components {
   .select-content {
-    @apply bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800;
+    @apply border border-border;
+    background-color: hsl(var(--popover));
   }
   
   .select-item {
@@ -133,7 +134,9 @@
   }
 
   .select__menu {
-    @apply !bg-popover !border !border-input !rounded-md !mt-1 !shadow-md;
+    @apply !border !border-input !rounded-md !mt-1 !shadow-md;
+    background-color: hsl(var(--popover)) !important;
+    backdrop-filter: none !important;
   }
 
   .select__menu-list {
@@ -141,7 +144,9 @@
   }
 
   .select__option {
-    @apply !bg-popover !text-foreground !px-2 !py-1.5 !rounded-sm;
+    @apply !text-foreground !px-2 !py-1.5 !rounded-sm;
+    background-color: hsl(var(--popover)) !important;
+    backdrop-filter: none !important;
   }
 
   .select__option--is-focused {
@@ -200,6 +205,68 @@
 
   .pdfobject {
     @apply h-full w-full border-none;
+  }
+
+  /* Add these new styles for SelectContent */
+  [cmdk-overlay] {
+    background-color: transparent;
+  }
+  
+  [cmdk-content] {
+    background-color: hsl(var(--popover));
+  }
+  
+  /* Update the React Select styles to ensure solid background */
+  .select__menu {
+    @apply !border !border-input !rounded-md !mt-1 !shadow-md;
+    background-color: hsl(var(--popover)) !important;
+    backdrop-filter: none !important;
+  }
+  
+  .select__option {
+    @apply !text-foreground !px-2 !py-1.5 !rounded-sm;
+    background-color: hsl(var(--popover)) !important;
+    backdrop-filter: none !important;
+  }
+  
+  /* Add this to ensure no transparency in dropdowns */
+  [data-radix-popper-content-wrapper] > * {
+    backdrop-filter: none !important;
+  }
+
+  /* Dropdown/Select styling */
+  .select-content,
+  .select__menu,
+  .select__option,
+  [cmdk-content],
+  [data-radix-popper-content-wrapper] > * {
+    background-color: hsl(var(--background)) !important;
+    opacity: 1 !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Ensure dark mode also has solid background */
+  .dark .select-content,
+  .dark .select__menu,
+  .dark .select__option,
+  .dark [cmdk-content],
+  .dark [data-radix-popper-content-wrapper] > * {
+    background-color: hsl(var(--background)) !important;
+  }
+
+  /* Add or update these styles for the Switch component */
+  .switch-container {
+    @apply flex items-center space-x-2 py-2;
+  }
+
+  /* Update the Switch component styles */
+  [data-state=checked].dark {
+    @apply bg-accent border-transparent;
+  }
+
+  [data-state=unchecked].dark {
+    @apply bg-muted border-transparent;
   }
 }
 
