@@ -236,7 +236,7 @@
         "description": "Wähled Se da Standardschbeicherort für Ihre PDFs",
         "placeholder": "Schbeicherort auswähla",
         "browse": "Durchsucha",
-        "noPath": "Koin Schbeicherort ausgwählt"
+        "noPath": "Koin Schbeicherort ausgwählt, wird im Standardpfad (Documents/Invoices/Year) gespeichert"
       }
     },
     "dataManagement": {

@@ -236,7 +236,7 @@
         "description": "PDF'leriniz için varsayılan kayıt konumunu seçin",
         "placeholder": "Bir konum seçin",
         "browse": "Gözat",
-        "noPath": "Kayıt konumu seçilmedi"
+        "noPath": "Kayıt konumu seçilmedi, standart konuma (Documents/Invoices/Year) kaydedilecektir"
       }
     },
     "dataManagement": {

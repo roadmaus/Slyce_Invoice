@@ -236,7 +236,7 @@
         "description": "Escolha o local padrão para salvar seus PDFs",
         "placeholder": "Escolher local",
         "browse": "Procurar",
-        "noPath": "Nenhum local selecionado"
+        "noPath": "Nenhum local selecionado, será salvo no local padrão (Documents/Invoices/Year)"
       }
     },
     "dataManagement": {

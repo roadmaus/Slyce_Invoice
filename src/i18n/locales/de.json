@@ -235,7 +235,7 @@
         "description": "Wählen Sie den Standardspeicherort für Ihre PDFs",
         "placeholder": "Wählen Sie einen Speicherort",
         "browse": "Durchsuchen",
-        "noPath": "Kein Speicherort ausgewählt"
+        "noPath": "Kein Speicherort ausgewählt, wird in Standardpfad (Documents/Invoices/Year) gespeichert"
       }
     },
     "dataManagement": {

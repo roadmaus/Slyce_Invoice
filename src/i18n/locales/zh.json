@@ -236,7 +236,7 @@
         "description": "选择PDF的默认保存位置",
         "placeholder": "选择位置",
         "browse": "浏览",
-        "noPath": "未选择位置"
+        "noPath": "未选择位置，将保存到默认位置 (Documents/Invoices/Year)"
       }
     },
     "dataManagement": {

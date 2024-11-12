@@ -236,7 +236,7 @@
         "description": "Scegli la posizione predefinita per i tuoi PDF",
         "placeholder": "Scegli posizione salvataggio",
         "browse": "Sfoglia",
-        "noPath": "Nessuna posizione selezionata"
+        "noPath": "Nessuna posizione selezionata, verrà salvato nel percorso predefinito (Documents/Invoices/Year)"
       }
     },
     "dataManagement": {

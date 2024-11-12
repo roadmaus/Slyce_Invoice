@@ -236,7 +236,7 @@
         "description": "Choisissez l'emplacement de sauvegarde par défaut pour vos PDF",
         "placeholder": "Choisir un emplacement",
         "browse": "Parcourir",
-        "noPath": "Aucun emplacement sélectionné"
+        "noPath": "Aucun emplacement sélectionné, sera sauvegardé dans le chemin par défaut (Documents/Factures/Année)"
       }
     },
     "dataManagement": {

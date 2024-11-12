@@ -236,7 +236,7 @@
         "description": "PDFのデフォルト保存場所を選択",
         "placeholder": "保存場所を選択",
         "browse": "参照",
-        "noPath": "保存場所が選択されていません"
+        "noPath": "保存場所が選択されていません。デフォルトの場所 (Documents/Invoices/Year) に保存されます"
       }
     },
     "dataManagement": {

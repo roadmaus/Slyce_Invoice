@@ -236,7 +236,7 @@
         "description": "PDF의 기본 저장 위치를 선택하세요",
         "placeholder": "저장 위치 선택",
         "browse": "찾아보기",
-        "noPath": "선택된 저장 위치가 없습니다"
+        "noPath": "선택된 저장 위치가 없습니다. 기본 위치 (Documents/Invoices/Year)에 저장됩니다"
       }
     },
     "dataManagement": {

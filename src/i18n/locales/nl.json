@@ -236,7 +236,7 @@
         "description": "Kies de standaard opslaglocatie voor uw PDF's",
         "placeholder": "Kies een opslaglocatie",
         "browse": "Bladeren",
-        "noPath": "Geen opslaglocatie geselecteerd"
+        "noPath": "Geen opslaglocatie geselecteerd, wordt op standaardlocatie (Documents/Invoices/Year) opgeslagen"
       }
     },
     "dataManagement": {

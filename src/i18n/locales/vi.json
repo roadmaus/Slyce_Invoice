@@ -236,7 +236,7 @@
         "description": "Chọn vị trí lưu mặc định cho PDF",
         "placeholder": "Chọn vị trí lưu",
         "browse": "Duyệt",
-        "noPath": "Chưa chọn vị trí lưu"
+        "noPath": "Chưa chọn vị trí lưu, sẽ lưu vào vị trí mặc định (Documents/Invoices/Year)"
       }
     },
     "dataManagement": {

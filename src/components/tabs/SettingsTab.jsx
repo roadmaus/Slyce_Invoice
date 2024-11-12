@@ -286,6 +286,7 @@ const SettingsTab = () => {
                     onCheckedChange={(checked) => 
                       updatePreviewSettings({ ...previewSettings, showPreview: checked })
                     }
+                    className={!previewSettings.showPreview ? "data-[state=unchecked]:bg-destructive" : ""}
                   />
                 </div>
 

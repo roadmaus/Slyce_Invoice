@@ -236,7 +236,7 @@
         "description": "Elija la ubicación predeterminada para sus PDFs",
         "placeholder": "Elija una ubicación de guardado",
         "browse": "Explorar",
-        "noPath": "No se ha seleccionado ubicación de guardado"
+        "noPath": "No se ha seleccionado ubicación de guardado, se guardará en la ubicación predeterminada (Documents/Invoices/Year)"
       }
     },
     "dataManagement": {

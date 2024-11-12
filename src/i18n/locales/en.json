@@ -236,7 +236,7 @@
         "description": "Choose the default location for your PDFs",
         "placeholder": "Choose a save location",
         "browse": "Browse",
-        "noPath": "No save location selected"
+        "noPath": "No save location selected, will save to default location (Documents/Invoices/Year)"
       }
     },
     "dataManagement": {
