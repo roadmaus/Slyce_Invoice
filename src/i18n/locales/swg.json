@@ -1,0 +1,308 @@
+{
+    "invoice": {
+      "title": "Rächnung",
+      "recipient": {
+        "title": "Rächnungsempfänger",
+        "selectCustomer": "Kunde auswähla"
+      },
+      "details": {
+        "title": "Rächnungsdetails",
+        "selectProfile": "Gschäftsprofil auswähla",
+        "number": {
+          "label": "Rächnungsnummr",
+          "hint": "D'Rächnungsnummr wird automatisch gmacht"
+        },
+        "date": {
+          "label": "Rächnungsdatum",
+          "serviceDate": "Leistungsdatum",
+          "servicePeriod": "Leistungszeitraum",
+          "startOfService": "Afang von dr Leistung",
+          "endOfService": "End von dr Leistung"
+        }
+      },
+      "items": {
+        "title": "Rächnungsposchda",
+        "description": "Beschreibung",
+        "quantity": "Menge",
+        "rate": "Preis (€)",
+        "total": "Gsamt",
+        "addItem": "Poschda neidoa"
+      },
+      "totals": {
+        "netAmount": "Nettobetrag",
+        "vat": "Mehrwertsteuer ({{rate}}%)",
+        "totalAmount": "Gsamtbetrag",
+        "vatNotice": {
+          "enabled": "D'Mehrwertsteuer wird nach § 19 UStG berechnet.",
+          "disabled": "Nach § 19 UStG wird koi Mehrwertsteuer berechnet."
+        }
+      },
+      "actions": {
+        "generate": "Rächnung macha",
+        "generating": "Wird grad gmacht...",
+        "preview": "Vorschau",
+        "save": "Schbeicha"
+      }
+    },
+    "customers": {
+      "title": "Kunda",
+      "management": "Kundaverwaltung",
+      "add": "Kunda neidoa",
+      "edit": "Kunda bearbeita",
+      "form": {
+        "title": "Ared",
+        "selectTitle": "Ared auswähla",
+        "titles": {
+          "mr": "Herr",
+          "mrs": "Frau",
+          "diverse": "Anders"
+        },
+        "academicTitle": {
+          "label": "Akademischer Titel",
+          "options": {
+            "dr": "Dr.",
+            "prof": "Prof.",
+            "profDr": "Prof. Dr.",
+            "drHc": "Dr. h.c."
+          },
+          "placeholder": "auswähla"
+        },
+        "name": "Nam",
+        "street": "Stroß",
+        "postalCode": "Poschtleitzahl",
+        "city": "Stadt",
+        "businessCustomer": "Gschäftskunde"
+      },
+      "actions": {
+        "add": "Kunda neidoa",
+        "edit": "Kunda bearbeita",
+        "save": "Schbeicha",
+        "cancel": "Abbrächa",
+        "delete": "Wegmacha"
+      },
+      "dialog": {
+        "addTitle": "Neue Kunda neidoa",
+        "editTitle": "Kunda bearbeita",
+        "addDescription": "Gebed Se d'Kundadate ei",
+        "editDescription": "Bearbeited Se d'Kundadate"
+      }
+    },
+    "business": {
+      "title": "Gschäftsprofil",
+      "add": "Profil neidoa",
+      "edit": "Profil bearbeita",
+      "form": {
+        "companyName": "Firmaname",
+        "street": "Stroß",
+        "postalCode": "PLZ",
+        "city": "Stadt",
+        "taxNumber": "Steuernummr",
+        "taxId": "USt-IdNr.",
+        "bankInstitute": "Bank",
+        "iban": "IBAN",
+        "bic": "BIC",
+        "contactDetails": "Kontaktdate",
+        "contactDetailsPlaceholder": "Telefon, E-Mail, Website, ond so weiter",
+        "vatEnabled": "Mehrwertsteuer aktiviera",
+        "vatRate": "Mehrwertsteuersatz (%)"
+      },
+      "actions": {
+        "setDefault": "Als Standard festlega",
+        "add": "Profil neidoa",
+        "save": "Schbeicha",
+        "cancel": "Abbrächa",
+        "delete": "Wegmacha"
+      },
+      "dialog": {
+        "addTitle": "Neis Gschäftsprofil neidoa",
+        "editTitle": "Gschäftsprofil bearbeita",
+        "addDescription": "Gebed Se d'Details von Ihrem Gschäftsprofil ei.",
+        "editDescription": "Bearbeited Se d'Details von Ihrem Gschäftsprofil."
+      },
+      "validation": {
+        "maxProfiles": "Maximale Azahl von Gschäftsprofil erreicht",
+        "requiredFields": "Bitte alle Pflichtfelder ausfülla"
+      },
+      "defaultLabel": "Standard",
+      "status": {
+        "isDefault": "Standardprofil",
+        "notDefault": "Als Standard festlega"
+      }
+    },
+    "profile": {
+      "actions": {
+        "edit": "Profil bearbeita",
+        "delete": "Profil wegmacha",
+        "confirmDelete": {
+          "title": "Profil wegmacha",
+          "description": "Senn Se sichr, dass Se des Profil wegmacha wellet? Des ka ma nemme rückgängig macha.",
+          "confirm": "Ja, wegmacha",
+          "cancel": "Abbrächa"
+        }
+      }
+    },
+    "confirmDialog": {
+      "delete": {
+        "title": "Wegmacha bestätiga",
+        "description": "Senn Se sichr, dass Se des wegmacha wellet? Des ka ma nemme rückgängig macha.",
+        "confirm": "Ja, wegmacha",
+        "cancel": "Abbrächa"
+      }
+    },
+    "tags": {
+      "title": "Schnelleignab",
+      "add": "Tag neidoa",
+      "edit": "Tag bearbeita",
+      "form": {
+        "name": "Nam",
+        "description": "Beschreibung",
+        "rate": "Preis (€)",
+        "quantity": "Menge",
+        "color": "Farb",
+        "visible": "In Schnelleignab sichtbar",
+        "usesDateRange": "Verwendet Datumszeitraum",
+        "personas": "Zugeordnete Profile"
+      },
+      "emptyState": {
+        "title": "Koine Quick Tags do",
+        "description": "Mached Se Quick Tags, zum schneller Rächnunga schreiba.",
+        "addFirst": "Erschte Tag neidoa"
+      },
+      "actions": {
+        "add": "Tag neidoa",
+        "edit": "Tag bearbeita",
+        "delete": "Tag wegmacha",
+        "save": "Änderunga schbeicha",
+        "cancel": "Abbrächa"
+      },
+      "search": {
+        "placeholder": "Tags sucha...",
+        "noResults": "Koine Tags gfunda"
+      }
+    },
+    "settings": {
+      "title": "Eistellunga",
+      "appearance": {
+        "title": "Aussäha",
+        "description": "Passed Se s'Aussäha von Ihrer App a",
+        "themes": {
+          "light": {
+            "label": "Hell",
+            "description": "Hells Design für d'Dagnützung"
+          },
+          "dark": {
+            "label": "Dunkl",
+            "description": "Dunkls Design für d'Nachtnützung"
+          },
+          "system": {
+            "label": "System",
+            "description": "Systemeischtellunga folga"
+          }
+        }
+      },
+      "language": {
+        "title": "Schproch",
+        "description": "Wähled Se Ihre Schproch aus"
+      },
+      "pdf": {
+        "title": "PDF-Eistellunga",
+        "description": "PDF-Vorschau ond Schbeicheroptiona eistella",
+        "preview": {
+          "label": "PDF-Vorschau zeiga",
+          "description": "Zeigt a Vorschau vom PDF vorm Schbeicha"
+        },
+        "save": {
+          "label": "Schbeicherort",
+          "description": "Wähled Se da Standardschbeicherort für Ihre PDFs",
+          "placeholder": "Schbeicherort auswähla",
+          "browse": "Durchsucha",
+          "noPath": "Koin Schbeicherort ausgwählt"
+        }
+      },
+      "dataManagement": {
+        "title": "Dateverwaltung",
+        "description": "Date exportiera odr importiera",
+        "export": {
+          "title": "Date exportiera",
+          "description": "Sichrad Se Ihre Date in a Datei",
+          "button": "Date exportiera",
+          "loading": "Wird exportiert...",
+          "success": "Date erfolgreich exportiert",
+          "error": "Fehler beim Exportiera",
+          "genericError": "A unerwarteter Fehler isch passiert"
+        },
+        "import": {
+          "title": "Date importiera",
+          "description": "Ladet vorher exportierte Date",
+          "button": "Date importiera",
+          "loading": "Wird importiert...",
+          "success": "Date erfolgreich importiert",
+          "error": "Fehler beim Importiera",
+          "genericError": "A unerwarteter Fehler isch passiert"
+        }
+      },
+      "errors": {
+        "loadSettings": "Fehler beim Lada von de Eistellunga",
+        "updateSettings": "Fehler beim Aktualisiera von de Eistellunga",
+        "loadLanguage": "Fehler beim Lada von de Schprocheistellunga",
+        "updateLanguage": "Fehler beim Aktualisiera von dr Schproch",
+        "directorySelection": {
+          "notAvailable": "Verzeichnisauswahl net verfügbar",
+          "error": "Fehler bei dr Verzeichnisauswahl"
+        }
+      },
+      "success": {
+        "saveLocation": "Schbeicherort erfolgreich aktualisiert",
+        "language": "Schproch erfolgreich aktualisiert"
+      }
+    },
+    "common": {
+      "loading": "Wird glada...",
+      "required": "Pflichtfeld",
+      "error": "Fehler",
+      "success": "Erfolgreich",
+      "save": "Schbeicha",
+      "cancel": "Abbrächa",
+      "delete": "Wegmacha",
+      "edit": "Bearbeita",
+      "add": "Neidoa",
+      "search": "Sucha",
+      "noResults": "Koi Ergebnis",
+      "address": "Adress",
+      "taxInfo": "Steuerinfo",
+      "bankDetails": "Bankverbindung"
+    },
+    "dialogs": {
+      "warning": {
+        "title": "Fehlende Werte",
+        "description": "Preis odr Menge isch lär. Wellet Se des auf 0 setza ond weitrmacha?",
+        "cancel": "Abbrächa",
+        "confirm": "Auf 0 setza ond weitrmacha"
+      },
+      "preview": {
+        "title": "Rächnungsvorschau - {{fileName}}"
+      }
+    },
+    "messages": {
+      "success": {
+        "invoiceGenerated": "Rächnung erfolgreich erstellt!",
+        "customerAdded": "Kunde erfolgreich neigmacht",
+        "customerUpdated": "Kunde erfolgreich aktualisiert",
+        "profileAdded": "Gschäftsprofil erfolgreich neigmacht",
+        "profileUpdated": "Gschäftsprofil erfolgreich aktualisiert"
+      },
+      "error": {
+        "required": "Bitte füllet Se alle Pflichtfelder aus.",
+        "maxProfiles": "Maximale Azahl von Gschäftsprofil erreicht.",
+        "savingInvoice": "Fehler beim Schbeicha von dr Rächnung. Bitte versuched Ses nommal.",
+        "generatingInvoice": "Fehler beim Erstella von dr Rächnung"
+      },
+      "validation": {
+        "selectCustomer": "Bitte wähled Se an Kunda aus.",
+        "selectProfile": "Bitte wähled Se a Gschäftsprofil aus.",
+        "setServicePeriod": "Bitte gebed Se da komplette Leistungszeitraum a.",
+        "setServiceDate": "Bitte gebed Se s'Leistungsdatum a.",
+        "addItem": "Bitte füged Se mindestens oin Rächnungsposta nei."
+      }
+    }
+  }

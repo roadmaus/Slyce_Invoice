@@ -1,0 +1,308 @@
+{
+    "invoice": {
+      "title": "发票",
+      "recipient": {
+        "title": "收件人",
+        "selectCustomer": "选择客户"
+      },
+      "details": {
+        "title": "发票详情",
+        "selectProfile": "选择业务档案",
+        "number": {
+          "label": "发票编号",
+          "hint": "发票编号将自动生成"
+        },
+        "date": {
+          "label": "发票日期",
+          "serviceDate": "服务日期",
+          "servicePeriod": "服务期间",
+          "startOfService": "服务开始",
+          "endOfService": "服务结束"
+        }
+      },
+      "items": {
+        "title": "发票项目",
+        "description": "描述",
+        "quantity": "数量",
+        "rate": "价格 (€)",
+        "total": "总计",
+        "addItem": "添加项目"
+      },
+      "totals": {
+        "netAmount": "净额",
+        "vat": "增值税 ({{rate}}%)",
+        "totalAmount": "总金额",
+        "vatNotice": {
+          "enabled": "根据增值税法第19条计算增值税。",
+          "disabled": "根据增值税法第19条，不计算增值税。"
+        }
+      },
+      "actions": {
+        "generate": "生成发票",
+        "generating": "正在生成...",
+        "preview": "预览",
+        "save": "保存"
+      }
+    },
+    "customers": {
+      "title": "客户",
+      "management": "客户管理",
+      "add": "添加客户",
+      "edit": "编辑客户",
+      "form": {
+        "title": "称谓",
+        "selectTitle": "选择称谓",
+        "titles": {
+          "mr": "先生",
+          "mrs": "女士",
+          "diverse": "其他"
+        },
+        "academicTitle": {
+          "label": "学术头衔",
+          "options": {
+            "dr": "博士",
+            "prof": "教授",
+            "profDr": "教授博士",
+            "drHc": "名誉博士"
+          },
+          "placeholder": "选择"
+        },
+        "name": "姓名",
+        "street": "街道",
+        "postalCode": "邮政编码",
+        "city": "城市",
+        "businessCustomer": "企业客户"
+      },
+      "actions": {
+        "add": "添加客户",
+        "edit": "编辑客户",
+        "save": "保存",
+        "cancel": "取消",
+        "delete": "删除"
+      },
+      "dialog": {
+        "addTitle": "添加新客户",
+        "editTitle": "编辑客户",
+        "addDescription": "输入客户信息",
+        "editDescription": "编辑客户信息"
+      }
+    },
+    "business": {
+      "title": "业务档案",
+      "add": "添加档案",
+      "edit": "编辑档案",
+      "form": {
+        "companyName": "公司名称",
+        "street": "街道",
+        "postalCode": "邮政编码",
+        "city": "城市",
+        "taxNumber": "税号",
+        "taxId": "增值税识别号",
+        "bankInstitute": "银行机构",
+        "iban": "国际银行账号",
+        "bic": "银行识别码",
+        "contactDetails": "联系方式",
+        "contactDetailsPlaceholder": "电话、电子邮件、网站等",
+        "vatEnabled": "启用增值税",
+        "vatRate": "增值税税率 (%)"
+      },
+      "actions": {
+        "setDefault": "设为默认",
+        "add": "添加档案",
+        "save": "保存",
+        "cancel": "取消",
+        "delete": "删除"
+      },
+      "dialog": {
+        "addTitle": "添加新业务档案",
+        "editTitle": "编辑业务档案",
+        "addDescription": "输入您的业务档案详情",
+        "editDescription": "编辑您的业务档案详情"
+      },
+      "validation": {
+        "maxProfiles": "已达到业务档案最大数量",
+        "requiredFields": "请填写所有必填字段"
+      },
+      "defaultLabel": "默认",
+      "status": {
+        "isDefault": "默认档案",
+        "notDefault": "设为默认"
+      }
+    },
+    "profile": {
+      "actions": {
+        "edit": "编辑档案",
+        "delete": "删除档案",
+        "confirmDelete": {
+          "title": "删除档案",
+          "description": "您确定要删除此档案吗？此操作无法撤消。",
+          "confirm": "是的，删除",
+          "cancel": "取消"
+        }
+      }
+    },
+    "confirmDialog": {
+      "delete": {
+        "title": "确认删除",
+        "description": "您确定要删除此项吗？此操作无法撤消。",
+        "confirm": "是的，删除",
+        "cancel": "取消"
+      }
+    },
+    "tags": {
+      "title": "快速输入",
+      "add": "添加标签",
+      "edit": "编辑标签",
+      "form": {
+        "name": "名称",
+        "description": "描述",
+        "rate": "价格 (€)",
+        "quantity": "数量",
+        "color": "颜色",
+        "visible": "在快速输入中可见",
+        "usesDateRange": "使用日期范围",
+        "personas": "关联档案"
+      },
+      "emptyState": {
+        "title": "没有快速标签",
+        "description": "创建快速标签以加速您的开票流程。",
+        "addFirst": "添加第一个标签"
+      },
+      "actions": {
+        "add": "添加标签",
+        "edit": "编辑标签",
+        "delete": "删除标签",
+        "save": "保存更改",
+        "cancel": "取消"
+      },
+      "search": {
+        "placeholder": "搜索标签...",
+        "noResults": "未找到标签"
+      }
+    },
+    "settings": {
+      "title": "设置",
+      "appearance": {
+        "title": "外观",
+        "description": "自定义应用程序外观",
+        "themes": {
+          "light": {
+            "label": "明亮",
+            "description": "日间使用的明亮设计"
+          },
+          "dark": {
+            "label": "暗黑",
+            "description": "夜间使用的暗黑设计"
+          },
+          "system": {
+            "label": "系统",
+            "description": "跟随系统设置"
+          }
+        }
+      },
+      "language": {
+        "title": "语言",
+        "description": "选择您的首选语言"
+      },
+      "pdf": {
+        "title": "PDF设置",
+        "description": "配置PDF预览和保存选项",
+        "preview": {
+          "label": "显示PDF预览",
+          "description": "在保存前显示PDF预览"
+        },
+        "save": {
+          "label": "保存位置",
+          "description": "选择PDF的默认保存位置",
+          "placeholder": "选择位置",
+          "browse": "浏览",
+          "noPath": "未选择位置"
+        }
+      },
+      "dataManagement": {
+        "title": "数据管理",
+        "description": "导出或导入您的数据",
+        "export": {
+          "title": "导出数据",
+          "description": "将您的数据保存到文件",
+          "button": "导出数据",
+          "loading": "正在导出...",
+          "success": "数据导出成功",
+          "error": "导出出错",
+          "genericError": "发生意外错误"
+        },
+        "import": {
+          "title": "导入数据",
+          "description": "加载之前导出的数据",
+          "button": "导入数据",
+          "loading": "正在导入...",
+          "success": "数据导入成功",
+          "error": "导入出错",
+          "genericError": "发生意外错误"
+        }
+      },
+      "errors": {
+        "loadSettings": "加载设置时出错",
+        "updateSettings": "更新设置时出错",
+        "loadLanguage": "加载语言设置时出错",
+        "updateLanguage": "更新语言时出错",
+        "directorySelection": {
+          "notAvailable": "目录选择不可用",
+          "error": "选择目录时出错"
+        }
+      },
+      "success": {
+        "saveLocation": "保存位置更新成功",
+        "language": "语言更新成功"
+      }
+    },
+    "common": {
+      "loading": "正在加载...",
+      "required": "必填字段",
+      "error": "错误",
+      "success": "成功",
+      "save": "保存",
+      "cancel": "取消",
+      "delete": "删除",
+      "edit": "编辑",
+      "add": "添加",
+      "search": "搜索",
+      "noResults": "无结果",
+      "address": "地址",
+      "taxInfo": "税务信息",
+      "bankDetails": "银行详情"
+    },
+    "dialogs": {
+      "warning": {
+        "title": "缺少值",
+        "description": "价格或数量为空。是否要将其设置为0并继续？",
+        "cancel": "取消",
+        "confirm": "设置为0并继续"
+      },
+      "preview": {
+        "title": "发票预览 - {{fileName}}"
+      }
+    },
+    "messages": {
+      "success": {
+        "invoiceGenerated": "发票生成成功！",
+        "customerAdded": "客户添加成功",
+        "customerUpdated": "客户更新成功",
+        "profileAdded": "业务档案添加成功",
+        "profileUpdated": "业务档案更新成功"
+      },
+      "error": {
+        "required": "请填写所有必填字段。",
+        "maxProfiles": "已达到业务档案最大数量。",
+        "savingInvoice": "保存发票时出错。请重试。",
+        "generatingInvoice": "生成发票时出错"
+      },
+      "validation": {
+        "selectCustomer": "请选择一个客户。",
+        "selectProfile": "请选择一个业务档案。",
+        "setServicePeriod": "请提供完整的服务期间。",
+        "setServiceDate": "请提供服务日期。",
+        "addItem": "请至少添加一个发票项目。"
+      }
+    }
+  }

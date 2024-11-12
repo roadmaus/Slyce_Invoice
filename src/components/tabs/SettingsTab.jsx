@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from 'next-themes';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun, Monitor, Save, Upload, Loader2, Info, FolderOpen } from 'lucide-react';
+import { Moon, Sun, Monitor, Save, Upload, Loader2, Info, FolderOpen, Trash2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
@@ -24,6 +24,8 @@ const SettingsTab = () => {
     showPreview: true,
     savePath: ''
   });
+  const [clickedLanguages, setClickedLanguages] = React.useState(new Set());
+  const [showSwabian, setShowSwabian] = React.useState(false);
 
   // Load preview settings on mount
   React.useEffect(() => {
@@ -117,6 +119,37 @@ const SettingsTab = () => {
     }
   };
 
+  // Add after other useEffects
+  React.useEffect(() => {
+    // Check if Swabian was previously unlocked
+    const checkSwabianUnlock = async () => {
+      const settings = await window.electronAPI.getData('swabianUnlocked');
+      setShowSwabian(!!settings?.unlocked);
+    };
+    checkSwabianUnlock();
+  }, []);
+
+  const handleLanguageClick = async (value) => {
+    // First handle the normal language change
+    await updateLanguage(value);
+
+    // Then handle the easter egg logic
+    if (showSwabian) return; // Don't track if already unlocked
+
+    const newClickedLanguages = new Set(clickedLanguages).add(value);
+    setClickedLanguages(newClickedLanguages);
+
+    // If all standard languages have been clicked
+    const standardLanguages = ['en', 'de', 'es', 'ko', 'fr', 'zh', 'ja', 'pt', 'ru', 'hi', 'ar', 'it', 'nl', 'tr', 'vi', 'th'];
+    if (standardLanguages.every(lang => newClickedLanguages.has(lang))) {
+      setShowSwabian(true);
+      await window.electronAPI.setData('swabianUnlocked', { unlocked: true });
+      toast.success('🦁 Schwäbisch freigschalded!', {
+        duration: 2000,
+      });
+    }
+  };
+
   return (
     <div className="container max-w-4xl mx-auto">
       <Card className="border-none shadow-none">
@@ -188,11 +221,28 @@ const SettingsTab = () => {
                   { value: 'en', label: 'English', flag: '🇺🇸' },
                   { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
                   { value: 'es', label: 'Español', flag: '🇪🇸' },
-                  { value: 'ko', label: '한국어', flag: '🇰🇷' }
+                  { value: 'ko', label: '한국어', flag: '🇰🇷' },
+                  { value: 'fr', label: 'Français', flag: '🇫🇷' },
+                  { value: 'zh', label: '中文', flag: '🇨🇳' },
+                  { value: 'ja', label: '日本語', flag: '🇯🇵' },
+                  { value: 'pt', label: 'Português', flag: '🇵🇹' },
+                  { value: 'ru', label: 'Русский', flag: '🇷🇺' },
+                  { value: 'hi', label: 'हिन्दी', flag: '🇮🇳' },
+                  { value: 'ar', label: 'العربية', flag: '🇸🇦' },
+                  { value: 'it', label: 'Italiano', flag: '🇮🇹' },
+                  { value: 'nl', label: 'Nederlands', flag: '🇳🇱' },
+                  { value: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+                  { value: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
+                  { value: 'th', label: 'ไทย', flag: '🇹🇭' },
+                  ...(showSwabian ? [{ 
+                    value: 'swg', 
+                    label: 'Schwäbisch', 
+                    flag: '🦁'  // Using lion emoji for Swabian flag
+                  }] : [])
                 ].map(({ value, label, flag }) => (
                   <button
                     key={value}
-                    onClick={() => updateLanguage(value)}
+                    onClick={() => handleLanguageClick(value)}
                     className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
                       ${language === value 
                         ? 'border-primary bg-primary/5 shadow-sm' 
@@ -288,7 +338,7 @@ const SettingsTab = () => {
               <p className="text-muted-foreground mb-6">
                 {t('settings.dataManagement.description')}
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 {[
                   {
                     icon: Save,
@@ -375,6 +425,66 @@ const SettingsTab = () => {
                   </Card>
                 ))}
               </div>
+
+              {/* Add Reset Section */}
+              <Card className="border-destructive/50">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Trash2 className="w-5 h-5 text-destructive" />
+                    <h3 className="font-medium text-destructive">
+                      {t('settings.dataManagement.reset.title')}
+                    </h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {t('settings.dataManagement.reset.description')}
+                  </p>
+                  <Button 
+                    variant="destructive"
+                    onClick={async () => {
+                      const confirmed = window.confirm(
+                        t('settings.dataManagement.reset.confirm')
+                      );
+                      
+                      if (confirmed) {
+                        try {
+                          // Clear all stored data
+                          await window.electronAPI.clearAllData();
+                          
+                          // Reset all state
+                          setLanguage('en');
+                          setShowSwabian(false);
+                          setClickedLanguages(new Set());
+                          setPreviewSettings({
+                            showPreview: true,
+                            savePath: ''
+                          });
+                          setTheme('system');
+                          
+                          // Reset i18n
+                          await i18n.changeLanguage('en');
+                          
+                          // Notify other components
+                          window.dispatchEvent(new CustomEvent('settingsReset'));
+                          
+                          toast.success(t('settings.dataManagement.reset.success'));
+                          
+                          // Optionally reload the page
+                          setTimeout(() => {
+                            window.location.reload();
+                          }, 1500);
+                        } catch (error) {
+                          console.error('Error resetting data:', error);
+                          toast.error(t('settings.dataManagement.reset.error'));
+                        }
+                      }
+                    }}
+                    className="w-full"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    {t('settings.dataManagement.reset.button')}
+                  </Button>
+                </CardContent>
+              </Card>
             </section>
           </div>
         </CardContent>

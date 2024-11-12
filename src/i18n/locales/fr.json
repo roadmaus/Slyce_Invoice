@@ -1,0 +1,308 @@
+{
+    "invoice": {
+      "title": "Facture",
+      "recipient": {
+        "title": "Destinataire de la facture",
+        "selectCustomer": "Sélectionner un client"
+      },
+      "details": {
+        "title": "Détails de la facture",
+        "selectProfile": "Sélectionner un profil professionnel",
+        "number": {
+          "label": "Numéro de facture",
+          "hint": "Le numéro de facture est généré automatiquement"
+        },
+        "date": {
+          "label": "Date de facturation",
+          "serviceDate": "Date de prestation",
+          "servicePeriod": "Période de prestation",
+          "startOfService": "Début de la prestation",
+          "endOfService": "Fin de la prestation"
+        }
+      },
+      "items": {
+        "title": "Articles de la facture",
+        "description": "Description",
+        "quantity": "Quantité",
+        "rate": "Prix (€)",
+        "total": "Total",
+        "addItem": "Ajouter un article"
+      },
+      "totals": {
+        "netAmount": "Montant net",
+        "vat": "TVA ({{rate}}%)",
+        "totalAmount": "Montant total",
+        "vatNotice": {
+          "enabled": "La TVA est calculée conformément à l'article 19 de la loi sur la TVA.",
+          "disabled": "Conformément à l'article 19 de la loi sur la TVA, aucune TVA n'est calculée."
+        }
+      },
+      "actions": {
+        "generate": "Créer la facture",
+        "generating": "Création en cours...",
+        "preview": "Aperçu",
+        "save": "Enregistrer"
+      }
+    },
+    "customers": {
+      "title": "Clients",
+      "management": "Gestion des clients",
+      "add": "Ajouter un client",
+      "edit": "Modifier le client",
+      "form": {
+        "title": "Civilité",
+        "selectTitle": "Sélectionner une civilité",
+        "titles": {
+          "mr": "Monsieur",
+          "mrs": "Madame",
+          "diverse": "Autre"
+        },
+        "academicTitle": {
+          "label": "Titre académique",
+          "options": {
+            "dr": "Dr.",
+            "prof": "Prof.",
+            "profDr": "Prof. Dr.",
+            "drHc": "Dr. h.c."
+          },
+          "placeholder": "sélectionner"
+        },
+        "name": "Nom",
+        "street": "Rue",
+        "postalCode": "Code postal",
+        "city": "Ville",
+        "businessCustomer": "Client professionnel"
+      },
+      "actions": {
+        "add": "Ajouter un client",
+        "edit": "Modifier le client",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer"
+      },
+      "dialog": {
+        "addTitle": "Ajouter un nouveau client",
+        "editTitle": "Modifier le client",
+        "addDescription": "Saisissez les informations du client",
+        "editDescription": "Modifiez les informations du client"
+      }
+    },
+    "business": {
+      "title": "Profils professionnels",
+      "add": "Ajouter un profil",
+      "edit": "Modifier le profil",
+      "form": {
+        "companyName": "Nom de l'entreprise",
+        "street": "Rue",
+        "postalCode": "Code postal",
+        "city": "Ville",
+        "taxNumber": "Numéro fiscal",
+        "taxId": "Numéro de TVA",
+        "bankInstitute": "Établissement bancaire",
+        "iban": "IBAN",
+        "bic": "BIC",
+        "contactDetails": "Coordonnées",
+        "contactDetailsPlaceholder": "Téléphone, email, site web, etc.",
+        "vatEnabled": "Activer la TVA",
+        "vatRate": "Taux de TVA (%)"
+      },
+      "actions": {
+        "setDefault": "Définir par défaut",
+        "add": "Ajouter un profil",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer"
+      },
+      "dialog": {
+        "addTitle": "Ajouter un nouveau profil professionnel",
+        "editTitle": "Modifier le profil professionnel",
+        "addDescription": "Saisissez les détails de votre profil professionnel",
+        "editDescription": "Modifiez les détails de votre profil professionnel"
+      },
+      "validation": {
+        "maxProfiles": "Nombre maximum de profils professionnels atteint",
+        "requiredFields": "Veuillez remplir tous les champs obligatoires"
+      },
+      "defaultLabel": "Par défaut",
+      "status": {
+        "isDefault": "Profil par défaut",
+        "notDefault": "Définir par défaut"
+      }
+    },
+    "profile": {
+      "actions": {
+        "edit": "Modifier le profil",
+        "delete": "Supprimer le profil",
+        "confirmDelete": {
+          "title": "Supprimer le profil",
+          "description": "Êtes-vous sûr de vouloir supprimer ce profil ? Cette action ne peut pas être annulée.",
+          "confirm": "Oui, supprimer",
+          "cancel": "Annuler"
+        }
+      }
+    },
+    "confirmDialog": {
+      "delete": {
+        "title": "Confirmer la suppression",
+        "description": "Êtes-vous sûr de vouloir supprimer cet élément ? Cette action ne peut pas être annulée.",
+        "confirm": "Oui, supprimer",
+        "cancel": "Annuler"
+      }
+    },
+    "tags": {
+      "title": "Saisie rapide",
+      "add": "Ajouter une étiquette",
+      "edit": "Modifier l'étiquette",
+      "form": {
+        "name": "Nom",
+        "description": "Description",
+        "rate": "Prix (€)",
+        "quantity": "Quantité",
+        "color": "Couleur",
+        "visible": "Visible en saisie rapide",
+        "usesDateRange": "Utilise une plage de dates",
+        "personas": "Profils associés"
+      },
+      "emptyState": {
+        "title": "Aucune étiquette rapide disponible",
+        "description": "Créez des étiquettes rapides pour accélérer votre processus de facturation.",
+        "addFirst": "Ajouter la première étiquette"
+      },
+      "actions": {
+        "add": "Ajouter une étiquette",
+        "edit": "Modifier l'étiquette",
+        "delete": "Supprimer l'étiquette",
+        "save": "Enregistrer les modifications",
+        "cancel": "Annuler"
+      },
+      "search": {
+        "placeholder": "Rechercher des étiquettes...",
+        "noResults": "Aucune étiquette trouvée"
+      }
+    },
+    "settings": {
+      "title": "Paramètres",
+      "appearance": {
+        "title": "Apparence",
+        "description": "Personnalisez l'apparence de votre application",
+        "themes": {
+          "light": {
+            "label": "Clair",
+            "description": "Design clair pour utilisation de jour"
+          },
+          "dark": {
+            "label": "Sombre",
+            "description": "Design sombre pour utilisation de nuit"
+          },
+          "system": {
+            "label": "Système",
+            "description": "Suivre les paramètres système"
+          }
+        }
+      },
+      "language": {
+        "title": "Langue",
+        "description": "Sélectionnez votre langue préférée"
+      },
+      "pdf": {
+        "title": "Paramètres PDF",
+        "description": "Configurez l'aperçu PDF et les options de sauvegarde",
+        "preview": {
+          "label": "Afficher l'aperçu PDF",
+          "description": "Affiche un aperçu du PDF avant la sauvegarde"
+        },
+        "save": {
+          "label": "Emplacement de sauvegarde",
+          "description": "Choisissez l'emplacement de sauvegarde par défaut pour vos PDF",
+          "placeholder": "Choisir un emplacement",
+          "browse": "Parcourir",
+          "noPath": "Aucun emplacement sélectionné"
+        }
+      },
+      "dataManagement": {
+        "title": "Gestion des données",
+        "description": "Exportez ou importez vos données",
+        "export": {
+          "title": "Exporter les données",
+          "description": "Sauvegardez vos données dans un fichier",
+          "button": "Exporter les données",
+          "loading": "Exportation en cours...",
+          "success": "Données exportées avec succès",
+          "error": "Erreur lors de l'exportation",
+          "genericError": "Une erreur inattendue s'est produite"
+        },
+        "import": {
+          "title": "Importer les données",
+          "description": "Chargez des données précédemment exportées",
+          "button": "Importer les données",
+          "loading": "Importation en cours...",
+          "success": "Données importées avec succès",
+          "error": "Erreur lors de l'importation",
+          "genericError": "Une erreur inattendue s'est produite"
+        }
+      },
+      "errors": {
+        "loadSettings": "Erreur lors du chargement des paramètres",
+        "updateSettings": "Erreur lors de la mise à jour des paramètres",
+        "loadLanguage": "Erreur lors du chargement des paramètres de langue",
+        "updateLanguage": "Erreur lors de la mise à jour de la langue",
+        "directorySelection": {
+          "notAvailable": "Sélection de répertoire non disponible",
+          "error": "Erreur lors de la sélection du répertoire"
+        }
+      },
+      "success": {
+        "saveLocation": "Emplacement de sauvegarde mis à jour avec succès",
+        "language": "Langue mise à jour avec succès"
+      }
+    },
+    "common": {
+      "loading": "Chargement...",
+      "required": "Champ obligatoire",
+      "error": "Erreur",
+      "success": "Succès",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "add": "Ajouter",
+      "search": "Rechercher",
+      "noResults": "Aucun résultat",
+      "address": "Adresse",
+      "taxInfo": "Informations fiscales",
+      "bankDetails": "Coordonnées bancaires"
+    },
+    "dialogs": {
+      "warning": {
+        "title": "Valeurs manquantes",
+        "description": "Le prix ou la quantité est vide. Voulez-vous les définir à 0 et continuer ?",
+        "cancel": "Annuler",
+        "confirm": "Définir à 0 et continuer"
+      },
+      "preview": {
+        "title": "Aperçu de la facture - {{fileName}}"
+      }
+    },
+    "messages": {
+      "success": {
+        "invoiceGenerated": "Facture créée avec succès !",
+        "customerAdded": "Client ajouté avec succès",
+        "customerUpdated": "Client mis à jour avec succès",
+        "profileAdded": "Profil professionnel ajouté avec succès",
+        "profileUpdated": "Profil professionnel mis à jour avec succès"
+      },
+      "error": {
+        "required": "Veuillez remplir tous les champs obligatoires.",
+        "maxProfiles": "Nombre maximum de profils professionnels atteint.",
+        "savingInvoice": "Erreur lors de la sauvegarde de la facture. Veuillez réessayer.",
+        "generatingInvoice": "Erreur lors de la création de la facture"
+      },
+      "validation": {
+        "selectCustomer": "Veuillez sélectionner un client.",
+        "selectProfile": "Veuillez sélectionner un profil professionnel.",
+        "setServicePeriod": "Veuillez indiquer la période de prestation complète.",
+        "setServiceDate": "Veuillez indiquer la date de prestation.",
+        "addItem": "Veuillez ajouter au moins un article à la facture."
+      }
+    }
+  }

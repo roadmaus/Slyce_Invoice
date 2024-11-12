@@ -239,6 +239,14 @@
         "success": "Data imported successfully",
         "error": "Error importing data",
         "genericError": "An unexpected error occurred"
+      },
+      "reset": {
+        "title": "Reset All Settings",
+        "description": "This will reset all settings to their defaults and clear all stored data. This action cannot be undone. Exported data files will not be affected.",
+        "button": "Reset All Settings",
+        "confirm": "Are you sure you want to reset all settings? This action cannot be undone.",
+        "success": "All settings have been reset successfully",
+        "error": "Failed to reset settings"
       }
     },
     "errors": {

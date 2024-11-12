@@ -15,5 +15,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
       console.error('Error in selectDirectory:', error);
       throw error;
     }
-  }
+  },
+  clearAllData: () => ipcRenderer.invoke('clearAllData')
 });

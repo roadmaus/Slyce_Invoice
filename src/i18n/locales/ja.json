@@ -1,0 +1,308 @@
+{
+    "invoice": {
+      "title": "請求書",
+      "recipient": {
+        "title": "請求先",
+        "selectCustomer": "顧客を選択"
+      },
+      "details": {
+        "title": "請求書詳細",
+        "selectProfile": "事業プロファイルを選択",
+        "number": {
+          "label": "請求書番号",
+          "hint": "請求書番号は自動的に生成されます"
+        },
+        "date": {
+          "label": "請求日",
+          "serviceDate": "サービス提供日",
+          "servicePeriod": "サービス期間",
+          "startOfService": "サービス開始",
+          "endOfService": "サービス終了"
+        }
+      },
+      "items": {
+        "title": "請求項目",
+        "description": "説明",
+        "quantity": "数量",
+        "rate": "価格 (€)",
+        "total": "合計",
+        "addItem": "項目を追加"
+      },
+      "totals": {
+        "netAmount": "税抜金額",
+        "vat": "消費税 ({{rate}}%)",
+        "totalAmount": "合計金額",
+        "vatNotice": {
+          "enabled": "消費税は付加価値税法第19条に基づき計算されます。",
+          "disabled": "付加価値税法第19条に基づき、消費税は計算されません。"
+        }
+      },
+      "actions": {
+        "generate": "請求書を作成",
+        "generating": "作成中...",
+        "preview": "プレビュー",
+        "save": "保存"
+      }
+    },
+    "customers": {
+      "title": "顧客",
+      "management": "顧客管理",
+      "add": "顧客を追加",
+      "edit": "顧客を編集",
+      "form": {
+        "title": "敬称",
+        "selectTitle": "敬称を選択",
+        "titles": {
+          "mr": "様（男性）",
+          "mrs": "様（女性）",
+          "diverse": "様（その他）"
+        },
+        "academicTitle": {
+          "label": "学位",
+          "options": {
+            "dr": "博士",
+            "prof": "教授",
+            "profDr": "教授・博士",
+            "drHc": "名誉博士"
+          },
+          "placeholder": "選択"
+        },
+        "name": "名前",
+        "street": "住所",
+        "postalCode": "郵便番号",
+        "city": "市区町村",
+        "businessCustomer": "法人顧客"
+      },
+      "actions": {
+        "add": "顧客を追加",
+        "edit": "顧客を編集",
+        "save": "保存",
+        "cancel": "キャンセル",
+        "delete": "削除"
+      },
+      "dialog": {
+        "addTitle": "新規顧客を追加",
+        "editTitle": "顧客を編集",
+        "addDescription": "顧客情報を入力してください",
+        "editDescription": "顧客情報を編集してください"
+      }
+    },
+    "business": {
+      "title": "事業プロファイル",
+      "add": "プロファイルを追加",
+      "edit": "プロファイルを編集",
+      "form": {
+        "companyName": "会社名",
+        "street": "住所",
+        "postalCode": "郵便番号",
+        "city": "市区町村",
+        "taxNumber": "税務番号",
+        "taxId": "消費税登録番号",
+        "bankInstitute": "金融機関",
+        "iban": "IBAN",
+        "bic": "BIC",
+        "contactDetails": "連絡先",
+        "contactDetailsPlaceholder": "電話番号、メール、ウェブサイトなど",
+        "vatEnabled": "消費税を有効化",
+        "vatRate": "消費税率 (%)"
+      },
+      "actions": {
+        "setDefault": "デフォルトに設定",
+        "add": "プロファイルを追加",
+        "save": "保存",
+        "cancel": "キャンセル",
+        "delete": "削除"
+      },
+      "dialog": {
+        "addTitle": "新規事業プロファイルを追加",
+        "editTitle": "事業プロファイルを編集",
+        "addDescription": "事業プロファイルの詳細を入力してください。",
+        "editDescription": "事業プロファイルの詳細を編集してください。"
+      },
+      "validation": {
+        "maxProfiles": "事業プロファイルの最大数に達しました",
+        "requiredFields": "必須項目をすべて入力してください"
+      },
+      "defaultLabel": "デフォルト",
+      "status": {
+        "isDefault": "デフォルトプロファイル",
+        "notDefault": "デフォルトに設定"
+      }
+    },
+    "profile": {
+      "actions": {
+        "edit": "プロファイルを編集",
+        "delete": "プロファイルを削除",
+        "confirmDelete": {
+          "title": "プロファイルを削除",
+          "description": "このプロファイルを削除してもよろしいですか？この操作は取り消せません。",
+          "confirm": "はい、削除します",
+          "cancel": "キャンセル"
+        }
+      }
+    },
+    "confirmDialog": {
+      "delete": {
+        "title": "削除の確認",
+        "description": "この項目を削除してもよろしいですか？この操作は取り消せません。",
+        "confirm": "はい、削除します",
+        "cancel": "キャンセル"
+      }
+    },
+    "tags": {
+      "title": "クイック入力",
+      "add": "タグを追加",
+      "edit": "タグを編集",
+      "form": {
+        "name": "名前",
+        "description": "説明",
+        "rate": "価格 (€)",
+        "quantity": "数量",
+        "color": "色",
+        "visible": "クイック入力で表示",
+        "usesDateRange": "日付範囲を使用",
+        "personas": "関連プロファイル"
+      },
+      "emptyState": {
+        "title": "クイックタグがありません",
+        "description": "請求書作成プロセスを迅速化するためにクイックタグを作成してください。",
+        "addFirst": "最初のタグを追加"
+      },
+      "actions": {
+        "add": "タグを追加",
+        "edit": "タグを編集",
+        "delete": "タグを削除",
+        "save": "変更を保存",
+        "cancel": "キャンセル"
+      },
+      "search": {
+        "placeholder": "タグを検索...",
+        "noResults": "タグが見つかりません"
+      }
+    },
+    "settings": {
+      "title": "設定",
+      "appearance": {
+        "title": "外観",
+        "description": "アプリケーションの外観をカスタマイズ",
+        "themes": {
+          "light": {
+            "label": "ライト",
+            "description": "日中使用向けの明るいテーマ"
+          },
+          "dark": {
+            "label": "ダーク",
+            "description": "夜間使用向けの暗いテーマ"
+          },
+          "system": {
+            "label": "システム",
+            "description": "システム設定に従う"
+          }
+        }
+      },
+      "language": {
+        "title": "言語",
+        "description": "優先言語を選択してください"
+      },
+      "pdf": {
+        "title": "PDF設定",
+        "description": "PDFプレビューと保存オプションを設定",
+        "preview": {
+          "label": "PDFプレビューを表示",
+          "description": "保存前にPDFプレビューを表示します"
+        },
+        "save": {
+          "label": "保存場所",
+          "description": "PDFのデフォルト保存場所を選択",
+          "placeholder": "保存場所を選択",
+          "browse": "参照",
+          "noPath": "保存場所が選択されていません"
+        }
+      },
+      "dataManagement": {
+        "title": "データ管理",
+        "description": "データのエクスポートまたはインポート",
+        "export": {
+          "title": "データをエクスポート",
+          "description": "データをファイルにバックアップ",
+          "button": "データをエクスポート",
+          "loading": "エクスポート中...",
+          "success": "データのエクスポートが完了しました",
+          "error": "エクスポート中にエラーが発生しました",
+          "genericError": "予期せぬエラーが発生しました"
+        },
+        "import": {
+          "title": "データをインポート",
+          "description": "以前エクスポートしたデータを読み込む",
+          "button": "データをインポート",
+          "loading": "インポート中...",
+          "success": "データのインポートが完了しました",
+          "error": "インポート中にエラーが発生しました",
+          "genericError": "予期せぬエラーが発生しました"
+        }
+      },
+      "errors": {
+        "loadSettings": "設定の読み込み中にエラーが発生しました",
+        "updateSettings": "設定の更新中にエラーが発生しました",
+        "loadLanguage": "言語設定の読み込み中にエラーが発生しました",
+        "updateLanguage": "言語の更新中にエラーが発生しました",
+        "directorySelection": {
+          "notAvailable": "ディレクトリ選択が利用できません",
+          "error": "ディレクトリ選択中にエラーが発生しました"
+        }
+      },
+      "success": {
+        "saveLocation": "保存場所が正常に更新されました",
+        "language": "言語が正常に更新されました"
+      }
+    },
+    "common": {
+      "loading": "読み込み中...",
+      "required": "必須項目",
+      "error": "エラー",
+      "success": "成功",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "delete": "削除",
+      "edit": "編集",
+      "add": "追加",
+      "search": "検索",
+      "noResults": "結果なし",
+      "address": "住所",
+      "taxInfo": "税務情報",
+      "bankDetails": "銀行口座情報"
+    },
+    "dialogs": {
+      "warning": {
+        "title": "値が未入力",
+        "description": "価格または数量が空です。0に設定して続行しますか？",
+        "cancel": "キャンセル",
+        "confirm": "0に設定して続行"
+      },
+      "preview": {
+        "title": "請求書プレビュー - {{fileName}}"
+      }
+    },
+    "messages": {
+      "success": {
+        "invoiceGenerated": "請求書が正常に作成されました！",
+        "customerAdded": "顧客が正常に追加されました",
+        "customerUpdated": "顧客情報が正常に更新されました",
+        "profileAdded": "事業プロファイルが正常に追加されました",
+        "profileUpdated": "事業プロファイルが正常に更新されました"
+      },
+      "error": {
+        "required": "すべての必須項目を入力してください。",
+        "maxProfiles": "事業プロファイルの最大数に達しました。",
+        "savingInvoice": "請求書の保存中にエラーが発生しました。もう一度お試しください。",
+        "generatingInvoice": "請求書の作成中にエラーが発生しました"
+      },
+      "validation": {
+        "selectCustomer": "顧客を選択してください。",
+        "selectProfile": "事業プロファイルを選択してください。",
+        "setServicePeriod": "サービス期間全体を入力してください。",
+        "setServiceDate": "サービス提供日を入力してください。",
+        "addItem": "少なくとも1つの請求項目を追加してください。"
+      }
+    }
+  }

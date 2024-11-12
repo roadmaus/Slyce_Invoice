@@ -239,6 +239,14 @@
         "success": "Daten erfolgreich importiert",
         "error": "Fehler beim Importieren",
         "genericError": "Ein unerwarteter Fehler ist aufgetreten"
+      },
+      "reset": {
+        "title": "Alle Einstellungen zurücksetzen",
+        "description": "Dies wird alle Einstellungen auf ihre Standardwerte zurücksetzen und alle gespeicherten Daten löschen. Diese Aktion kann nicht rückgängig gemacht werden. Exportierte Datendateien werden nicht betroffen.",
+        "button": "Alle Einstellungen zurücksetzen",
+        "confirm": "Sind Sie sicher, dass Sie alle Einstellungen zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+        "success": "Alle Einstellungen wurden erfolgreich zurückgesetzt",
+        "error": "Fehler beim Zurücksetzen der Einstellungen"
       }
     },
     "errors": {

@@ -1,0 +1,308 @@
+{
+    "invoice": {
+      "title": "Fatura",
+      "recipient": {
+        "title": "Fatura Alıcısı",
+        "selectCustomer": "Müşteri seç"
+      },
+      "details": {
+        "title": "Fatura Detayları",
+        "selectProfile": "İş profili seç",
+        "number": {
+          "label": "Fatura numarası",
+          "hint": "Fatura numarası otomatik olarak oluşturulacak"
+        },
+        "date": {
+          "label": "Fatura tarihi",
+          "serviceDate": "Hizmet tarihi",
+          "servicePeriod": "Hizmet dönemi",
+          "startOfService": "Hizmet başlangıcı",
+          "endOfService": "Hizmet bitişi"
+        }
+      },
+      "items": {
+        "title": "Fatura Kalemleri",
+        "description": "Açıklama",
+        "quantity": "Miktar",
+        "rate": "Fiyat (€)",
+        "total": "Toplam",
+        "addItem": "Kalem ekle"
+      },
+      "totals": {
+        "netAmount": "Net tutar",
+        "vat": "KDV ({{rate}}%)",
+        "totalAmount": "Toplam tutar",
+        "vatNotice": {
+          "enabled": "KDV, KDV Kanunu Madde 19 uyarınca hesaplanmıştır.",
+          "disabled": "KDV Kanunu Madde 19 uyarınca KDV hesaplanmamıştır."
+        }
+      },
+      "actions": {
+        "generate": "Fatura oluştur",
+        "generating": "Oluşturuluyor...",
+        "preview": "Önizleme",
+        "save": "Kaydet"
+      }
+    },
+    "customers": {
+      "title": "Müşteriler",
+      "management": "Müşteri Yönetimi",
+      "add": "Müşteri ekle",
+      "edit": "Müşteriyi düzenle",
+      "form": {
+        "title": "Hitap",
+        "selectTitle": "Hitap seçin",
+        "titles": {
+          "mr": "Bay",
+          "mrs": "Bayan",
+          "diverse": "Diğer"
+        },
+        "academicTitle": {
+          "label": "Akademik unvan",
+          "options": {
+            "dr": "Dr.",
+            "prof": "Prof.",
+            "profDr": "Prof. Dr.",
+            "drHc": "Dr. h.c."
+          },
+          "placeholder": "seçin"
+        },
+        "name": "İsim",
+        "street": "Sokak",
+        "postalCode": "Posta kodu",
+        "city": "Şehir",
+        "businessCustomer": "Kurumsal müşteri"
+      },
+      "actions": {
+        "add": "Müşteri ekle",
+        "edit": "Müşteriyi düzenle",
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "delete": "Sil"
+      },
+      "dialog": {
+        "addTitle": "Yeni müşteri ekle",
+        "editTitle": "Müşteriyi düzenle",
+        "addDescription": "Müşteri bilgilerini girin",
+        "editDescription": "Müşteri bilgilerini düzenleyin"
+      }
+    },
+    "business": {
+      "title": "İş Profilleri",
+      "add": "Profil ekle",
+      "edit": "Profili düzenle",
+      "form": {
+        "companyName": "Şirket adı",
+        "street": "Sokak",
+        "postalCode": "Posta kodu",
+        "city": "Şehir",
+        "taxNumber": "Vergi numarası",
+        "taxId": "Vergi kimlik no",
+        "bankInstitute": "Banka",
+        "iban": "IBAN",
+        "bic": "BIC",
+        "contactDetails": "İletişim bilgileri",
+        "contactDetailsPlaceholder": "Telefon, E-posta, Website, vb.",
+        "vatEnabled": "KDV'yi etkinleştir",
+        "vatRate": "KDV oranı (%)"
+      },
+      "actions": {
+        "setDefault": "Varsayılan olarak ayarla",
+        "add": "Profil ekle",
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "delete": "Sil"
+      },
+      "dialog": {
+        "addTitle": "Yeni iş profili ekle",
+        "editTitle": "İş profilini düzenle",
+        "addDescription": "İş profilinizin detaylarını girin.",
+        "editDescription": "İş profilinizin detaylarını düzenleyin."
+      },
+      "validation": {
+        "maxProfiles": "Maksimum iş profili sayısına ulaşıldı",
+        "requiredFields": "Lütfen tüm zorunlu alanları doldurun"
+      },
+      "defaultLabel": "Varsayılan",
+      "status": {
+        "isDefault": "Varsayılan profil",
+        "notDefault": "Varsayılan olarak ayarla"
+      }
+    },
+    "profile": {
+      "actions": {
+        "edit": "Profili düzenle",
+        "delete": "Profili sil",
+        "confirmDelete": {
+          "title": "Profili sil",
+          "description": "Bu profili silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+          "confirm": "Evet, sil",
+          "cancel": "İptal"
+        }
+      }
+    },
+    "confirmDialog": {
+      "delete": {
+        "title": "Silmeyi onayla",
+        "description": "Bu öğeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+        "confirm": "Evet, sil",
+        "cancel": "İptal"
+      }
+    },
+    "tags": {
+      "title": "Hızlı Giriş",
+      "add": "Etiket ekle",
+      "edit": "Etiketi düzenle",
+      "form": {
+        "name": "İsim",
+        "description": "Açıklama",
+        "rate": "Fiyat (€)",
+        "quantity": "Miktar",
+        "color": "Renk",
+        "visible": "Hızlı girişte görünür",
+        "usesDateRange": "Tarih aralığı kullanır",
+        "personas": "İlişkili profiller"
+      },
+      "emptyState": {
+        "title": "Hızlı Etiket bulunmuyor",
+        "description": "Fatura oluşturma sürecinizi hızlandırmak için Hızlı Etiketler oluşturun.",
+        "addFirst": "İlk etiketi ekle"
+      },
+      "actions": {
+        "add": "Etiket ekle",
+        "edit": "Etiketi düzenle",
+        "delete": "Etiketi sil",
+        "save": "Değişiklikleri kaydet",
+        "cancel": "İptal"
+      },
+      "search": {
+        "placeholder": "Etiketlerde ara...",
+        "noResults": "Etiket bulunamadı"
+      }
+    },
+    "settings": {
+      "title": "Ayarlar",
+      "appearance": {
+        "title": "Görünüm",
+        "description": "Uygulamanızın görünümünü özelleştirin",
+        "themes": {
+          "light": {
+            "label": "Açık",
+            "description": "Gündüz kullanımı için açık tema"
+          },
+          "dark": {
+            "label": "Koyu",
+            "description": "Gece kullanımı için koyu tema"
+          },
+          "system": {
+            "label": "Sistem",
+            "description": "Sistem ayarlarını takip et"
+          }
+        }
+      },
+      "language": {
+        "title": "Dil",
+        "description": "Tercih ettiğiniz dili seçin"
+      },
+      "pdf": {
+        "title": "PDF Ayarları",
+        "description": "PDF önizleme ve kaydetme seçeneklerini yapılandırın",
+        "preview": {
+          "label": "PDF önizleme göster",
+          "description": "Kaydedilmeden önce PDF'in önizlemesini gösterir"
+        },
+        "save": {
+          "label": "Kayıt konumu",
+          "description": "PDF'leriniz için varsayılan kayıt konumunu seçin",
+          "placeholder": "Bir konum seçin",
+          "browse": "Gözat",
+          "noPath": "Kayıt konumu seçilmedi"
+        }
+      },
+      "dataManagement": {
+        "title": "Veri Yönetimi",
+        "description": "Verilerinizi dışa veya içe aktarın",
+        "export": {
+          "title": "Verileri dışa aktar",
+          "description": "Verilerinizi bir dosyaya yedekleyin",
+          "button": "Verileri dışa aktar",
+          "loading": "Dışa aktarılıyor...",
+          "success": "Veriler başarıyla dışa aktarıldı",
+          "error": "Dışa aktarma sırasında hata oluştu",
+          "genericError": "Beklenmeyen bir hata oluştu"
+        },
+        "import": {
+          "title": "Verileri içe aktar",
+          "description": "Önceden dışa aktarılmış verileri yükleyin",
+          "button": "Verileri içe aktar",
+          "loading": "İçe aktarılıyor...",
+          "success": "Veriler başarıyla içe aktarıldı",
+          "error": "İçe aktarma sırasında hata oluştu",
+          "genericError": "Beklenmeyen bir hata oluştu"
+        }
+      },
+      "errors": {
+        "loadSettings": "Ayarlar yüklenirken hata oluştu",
+        "updateSettings": "Ayarlar güncellenirken hata oluştu",
+        "loadLanguage": "Dil ayarları yüklenirken hata oluştu",
+        "updateLanguage": "Dil güncellenirken hata oluştu",
+        "directorySelection": {
+          "notAvailable": "Dizin seçimi kullanılamıyor",
+          "error": "Dizin seçiminde hata oluştu"
+        }
+      },
+      "success": {
+        "saveLocation": "Kayıt konumu başarıyla güncellendi",
+        "language": "Dil başarıyla güncellendi"
+      }
+    },
+    "common": {
+      "loading": "Yükleniyor...",
+      "required": "Zorunlu alan",
+      "error": "Hata",
+      "success": "Başarılı",
+      "save": "Kaydet",
+      "cancel": "İptal",
+      "delete": "Sil",
+      "edit": "Düzenle",
+      "add": "Ekle",
+      "search": "Ara",
+      "noResults": "Sonuç bulunamadı",
+      "address": "Adres",
+      "taxInfo": "Vergi bilgileri",
+      "bankDetails": "Banka bilgileri"
+    },
+    "dialogs": {
+      "warning": {
+        "title": "Eksik değerler",
+        "description": "Fiyat veya miktar boş. Bunları 0 olarak ayarlayıp devam etmek istiyor musunuz?",
+        "cancel": "İptal",
+        "confirm": "0 olarak ayarla ve devam et"
+      },
+      "preview": {
+        "title": "Fatura önizleme - {{fileName}}"
+      }
+    },
+    "messages": {
+      "success": {
+        "invoiceGenerated": "Fatura başarıyla oluşturuldu!",
+        "customerAdded": "Müşteri başarıyla eklendi",
+        "customerUpdated": "Müşteri başarıyla güncellendi",
+        "profileAdded": "İş profili başarıyla eklendi",
+        "profileUpdated": "İş profili başarıyla güncellendi"
+      },
+      "error": {
+        "required": "Lütfen tüm zorunlu alanları doldurun.",
+        "maxProfiles": "Maksimum iş profili sayısına ulaşıldı.",
+        "savingInvoice": "Fatura kaydedilirken hata oluştu. Lütfen tekrar deneyin.",
+        "generatingInvoice": "Fatura oluşturulurken hata oluştu"
+      },
+      "validation": {
+        "selectCustomer": "Lütfen bir müşteri seçin.",
+        "selectProfile": "Lütfen bir iş profili seçin.",
+        "setServicePeriod": "Lütfen eksiksiz hizmet dönemini belirtin.",
+        "setServiceDate": "Lütfen hizmet tarihini belirtin.",
+        "addItem": "Lütfen en az bir fatura kalemi ekleyin."
+      }
+    }
+  }

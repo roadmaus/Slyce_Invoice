@@ -1,0 +1,308 @@
+{
+  "invoice": {
+    "title": "Hóa đơn",
+    "recipient": {
+      "title": "Người nhận hóa đơn",
+      "selectCustomer": "Chọn khách hàng"
+    },
+    "details": {
+      "title": "Chi tiết hóa đơn",
+      "selectProfile": "Chọn hồ sơ doanh nghiệp",
+      "number": {
+        "label": "Số hóa đơn",
+        "hint": "Số hóa đơn được tạo tự động"
+      },
+      "date": {
+        "label": "Ngày hóa đơn",
+        "serviceDate": "Ngày cung cấp dịch vụ",
+        "servicePeriod": "Thời gian cung cấp dịch vụ",
+        "startOfService": "Bắt đầu dịch vụ",
+        "endOfService": "Kết thúc dịch vụ"
+      }
+    },
+    "items": {
+      "title": "Các mục hóa đơn",
+      "description": "Mô tả",
+      "quantity": "Số lượng",
+      "rate": "Giá (€)",
+      "total": "Tổng cộng",
+      "addItem": "Thêm mục"
+    },
+    "totals": {
+      "netAmount": "Số tiền trước thuế",
+      "vat": "VAT ({{rate}}%)",
+      "totalAmount": "Tổng số tiền",
+      "vatNotice": {
+        "enabled": "Thuế VAT được tính theo Điều 19 Luật thuế VAT.",
+        "disabled": "Theo Điều 19 Luật thuế VAT, không tính thuế VAT."
+      }
+    },
+    "actions": {
+      "generate": "Tạo hóa đơn",
+      "generating": "Đang tạo...",
+      "preview": "Xem trước",
+      "save": "Lưu"
+    }
+  },
+  "customers": {
+    "title": "Khách hàng",
+    "management": "Quản lý khách hàng",
+    "add": "Thêm khách hàng",
+    "edit": "Chỉnh sửa khách hàng",
+    "form": {
+      "title": "Xưng hô",
+      "selectTitle": "Chọn xưng hô",
+      "titles": {
+        "mr": "Ông",
+        "mrs": "Bà",
+        "diverse": "Khác"
+      },
+      "academicTitle": {
+        "label": "Học vị",
+        "options": {
+          "dr": "Tiến sĩ",
+          "prof": "Giáo sư",
+          "profDr": "GS.TS",
+          "drHc": "Tiến sĩ danh dự"
+        },
+        "placeholder": "chọn"
+      },
+      "name": "Tên",
+      "street": "Đường",
+      "postalCode": "Mã bưu chính",
+      "city": "Thành phố",
+      "businessCustomer": "Khách hàng doanh nghiệp"
+    },
+    "actions": {
+      "add": "Thêm khách hàng",
+      "edit": "Chỉnh sửa khách hàng",
+      "save": "Lưu",
+      "cancel": "Hủy",
+      "delete": "Xóa"
+    },
+    "dialog": {
+      "addTitle": "Thêm khách hàng mới",
+      "editTitle": "Chỉnh sửa khách hàng",
+      "addDescription": "Nhập thông tin khách hàng",
+      "editDescription": "Chỉnh sửa thông tin khách hàng"
+    }
+  },
+  "business": {
+    "title": "Hồ sơ doanh nghiệp",
+    "add": "Thêm hồ sơ",
+    "edit": "Chỉnh sửa hồ sơ",
+    "form": {
+      "companyName": "Tên công ty",
+      "street": "Đường",
+      "postalCode": "Mã bưu chính",
+      "city": "Thành phố",
+      "taxNumber": "Mã số thuế",
+      "taxId": "Mã số VAT",
+      "bankInstitute": "Ngân hàng",
+      "iban": "IBAN",
+      "bic": "BIC",
+      "contactDetails": "Thông tin liên hệ",
+      "contactDetailsPlaceholder": "Điện thoại, email, website, v.v.",
+      "vatEnabled": "Kích hoạt VAT",
+      "vatRate": "Tỷ lệ VAT (%)"
+    },
+    "actions": {
+      "setDefault": "Đặt làm mặc định",
+      "add": "Thêm hồ sơ",
+      "save": "Lưu",
+      "cancel": "Hủy",
+      "delete": "Xóa"
+    },
+    "dialog": {
+      "addTitle": "Thêm hồ sơ doanh nghiệp mới",
+      "editTitle": "Chỉnh sửa hồ sơ doanh nghiệp",
+      "addDescription": "Nhập thông tin hồ sơ doanh nghiệp của bạn.",
+      "editDescription": "Chỉnh sửa thông tin hồ sơ doanh nghiệp của bạn."
+    },
+    "validation": {
+      "maxProfiles": "Đã đạt số lượng hồ sơ doanh nghiệp tối đa",
+      "requiredFields": "Vui lòng điền vào tất cả các trường bắt buộc"
+    },
+    "defaultLabel": "Mặc định",
+    "status": {
+      "isDefault": "Hồ sơ mặc định",
+      "notDefault": "Đặt làm mặc định"
+    }
+  },
+  "profile": {
+    "actions": {
+      "edit": "Chỉnh sửa hồ sơ",
+      "delete": "Xóa hồ sơ",
+      "confirmDelete": {
+        "title": "Xóa hồ sơ",
+        "description": "Bạn có chắc chắn muốn xóa hồ sơ này? Hành động này không thể hoàn tác.",
+        "confirm": "Có, xóa",
+        "cancel": "Hủy"
+      }
+    }
+  },
+  "confirmDialog": {
+    "delete": {
+      "title": "Xác nhận xóa",
+      "description": "Bạn có chắc chắn muốn xóa mục này? Hành động này không thể hoàn tác.",
+      "confirm": "Có, xóa",
+      "cancel": "Hủy"
+    }
+  },
+  "tags": {
+    "title": "Nhập nhanh",
+    "add": "Thêm thẻ",
+    "edit": "Chỉnh sửa thẻ",
+    "form": {
+      "name": "Tên",
+      "description": "Mô tả",
+      "rate": "Giá (€)",
+      "quantity": "Số lượng",
+      "color": "Màu sắc",
+      "visible": "Hiển thị trong nhập nhanh",
+      "usesDateRange": "Sử dụng khoảng thời gian",
+      "personas": "Hồ sơ được gán"
+    },
+    "emptyState": {
+      "title": "Không có thẻ nhanh",
+      "description": "Tạo thẻ nhanh để tăng tốc quá trình tạo hóa đơn của bạn.",
+      "addFirst": "Thêm thẻ đầu tiên"
+    },
+    "actions": {
+      "add": "Thêm thẻ",
+      "edit": "Chỉnh sửa thẻ",
+      "delete": "Xóa thẻ",
+      "save": "Lưu thay đổi",
+      "cancel": "Hủy"
+    },
+    "search": {
+      "placeholder": "Tìm kiếm thẻ...",
+      "noResults": "Không tìm thấy thẻ"
+    }
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "appearance": {
+      "title": "Giao diện",
+      "description": "Tùy chỉnh giao diện ứng dụng của bạn",
+      "themes": {
+        "light": {
+          "label": "Sáng",
+          "description": "Giao diện sáng để sử dụng ban ngày"
+        },
+        "dark": {
+          "label": "Tối",
+          "description": "Giao diện tối để sử dụng ban đêm"
+        },
+        "system": {
+          "label": "Hệ thống",
+          "description": "Theo cài đặt hệ thống"
+        }
+      }
+    },
+    "language": {
+      "title": "Ngôn ngữ",
+      "description": "Chọn ngôn ngữ ưa thích"
+    },
+    "pdf": {
+      "title": "Cài đặt PDF",
+      "description": "Cấu hình xem trước và tùy chọn lưu PDF",
+      "preview": {
+        "label": "Hiện xem trước PDF",
+        "description": "Hiển thị bản xem trước PDF trước khi lưu"
+      },
+      "save": {
+        "label": "Vị trí lưu",
+        "description": "Chọn vị trí lưu mặc định cho PDF",
+        "placeholder": "Chọn vị trí lưu",
+        "browse": "Duyệt",
+        "noPath": "Chưa chọn vị trí lưu"
+      }
+    },
+    "dataManagement": {
+      "title": "Quản lý dữ liệu",
+      "description": "Xuất hoặc nhập dữ liệu của bạn",
+      "export": {
+        "title": "Xuất dữ liệu",
+        "description": "Sao lưu dữ liệu vào tệp",
+        "button": "Xuất d�� liệu",
+        "loading": "Đang xuất...",
+        "success": "Xuất dữ liệu thành công",
+        "error": "Lỗi khi xuất",
+        "genericError": "Đã xảy ra lỗi không mong muốn"
+      },
+      "import": {
+        "title": "Nhập dữ liệu",
+        "description": "Tải dữ liệu đã xuất trước đó",
+        "button": "Nhập dữ liệu",
+        "loading": "Đang nhập...",
+        "success": "Nhập dữ liệu thành công",
+        "error": "Lỗi khi nhập",
+        "genericError": "Đã xảy ra lỗi không mong muốn"
+      }
+    },
+    "errors": {
+      "loadSettings": "Lỗi khi tải cài đặt",
+      "updateSettings": "Lỗi khi cập nhật cài đặt",
+      "loadLanguage": "Lỗi khi tải cài đặt ngôn ngữ",
+      "updateLanguage": "Lỗi khi cập nhật ngôn ngữ",
+      "directorySelection": {
+        "notAvailable": "Không có sẵn chức năng chọn thư mục",
+        "error": "Lỗi khi chọn thư mục"
+      }
+    },
+    "success": {
+      "saveLocation": "Cập nhật vị trí lưu thành công",
+      "language": "Cập nhật ngôn ngữ thành công"
+    }
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "required": "Trường bắt buộc",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "add": "Thêm",
+    "search": "Tìm kiếm",
+    "noResults": "Không có kết quả",
+    "address": "Địa chỉ",
+    "taxInfo": "Thông tin thuế",
+    "bankDetails": "Thông tin ngân hàng"
+  },
+  "dialogs": {
+    "warning": {
+      "title": "Giá trị thiếu",
+      "description": "Giá hoặc số lượng trống. Bạn có muốn đặt giá trị này thành 0 và tiếp tục?",
+      "cancel": "Hủy",
+      "confirm": "Đặt thành 0 và tiếp tục"
+    },
+    "preview": {
+      "title": "Xem trước hóa đơn - {{fileName}}"
+    }
+  },
+  "messages": {
+    "success": {
+      "invoiceGenerated": "Tạo hóa đơn thành công!",
+      "customerAdded": "Thêm khách hàng thành công",
+      "customerUpdated": "Cập nhật khách hàng thành công",
+      "profileAdded": "Thêm hồ sơ doanh nghiệp thành công",
+      "profileUpdated": "Cập nhật hồ sơ doanh nghiệp thành công"
+    },
+    "error": {
+      "required": "Vui lòng điền vào tất cả các trường bắt buộc.",
+      "maxProfiles": "Đã đạt số lượng hồ sơ doanh nghiệp tối đa.",
+      "savingInvoice": "Lỗi khi lưu hóa đơn. Vui lòng thử lại.",
+      "generatingInvoice": "Lỗi khi tạo hóa đơn"
+    },
+    "validation": {
+      "selectCustomer": "Vui lòng chọn khách hàng.",
+      "selectProfile": "Vui lòng chọn hồ sơ doanh nghiệp.",
+      "setServicePeriod": "Vui lòng nhập đầy đủ thời gian cung cấp dịch vụ.",
+      "setServiceDate": "Vui lòng nhập ngày cung cấp dịch vụ.",
+      "addItem": "Vui lòng thêm ít nhất một mục hóa đơn."
+    }
+  }
+}

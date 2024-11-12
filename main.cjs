@@ -211,6 +211,16 @@ function registerIpcHandlers() {
       return null;
     }
   });
+
+  ipcMain.handle('clearAllData', async () => {
+    try {
+      store.clear();
+      return true;
+    } catch (error) {
+      console.error('Error clearing data:', error);
+      throw error;
+    }
+  });
 }
 
 app.whenReady().then(() => {

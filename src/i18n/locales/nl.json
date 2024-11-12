@@ -1,0 +1,308 @@
+{
+  "invoice": {
+    "title": "Factuur",
+    "recipient": {
+      "title": "Factuurbegunstigde",
+      "selectCustomer": "Klant selecteren"
+    },
+    "details": {
+      "title": "Factuurgegevens",
+      "selectProfile": "Bedrijfsprofiel selecteren",
+      "number": {
+        "label": "Factuurnummer",
+        "hint": "Het factuurnummer wordt automatisch gegenereerd"
+      },
+      "date": {
+        "label": "Factuurdatum",
+        "serviceDate": "Dienstverleningsdatum",
+        "servicePeriod": "Dienstverleningsperiode",
+        "startOfService": "Begin van dienstverlening",
+        "endOfService": "Einde van dienstverlening"
+      }
+    },
+    "items": {
+      "title": "Factuurregels",
+      "description": "Omschrijving",
+      "quantity": "Aantal",
+      "rate": "Prijs (€)",
+      "total": "Totaal",
+      "addItem": "Regel toevoegen"
+    },
+    "totals": {
+      "netAmount": "Nettobedrag",
+      "vat": "BTW ({{rate}}%)",
+      "totalAmount": "Totaalbedrag",
+      "vatNotice": {
+        "enabled": "BTW wordt berekend volgens § 19 BTW-wet.",
+        "disabled": "Volgens § 19 BTW-wet wordt geen BTW berekend."
+      }
+    },
+    "actions": {
+      "generate": "Factuur maken",
+      "generating": "Wordt gemaakt...",
+      "preview": "Voorbeeld",
+      "save": "Opslaan"
+    }
+  },
+  "customers": {
+    "title": "Klanten",
+    "management": "Klantenbeheer",
+    "add": "Klant toevoegen",
+    "edit": "Klant bewerken",
+    "form": {
+      "title": "Aanhef",
+      "selectTitle": "Aanhef selecteren",
+      "titles": {
+        "mr": "Dhr.",
+        "mrs": "Mevr.",
+        "diverse": "Anders"
+      },
+      "academicTitle": {
+        "label": "Academische titel",
+        "options": {
+          "dr": "Dr.",
+          "prof": "Prof.",
+          "profDr": "Prof. Dr.",
+          "drHc": "Dr. h.c."
+        },
+        "placeholder": "selecteren"
+      },
+      "name": "Naam",
+      "street": "Straat",
+      "postalCode": "Postcode",
+      "city": "Plaats",
+      "businessCustomer": "Zakelijke klant"
+    },
+    "actions": {
+      "add": "Klant toevoegen",
+      "edit": "Klant bewerken",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "delete": "Verwijderen"
+    },
+    "dialog": {
+      "addTitle": "Nieuwe klant toevoegen",
+      "editTitle": "Klant bewerken",
+      "addDescription": "Voer de klantgegevens in",
+      "editDescription": "Bewerk de klantgegevens"
+    }
+  },
+  "business": {
+    "title": "Bedrijfsprofielen",
+    "add": "Profiel toevoegen",
+    "edit": "Profiel bewerken",
+    "form": {
+      "companyName": "Bedrijfsnaam",
+      "street": "Straat",
+      "postalCode": "Postcode",
+      "city": "Plaats",
+      "taxNumber": "Belastingnummer",
+      "taxId": "BTW-nummer",
+      "bankInstitute": "Bank",
+      "iban": "IBAN",
+      "bic": "BIC",
+      "contactDetails": "Contactgegevens",
+      "contactDetailsPlaceholder": "Telefoon, e-mail, website, etc.",
+      "vatEnabled": "BTW activeren",
+      "vatRate": "BTW-tarief (%)"
+    },
+    "actions": {
+      "setDefault": "Als standaard instellen",
+      "add": "Profiel toevoegen",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "delete": "Verwijderen"
+    },
+    "dialog": {
+      "addTitle": "Nieuw bedrijfsprofiel toevoegen",
+      "editTitle": "Bedrijfsprofiel bewerken",
+      "addDescription": "Voer de gegevens van uw bedrijfsprofiel in.",
+      "editDescription": "Bewerk de gegevens van uw bedrijfsprofiel."
+    },
+    "validation": {
+      "maxProfiles": "Maximaal aantal bedrijfsprofielen bereikt",
+      "requiredFields": "Vul alle verplichte velden in"
+    },
+    "defaultLabel": "Standaard",
+    "status": {
+      "isDefault": "Standaardprofiel",
+      "notDefault": "Als standaard instellen"
+    }
+  },
+  "profile": {
+    "actions": {
+      "edit": "Profiel bewerken",
+      "delete": "Profiel verwijderen",
+      "confirmDelete": {
+        "title": "Profiel verwijderen",
+        "description": "Weet u zeker dat u dit profiel wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+        "confirm": "Ja, verwijderen",
+        "cancel": "Annuleren"
+      }
+    }
+  },
+  "confirmDialog": {
+    "delete": {
+      "title": "Verwijderen bevestigen",
+      "description": "Weet u zeker dat u dit item wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Ja, verwijderen",
+      "cancel": "Annuleren"
+    }
+  },
+  "tags": {
+    "title": "Snelle invoer",
+    "add": "Tag toevoegen",
+    "edit": "Tag bewerken",
+    "form": {
+      "name": "Naam",
+      "description": "Omschrijving",
+      "rate": "Prijs (€)",
+      "quantity": "Aantal",
+      "color": "Kleur",
+      "visible": "Zichtbaar in snelle invoer",
+      "usesDateRange": "Gebruikt datumbereik",
+      "personas": "Toegewezen profielen"
+    },
+    "emptyState": {
+      "title": "Geen Quick Tags beschikbaar",
+      "description": "Maak Quick Tags aan om uw factureringsproces te versnellen.",
+      "addFirst": "Eerste tag toevoegen"
+    },
+    "actions": {
+      "add": "Tag toevoegen",
+      "edit": "Tag bewerken",
+      "delete": "Tag verwijderen",
+      "save": "Wijzigingen opslaan",
+      "cancel": "Annuleren"
+    },
+    "search": {
+      "placeholder": "Tags zoeken...",
+      "noResults": "Geen tags gevonden"
+    }
+  },
+  "settings": {
+    "title": "Instellingen",
+    "appearance": {
+      "title": "Uiterlijk",
+      "description": "Pas het uiterlijk van uw applicatie aan",
+      "themes": {
+        "light": {
+          "label": "Licht",
+          "description": "Licht thema voor gebruik overdag"
+        },
+        "dark": {
+          "label": "Donker",
+          "description": "Donker thema voor gebruik 's nachts"
+        },
+        "system": {
+          "label": "Systeem",
+          "description": "Volg systeeminstellingen"
+        }
+      }
+    },
+    "language": {
+      "title": "Taal",
+      "description": "Selecteer uw voorkeurstaal"
+    },
+    "pdf": {
+      "title": "PDF-instellingen",
+      "description": "Configureer PDF-voorbeeld en opslagopties",
+      "preview": {
+        "label": "PDF-voorbeeld weergeven",
+        "description": "Toont een voorbeeld van de PDF voordat deze wordt opgeslagen"
+      },
+      "save": {
+        "label": "Opslaglocatie",
+        "description": "Kies de standaard opslaglocatie voor uw PDF's",
+        "placeholder": "Kies een opslaglocatie",
+        "browse": "Bladeren",
+        "noPath": "Geen opslaglocatie geselecteerd"
+      }
+    },
+    "dataManagement": {
+      "title": "Gegevensbeheer",
+      "description": "Exporteer of importeer uw gegevens",
+      "export": {
+        "title": "Gegevens exporteren",
+        "description": "Maak een back-up van uw gegevens in een bestand",
+        "button": "Gegevens exporteren",
+        "loading": "Exporteren...",
+        "success": "Gegevens succesvol geëxporteerd",
+        "error": "Fout bij exporteren",
+        "genericError": "Er is een onverwachte fout opgetreden"
+      },
+      "import": {
+        "title": "Gegevens importeren",
+        "description": "Laad eerder geëxporteerde gegevens",
+        "button": "Gegevens importeren",
+        "loading": "Importeren...",
+        "success": "Gegevens succesvol geïmporteerd",
+        "error": "Fout bij importeren",
+        "genericError": "Er is een onverwachte fout opgetreden"
+      }
+    },
+    "errors": {
+      "loadSettings": "Fout bij laden van instellingen",
+      "updateSettings": "Fout bij bijwerken van instellingen",
+      "loadLanguage": "Fout bij laden van taalinstellingen",
+      "updateLanguage": "Fout bij bijwerken van taal",
+      "directorySelection": {
+        "notAvailable": "Mapkeuze niet beschikbaar",
+        "error": "Fout bij selecteren van map"
+      }
+    },
+    "success": {
+      "saveLocation": "Opslaglocatie succesvol bijgewerkt",
+      "language": "Taal succesvol bijgewerkt"
+    }
+  },
+  "common": {
+    "loading": "Laden...",
+    "required": "Verplicht veld",
+    "error": "Fout",
+    "success": "Succesvol",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "add": "Toevoegen",
+    "search": "Zoeken",
+    "noResults": "Geen resultaten",
+    "address": "Adres",
+    "taxInfo": "Belastinggegevens",
+    "bankDetails": "Bankgegevens"
+  },
+  "dialogs": {
+    "warning": {
+      "title": "Ontbrekende waarden",
+      "description": "Prijs of aantal is leeg. Wilt u deze op 0 zetten en doorgaan?",
+      "cancel": "Annuleren",
+      "confirm": "Op 0 zetten en doorgaan"
+    },
+    "preview": {
+      "title": "Factuurvoorbeeld - {{fileName}}"
+    }
+  },
+  "messages": {
+    "success": {
+      "invoiceGenerated": "Factuur succesvol aangemaakt!",
+      "customerAdded": "Klant succesvol toegevoegd",
+      "customerUpdated": "Klant succesvol bijgewerkt",
+      "profileAdded": "Bedrijfsprofiel succesvol toegevoegd",
+      "profileUpdated": "Bedrijfsprofiel succesvol bijgewerkt"
+    },
+    "error": {
+      "required": "Vul alle verplichte velden in.",
+      "maxProfiles": "Maximaal aantal bedrijfsprofielen bereikt.",
+      "savingInvoice": "Fout bij opslaan van factuur. Probeer het opnieuw.",
+      "generatingInvoice": "Fout bij genereren van factuur"
+    },
+    "validation": {
+      "selectCustomer": "Selecteer een klant.",
+      "selectProfile": "Selecteer een bedrijfsprofiel.",
+      "setServicePeriod": "Geef de volledige dienstverleningsperiode op.",
+      "setServiceDate": "Geef de dienstverleningsdatum op.",
+      "addItem": "Voeg minimaal één factuurregel toe."
+    }
+  }
+}
