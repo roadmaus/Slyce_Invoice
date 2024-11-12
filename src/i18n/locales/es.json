@@ -102,6 +102,7 @@
       "iban": "IBAN",
       "bic": "BIC",
       "contactDetails": "Datos de contacto",
+      "contactDetailsPlaceholder": "Teléfono, correo electrónico, sitio web, etc.",
       "vatEnabled": "Activar IVA",
       "vatRate": "Tasa de IVA (%)"
     },
@@ -109,6 +110,7 @@
       "setDefault": "Establecer como predeterminado",
       "save": "Guardar",
       "cancel": "Cancelar",
+      "add": "Agregar perfil",
       "delete": "Eliminar"
     },
     "dialog": {

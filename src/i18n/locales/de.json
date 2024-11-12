@@ -102,11 +102,13 @@
       "iban": "IBAN",
       "bic": "BIC",
       "contactDetails": "Kontaktdaten",
+      "contactDetailsPlaceholder": "Telefon, E-Mail, Website, etc.",
       "vatEnabled": "Umsatzsteuer aktivieren",
       "vatRate": "Umsatzsteuersatz (%)"
     },
     "actions": {
       "setDefault": "Als Standard festlegen",
+      "add": "Profil hinzufügen",
       "save": "Speichern",
       "cancel": "Abbrechen",
       "delete": "Löschen"

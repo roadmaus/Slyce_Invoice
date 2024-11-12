@@ -639,14 +639,14 @@ const SlyceInvoice = () => {
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <Label>Tax Number</Label>
+            <Label>{t('business.form.taxNumber')}</Label>
             <Input
               value={profile.tax_number}
               onChange={(e) => setProfile({ ...profile, tax_number: e.target.value })}
             />
           </div>
           <div>
-            <Label>Tax ID</Label>
+            <Label>{t('business.form.taxId')}</Label>
             <Input
               value={profile.tax_id}
               onChange={(e) => setProfile({ ...profile, tax_id: e.target.value })}
@@ -654,7 +654,7 @@ const SlyceInvoice = () => {
           </div>
         </div>
         <div>
-          <Label>Bank Institute</Label>
+          <Label>{t('business.form.bankInstitute')}</Label>
           <Input
             value={profile.bank_institute}
             onChange={(e) => setProfile({ ...profile, bank_institute: e.target.value })}
@@ -662,14 +662,14 @@ const SlyceInvoice = () => {
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <Label>IBAN</Label>
+            <Label>{t('business.form.iban')}</Label>
             <Input
               value={profile.bank_iban}
               onChange={(e) => setProfile({ ...profile, bank_iban: e.target.value })}
             />
           </div>
           <div>
-            <Label>BIC</Label>
+            <Label>{t('business.form.bic')}</Label>
             <Input
               value={profile.bank_bic}
               onChange={(e) => setProfile({ ...profile, bank_bic: e.target.value })}
@@ -677,11 +677,11 @@ const SlyceInvoice = () => {
           </div>
         </div>
         <div>
-          <Label>Contact Details</Label>
+          <Label>{t('business.form.contactDetails')}</Label>
           <Input
             value={profile.contact_details}
             onChange={(e) => setProfile({ ...profile, contact_details: e.target.value })}
-            placeholder="Phone, Email, Website, etc."
+            placeholder={t('business.form.contactDetailsPlaceholder')}
           />
         </div>
         <div className="space-y-2">
@@ -694,7 +694,7 @@ const SlyceInvoice = () => {
                 vat_rate: checked ? (profile.vat_rate || 19) : 0
               })}
             />
-            <Label>Enable VAT (Umsatzsteuer)</Label>
+            <Label>{t('business.form.vatEnabled')}</Label>
           </div>
           
           {profile.vat_enabled && (
@@ -711,7 +711,7 @@ const SlyceInvoice = () => {
                 step="0.1"
                 className="w-20"
               />
-              <Label>VAT Rate (%)</Label>
+              <Label>{t('business.form.vatRate')}</Label>
             </div>
           )}
         </div>
@@ -1410,7 +1410,7 @@ const LoadingOverlay = () => (
           <Card className="border-border">
             <CardContent className="responsive-p">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-medium text-foreground">Customer Management</h2>
+                <h2 className="text-xl font-medium text-foreground">{t('customers.title')}</h2>
                 <Dialog open={showNewCustomerDialog} onOpenChange={(open) => {
                   if (!open) {
                     // Reset state when dialog closes
@@ -1537,7 +1537,7 @@ const LoadingOverlay = () => (
 
                       <div className="space-y-3">
                         <div className="space-y-1">
-                          <div className="text-sm font-medium text-muted-foreground">Address</div>
+                          <div className="text-sm font-medium text-muted-foreground">{t('common.address')}</div>
                           <div className="text-sm text-foreground">
                             {customer.street}
                             <br />
@@ -1559,7 +1559,7 @@ const LoadingOverlay = () => (
             <CardContent className="responsive-p">
               {/* Header Section */}
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-medium text-foreground">Business Profiles</h2>
+                <h2 className="text-xl font-medium text-foreground">{t('business.title')}</h2>
                 <Dialog open={showNewProfileDialog} onOpenChange={(open) => {
                   if (!open) {
                     // Reset state when dialog closes
@@ -1584,14 +1584,16 @@ const LoadingOverlay = () => (
                   <DialogTrigger asChild>
                     <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                       <PlusCircle className="h-4 w-4 mr-2" />
-                      Add Profile
+                      {t('business.actions.add')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>{newProfile.company_name ? 'Edit Business Profile' : 'Add New Business Profile'}</DialogTitle>
+                      <DialogTitle>
+                        {newProfile.company_name ? t('business.dialog.editTitle') : t('business.dialog.addTitle')}
+                      </DialogTitle>
                       <DialogDescription>
-                        {newProfile.company_name ? 'Edit your business profile details.' : 'Enter your business profile details below.'}
+                        {newProfile.company_name ? t('business.dialog.editDescription') : t('business.dialog.addDescription')}
                       </DialogDescription>
                     </DialogHeader>
                     {renderBusinessProfileForm(newProfile, setNewProfile)}
@@ -1617,7 +1619,7 @@ const LoadingOverlay = () => (
                           setShowNewProfileDialog(false);
                         }}
                       >
-                        Cancel
+                        {t('business.actions.cancel')}
                       </Button>
                       <Button onClick={() => {
                         if (newProfile.company_name && businessProfiles.find(p => p.company_name === newProfile.company_name)) {
@@ -1651,7 +1653,7 @@ const LoadingOverlay = () => (
                         });
                         setShowNewProfileDialog(false);
                       }}>
-                        {newProfile.company_name ? 'Save Changes' : 'Add Profile'}
+                        {newProfile.company_name ? t('business.actions.save') : t('business.actions.add')}
                       </Button>
                     </div>
                   </DialogContent>
@@ -1683,7 +1685,7 @@ const LoadingOverlay = () => (
                               }}
                               className="data-[state=checked]:bg-primary"
                             />
-                            <span className="ml-2 text-sm text-muted-foreground">Default</span>
+                            <span className="ml-2 text-sm text-muted-foreground">{t('business.defaultLabel')}</span>
                           </div>
                           <div className="flex gap-1">
                             <Button
@@ -1715,7 +1717,7 @@ const LoadingOverlay = () => (
                       {/* Profile Details */}
                       <div className="space-y-3">
                         <div className="space-y-1">
-                          <div className="text-sm font-medium text-muted-foreground">Address</div>
+                          <div className="text-sm font-medium text-muted-foreground">{t('common.address')}</div>
                           <div className="text-sm text-foreground">
                             {profile.company_street}
                             <br />
@@ -1725,19 +1727,19 @@ const LoadingOverlay = () => (
 
                         {(profile.tax_number || profile.tax_id) && (
                           <div className="space-y-1">
-                            <div className="text-sm font-medium text-muted-foreground">Tax Information</div>
+                            <div className="text-sm font-medium text-muted-foreground">{t('common.taxInfo')}</div>
                             {profile.tax_number && (
-                              <div className="text-sm text-foreground">Tax Number: {profile.tax_number}</div>
+                              <div className="text-sm text-foreground">{t('business.form.taxNumber')}: {profile.tax_number}</div>
                             )}
                             {profile.tax_id && (
-                              <div className="text-sm text-foreground">Tax ID: {profile.tax_id}</div>
+                              <div className="text-sm text-foreground">{t('business.form.taxId')}: {profile.tax_id}</div>
                             )}
                           </div>
                         )}
 
                         {(profile.bank_institute || profile.bank_iban || profile.bank_bic) && (
                           <div className="space-y-1">
-                            <div className="text-sm font-medium text-muted-foreground">Banking Details</div>
+                            <div className="text-sm font-medium text-muted-foreground">{t('common.bankDetails')}</div>
                             {profile.bank_institute && (
                               <div className="text-sm text-foreground">{profile.bank_institute}</div>
                             )}
@@ -1763,7 +1765,7 @@ const LoadingOverlay = () => (
           <Card>
             <CardContent className="responsive-p">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-medium text-foreground">Quick Entry Tags</h2>
+                <h2 className="text-xl font-medium text-foreground">{t('tags.title')}</h2>
                 <Dialog open={showNewTagDialog} onOpenChange={(open) => {
                   if (!open) {
                     // Reset state when dialog closes
@@ -1783,20 +1785,22 @@ const LoadingOverlay = () => (
                   <DialogTrigger asChild>
                     <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                       <PlusCircle className="h-4 w-4 mr-2" />
-                      Add Tag
+                      {t('tags.actions.add')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="dialog-content sm:max-w-[425px]">
                     <DialogHeader>
-                      <DialogTitle>{newTag.name ? 'Edit Quick Tag' : 'Add New Quick Tag'}</DialogTitle>
+                      <DialogTitle>
+                        {newTag.name ? t('tags.dialog.editTitle') : t('tags.dialog.addTitle')}
+                      </DialogTitle>
                       <DialogDescription>
-                        {newTag.name ? 'Edit your quick entry tag details.' : 'Create a new quick entry tag for faster invoice creation.'}
+                        {newTag.name ? t('tags.dialog.editDescription') : t('tags.dialog.addDescription')}
                       </DialogDescription>
                     </DialogHeader>
                     
                     <div className="dialog-section">
                       <div className="form-field">
-                        <Label>Name</Label>
+                        <Label>{t('tags.form.name')}</Label>
                         <Input
                           value={newTag.name}
                           onChange={(e) => setNewTag({ ...newTag, name: e.target.value })}
@@ -1804,7 +1808,7 @@ const LoadingOverlay = () => (
                       </div>
 
                       <div className="form-field">
-                        <Label>Description</Label>
+                        <Label>{t('tags.form.description')}</Label>
                         <Input
                           value={newTag.description}
                           onChange={(e) => setNewTag({ ...newTag, description: e.target.value })}
@@ -1813,7 +1817,7 @@ const LoadingOverlay = () => (
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="form-field">
-                          <Label>Rate (€)</Label>
+                          <Label>{t('tags.form.rate')}</Label>
                           <Input
                             type="number"
                             value={newTag.rate}
@@ -1823,7 +1827,7 @@ const LoadingOverlay = () => (
                           />
                         </div>
                         <div className="form-field">
-                          <Label>Quantity</Label>
+                          <Label>{t('tags.form.quantity')}</Label>
                           <Input
                             type="number"
                             value={newTag.quantity}
@@ -1835,7 +1839,7 @@ const LoadingOverlay = () => (
                       </div>
 
                       <div className="form-field">
-                        <Label>Color</Label>
+                        <Label>{t('tags.form.color')}</Label>
                         <div className="color-picker-grid">
                           {PREDEFINED_COLORS.map((color) => (
                             <button
@@ -1856,7 +1860,7 @@ const LoadingOverlay = () => (
                           checked={newTag.visible}
                           onCheckedChange={(checked) => setNewTag({ ...newTag, visible: checked })}
                         />
-                        <Label>Visible in Quick Entry</Label>
+                        <Label>{t('tags.form.visible')}</Label>
                       </div>
 
                       <div className="switch-container">
@@ -1864,11 +1868,11 @@ const LoadingOverlay = () => (
                           checked={newTag.hasDateRange}
                           onCheckedChange={(checked) => setNewTag({ ...newTag, hasDateRange: checked })}
                         />
-                        <Label>Uses Date Range</Label>
+                        <Label>{t('tags.form.usesDateRange')}</Label>
                       </div>
 
                       <div className="form-field">
-                        <Label>Associated Personas</Label>
+                        <Label>{t('tags.form.personas')}</Label>
                         <ReactSelect
                           isMulti
                           options={businessProfiles.map((profile) => ({
@@ -1915,7 +1919,7 @@ const LoadingOverlay = () => (
                           setShowNewTagDialog(false);
                         }}
                       >
-                        Cancel
+                        {t('common.cancel')}
                       </Button>
                       <Button onClick={() => {
                         if (newTag.name && quickTags.find(t => t.name === newTag.name)) {
@@ -1941,7 +1945,7 @@ const LoadingOverlay = () => (
                         });
                         setShowNewTagDialog(false);
                       }}>
-                        {newTag.name ? 'Save Changes' : 'Add Tag'}
+                        {newTag.name ? t('common.save') : t('tags.actions.add')}
                       </Button>
                     </div>
                   </DialogContent>
@@ -2008,25 +2012,25 @@ const LoadingOverlay = () => (
                       {/* Description */}
                       <div className="mb-6">
                         <p className="text-sm text-foreground/70 line-clamp-2" title={tag.description}>
-                          {tag.description || "No description provided"}
+                          {tag.description || t('tags.form.noDescription')}
                         </p>
                       </div>
 
                       {/* Tag Details */}
                       <div className="space-y-2 mb-6">
                         <div className="flex items-center justify-between bg-background/40 dark:bg-background/10 rounded-md p-2">
-                          <span className="text-sm text-foreground/70">Rate:</span>
+                          <span className="text-sm text-foreground/70">{t('tags.form.rate')}:</span>
                           <span className="font-medium text-foreground">€{parseFloat(tag.rate).toFixed(2)}</span>
                         </div>
                         <div className="flex items-center justify-between bg-background/40 dark:bg-background/10 rounded-md p-2">
-                          <span className="text-sm text-foreground/70">Quantity:</span>
+                          <span className="text-sm text-foreground/70">{t('tags.form.quantity')}:</span>
                           <span className="font-medium text-foreground">{tag.quantity}</span>
                         </div>
                       </div>
 
                       {/* Associated Personas */}
                       <div className="space-y-2">
-                        <div className="text-xs font-medium text-foreground/70">Associated Personas:</div>
+                        <div className="text-xs font-medium text-foreground/70">{t('tags.form.personas')}:</div>
                         <div className="flex flex-wrap gap-1.5 max-h-[60px] overflow-y-auto">
                           {tag.personas?.map((persona, idx) => (
                             <span
@@ -2047,16 +2051,16 @@ const LoadingOverlay = () => (
                 {quickTags.length === 0 && (
                   <div className="col-span-4 text-center py-12 bg-secondary/50 rounded-lg border-2 border-dashed border-border">
                     <Tags className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium text-foreground mb-2">No Quick Tags</h3>
+                    <h3 className="text-lg font-medium text-foreground mb-2">{t('tags.emptyState.title')}</h3>
                     <p className="text-muted-foreground mb-4">
-                      Create quick entry tags to speed up your invoice creation process.
+                      {t('tags.emptyState.description')}
                     </p>
                     <Button 
                       onClick={() => setShowNewTagDialog(true)}
                       className="bg-primary text-primary-foreground hover:bg-primary/90"
                     >
                       <PlusCircle className="h-4 w-4 mr-2" />
-                      Add Your First Tag
+                      {t('tags.emptyState.addFirst')}
                     </Button>
                   </div>
                 )}
