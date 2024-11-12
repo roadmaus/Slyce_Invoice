@@ -9,7 +9,7 @@ export function ThemeToggle() {
     <Button
       variant="outline"
       size="icon"
-      className="relative h-9 w-9 overflow-hidden rounded-full bg-background/50 backdrop-blur-sm border border-border/50 hover:border-border/80 transition-all duration-300 hover:scale-105 active:scale-95"
+      className="relative h-9 w-9 overflow-hidden rounded-full bg-background/50 backdrop-blur-sm border-[0.5px] border-border hover:border-border/80 transition-all duration-300 hover:scale-105 active:scale-95"
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
     >
       <Sun className="absolute h-[1.2rem] w-[1.2rem] translate-y-0 opacity-100 transition-all duration-500 dark:-translate-y-8 dark:opacity-0 text-amber-500 hover:text-amber-400" />

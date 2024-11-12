@@ -54,7 +54,7 @@ const InvoiceTab = ({
                 setSelectedCustomer(customer);
               }}
             >
-              <SelectTrigger className="bg-background border-input">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder={t('invoice.recipient.selectCustomer')} />
               </SelectTrigger>
               <SelectContent className="select-content">
@@ -109,7 +109,7 @@ const InvoiceTab = ({
                 setSelectedProfile(profile);
               }}
             >
-              <SelectTrigger className="bg-background border-input">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder={t('invoice.details.selectProfile')} />
               </SelectTrigger>
               <SelectContent>
@@ -129,7 +129,7 @@ const InvoiceTab = ({
               <Input 
                 value={currentInvoiceNumber}
                 onChange={(e) => setCurrentInvoiceNumber(e.target.value)}
-                className="bg-background border-input"
+                className="bg-background border-border"
               />
               <p className="text-xs text-muted-foreground mt-0.5">
                 {t('invoice.details.number.hint')}
@@ -267,9 +267,9 @@ const InvoiceTab = ({
 
         {/* Invoice Items Section */}
         <div className="mt-6">
-          <div className="overflow-x-auto rounded-md border border-border">
-            <div className="min-w-[600px] p-0.5">
-              <div className="grid grid-cols-12 gap-4 mb-2 font-medium text-foreground">
+          <div className="overflow-x-auto rounded-md">
+            <div className="min-w-[600px] p-4">
+              <div className="grid grid-cols-12 gap-4 mb-4 font-medium text-foreground">
                 <div className="col-span-6">{t('invoice.items.description')}</div>
                 <div className="col-span-2">{t('invoice.items.quantity')}</div>
                 <div className="col-span-2">{t('invoice.items.rate')}</div>
@@ -278,13 +278,13 @@ const InvoiceTab = ({
               </div>
 
               {invoiceItems.map((item, index) => (
-                <div key={index} className="grid grid-cols-12 gap-2 mb-2 mx-0.5">
+                <div key={index} className="grid grid-cols-12 gap-2 mb-4 mx-0.5">
                   <div className="col-span-6">
                     <Input
                       value={item.description}
                       onChange={(e) => updateInvoiceItem(index, 'description', e.target.value)}
                       placeholder={t('invoice.items.description')}
-                      className="w-full bg-background border-input"
+                      className="w-full bg-background border-border"
                     />
                   </div>
                   <div className="col-span-2">
@@ -310,7 +310,7 @@ const InvoiceTab = ({
                     <Input
                       value={`€${(item.quantity * item.rate).toFixed(2)}`}
                       readOnly
-                      className="bg-background border-input"
+                      className="bg-background border-border"
                     />
                   </div>
                   <div className="col-span-1">

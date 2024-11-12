@@ -727,7 +727,7 @@ const renderCustomerForm = (customer, setCustomer) => {
               value={customer.title}
               onValueChange={(value) => setCustomer({ ...customer, title: value })}
             >
-              <SelectTrigger className="bg-background border-input">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder={t('customers.form.selectTitle')} />
               </SelectTrigger>
               <SelectContent>
@@ -743,7 +743,7 @@ const renderCustomerForm = (customer, setCustomer) => {
               value={customer.zusatz}
               onValueChange={(value) => setCustomer({ ...customer, zusatz: value })}
             >
-              <SelectTrigger className="bg-background border-input">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder={t('customers.form.academicTitle.placeholder')} />
               </SelectTrigger>
               <SelectContent>

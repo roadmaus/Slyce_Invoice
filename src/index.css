@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 90%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -20,7 +20,7 @@
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
+    --border: 220 0% 0%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
@@ -29,6 +29,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --border-width: 0.25px;
   }
 
   .dark {
@@ -48,7 +49,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 90% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 6% 13%;
+    --border: 220 100% 100%;
     --input: 220 6% 13%;
     --ring: 213 100% 50%;
     --chart-1: 213 100% 50%;
@@ -56,6 +57,7 @@
     --chart-3: 40 100% 50%;
     --chart-4: 345 85% 55%;
     --chart-5: 280 100% 50%;
+    --border-width: 0.25px;
   }
 }
 
@@ -70,7 +72,7 @@
 
 @layer components {
   .select-content {
-    @apply border border-border;
+    @apply border-[20px] border-border;
     background-color: hsl(var(--popover));
   }
   
@@ -269,13 +271,6 @@
     @apply bg-muted border-transparent;
   }
 
-  /* Update the card hover styles for customers and business profiles */
-  .group:hover {
-    @apply shadow-md;
-    box-shadow: theme('colors.slate.400') 0px 0px 0px 1px,
-                theme('colors.slate.200') 0px 4px 12px;
-  }
-
   .dark .group:hover {
     box-shadow: theme('colors.slate.950') 0px 0px 0px 1px,
                 theme('colors.slate.950/50') 0px 8px 24px,
@@ -284,23 +279,27 @@
 
   /* Base card styling */
   .group {
-    @apply border border-slate-300;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 
-                0 1px 2px rgba(0, 0, 0, 0.1);
+    @apply border border-slate-200 bg-white;
+    box-shadow: theme('colors.slate.200/50') 0px 1px 4px,
+                theme('colors.slate.200/30') 0px 2px 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .dark .group {
-    @apply border-slate-800;
+    @apply border-slate-800 bg-transparent;
     box-shadow: theme('colors.slate.800/50') 0px 1px 3px;
   }
 
   /* Hover styles */
   .group:hover {
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px,
-                rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+    transform: translateY(-2px);
+    box-shadow: theme('colors.slate.200') 0px 0px 0px 1px,
+                theme('colors.slate.200/60') 0px 8px 24px,
+                theme('colors.slate.200/40') 0px 4px 12px;
   }
 
   .dark .group:hover {
+    transform: translateY(-2px);
     box-shadow: theme('colors.slate.950') 0px 0px 0px 1px,
                 theme('colors.slate.950/50') 0px 8px 24px,
                 theme('colors.slate.950/25') 0px 4px 8px;
@@ -427,7 +426,7 @@
 
 .amount-summary tr.medium-bold td {
     font-weight: 600;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid hsl(var(--border));
     padding-top: 12px;
 }
 

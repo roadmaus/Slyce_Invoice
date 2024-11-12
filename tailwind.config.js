@@ -36,6 +36,10 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      borderWidth: {
+        DEFAULT: '1px',
+        '1': '1.5px',
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
