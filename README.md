@@ -16,6 +16,9 @@ A modern, desktop invoice generation application built with Electron and React. 
 - 🌍 Support for 17 languages with dynamic language settings
 - 🎨 Theme support with light, dark, and system preferences
 
+## TODO
+- Correct date handling when new year
+
 ## Installation
 
 1. Clone the repository:
