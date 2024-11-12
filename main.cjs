@@ -103,9 +103,36 @@ function registerIpcHandlers() {
     return false;
   });
 
+  const getTemplateDirectory = () => {
+    const userDataPath = app.getPath('userData');
+    return path.join(userDataPath, 'templates');
+  };
+
+  const ensureTemplateExists = () => {
+    const templateDir = getTemplateDirectory();
+    const userTemplatePath = path.join(templateDir, 'invoice_template.html');
+    
+    // Create template directory if it doesn't exist
+    if (!fs.existsSync(templateDir)) {
+      fs.mkdirSync(templateDir, { recursive: true });
+    }
+    
+    // Copy bundled template if user template doesn't exist
+    if (!fs.existsSync(userTemplatePath)) {
+      const bundledTemplatePath = path.join(__dirname, 'src', 'invoice_template.html');
+      fs.copyFileSync(bundledTemplatePath, userTemplatePath);
+    }
+    
+    return userTemplatePath;
+  };
+
   ipcMain.handle('getInvoiceTemplate', async () => {
-    const templatePath = path.join(__dirname, 'src', 'invoice_template.html');
+    const templatePath = ensureTemplateExists();
     return fs.readFileSync(templatePath, 'utf8');
+  });
+
+  ipcMain.handle('getTemplatePath', () => {
+    return ensureTemplateExists();
   });
 
   ipcMain.handle('save-invoice', async (event, pdfArrayBuffer, fileName) => {
@@ -219,6 +246,42 @@ function registerIpcHandlers() {
     } catch (error) {
       console.error('Error clearing data:', error);
       throw error;
+    }
+  });
+
+  ipcMain.handle('save-template', async (event, content) => {
+    try {
+      const templatePath = ensureTemplateExists();
+      await fs.promises.writeFile(templatePath, content, 'utf8');
+      return true;
+    } catch (error) {
+      console.error('Error saving template:', error);
+      return false;
+    }
+  });
+
+  ipcMain.handle('get-template', async () => {
+    try {
+      const templatePath = ensureTemplateExists();
+      const content = await fs.promises.readFile(templatePath, 'utf8');
+      return content;
+    } catch (error) {
+      console.error('Error reading template:', error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle('reset-template', async () => {
+    try {
+      const templateDir = getTemplateDirectory();
+      const userTemplatePath = path.join(templateDir, 'invoice_template.html');
+      const bundledTemplatePath = path.join(__dirname, 'src', 'invoice_template.html');
+      
+      await fs.promises.copyFile(bundledTemplatePath, userTemplatePath);
+      return true;
+    } catch (error) {
+      console.error('Error resetting template:', error);
+      return false;
     }
   });
 }

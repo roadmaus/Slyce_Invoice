@@ -16,5 +16,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
       throw error;
     }
   },
-  clearAllData: () => ipcRenderer.invoke('clearAllData')
+  clearAllData: () => ipcRenderer.invoke('clearAllData'),
+  getTemplatePath: () => ipcRenderer.invoke('getTemplatePath'),
+  saveTemplate: (content) => ipcRenderer.invoke('save-template', content),
+  resetTemplate: () => ipcRenderer.invoke('reset-template'),
+  getTemplate: () => ipcRenderer.invoke('get-template'),
 });

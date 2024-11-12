@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from 'next-themes';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun, Monitor, Save, Upload, Loader2, Info, FolderOpen, Trash2 } from 'lucide-react';
+import { Moon, Sun, Monitor, Save, Upload, Loader2, Info, FolderOpen, Trash2, FileEdit } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import '@/i18n/config';
+import TemplateEditor from '../TemplateEditor';
 
 const SettingsTab = () => {
   const { theme, setTheme } = useTheme();
@@ -26,6 +27,7 @@ const SettingsTab = () => {
   });
   const [clickedLanguages, setClickedLanguages] = React.useState(new Set());
   const [showSwabian, setShowSwabian] = React.useState(false);
+  const [showTemplateEditor, setShowTemplateEditor] = React.useState(false);
 
   // Load preview settings on mount
   React.useEffect(() => {
@@ -148,6 +150,11 @@ const SettingsTab = () => {
         duration: 2000,
       });
     }
+  };
+
+  const handleShowTemplate = async () => {
+    const templatePath = await window.electronAPI.getTemplatePath();
+    window.electronAPI.showItemInFolder(templatePath);
   };
 
   return (
@@ -387,6 +394,13 @@ const SettingsTab = () => {
                         setIsLoading(prev => ({ ...prev, import: false }));
                       }
                     }
+                  },
+                  {
+                    icon: FileEdit,
+                    title: t('settings.invoice.template'),
+                    description: t('settings.invoice.templateDescription'),
+                    buttonText: t('settings.actions.editTemplate'),
+                    onClick: () => setShowTemplateEditor(true)
                   }
                 ].map(({ icon: Icon, title, description, buttonText, loading, onClick }) => (
                   <Card 
@@ -401,7 +415,7 @@ const SettingsTab = () => {
                       <p className="text-sm text-muted-foreground">
                         {description}
                       </p>
-                      <div className="flex-grow" /> {/* This pushes the button to the bottom */}
+                      <div className="flex-grow" />
                       <Button
                         variant="secondary"
                         onClick={onClick}
@@ -411,9 +425,7 @@ const SettingsTab = () => {
                         {loading ? (
                           <>
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            {buttonText === t('settings.dataManagement.export.button') 
-                              ? t('settings.dataManagement.export.loading')
-                              : t('settings.dataManagement.import.loading')}
+                            {buttonText}
                           </>
                         ) : (
                           <>
@@ -427,7 +439,7 @@ const SettingsTab = () => {
                 ))}
               </div>
 
-              {/* Add Reset Section */}
+              {/* Reset Section (Danger Zone) */}
               <Card className="border-destructive/50">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-2 mb-3">
@@ -490,6 +502,10 @@ const SettingsTab = () => {
           </div>
         </CardContent>
       </Card>
+
+      {showTemplateEditor && (
+        <TemplateEditor onClose={() => setShowTemplateEditor(false)} />
+      )}
     </div>
   );
 };
