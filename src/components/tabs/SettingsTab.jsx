@@ -9,9 +9,12 @@ import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
+import '@/i18n/config';
 
 const SettingsTab = () => {
   const { theme, setTheme } = useTheme();
+  const { t, i18n } = useTranslation();
   const [language, setLanguage] = React.useState('en');
   const [isLoading, setIsLoading] = React.useState({
     export: false,
@@ -35,7 +38,7 @@ const SettingsTab = () => {
         }
       } catch (error) {
         console.error('Error loading settings:', error);
-        toast.error('Failed to load settings');
+        toast.error(t('settings.errors.loadSettings'));
       }
     };
     loadPreviewSettings();
@@ -53,9 +56,10 @@ const SettingsTab = () => {
       window.dispatchEvent(new CustomEvent('previewSettingsChanged', { 
         detail: sanitizedSettings 
       }));
+      toast.success(t('settings.success.saveLocation'));
     } catch (error) {
       console.error('Error updating settings:', error);
-      toast.error('Failed to update settings');
+      toast.error(t('settings.errors.updateSettings'));
     }
   };
 
@@ -63,7 +67,7 @@ const SettingsTab = () => {
     try {
       if (!window.electronAPI?.selectDirectory) {
         console.error('selectDirectory API not available');
-        toast.error('Directory selection is not available');
+        toast.error(t('settings.errors.directorySelection.notAvailable'));
         return;
       }
 
@@ -73,11 +77,11 @@ const SettingsTab = () => {
           ...previewSettings, 
           savePath: path 
         });
-        toast.success('Save location updated successfully');
+        toast.success(t('settings.success.saveLocation'));
       }
     } catch (error) {
       console.error('Directory selection error:', error);
-      toast.error('Unable to select directory. Please try again.');
+      toast.error(t('settings.errors.directorySelection.error'));
     }
   };
 
@@ -88,26 +92,28 @@ const SettingsTab = () => {
         const settings = await window.electronAPI.getData('languageSettings');
         if (settings?.language) {
           setLanguage(settings.language);
+          await i18n.changeLanguage(settings.language);
         }
       } catch (error) {
         console.error('Error loading language settings:', error);
-        toast.error('Failed to load language settings');
+        toast.error(t('settings.errors.loadLanguage'));
       }
     };
     loadLanguageSettings();
-  }, []);
+  }, [i18n]);
 
   const updateLanguage = async (newLanguage) => {
     try {
       await window.electronAPI.setData('languageSettings', { language: newLanguage });
       setLanguage(newLanguage);
+      await i18n.changeLanguage(newLanguage);
       window.dispatchEvent(new CustomEvent('languageChanged', { 
         detail: { language: newLanguage } 
       }));
-      toast.success('Language updated successfully');
+      toast.success(t('settings.success.language'));
     } catch (error) {
       console.error('Error updating language:', error);
-      toast.error('Failed to update language');
+      toast.error(t('settings.errors.updateLanguage'));
     }
   };
 
@@ -119,17 +125,34 @@ const SettingsTab = () => {
             {/* Appearance Section */}
             <section>
               <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">Appearance</h2>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t('settings.appearance.title')}
+                </h2>
                 <Info className="w-4 h-4 text-muted-foreground" />
               </div>
               <p className="text-muted-foreground mb-6">
-                Customize how Slyce Invoice looks on your device. Choose between light, dark, or system theme.
+                {t('settings.appearance.description')}
               </p>
               <div className="grid grid-cols-3 gap-4">
                 {[
-                  { value: 'light', icon: Sun, label: 'Light', description: 'Light theme for bright environments' },
-                  { value: 'dark', icon: Moon, label: 'Dark', description: 'Easy on the eyes in low light' },
-                  { value: 'system', icon: Monitor, label: 'System', description: 'Follows your system preferences' }
+                  { 
+                    value: 'light', 
+                    icon: Sun, 
+                    label: t('settings.appearance.themes.light.label'), 
+                    description: t('settings.appearance.themes.light.description') 
+                  },
+                  { 
+                    value: 'dark', 
+                    icon: Moon, 
+                    label: t('settings.appearance.themes.dark.label'), 
+                    description: t('settings.appearance.themes.dark.description') 
+                  },
+                  { 
+                    value: 'system', 
+                    icon: Monitor, 
+                    label: t('settings.appearance.themes.system.label'), 
+                    description: t('settings.appearance.themes.system.description') 
+                  }
                 ].map(({ value, icon: Icon, label, description }) => (
                   <button
                     key={value}
@@ -152,18 +175,18 @@ const SettingsTab = () => {
             {/* Language Section */}
             <section>
               <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">Language</h2>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t('settings.language.title')}
+                </h2>
                 <Info className="w-4 h-4 text-muted-foreground" />
               </div>
               <p className="text-muted-foreground mb-6">
-                Choose your preferred language for the application interface.
+                {t('settings.language.description')}
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 {[
                   { value: 'en', label: 'English', flag: '🇺🇸' },
-                  { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
-                  { value: 'es', label: 'Español', flag: '🇪🇸' },
-                  { value: 'fr', label: 'Français', flag: '🇫🇷' }
+                  { value: 'de', label: 'Deutsch', flag: '🇩🇪' }
                 ].map(({ value, label, flag }) => (
                   <button
                     key={value}
@@ -187,19 +210,23 @@ const SettingsTab = () => {
             {/* PDF Preview Settings Section */}
             <section>
               <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">PDF Settings</h2>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t('settings.pdf.title')}
+                </h2>
                 <Info className="w-4 h-4 text-muted-foreground" />
               </div>
               <p className="text-muted-foreground mb-6">
-                Configure how PDFs are handled and where they are saved.
+                {t('settings.pdf.description')}
               </p>
               <div className="space-y-6">
                 {/* Preview Toggle */}
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <Label className="text-base">Show PDF Preview</Label>
+                    <Label className="text-base">
+                      {t('settings.pdf.preview.label')}
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      Automatically show preview dialog after generating invoices
+                      {t('settings.pdf.preview.description')}
                     </p>
                   </div>
                   <Switch
@@ -212,10 +239,11 @@ const SettingsTab = () => {
 
                 {/* Save Path Setting */}
                 <div className="space-y-2">
-                  <Label className="text-base">Default Save Location</Label>
+                  <Label className="text-base">
+                    {t('settings.pdf.save.label')}
+                  </Label>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Choose the base folder where your invoices will be saved. Files will be organized as:<br/>
-                    <code className="text-xs">[Selected Path]/Invoices/[YEAR]/[CUSTOMER]_[INVOICE_NUMBER].pdf</code>
+                    {t('settings.pdf.save.description')}
                   </p>
                   <div className="flex gap-2">
                     <Input
@@ -223,7 +251,7 @@ const SettingsTab = () => {
                       onChange={(e) => 
                         updatePreviewSettings({ ...previewSettings, savePath: e.target.value })
                       }
-                      placeholder="Select a directory for saving invoices..."
+                      placeholder={t('settings.pdf.save.placeholder')}
                       className="flex-1"
                       readOnly
                     />
@@ -233,12 +261,12 @@ const SettingsTab = () => {
                       className="flex-shrink-0"
                     >
                       <FolderOpen className="w-4 h-4 mr-2" />
-                      Browse
+                      {t('settings.pdf.save.browse')}
                     </Button>
                   </div>
                   {!previewSettings.savePath && (
                     <p className="text-sm text-muted-foreground mt-2">
-                      If no path is set, invoices will be saved to the default downloads folder using the same structure
+                      {t('settings.pdf.save.noPath')}
                     </p>
                   )}
                 </div>
@@ -250,31 +278,33 @@ const SettingsTab = () => {
             {/* Data Management Section */}
             <section>
               <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">Data Management</h2>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t('settings.dataManagement.title')}
+                </h2>
                 <Info className="w-4 h-4 text-muted-foreground" />
               </div>
               <p className="text-muted-foreground mb-6">
-                Backup and restore your data. Export your data to keep it safe or import previously exported data.
+                {t('settings.dataManagement.description')}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
                   {
                     icon: Save,
-                    title: "Export Data",
-                    description: "Save all your business profiles, customers, and settings to a file.",
-                    buttonText: "Export Data",
+                    title: t('settings.dataManagement.export.title'),
+                    description: t('settings.dataManagement.export.description'),
+                    buttonText: t('settings.dataManagement.export.button'),
                     loading: isLoading.export,
                     onClick: async () => {
                       setIsLoading(prev => ({ ...prev, export: true }));
                       try {
                         const success = await window.electronAPI.exportData();
                         if (success) {
-                          toast.success('Data exported successfully!');
+                          toast.success(t('settings.dataManagement.export.success'));
                         } else {
-                          toast.error('Failed to export data');
+                          toast.error(t('settings.dataManagement.export.error'));
                         }
                       } catch (error) {
-                        toast.error('Error exporting data');
+                        toast.error(t('settings.dataManagement.export.genericError'));
                       } finally {
                         setIsLoading(prev => ({ ...prev, export: false }));
                       }
@@ -282,9 +312,9 @@ const SettingsTab = () => {
                   },
                   {
                     icon: Upload,
-                    title: "Import Data",
-                    description: "Restore your data from a previously exported file.",
-                    buttonText: "Import Data",
+                    title: t('settings.dataManagement.import.title'),
+                    description: t('settings.dataManagement.import.description'),
+                    buttonText: t('settings.dataManagement.import.button'),
                     loading: isLoading.import,
                     onClick: async () => {
                       setIsLoading(prev => ({ ...prev, import: true }));
@@ -294,12 +324,12 @@ const SettingsTab = () => {
                           window.dispatchEvent(new CustomEvent('dataImported', { 
                             detail: importedData 
                           }));
-                          toast.success('Data imported successfully!');
+                          toast.success(t('settings.dataManagement.import.success'));
                         } else {
-                          toast.error('Failed to import data');
+                          toast.error(t('settings.dataManagement.import.error'));
                         }
                       } catch (error) {
-                        toast.error('Error importing data');
+                        toast.error(t('settings.dataManagement.import.genericError'));
                       } finally {
                         setIsLoading(prev => ({ ...prev, import: false }));
                       }
@@ -328,7 +358,9 @@ const SettingsTab = () => {
                         {loading ? (
                           <>
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            {buttonText === 'Export Data' ? 'Exporting...' : 'Importing...'}
+                            {buttonText === t('settings.dataManagement.export.button') 
+                              ? t('settings.dataManagement.export.loading')
+                              : t('settings.dataManagement.import.loading')}
                           </>
                         ) : (
                           <>

@@ -28,6 +28,7 @@ import { Toaster, toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import SettingsTab from './tabs/SettingsTab';
 import { PDFObject } from 'react-pdfobject';
+import { useTranslation } from 'react-i18next';
 // Helper Functions
 const generateInvoiceNumber = (lastNumber) => {
   const year = new Date().getFullYear();
@@ -141,34 +142,36 @@ const InvoiceTotals = ({ items, profile }) => {
   return (
     <div className="mt-6 space-y-2 w-[300px] ml-auto">
       <div className="flex justify-between items-center p-2 bg-secondary/50 rounded-md">
-        <span className="text-sm text-muted-foreground">Nettobetrag:</span>
+        <span className="text-sm text-muted-foreground">{t('invoice.totals.netAmount')}:</span>
         <span className="font-medium">€{netTotal.toFixed(2)}</span>
       </div>
       
       {profile?.vat_enabled && (
         <div className="flex justify-between items-center p-2 bg-secondary/50 rounded-md">
           <span className="text-sm text-muted-foreground">
-            Mehrwertsteuer ({vatRate}%):
+            {t('invoice.totals.vat', { rate: vatRate })}:
           </span>
           <span className="font-medium">€{vatAmount.toFixed(2)}</span>
         </div>
       )}
       
       <div className="flex justify-between items-center p-2 bg-primary/10 rounded-md font-medium">
-        <span className="text-sm">Gesamtbetrag:</span>
+        <span className="text-sm">{t('invoice.totals.totalAmount')}:</span>
         <span>€{totalAmount.toFixed(2)}</span>
       </div>
 
       <div className="text-xs text-muted-foreground italic mt-2">
         {profile?.vat_enabled 
-          ? "Umsatzsteuer wird gemäß § 19 UStG berechnet."
-          : "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet."}
+          ? t('invoice.totals.vatNotice.enabled')
+          : t('invoice.totals.vatNotice.disabled')}
       </div>
     </div>
   );
 };
 
 const SlyceInvoice = () => {
+  const { t } = useTranslation();
+
   // Business Profiles State
   const [businessProfiles, setBusinessProfiles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
@@ -1046,23 +1049,23 @@ const LoadingOverlay = () => (
         <TabsList className="bg-muted">
           <TabsTrigger value="invoice" className="data-[state=active]:bg-background">
             <FileText className="w-4 h-4 mr-2" />
-            Invoice
+            {t('invoice.title')}
           </TabsTrigger>
           <TabsTrigger value="customers" className="data-[state=active]:bg-background">
             <Users className="w-4 h-4 mr-2" />
-            Customers
+            {t('customers.title')}
           </TabsTrigger>
           <TabsTrigger value="business" className="data-[state=active]:bg-background">
             <Building2 className="w-4 h-4 mr-2" />
-            Business Profiles
+            {t('business.title')}
           </TabsTrigger>
           <TabsTrigger value="tags" className="data-[state=active]:bg-background">
             <Tags className="w-4 h-4 mr-2" />
-            Quick Tags
+            {t('tags.title')}
           </TabsTrigger>
           <TabsTrigger value="settings" className="data-[state=active]:bg-background">
             <Settings className="w-4 h-4 mr-2" />
-            Settings
+            {t('settings.title')}
           </TabsTrigger>
         </TabsList>
 
@@ -1072,7 +1075,9 @@ const LoadingOverlay = () => (
               <div className="grid grid-cols-12 gap-6">
                 {/* Customer Selection Section */}
                 <div className="col-span-12 lg:col-span-4 xl:col-span-3 space-y-4">
-                  <h3 className="text-lg font-medium text-foreground">Recipient</h3>
+                  <h3 className="text-lg font-medium text-foreground">
+                    {t('invoice.recipient.title')}
+                  </h3>
                   <Select
                     value={selectedCustomer?.name || ''}
                     onValueChange={(value) => {
@@ -1081,7 +1086,7 @@ const LoadingOverlay = () => (
                     }}
                   >
                     <SelectTrigger className="bg-background border-input">
-                      <SelectValue placeholder="Select customer" />
+                      <SelectValue placeholder={t('invoice.recipient.selectCustomer')} />
                     </SelectTrigger>
                     <SelectContent className="select-content">
                       {customers.map((customer) => (
@@ -1125,7 +1130,9 @@ const LoadingOverlay = () => (
 
                 {/* Invoice Details Section */}
                 <div className="col-span-12 lg:col-span-4 xl:col-span-5 space-y-4">
-                  <h3 className="text-lg font-medium">Invoice Details</h3>
+                  <h3 className="text-lg font-medium">
+                    {t('invoice.details.title')}
+                  </h3>
                   <Select
                     value={selectedProfile?.company_name || ''}
                     onValueChange={(value) => {
@@ -1134,7 +1141,7 @@ const LoadingOverlay = () => (
                     }}
                   >
                     <SelectTrigger className="bg-background border-input">
-                      <SelectValue placeholder="Select business profile" />
+                      <SelectValue placeholder={t('invoice.details.selectProfile')} />
                     </SelectTrigger>
                     <SelectContent>
                       {businessProfiles.map((profile) => (
@@ -1149,14 +1156,14 @@ const LoadingOverlay = () => (
                   </Select>
 
                   <div>
-                    <Label>Invoice Number</Label>
+                    <Label>{t('invoice.details.number.label')}</Label>
                     <Input 
                       value={currentInvoiceNumber}
                       onChange={(e) => setCurrentInvoiceNumber(e.target.value)}
                       className="bg-background border-input"
                     />
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Auto-generated but can be modified if needed
+                      {t('invoice.details.number.hint')}
                     </p>
                   </div>
                   

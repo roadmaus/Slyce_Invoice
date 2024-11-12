@@ -1,0 +1,168 @@
+{
+  "invoice": {
+    "title": "Rechnung",
+    "recipient": {
+      "title": "Rechnungsempfänger",
+      "selectCustomer": "Kunde auswählen"
+    },
+    "details": {
+      "title": "Rechnungsdetails",
+      "selectProfile": "Geschäftsprofil auswählen",
+      "number": {
+        "label": "Rechnungsnummer",
+        "hint": "Die Rechnungsnummer wird automatisch generiert"
+      },
+      "date": {
+        "label": "Rechnungsdatum",
+        "serviceDate": "Leistungsdatum",
+        "servicePeriod": "Leistungszeitraum",
+        "startDate": "Beginn der Leistung",
+        "endDate": "Ende der Leistung"
+      }
+    },
+    "items": {
+      "title": "Rechnungspositionen",
+      "description": "Beschreibung",
+      "quantity": "Menge",
+      "rate": "Preis (€)",
+      "total": "Gesamt",
+      "addItem": "Position hinzufügen"
+    },
+    "totals": {
+      "netAmount": "Nettobetrag",
+      "vat": "MwSt. ({{rate}}%)",
+      "totalAmount": "Gesamtbetrag",
+      "vatNotice": {
+        "enabled": "Umsatzsteuer wird gemäß § 19 UStG berechnet.",
+        "disabled": "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet."
+      }
+    },
+    "actions": {
+      "generate": "Rechnung erstellen",
+      "generating": "Wird erstellt...",
+      "preview": "Vorschau",
+      "save": "Speichern"
+    }
+  },
+  "customers": {
+    "title": "Kunden",
+    "management": "Kundenverwaltung",
+    "add": "Kunde hinzufügen",
+    "edit": "Kunde bearbeiten",
+    "form": {
+      "title": "Anrede",
+      "academicTitle": "Akademischer Titel",
+      "name": "Name",
+      "street": "Straße",
+      "postalCode": "PLZ",
+      "city": "Stadt",
+      "businessCustomer": "Geschäftskunde"
+    },
+    "actions": {
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "delete": "Löschen",
+      "edit": "Bearbeiten"
+    },
+    "dialog": {
+      "addTitle": "Neuen Kunden hinzufügen",
+      "editTitle": "Kunden bearbeiten",
+      "addDescription": "Geben Sie die Kundendaten ein",
+      "editDescription": "Bearbeiten Sie die Kundendaten"
+    }
+  },
+  "business": {
+    "title": "Geschäftsprofile",
+    "add": "Profil hinzufügen",
+    "edit": "Profil bearbeiten",
+    "form": {
+      "companyName": "Firmenname",
+      "street": "Straße",
+      "postalCode": "PLZ",
+      "city": "Stadt",
+      "taxNumber": "Steuernummer",
+      "taxId": "USt-IdNr.",
+      "bankInstitute": "Kreditinstitut",
+      "iban": "IBAN",
+      "bic": "BIC",
+      "contactDetails": "Kontaktdaten",
+      "vatSettings": {
+        "enable": "Umsatzsteuer aktivieren",
+        "rate": "Umsatzsteuersatz (%)"
+      }
+    },
+    "actions": {
+      "setDefault": "Als Standard festlegen",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "delete": "Löschen"
+    }
+  },
+  "tags": {
+    "title": "Schnelleingabe",
+    "add": "Tag hinzufügen",
+    "edit": "Tag bearbeiten",
+    "form": {
+      "name": "Name",
+      "description": "Beschreibung",
+      "rate": "Preis (€)",
+      "quantity": "Menge",
+      "color": "Farbe",
+      "visible": "In Schnelleingabe sichtbar",
+      "usesDateRange": "Verwendet Datumsbereich",
+      "personas": "Zugeordnete Profile"
+    },
+    "empty": {
+      "title": "Keine Schnelleingabe-Tags",
+      "description": "Erstellen Sie Tags für eine schnellere Rechnungserstellung",
+      "action": "Ersten Tag erstellen"
+    },
+    "search": {
+      "placeholder": "Tags durchsuchen...",
+      "noResults": "Keine Ergebnisse gefunden"
+    },
+    "warning": {
+      "title": "Fehlende Werte",
+      "description": "Preis oder Menge ist leer. Möchten Sie diese auf 0 setzen und fortfahren?",
+      "confirm": "Auf 0 setzen und fortfahren",
+      "cancel": "Abbrechen"
+    }
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "appearance": {
+      "title": "Erscheinungsbild",
+      "description": "Passen Sie das Aussehen Ihrer Anwendung an",
+      "themes": {
+        "light": {
+          "label": "Hell",
+          "description": "Helles Design für die Tagesnutzung"
+        },
+        "dark": {
+          "label": "Dunkel",
+          "description": "Dunkles Design für die Nachtnutzung"
+        },
+        "system": {
+          "label": "System",
+          "description": "Systemeinstellungen folgen"
+        }
+      }
+    }
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "required": "Pflichtfeld",
+    "error": "Fehler",
+    "success": "Erfolgreich",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "search": "Suchen",
+    "noResults": "Keine Ergebnisse",
+    "address": "Adresse",
+    "taxInfo": "Steuerinformationen",
+    "bankDetails": "Bankverbindung"
+  }
+} 

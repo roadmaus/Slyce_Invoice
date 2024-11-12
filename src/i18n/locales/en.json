@@ -1,0 +1,77 @@
+{
+  "settings": {
+    "appearance": {
+      "title": "Appearance",
+      "description": "Customize the look of your application.",
+      "themes": {
+        "light": {
+          "label": "Light",
+          "description": "Light theme for daytime use"
+        },
+        "dark": {
+          "label": "Dark",
+          "description": "Dark theme for nighttime use"
+        },
+        "system": {
+          "label": "System",
+          "description": "Follow system preferences"
+        }
+      }
+    },
+    "language": {
+      "title": "Language",
+      "description": "Choose your preferred language."
+    },
+    "pdf": {
+      "title": "PDF Settings",
+      "description": "Configure PDF preview and save settings.",
+      "preview": {
+        "label": "Show PDF Preview",
+        "description": "Enable or disable PDF preview after generation"
+      },
+      "save": {
+        "label": "Save Location",
+        "description": "Choose where to save generated PDFs",
+        "placeholder": "Select a directory...",
+        "browse": "Browse",
+        "noPath": "No save location selected"
+      }
+    },
+    "dataManagement": {
+      "title": "Data Management",
+      "description": "Import and export your application data.",
+      "export": {
+        "title": "Export Data",
+        "description": "Save your data to a file",
+        "button": "Export Data",
+        "loading": "Exporting...",
+        "success": "Data exported successfully",
+        "error": "Failed to export data",
+        "genericError": "An error occurred while exporting data"
+      },
+      "import": {
+        "title": "Import Data",
+        "description": "Load data from a file",
+        "button": "Import Data",
+        "loading": "Importing...",
+        "success": "Data imported successfully",
+        "error": "Failed to import data",
+        "genericError": "An error occurred while importing data"
+      }
+    },
+    "success": {
+      "saveLocation": "Save location updated successfully",
+      "language": "Language updated successfully"
+    },
+    "errors": {
+      "loadSettings": "Failed to load settings",
+      "updateSettings": "Failed to update settings",
+      "loadLanguage": "Failed to load language settings",
+      "updateLanguage": "Failed to update language",
+      "directorySelection": {
+        "notAvailable": "Directory selection is not available",
+        "error": "Error selecting directory"
+      }
+    }
+  }
+} 
