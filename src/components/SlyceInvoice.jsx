@@ -37,27 +37,38 @@ const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => 
   const currentYearPrefix = `${currentYear}_${profileId}_`;
   
   // If we have a last number and it's not forced, return it
-  if (lastNumber && !forceGenerate && !lastNumber.includes('_')) {
-    return lastNumber;
+  if (lastNumber && !forceGenerate) {
+    // Check if it's a manually entered number (doesn't contain underscores)
+    if (!lastNumber.includes('_')) {
+      return lastNumber;
+    }
+    
+    // Check if it's from the current year
+    const [year] = lastNumber.split('_');
+    if (parseInt(year) === currentYear) {
+      return lastNumber;
+    }
   }
 
-  // If we have a last number, check if it's from the current year
-  if (lastNumber) {
-    const [year] = lastNumber.split('_');
+  // If we have a last number and we're forcing a new one
+  if (lastNumber && forceGenerate) {
+    // If it's a manually entered number, start new sequence
+    if (!lastNumber.includes('_')) {
+      return `${currentYearPrefix}00001`;
+    }
     
-    // If the last number is from a different year, start new sequence
+    const [year] = lastNumber.split('_');
+    // If it's from a different year, start new sequence
     if (parseInt(year) !== currentYear) {
       return `${currentYearPrefix}00001`;
     }
     
-    // If it's the current year and we're forcing a new number
-    if (forceGenerate && lastNumber.startsWith(currentYearPrefix)) {
-      const sequence = parseInt(lastNumber.split('_')[2]) + 1;
-      return `${currentYearPrefix}${sequence.toString().padStart(5, '0')}`;
-    }
+    // Increment the sequence number
+    const sequence = parseInt(lastNumber.split('_')[2]) + 1;
+    return `${currentYearPrefix}${sequence.toString().padStart(5, '0')}`;
   }
 
-  // If no last number or it's a different year, start with 00001
+  // Default case: start new sequence
   return `${currentYearPrefix}00001`;
 };
 
@@ -1128,12 +1139,11 @@ useEffect(() => {
     const profileId = selectedProfile.company_name;
     const lastNumber = profileInvoiceNumbers[profileId];
     
-    // Generate new number considering the year
-    const newNumber = generateInvoiceNumber(lastNumber, profileId);
-    setCurrentInvoiceNumber(newNumber);
-    
-    // Update stored numbers if the year changed
-    if (newNumber !== lastNumber) {
+    // Only generate new number if there isn't one already
+    if (!lastNumber) {
+      const newNumber = generateInvoiceNumber(lastNumber, profileId);
+      setCurrentInvoiceNumber(newNumber);
+      
       const updatedNumbers = {
         ...profileInvoiceNumbers,
         [profileId]: newNumber
@@ -1142,6 +1152,9 @@ useEffect(() => {
       window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
         console.error('Error saving invoice number:', error);
       });
+    } else {
+      // Use the existing number
+      setCurrentInvoiceNumber(lastNumber);
     }
   } else {
     setCurrentInvoiceNumber('');
