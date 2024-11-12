@@ -304,6 +304,7 @@
   },
   "common": {
     "loading": "Wird geladen...",
+    "copied": "In Zwischenablage kopiert",
     "required": "Pflichtfeld",
     "error": "Fehler",
     "success": "Erfolgreich",

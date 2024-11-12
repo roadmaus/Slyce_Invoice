@@ -305,6 +305,7 @@
   },
   "common": {
     "loading": "Cargando...",
+    "copied": "Copiado en portapapeles",
     "required": "Campo requerido",
     "error": "Error",
     "success": "Éxito",

@@ -297,6 +297,7 @@
   },
   "common": {
     "loading": "로딩 중...",
+    "copied": "클립보드에 복사됨",
     "required": "필수 항목",
     "error": "오류",
     "success": "성공",

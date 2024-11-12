@@ -297,6 +297,7 @@
   },
   "common": {
     "loading": "Laden...",
+    "copied": "Gekopieerd naar klembord",
     "required": "Verplicht veld",
     "error": "Fout",
     "success": "Succesvol",

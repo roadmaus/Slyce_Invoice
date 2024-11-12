@@ -297,6 +297,7 @@
   },
   "common": {
     "loading": "Carregando...",
+    "copied": "Copiado para a área de transferência",
     "required": "Campo Obrigatório",
     "error": "Erro",
     "success": "Sucesso",

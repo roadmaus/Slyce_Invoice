@@ -305,6 +305,7 @@
   },
   "common": {
     "loading": "Chargement...",
+    "copied": "Copié dans le presse-papiers",
     "required": "Champ obligatoire",
     "error": "Erreur",
     "success": "Succès",

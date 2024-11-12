@@ -305,6 +305,7 @@
   },
   "common": {
     "loading": "Caricamento in corso...",
+    "copied": "Copiato nel portapapeles",
     "required": "Campo obbligatorio",
     "error": "Errore",
     "success": "Successo",

@@ -297,6 +297,7 @@
   },
   "common": {
     "loading": "正在加载...",
+    "copied": "已复制到剪贴板",
     "required": "必填字段",
     "error": "错误",
     "success": "成功",

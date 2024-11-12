@@ -297,6 +297,7 @@
   },
   "common": {
     "loading": "Wird glada...",
+    "copied": "Isch in d'Zwischenablage kopiert",
     "required": "Pflichtfeld",
     "error": "Fehler",
     "success": "Erfolgreich",

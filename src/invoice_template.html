@@ -5,140 +5,200 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rechnung</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-        
         :root {
-            --primary-blue: #1a2942;
-            --secondary-blue: #516885;
-            --text-color: #000000;
-            --border-color: #e2e8f0;
+            --apple-gray: #86868b;
+            --apple-light-gray: #f5f5f7;
+            --apple-border: #d2d2d7;
+            --apple-blue: #0066cc;
+        }
+
+        @page {
+            size: A4;
+            margin: 48px;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
             margin: 0;
-            padding: 40px;
-            color: var(--text-color);
-            font-size: 12px;
-            line-height: 1.5;
+            padding: 48px;
+            color: #1d1d1f;
+            font-size: 14px;
+            line-height: 1.47059;
+            background-color: white;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header,
+        .invoice-details,
+        .greeting-section,
+        table,
+        .payment-info,
+        .banking-info {
+            page-break-inside: avoid;
+        }
+
+        .payment-info {
+            page-break-before: auto;
+        }
+
+        .contact-details,
+        .page-number {
+            page-break-after: auto;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        thead {
+            display: table-header-group;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 60px;
+            margin-bottom: 72px;
+            align-items: flex-start;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .logo-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--primary-blue);
-            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            background: #000000;
+            border-radius: 8px;
             position: relative;
-            overflow: hidden;
-        }
-
-        .logo-icon::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 40%;
-            height: 100%;
-            background: var(--secondary-blue);
         }
 
         .logo-text {
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: 1px;
+            font-size: 21px;
+            font-weight: 600;
+            letter-spacing: -0.022em;
         }
 
         .company-address {
             text-align: right;
+            color: var(--apple-gray);
+            font-size: 12px;
+            line-height: 1.33337;
         }
 
         .invoice-details {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 40px;
+            margin-bottom: 48px;
         }
 
         .recipient-info {
-            max-width: 250px;
+            max-width: 280px;
+            line-height: 1.4;
         }
 
         .invoice-info {
             text-align: right;
+            color: var(--apple-gray);
         }
 
         .invoice-title {
-            font-size: 16px;
+            font-size: 28px;
             font-weight: 600;
-            margin-bottom: 30px;
+            letter-spacing: -0.003em;
+            margin-bottom: 36px;
+            color: #1d1d1f;
         }
 
         .greeting-section {
-            margin-bottom: 30px;
+            margin-bottom: 36px;
+            line-height: 1.4;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 30px 0;
+            margin: 36px 0;
         }
 
         th, td {
-            padding: 8px;
+            padding: 12px 8px;
             text-align: left;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--apple-border);
         }
 
         th {
             font-weight: 600;
+            color: var(--apple-gray);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
         }
 
         .amount-summary {
-            width: 300px;
+            width: 320px;
             margin-left: auto;
             margin-right: 0;
+            border: none;
         }
 
         .amount-summary tr td:last-child {
             text-align: right;
         }
 
+        .amount-summary tr:last-child {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
         .payment-info {
-            margin-top: 40px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 20px;
+            margin-top: 48px;
+            border-top: 1px solid var(--apple-border);
+            padding-top: 24px;
+            color: var(--apple-gray);
         }
 
         .banking-info {
-            margin-top: 30px;
+            margin-top: 36px;
+            background-color: var(--apple-light-gray);
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .banking-info p {
+            margin: 8px 0;
         }
 
         .contact-details {
             text-align: center;
-            margin-top: 40px;
-            font-size: 10px;
-            color: var(--secondary-blue);
+            margin-top: 48px;
+            font-size: 11px;
+            color: var(--apple-gray);
         }
 
         .page-number {
             text-align: center;
-            margin-top: 20px;
-            font-size: 10px;
+            margin-top: 24px;
+            font-size: 11px;
+            color: var(--apple-gray);
         }
 
         .medium-bold {
             font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            body, .banking-info {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
     </style>
 </head>
@@ -172,13 +232,17 @@
     </div>
 
     <table>
-        <tr>
-            <th>{quantity_label}</th>
-            <th>Description</th>
-            <th>{unit_price_label}</th>
-            <th>Total</th>
-        </tr>
-        {invoice_items}
+        <thead>
+            <tr>
+                <th>{quantity_label}</th>
+                <th>Description</th>
+                <th>{unit_price_label}</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {invoice_items}
+        </tbody>
     </table>
 
     <table class="amount-summary">
@@ -187,7 +251,7 @@
             <td>{net_amount}</td>
         </tr>
         {vat_row}
-        <tr class="medium-bold">
+        <tr>
             <td>Gesamtbetrag:</td>
             <td>{total_amount}</td>
         </tr>

@@ -297,6 +297,7 @@
   },
   "common": {
     "loading": "Đang tải...",
+    "copied": "Đã sao chép vào bảng tạm",
     "required": "Trường bắt buộc",
     "error": "Lỗi",
     "success": "Thành công",

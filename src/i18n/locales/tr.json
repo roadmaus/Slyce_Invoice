@@ -297,6 +297,7 @@
   },
   "common": {
     "loading": "Yükleniyor...",
+    "copied": "Kopyalandı",
     "required": "Zorunlu alan",
     "error": "Hata",
     "success": "Başarılı",

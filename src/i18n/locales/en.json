@@ -305,6 +305,7 @@
   },
   "common": {
     "loading": "Loading...",
+    "copied": "Copied to clipboard",
     "required": "Required field",
     "error": "Error",
     "success": "Success",

@@ -346,7 +346,7 @@ const SettingsTab = () => {
               <p className="text-muted-foreground mb-6">
                 {t('settings.dataManagement.description')}
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
                   {
                     icon: Save,
@@ -401,23 +401,59 @@ const SettingsTab = () => {
                     description: t('settings.invoice.templateDescription'),
                     buttonText: t('settings.actions.editTemplate'),
                     onClick: () => setShowTemplateEditor(true)
+                  },
+                  {
+                    icon: Trash2,
+                    title: t('settings.dataManagement.reset.title'),
+                    description: t('settings.dataManagement.reset.description'),
+                    buttonText: t('settings.dataManagement.reset.button'),
+                    variant: 'destructive',
+                    className: 'border-destructive/50',
+                    onClick: async () => {
+                      const confirmed = window.confirm(
+                        t('settings.dataManagement.reset.confirm')
+                      );
+                      
+                      if (confirmed) {
+                        try {
+                          await window.electronAPI.clearAllData();
+                          setLanguage('en');
+                          setShowSwabian(false);
+                          setClickedLanguages(new Set());
+                          setPreviewSettings({
+                            showPreview: true,
+                            savePath: ''
+                          });
+                          setTheme('system');
+                          await i18n.changeLanguage('en');
+                          window.dispatchEvent(new CustomEvent('settingsReset'));
+                          toast.success(t('settings.dataManagement.reset.success'));
+                          setTimeout(() => {
+                            window.location.reload();
+                          }, 1500);
+                        } catch (error) {
+                          console.error('Error resetting data:', error);
+                          toast.error(t('settings.dataManagement.reset.error'));
+                        }
+                      }
+                    }
                   }
-                ].map(({ icon: Icon, title, description, buttonText, loading, onClick }) => (
+                ].map(({ icon: Icon, title, description, buttonText, loading, onClick, variant, className }) => (
                   <Card 
                     key={title}
-                    className="relative overflow-hidden border transition-all hover:shadow-md hover:border-primary/50"
+                    className={`relative overflow-hidden border transition-all hover:shadow-md hover:border-primary/50 ${className || ''}`}
                   >
                     <CardContent className="p-6 flex flex-col h-full">
                       <div className="flex items-center gap-2 mb-3">
-                        <Icon className="w-5 h-5 text-primary" />
-                        <h3 className="font-medium">{title}</h3>
+                        <Icon className={`w-5 h-5 ${variant === 'destructive' ? 'text-destructive' : 'text-primary'}`} />
+                        <h3 className={`font-medium ${variant === 'destructive' ? 'text-destructive' : ''}`}>{title}</h3>
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {description}
                       </p>
                       <div className="flex-grow" />
                       <Button
-                        variant="secondary"
+                        variant={variant || 'secondary'}
                         onClick={onClick}
                         disabled={loading}
                         className="mt-6 w-full"
@@ -438,66 +474,6 @@ const SettingsTab = () => {
                   </Card>
                 ))}
               </div>
-
-              {/* Reset Section (Danger Zone) */}
-              <Card className="border-destructive/50">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Trash2 className="w-5 h-5 text-destructive" />
-                    <h3 className="font-medium text-destructive">
-                      {t('settings.dataManagement.reset.title')}
-                    </h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {t('settings.dataManagement.reset.description')}
-                  </p>
-                  <Button 
-                    variant="destructive"
-                    onClick={async () => {
-                      const confirmed = window.confirm(
-                        t('settings.dataManagement.reset.confirm')
-                      );
-                      
-                      if (confirmed) {
-                        try {
-                          // Clear all stored data
-                          await window.electronAPI.clearAllData();
-                          
-                          // Reset all state
-                          setLanguage('en');
-                          setShowSwabian(false);
-                          setClickedLanguages(new Set());
-                          setPreviewSettings({
-                            showPreview: true,
-                            savePath: ''
-                          });
-                          setTheme('system');
-                          
-                          // Reset i18n
-                          await i18n.changeLanguage('en');
-                          
-                          // Notify other components
-                          window.dispatchEvent(new CustomEvent('settingsReset'));
-                          
-                          toast.success(t('settings.dataManagement.reset.success'));
-                          
-                          // Optionally reload the page
-                          setTimeout(() => {
-                            window.location.reload();
-                          }, 1500);
-                        } catch (error) {
-                          console.error('Error resetting data:', error);
-                          toast.error(t('settings.dataManagement.reset.error'));
-                        }
-                      }
-                    }}
-                    className="w-full"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    {t('settings.dataManagement.reset.button')}
-                  </Button>
-                </CardContent>
-              </Card>
             </section>
           </div>
         </CardContent>
