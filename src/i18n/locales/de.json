@@ -10,7 +10,7 @@
       "selectProfile": "Geschäftsprofil auswählen",
       "number": {
         "label": "Rechnungsnummer",
-        "hint": "Die Rechnungsnummer wird automatisch generiert"
+        "hint": "Die Rechnungsnummer wird automatisch generiert, aber Sie können sie auch manuell setzen."
       },
       "date": {
         "label": "Rechnungsdatum",

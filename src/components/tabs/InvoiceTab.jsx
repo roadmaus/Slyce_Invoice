@@ -34,7 +34,9 @@ const InvoiceTab = ({
   deleteInvoiceItem,
   addInvoiceItem,
   generateInvoice,
-  isLoading
+  isLoading,
+  profileInvoiceNumbers,
+  setProfileInvoiceNumbers
 }) => {
   const { t } = useTranslation();
 
@@ -128,7 +130,20 @@ const InvoiceTab = ({
               <Label>{t('invoice.details.number.label')}</Label>
               <Input 
                 value={currentInvoiceNumber}
-                onChange={(e) => setCurrentInvoiceNumber(e.target.value)}
+                onChange={(e) => {
+                  const newNumber = e.target.value;
+                  setCurrentInvoiceNumber(newNumber);
+                  if (selectedProfile) {
+                    const updatedNumbers = {
+                      ...profileInvoiceNumbers,
+                      [selectedProfile.company_name]: newNumber
+                    };
+                    setProfileInvoiceNumbers(updatedNumbers);
+                    window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
+                      console.error('Error saving invoice number:', error);
+                    });
+                  }
+                }}
                 className="bg-background border-border"
               />
               <p className="text-xs text-muted-foreground mt-0.5">

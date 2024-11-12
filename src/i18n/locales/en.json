@@ -10,7 +10,7 @@
       "selectProfile": "Select Business Profile",
       "number": {
         "label": "Invoice Number",
-        "hint": "The invoice number will be generated automatically"
+        "hint": "The invoice number will be generated automatically, but you can also set it manually."
       },
       "date": {
         "label": "Invoice Date",

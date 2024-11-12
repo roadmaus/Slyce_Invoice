@@ -27,20 +27,29 @@ import CustomersTab from './tabs/CustomersTab';
 import InvoiceTab from './tabs/InvoiceTab';
 import TagsTab from './tabs/TagsTab';
 // Helper Functions
-const generateInvoiceNumber = (lastNumber, forceGenerate = false) => {
+const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
   if (lastNumber && !forceGenerate && !lastNumber.includes('_')) {
     return lastNumber;
   }
 
+  if (!profileId) {
+    console.warn('No profile ID provided for invoice number generation');
+    return '';
+  }
+
   const year = new Date().getFullYear();
-  const currentYearPrefix = `${year}_`;
+  const currentYearPrefix = `${year}_${profileId}_`;
+  
+  if (forceGenerate && lastNumber && lastNumber.startsWith(currentYearPrefix)) {
+    const sequence = parseInt(lastNumber.split('_')[2]) + 1;
+    return `${currentYearPrefix}${sequence.toString().padStart(5, '0')}`;
+  }
   
   if (!lastNumber || !lastNumber.startsWith(currentYearPrefix)) {
     return `${currentYearPrefix}00001`;
   }
 
-  const sequence = parseInt(lastNumber.split('_')[1]) + 1;
-  return `${currentYearPrefix}${sequence.toString().padStart(5, '0')}`;
+  return lastNumber;
 };
 
 const validateBusinessProfile = (profile) => {
@@ -270,6 +279,9 @@ const SlyceInvoice = () => {
     showPreview: true
   });
 
+  // Add new state for profile-specific invoice numbers
+  const [profileInvoiceNumbers, setProfileInvoiceNumbers] = useState({});
+
   // Load saved data on component mount
   useEffect(() => {
     const loadSavedData = async () => {
@@ -277,7 +289,7 @@ const SlyceInvoice = () => {
         const savedProfiles = await window.electronAPI.getData('businessProfiles');
         const savedCustomers = await window.electronAPI.getData('customers');
         const savedTags = await window.electronAPI.getData('quickTags');
-        const lastInvoiceNumber = await window.electronAPI.getData('lastInvoiceNumber');
+        const savedInvoiceNumbers = await window.electronAPI.getData('profileInvoiceNumbers') || {};
 
         if (savedProfiles) setBusinessProfiles(savedProfiles);
         if (savedCustomers) {
@@ -287,11 +299,8 @@ const SlyceInvoice = () => {
           setCustomers(customersWithIds);
         }
         if (savedTags) setQuickTags(savedTags);
+        if (savedInvoiceNumbers) setProfileInvoiceNumbers(savedInvoiceNumbers);
         
-        if (!currentInvoiceNumber) {
-          setCurrentInvoiceNumber(generateInvoiceNumber(lastInvoiceNumber));
-        }
-
         setIsInitialized(true);
       } catch (error) {
         console.error('Error loading data:', error);
@@ -309,13 +318,14 @@ const SlyceInvoice = () => {
         await window.electronAPI.setData('businessProfiles', businessProfiles);
         await window.electronAPI.setData('customers', customers);
         await window.electronAPI.setData('quickTags', quickTags);
+        await window.electronAPI.setData('profileInvoiceNumbers', profileInvoiceNumbers);
         if (defaultProfileId) {
           await window.electronAPI.setData('defaultProfileId', defaultProfileId);
         }
       };
       saveData();
     }
-  }, [businessProfiles, customers, quickTags, defaultProfileId, isInitialized]);
+  }, [businessProfiles, customers, quickTags, defaultProfileId, profileInvoiceNumbers, isInitialized]);
 
   // Business Profile Management
   const addBusinessProfile = () => {
@@ -566,9 +576,8 @@ const SlyceInvoice = () => {
 
       if (saved) {
         // Add an artificial delay before hiding the loading overlay
-        await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5 seconds delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
         
-        // Only show preview if enabled in settings
         if (previewSettings.showPreview) {
           setPdfPreview({
             show: true,
@@ -579,14 +588,22 @@ const SlyceInvoice = () => {
 
         toast.success(t('messages.success.invoiceGenerated'));
         
-        // Save the current invoice number only after successful generation
-        await window.electronAPI.setData('lastInvoiceNumber', currentInvoiceNumber);
+        // Save the current invoice number for this profile
+        const updatedNumbers = {
+          ...profileInvoiceNumbers,
+          [selectedProfile.company_name]: currentInvoiceNumber
+        };
+        setProfileInvoiceNumbers(updatedNumbers);
+        await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
 
-        // After successful generation, generate the next number
-        const nextNumber = generateInvoiceNumber(currentInvoiceNumber, true);
-
-        // Update the invoice number only if preview is not shown
+        // Only generate next number and clear form if preview is not shown
         if (!previewSettings.showPreview) {
+          // Generate next number for this profile
+          const nextNumber = generateInvoiceNumber(
+            currentInvoiceNumber, 
+            selectedProfile.company_name, 
+            true
+          );
           setCurrentInvoiceNumber(nextNumber);
           setInvoiceItems([]);
           setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
@@ -1013,10 +1030,27 @@ const PreviewDialog = () => (
       if (!open) {
         URL.revokeObjectURL(pdfPreview.data);
         setPdfPreview({ show: false, data: null, fileName: '' });
-        // Reset form after closing preview
-        setCurrentInvoiceNumber(generateInvoiceNumber(currentInvoiceNumber));
+        // Reset form after closing preview, but keep the invoice number
         setInvoiceItems([]);
         setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
+        // Generate next invoice number
+        if (selectedProfile) {
+          const nextNumber = generateInvoiceNumber(
+            currentInvoiceNumber, 
+            selectedProfile.company_name, 
+            true
+          );
+          setCurrentInvoiceNumber(nextNumber);
+          // Update stored numbers
+          const updatedNumbers = {
+            ...profileInvoiceNumbers,
+            [selectedProfile.company_name]: nextNumber
+          };
+          setProfileInvoiceNumbers(updatedNumbers);
+          window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
+            console.error('Error saving invoice number:', error);
+          });
+        }
       }
     }}
   >
@@ -1079,6 +1113,48 @@ const getTagBackground = (() => {
   };
 })();
 
+// Add effect to initialize/update invoice number when profile changes
+useEffect(() => {
+  if (selectedProfile) {
+    const profileId = selectedProfile.company_name;
+    const lastNumber = profileInvoiceNumbers[profileId];
+    // Only generate a new number if we don't have one for this profile
+    if (!lastNumber) {
+      const newNumber = generateInvoiceNumber(lastNumber, profileId);
+      if (newNumber) {
+        setCurrentInvoiceNumber(newNumber);
+      }
+    } else {
+      // Use the stored number for this profile
+      setCurrentInvoiceNumber(lastNumber);
+    }
+  } else {
+    setCurrentInvoiceNumber('');
+  }
+}, [selectedProfile]);
+
+// Add effect to handle default profile
+useEffect(() => {
+  const loadDefaultProfile = async () => {
+    try {
+      const savedDefaultId = await window.electronAPI.getData('defaultProfileId');
+      if (savedDefaultId && businessProfiles.length > 0) {
+        const defaultProfile = businessProfiles.find(p => p.company_name === savedDefaultId);
+        if (defaultProfile) {
+          setDefaultProfileId(savedDefaultId);
+          setSelectedProfile(defaultProfile);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading default profile:', error);
+    }
+  };
+
+  if (isInitialized && businessProfiles.length > 0) {
+    loadDefaultProfile();
+  }
+}, [isInitialized, businessProfiles]);
+
 // Main Render
   return (
     <div className="container-large space-y-6">
@@ -1136,6 +1212,8 @@ const getTagBackground = (() => {
             addInvoiceItem={addInvoiceItem}
             generateInvoice={generateInvoice}
             isLoading={isLoading}
+            profileInvoiceNumbers={profileInvoiceNumbers}
+            setProfileInvoiceNumbers={setProfileInvoiceNumbers}
           />
         </TabsContent>
 

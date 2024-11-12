@@ -10,7 +10,7 @@
       "selectProfile": "Seleccionar perfil comercial",
       "number": {
         "label": "Número de factura",
-        "hint": "El número de factura se genera automáticamente"
+        "hint": "El número de factura se genera automáticamente, pero también puede establecerlo manualmente."
       },
       "date": {
         "label": "Fecha de factura",
