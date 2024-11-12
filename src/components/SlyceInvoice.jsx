@@ -1306,10 +1306,10 @@ const LoadingOverlay = () => (
                 <div className="overflow-x-auto rounded-md border border-border">
                   <div className="min-w-[600px] p-0.5">
                     <div className="grid grid-cols-12 gap-4 mb-2 font-medium text-foreground">
-                      <div className="col-span-6">Description</div>
-                      <div className="col-span-2">Quantity</div>
-                      <div className="col-span-2">Rate (€)</div>
-                      <div className="col-span-1">Total</div>
+                      <div className="col-span-6">{t('invoice.items.description')}</div>
+                      <div className="col-span-2">{t('invoice.items.quantity')}</div>
+                      <div className="col-span-2">{t('invoice.items.rate')}</div>
+                      <div className="col-span-1">{t('invoice.items.total')}</div>
                       <div className="col-span-1"></div>
                     </div>
 
@@ -1319,7 +1319,7 @@ const LoadingOverlay = () => (
                           <Input
                             value={item.description}
                             onChange={(e) => updateInvoiceItem(index, 'description', e.target.value)}
-                            placeholder="Description"
+                            placeholder={t('invoice.items.description')}
                             className="w-full bg-background border-input"
                           />
                         </div>
@@ -1367,7 +1367,7 @@ const LoadingOverlay = () => (
                       className="mt-4"
                     >
                       <PlusCircle className="h-4 w-4 mr-2" />
-                      Add Item
+                      {t('invoice.items.addItem')}
                     </Button>
                   </div>
                 </div>
