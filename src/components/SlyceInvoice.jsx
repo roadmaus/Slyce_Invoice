@@ -134,6 +134,7 @@ const formatInvoiceItems = (items) => {
 
 // Add this new component near your other components
 const InvoiceTotals = ({ items, profile }) => {
+  const { t } = useTranslation();
   const netTotal = items.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
   const vatRate = profile?.vat_enabled ? (profile.vat_rate || 19) : 0;
   const vatAmount = profile?.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
@@ -602,195 +603,201 @@ const SlyceInvoice = () => {
   };
 
   // Form Rendering Functions
-  const renderBusinessProfileForm = (profile, setProfile) => (
-    <div className="space-y-4">
-      <div>
-        <Label>Company Name</Label>
-        <Input
-          value={profile.company_name}
-          onChange={(e) => setProfile({ ...profile, company_name: e.target.value })}
-        />
-      </div>
-      <div>
-        <Label>Street</Label>
-        <Input
-          value={profile.company_street}
-          onChange={(e) => setProfile({ ...profile, company_street: e.target.value })}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-2">
+  const renderBusinessProfileForm = (profile, setProfile) => {
+    const { t } = useTranslation();
+    return (
+      <div className="space-y-4">
         <div>
-          <Label>Postal Code</Label>
+          <Label>{t('business.form.companyName')}</Label>
           <Input
-            value={profile.company_postalcode}
-            onChange={(e) => setProfile({ ...profile, company_postalcode: e.target.value })}
+            value={profile.company_name}
+            onChange={(e) => setProfile({ ...profile, company_name: e.target.value })}
           />
         </div>
         <div>
-          <Label>City</Label>
+          <Label>{t('business.form.street')}</Label>
           <Input
-            value={profile.company_city}
-            onChange={(e) => setProfile({ ...profile, company_city: e.target.value })}
+            value={profile.company_street}
+            onChange={(e) => setProfile({ ...profile, company_street: e.target.value })}
           />
         </div>
-      </div>
-      <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <Label>{t('business.form.postalCode')}</Label>
+            <Input
+              value={profile.company_postalcode}
+              onChange={(e) => setProfile({ ...profile, company_postalcode: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>{t('business.form.city')}</Label>
+            <Input
+              value={profile.company_city}
+              onChange={(e) => setProfile({ ...profile, company_city: e.target.value })}
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <Label>Tax Number</Label>
+            <Input
+              value={profile.tax_number}
+              onChange={(e) => setProfile({ ...profile, tax_number: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>Tax ID</Label>
+            <Input
+              value={profile.tax_id}
+              onChange={(e) => setProfile({ ...profile, tax_id: e.target.value })}
+            />
+          </div>
+        </div>
         <div>
-          <Label>Tax Number</Label>
+          <Label>Bank Institute</Label>
           <Input
-            value={profile.tax_number}
-            onChange={(e) => setProfile({ ...profile, tax_number: e.target.value })}
+            value={profile.bank_institute}
+            onChange={(e) => setProfile({ ...profile, bank_institute: e.target.value })}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <Label>IBAN</Label>
+            <Input
+              value={profile.bank_iban}
+              onChange={(e) => setProfile({ ...profile, bank_iban: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>BIC</Label>
+            <Input
+              value={profile.bank_bic}
+              onChange={(e) => setProfile({ ...profile, bank_bic: e.target.value })}
+            />
+          </div>
+        </div>
+        <div>
+          <Label>Contact Details</Label>
+          <Input
+            value={profile.contact_details}
+            onChange={(e) => setProfile({ ...profile, contact_details: e.target.value })}
+            placeholder="Phone, Email, Website, etc."
+          />
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={profile.vat_enabled}
+              onCheckedChange={(checked) => setProfile({ 
+                ...profile, 
+                vat_enabled: checked,
+                vat_rate: checked ? (profile.vat_rate || 19) : 0
+              })}
+            />
+            <Label>Enable VAT (Umsatzsteuer)</Label>
+          </div>
+          
+          {profile.vat_enabled && (
+            <div className="flex items-center space-x-2">
+              <Input
+                type="number"
+                value={profile.vat_rate || 19}
+                onChange={(e) => setProfile({ 
+                  ...profile, 
+                  vat_rate: parseFloat(e.target.value) 
+                })}
+                min="0"
+                max="100"
+                step="0.1"
+                className="w-20"
+              />
+              <Label>VAT Rate (%)</Label>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+const renderCustomerForm = (customer, setCustomer) => {
+    const { t } = useTranslation();
+    return (
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <Label>{t('customers.form.title')}</Label>
+            <Select
+              value={customer.title}
+              onValueChange={(value) => setCustomer({ ...customer, title: value })}
+            >
+              <SelectTrigger className="bg-background border-input">
+                <SelectValue placeholder={t('customers.form.selectTitle')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Herr">{t('customers.form.titles.mr')}</SelectItem>
+                <SelectItem value="Frau">{t('customers.form.titles.mrs')}</SelectItem>
+                <SelectItem value="Divers">{t('customers.form.titles.diverse')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label>{t('customers.form.academicTitle.label')}</Label>
+            <Select
+              value={customer.zusatz}
+              onValueChange={(value) => setCustomer({ ...customer, zusatz: value })}
+            >
+              <SelectTrigger className="bg-background border-input">
+                <SelectValue placeholder={t('customers.form.academicTitle.placeholder')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Dr.">Dr.</SelectItem>
+                <SelectItem value="Prof.">Prof.</SelectItem>
+                <SelectItem value="Prof. Dr.">Prof. Dr.</SelectItem>
+                <SelectItem value="Dr. h.c.">Dr. h.c.</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div>
+          <Label>{t('customers.form.name')}</Label>
+          <Input
+            value={customer.name}
+            onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
           />
         </div>
         <div>
-          <Label>Tax ID</Label>
+          <Label>{t('customers.form.street')}</Label>
           <Input
-            value={profile.tax_id}
-            onChange={(e) => setProfile({ ...profile, tax_id: e.target.value })}
+            value={customer.street}
+            onChange={(e) => setCustomer({ ...customer, street: e.target.value })}
           />
         </div>
-      </div>
-      <div>
-        <Label>Bank Institute</Label>
-        <Input
-          value={profile.bank_institute}
-          onChange={(e) => setProfile({ ...profile, bank_institute: e.target.value })}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <Label>IBAN</Label>
-          <Input
-            value={profile.bank_iban}
-            onChange={(e) => setProfile({ ...profile, bank_iban: e.target.value })}
-          />
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <Label>{t('customers.form.postalCode')}</Label>
+            <Input
+              value={customer.postal_code}
+              onChange={(e) => setCustomer({ ...customer, postal_code: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>{t('customers.form.city')}</Label>
+            <Input
+              value={customer.city}
+              onChange={(e) => setCustomer({ ...customer, city: e.target.value })}
+            />
+          </div>
         </div>
-        <div>
-          <Label>BIC</Label>
-          <Input
-            value={profile.bank_bic}
-            onChange={(e) => setProfile({ ...profile, bank_bic: e.target.value })}
-          />
-        </div>
-      </div>
-      <div>
-        <Label>Contact Details</Label>
-        <Input
-          value={profile.contact_details}
-          onChange={(e) => setProfile({ ...profile, contact_details: e.target.value })}
-          placeholder="Phone, Email, Website, etc."
-        />
-      </div>
-      <div className="space-y-2">
         <div className="flex items-center space-x-2">
           <Switch
-            checked={profile.vat_enabled}
-            onCheckedChange={(checked) => setProfile({ 
-              ...profile, 
-              vat_enabled: checked,
-              vat_rate: checked ? (profile.vat_rate || 19) : 0
-            })}
+            checked={customer.firma}
+            onCheckedChange={(checked) => setCustomer({ ...customer, firma: checked })}
           />
-          <Label>Enable VAT (Umsatzsteuer)</Label>
-        </div>
-        
-        {profile.vat_enabled && (
-          <div className="flex items-center space-x-2">
-            <Input
-              type="number"
-              value={profile.vat_rate || 19}
-              onChange={(e) => setProfile({ 
-                ...profile, 
-                vat_rate: parseFloat(e.target.value) 
-              })}
-              min="0"
-              max="100"
-              step="0.1"
-              className="w-20"
-            />
-            <Label>VAT Rate (%)</Label>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-const renderCustomerForm = (customer, setCustomer) => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <Label>Title</Label>
-          <Select
-            value={customer.title}
-            onValueChange={(value) => setCustomer({ ...customer, title: value })}
-          >
-            <SelectTrigger className="bg-background border-input">
-              <SelectValue placeholder="Select title" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Herr">Herr</SelectItem>
-              <SelectItem value="Frau">Frau</SelectItem>
-              <SelectItem value="Divers">Divers</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label>Academic Title</Label>
-          <Select
-            value={customer.zusatz}
-            onValueChange={(value) => setCustomer({ ...customer, zusatz: value })}
-          >
-            <SelectTrigger className="bg-background border-input">
-              <SelectValue placeholder="Select title" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Dr.">Dr.</SelectItem>
-              <SelectItem value="Prof.">Prof.</SelectItem>
-              <SelectItem value="Prof. Dr.">Prof. Dr.</SelectItem>
-              <SelectItem value="Dr. h.c.">Dr. h.c.</SelectItem>
-            </SelectContent>
-          </Select>
+          <Label>{t('customers.form.businessCustomer')}</Label>
         </div>
       </div>
-      <div>
-        <Label>Name</Label>
-        <Input
-          value={customer.name}
-          onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-        />
-      </div>
-      <div>
-        <Label>Street</Label>
-        <Input
-          value={customer.street}
-          onChange={(e) => setCustomer({ ...customer, street: e.target.value })}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <Label>Postal Code</Label>
-          <Input
-            value={customer.postal_code}
-            onChange={(e) => setCustomer({ ...customer, postal_code: e.target.value })}
-          />
-        </div>
-        <div>
-          <Label>City</Label>
-          <Input
-            value={customer.city}
-            onChange={(e) => setCustomer({ ...customer, city: e.target.value })}
-          />
-        </div>
-      </div>
-      <div className="flex items-center space-x-2">
-        <Switch
-          checked={customer.firma}
-          onCheckedChange={(checked) => setCustomer({ ...customer, firma: checked })}
-        />
-        <Label>Business Customer</Label>
-      </div>
-    </div>
-  );
+    );
+  };
 
   // Helper Functions
   const updateDateRangeToggle = (items) => {
@@ -1179,12 +1186,12 @@ const LoadingOverlay = () => (
                         })}
                         disabled={invoiceItems.length > 0}
                       />
-                      <Label>{invoiceDates.hasDateRange ? 'Service Period (Range)' : 'Service Date'}</Label>
+                      <Label>{invoiceDates.hasDateRange ? t('invoice.details.date.servicePeriod') : t('invoice.details.date.serviceDate')}</Label>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <Label>{invoiceDates.hasDateRange ? 'Start of Service' : 'Service Date'}</Label>
+                        <Label>{invoiceDates.hasDateRange ? t('invoice.details.date.startOfService') : t('invoice.details.date.serviceDate')}</Label>
                         <Input 
                           type="date"
                           value={invoiceDates.startDate}
@@ -1197,7 +1204,7 @@ const LoadingOverlay = () => (
                       </div>
                       {invoiceDates.hasDateRange && (
                         <div className="space-y-1">
-                          <Label>End of Service</Label>
+                          <Label>{t('invoice.details.date.endOfService')}</Label>
                           <Input 
                             type="date"
                             value={invoiceDates.endDate}
@@ -1423,14 +1430,14 @@ const LoadingOverlay = () => (
                   <DialogTrigger asChild>
                     <Button>
                       <PlusCircle className="h-4 w-4 mr-2" />
-                      Add Customer
+                      {t('customers.actions.add')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>{newCustomer.id ? 'Edit Customer' : 'Add New Customer'}</DialogTitle>
+                      <DialogTitle>{newCustomer.id ? t('customers.actions.edit') : t('customers.actions.add')}</DialogTitle>
                       <DialogDescription>
-                        {newCustomer.id ? 'Edit the customer\'s details.' : 'Enter the customer\'s details to add them to your list.'}
+                        {newCustomer.id ? t('customers.dialog.editDescription') : t('customers.dialog.addDescription')}
                       </DialogDescription>
                     </DialogHeader>
                     {renderCustomerForm(newCustomer, setNewCustomer)}
@@ -1451,7 +1458,7 @@ const LoadingOverlay = () => (
                           setShowNewCustomerDialog(false);
                         }}
                       >
-                        Cancel
+                        {t('customers.actions.cancel')}
                       </Button>
                       <Button onClick={() => {
                         if (newCustomer.id && customers.find(c => c.id === newCustomer.id)) {
@@ -1480,7 +1487,7 @@ const LoadingOverlay = () => (
                         });
                         setShowNewCustomerDialog(false);
                       }}>
-                        {newCustomer.id ? 'Save Changes' : 'Add Customer'}
+                        {newCustomer.id ? t('customers.actions.save') : t('customers.actions.add')}
                       </Button>
                     </div>
                   </DialogContent>

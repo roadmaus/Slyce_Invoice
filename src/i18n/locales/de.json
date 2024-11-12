@@ -16,8 +16,8 @@
         "label": "Rechnungsdatum",
         "serviceDate": "Leistungsdatum",
         "servicePeriod": "Leistungszeitraum",
-        "startDate": "Beginn der Leistung",
-        "endDate": "Ende der Leistung"
+        "startOfService": "Beginn der Leistung",
+        "endOfService": "Ende der Leistung"
       }
     },
     "items": {
@@ -51,18 +51,34 @@
     "edit": "Kunde bearbeiten",
     "form": {
       "title": "Anrede",
-      "academicTitle": "Akademischer Titel",
+      "selectTitle": "Anrede auswählen",
+      "titles": {
+        "mr": "Herr",
+        "mrs": "Frau",
+        "diverse": "Divers"
+      },
+      "academicTitle": {
+        "label": "Akademischer Titel",
+        "options": {
+          "dr": "Dr.",
+          "prof": "Prof.",
+          "profDr": "Prof. Dr.",
+          "drHc": "Dr. h.c."
+        },
+        "placeholder": "auswählen"
+      },
       "name": "Name",
       "street": "Straße",
-      "postalCode": "PLZ",
+      "postalCode": "Postleitzahl",
       "city": "Stadt",
       "businessCustomer": "Geschäftskunde"
     },
     "actions": {
+      "add": "Kunde hinzufügen",
+      "edit": "Kunde bearbeiten",
       "save": "Speichern",
       "cancel": "Abbrechen",
-      "delete": "Löschen",
-      "edit": "Bearbeiten"
+      "delete": "Löschen"
     },
     "dialog": {
       "addTitle": "Neuen Kunden hinzufügen",
@@ -86,16 +102,49 @@
       "iban": "IBAN",
       "bic": "BIC",
       "contactDetails": "Kontaktdaten",
-      "vatSettings": {
-        "enable": "Umsatzsteuer aktivieren",
-        "rate": "Umsatzsteuersatz (%)"
-      }
+      "vatEnabled": "Umsatzsteuer aktivieren",
+      "vatRate": "Umsatzsteuersatz (%)"
     },
     "actions": {
       "setDefault": "Als Standard festlegen",
       "save": "Speichern",
       "cancel": "Abbrechen",
       "delete": "Löschen"
+    },
+    "dialog": {
+      "addTitle": "Neues Geschäftsprofil hinzufügen",
+      "editTitle": "Geschäftsprofil bearbeiten",
+      "addDescription": "Geben Sie die Details Ihres Geschäftsprofils ein.",
+      "editDescription": "Bearbeiten Sie die Details Ihres Geschäftsprofils."
+    },
+    "validation": {
+      "maxProfiles": "Maximale Anzahl von Geschäftsprofilen erreicht",
+      "requiredFields": "Bitte füllen Sie alle erforderlichen Felder aus"
+    },
+    "defaultLabel": "Standard",
+    "status": {
+      "isDefault": "Standardprofil",
+      "notDefault": "Als Standard festlegen"
+    }
+  },
+  "profile": {
+    "actions": {
+      "edit": "Profil bearbeiten",
+      "delete": "Profil löschen",
+      "confirmDelete": {
+        "title": "Profil löschen",
+        "description": "Sind Sie sicher, dass Sie dieses Profil löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+        "confirm": "Ja, löschen",
+        "cancel": "Abbrechen"
+      }
+    }
+  },
+  "confirmDialog": {
+    "delete": {
+      "title": "Löschen bestätigen",
+      "description": "Sind Sie sicher, dass Sie dieses Element löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirm": "Ja, löschen",
+      "cancel": "Abbrechen"
     }
   },
   "tags": {
@@ -112,20 +161,21 @@
       "usesDateRange": "Verwendet Datumsbereich",
       "personas": "Zugeordnete Profile"
     },
-    "empty": {
-      "title": "Keine Schnelleingabe-Tags",
-      "description": "Erstellen Sie Tags für eine schnellere Rechnungserstellung",
-      "action": "Ersten Tag erstellen"
+    "emptyState": {
+      "title": "Keine Quick Tags vorhanden",
+      "description": "Erstellen Sie Quick Tags, um Ihren Rechnungserstellungsprozess zu beschleunigen.",
+      "addFirst": "Ersten Tag hinzufügen"
+    },
+    "actions": {
+      "add": "Tag hinzufügen",
+      "edit": "Tag bearbeiten",
+      "delete": "Tag löschen",
+      "save": "Änderungen speichern",
+      "cancel": "Abbrechen"
     },
     "search": {
       "placeholder": "Tags durchsuchen...",
-      "noResults": "Keine Ergebnisse gefunden"
-    },
-    "warning": {
-      "title": "Fehlende Werte",
-      "description": "Preis oder Menge ist leer. Möchten Sie diese auf 0 setzen und fortfahren?",
-      "confirm": "Auf 0 setzen und fortfahren",
-      "cancel": "Abbrechen"
+      "noResults": "Keine Tags gefunden"
     }
   },
   "settings": {
@@ -164,5 +214,38 @@
     "address": "Adresse",
     "taxInfo": "Steuerinformationen",
     "bankDetails": "Bankverbindung"
+  },
+  "dialogs": {
+    "warning": {
+      "title": "Fehlende Werte",
+      "description": "Preis oder Menge ist leer. Möchten Sie diese auf 0 setzen und fortfahren?",
+      "cancel": "Abbrechen",
+      "confirm": "Auf 0 setzen und fortfahren"
+    },
+    "preview": {
+      "title": "Rechnungsvorschau - {{fileName}}"
+    }
+  },
+  "messages": {
+    "success": {
+      "invoiceGenerated": "Rechnung erfolgreich erstellt!",
+      "customerAdded": "Kunde erfolgreich hinzugefügt",
+      "customerUpdated": "Kunde erfolgreich aktualisiert",
+      "profileAdded": "Geschäftsprofil erfolgreich hinzugefügt",
+      "profileUpdated": "Geschäftsprofil erfolgreich aktualisiert"
+    },
+    "error": {
+      "required": "Bitte füllen Sie alle erforderlichen Felder aus.",
+      "maxProfiles": "Maximale Anzahl von Geschäftsprofilen erreicht.",
+      "savingInvoice": "Fehler beim Speichern der Rechnung. Bitte versuchen Sie es erneut.",
+      "generatingInvoice": "Fehler beim Erstellen der Rechnung"
+    },
+    "validation": {
+      "selectCustomer": "Bitte wählen Sie einen Kunden aus.",
+      "selectProfile": "Bitte wählen Sie ein Geschäftsprofil aus.",
+      "setServicePeriod": "Bitte geben Sie den vollständigen Leistungszeitraum an.",
+      "setServiceDate": "Bitte geben Sie das Leistungsdatum an.",
+      "addInvoiceItem": "Bitte fügen Sie mindestens eine Rechnungsposition hinzu."
+    }
   }
 } 
