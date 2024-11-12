@@ -34,6 +34,7 @@ import SettingsTab from './tabs/SettingsTab';
 import { PDFObject } from 'react-pdfobject';
 import { useTranslation } from 'react-i18next';
 import BusinessTab from './tabs/BusinessTab';
+import CustomersTab from './tabs/CustomersTab';
 // Helper Functions
 const generateInvoiceNumber = (lastNumber) => {
   const year = new Date().getFullYear();
@@ -1445,209 +1446,6 @@ const getTagBackground = (() => {
           </Card>
         </TabsContent>
 
-{/* Customers Tab */}
-        <TabsContent value="customers">
-          <Card className="border-border">
-            <CardContent className="responsive-p">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-medium text-foreground">{t('customers.title')}</h2>
-                <Dialog open={showNewCustomerDialog} onOpenChange={(open) => {
-                  if (!open) {
-                    // Reset state when dialog closes
-                    setNewCustomer({
-                      id: '',
-                      title: '',
-                      zusatz: '',
-                      name: '',
-                      street: '',
-                      postal_code: '',
-                      city: '',
-                      firma: false,
-                    });
-                  }
-                  setShowNewCustomerDialog(open);
-                }}>
-                  <DialogTrigger asChild>
-                    <Button>
-                      <PlusCircle className="h-4 w-4 mr-2" />
-                      {t('customers.actions.add')}
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>{newCustomer.id ? t('customers.actions.edit') : t('customers.actions.add')}</DialogTitle>
-                      <DialogDescription>
-                        {newCustomer.id ? t('customers.dialog.editDescription') : t('customers.dialog.addDescription')}
-                      </DialogDescription>
-                    </DialogHeader>
-                    {renderCustomerForm(newCustomer, setNewCustomer)}
-                    <div className="flex justify-end space-x-2">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => {
-                          setNewCustomer({
-                            id: '',
-                            title: '',
-                            zusatz: '',
-                            name: '',
-                            street: '',
-                            postal_code: '',
-                            city: '',
-                            firma: false,
-                          });
-                          setShowNewCustomerDialog(false);
-                        }}
-                      >
-                        {t('customers.actions.cancel')}
-                      </Button>
-                      <Button onClick={() => {
-                        if (newCustomer.id && customers.find(c => c.id === newCustomer.id)) {
-                          // Handle edit case
-                          const updatedCustomers = customers.map(c => 
-                            c.id === newCustomer.id ? newCustomer : c
-                          );
-                          setCustomers(updatedCustomers);
-                          if (selectedCustomer?.id === newCustomer.id) {
-                            setSelectedCustomer(newCustomer);
-                          }
-                        } else {
-                          // Handle add case
-                          addCustomer();
-                        }
-                        // Clear the state after saving
-                        setNewCustomer({
-                          id: '',
-                          title: '',
-                          zusatz: '',
-                          name: '',
-                          street: '',
-                          postal_code: '',
-                          city: '',
-                          firma: false,
-                        });
-                        setShowNewCustomerDialog(false);
-                      }}>
-                        {newCustomer.id ? t('customers.actions.save') : t('customers.actions.add')}
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
-
-              {/* Customers Grid */}
-              <div className="responsive-grid responsive-gap">
-                {customers.map((customer, index) => (
-                  <Card 
-                    key={index} 
-                    className="group relative overflow-hidden border-border/50 hover:border-border 
-                      transition-all duration-200 hover:shadow-lg"
-                  >
-                    {/* Quick Actions */}
-                    <div className="absolute top-4 right-4 flex items-center gap-2 opacity-0 
-                      group-hover:opacity-100 transition-all duration-200 translate-y-1 
-                      group-hover:translate-y-0 z-20">
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background shadow-sm"
-                        onClick={() => handleCustomerDialog(customer)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background shadow-sm"
-                        onClick={() => {
-                          const updatedCustomers = customers.filter((_, i) => i !== index);
-                          setCustomers(updatedCustomers);
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                    <CardContent className="p-5 mt-8">
-                      {/* Customer Header */}
-                      <div className="mb-4">
-                        <div className="flex items-center gap-2">
-                          {customer.firma ? (
-                            <Building2 className="h-4 w-4 text-primary" />
-                          ) : (
-                            <User2 className="h-4 w-4 text-muted-foreground" />
-                          )}
-                          <h3 className="font-semibold text-lg text-foreground/90 truncate">
-                            {customer.title === 'Divers' ? (
-                              `${customer.zusatz} ${customer.name}`
-                            ) : (
-                              `${customer.title} ${customer.zusatz} ${customer.name}`
-                            )}
-                          </h3>
-                        </div>
-                      </div>
-
-                      {/* Customer Details */}
-                      <div className="space-y-4">
-                        {/* Address Section */}
-                        <div className="space-y-1.5">
-                          <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                            <MapPin className="h-3.5 w-3.5" />
-                            {t('common.address')}
-                          </div>
-                          <div className="text-sm text-foreground/80 pl-5">
-                            {customer.street}
-                            <br />
-                            {customer.postal_code} {customer.city}
-                          </div>
-                        </div>
-
-                        {/* Customer Type */}
-                        <div className="flex items-center justify-center p-1.5 rounded-md
-                          bg-background/40 dark:bg-background/20 backdrop-blur-sm">
-                          <span className="text-xs text-muted-foreground">
-                            {customer.title === 'Divers' 
-                              ? t('customers.form.titles.diverse')
-                              : customer.title === 'Herr' 
-                                ? t('customers.form.titles.mr')
-                                : t('customers.form.titles.mrs')}
-                            {customer.zusatz && ` • ${customer.zusatz}`}
-                            {customer.firma && ` • ${t('customers.businessCustomer')}`}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/20 
-                        via-transparent to-transparent opacity-0 group-hover:opacity-100 
-                        transition-opacity duration-200" />
-                    </CardContent>
-                  </Card>
-                ))}
-
-                {/* Empty State */}
-                {customers.length === 0 && (
-                  <div className="col-span-full text-center py-12 bg-secondary/50 rounded-lg 
-                    border-2 border-dashed border-border">
-                    <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium text-foreground mb-2">
-                      {t('customers.emptyState.title')}
-                    </h3>
-                    <p className="text-muted-foreground mb-4">
-                      {t('customers.emptyState.description')}
-                    </p>
-                    <Button 
-                      onClick={() => setShowNewCustomerDialog(true)}
-                      className="bg-primary text-primary-foreground hover:bg-primary/90"
-                    >
-                      <PlusCircle className="h-4 w-4 mr-2" />
-                      {t('customers.emptyState.addFirst')}
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* Quick Tags Tab */}
         <TabsContent value="tags">
@@ -1911,7 +1709,7 @@ const getTagBackground = (() => {
                         </div>
                         {tag.hasDateRange && (
                           <div className="flex items-center justify-center p-1.5 rounded-md
-                            bg-background/30 dark:bg-background/10 backdrop-blur-sm">
+                            bg-background/40 dark:bg-background/20 backdrop-blur-sm">
                             <span className="text-xs text-foreground/70">{t('tags.form.usesDateRange')}</span>
                           </div>
                         )}
@@ -1967,7 +1765,24 @@ const getTagBackground = (() => {
           </Card>
         </TabsContent>
 
+        {/* Customers Tab */}
+        <TabsContent value="customers">
+          <CustomersTab 
+            customers={customers}
+            setCustomers={setCustomers}
+            selectedCustomer={selectedCustomer}
+            setSelectedCustomer={setSelectedCustomer}
+            newCustomer={newCustomer}
+            setNewCustomer={setNewCustomer}
+            showNewCustomerDialog={showNewCustomerDialog}
+            setShowNewCustomerDialog={setShowNewCustomerDialog}
+            renderCustomerForm={renderCustomerForm}
+            handleCustomerDialog={handleCustomerDialog}
+            addCustomer={addCustomer}
+          />
+        </TabsContent>
 
+        {/* Business Tab */}
         <TabsContent value="business">
           <BusinessTab 
             businessProfiles={businessProfiles}
