@@ -1,0 +1,306 @@
+{
+  "invoice": {
+    "title": "Factura",
+    "recipient": {
+      "title": "Destinatario de la factura",
+      "selectCustomer": "Seleccionar cliente"
+    },
+    "details": {
+      "title": "Detalles de la factura",
+      "selectProfile": "Seleccionar perfil comercial",
+      "number": {
+        "label": "Número de factura",
+        "hint": "El número de factura se genera automáticamente"
+      },
+      "date": {
+        "label": "Fecha de factura",
+        "serviceDate": "Fecha del servicio",
+        "servicePeriod": "Período del servicio",
+        "startOfService": "Inicio del servicio",
+        "endOfService": "Fin del servicio"
+      }
+    },
+    "items": {
+      "title": "Elementos de la factura",
+      "description": "Descripción",
+      "quantity": "Cantidad",
+      "rate": "Precio (€)",
+      "total": "Total",
+      "addItem": "Agregar elemento"
+    },
+    "totals": {
+      "netAmount": "Importe neto",
+      "vat": "IVA ({{rate}}%)",
+      "totalAmount": "Importe total",
+      "vatNotice": {
+        "enabled": "El IVA se calcula según el § 19 de la Ley del IVA.",
+        "disabled": "No se calcula IVA según el § 19 de la Ley del IVA."
+      }
+    },
+    "actions": {
+      "generate": "Generar factura",
+      "generating": "Generando...",
+      "preview": "Vista previa",
+      "save": "Guardar"
+    }
+  },
+  "customers": {
+    "title": "Clientes",
+    "management": "Gestión de clientes",
+    "add": "Agregar cliente",
+    "edit": "Editar cliente",
+    "form": {
+      "title": "Tratamiento",
+      "selectTitle": "Seleccionar tratamiento",
+      "titles": {
+        "mr": "Sr.",
+        "mrs": "Sra.",
+        "diverse": "Otro"
+      },
+      "academicTitle": {
+        "label": "Título académico",
+        "options": {
+          "dr": "Dr.",
+          "prof": "Prof.",
+          "profDr": "Prof. Dr.",
+          "drHc": "Dr. h.c."
+        },
+        "placeholder": "seleccionar"
+      },
+      "name": "Nombre",
+      "street": "Calle",
+      "postalCode": "Código postal",
+      "city": "Ciudad",
+      "businessCustomer": "Cliente comercial"
+    },
+    "actions": {
+      "add": "Agregar cliente",
+      "edit": "Editar cliente",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "delete": "Eliminar"
+    },
+    "dialog": {
+      "addTitle": "Agregar nuevo cliente",
+      "editTitle": "Editar cliente",
+      "addDescription": "Ingrese los datos del cliente",
+      "editDescription": "Edite los datos del cliente"
+    }
+  },
+  "business": {
+    "title": "Perfiles comerciales",
+    "add": "Agregar perfil",
+    "edit": "Editar perfil",
+    "form": {
+      "companyName": "Nombre de la empresa",
+      "street": "Calle",
+      "postalCode": "Código postal",
+      "city": "Ciudad",
+      "taxNumber": "Número fiscal",
+      "taxId": "NIF/CIF",
+      "bankInstitute": "Entidad bancaria",
+      "iban": "IBAN",
+      "bic": "BIC",
+      "contactDetails": "Datos de contacto",
+      "vatEnabled": "Activar IVA",
+      "vatRate": "Tasa de IVA (%)"
+    },
+    "actions": {
+      "setDefault": "Establecer como predeterminado",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "delete": "Eliminar"
+    },
+    "dialog": {
+      "addTitle": "Agregar nuevo perfil comercial",
+      "editTitle": "Editar perfil comercial",
+      "addDescription": "Ingrese los detalles de su perfil comercial.",
+      "editDescription": "Edite los detalles de su perfil comercial."
+    },
+    "validation": {
+      "maxProfiles": "Número máximo de perfiles comerciales alcanzado",
+      "requiredFields": "Por favor complete todos los campos requeridos"
+    },
+    "defaultLabel": "Predeterminado",
+    "status": {
+      "isDefault": "Perfil predeterminado",
+      "notDefault": "Establecer como predeterminado"
+    }
+  },
+  "profile": {
+    "actions": {
+      "edit": "Editar perfil",
+      "delete": "Eliminar perfil",
+      "confirmDelete": {
+        "title": "Eliminar perfil",
+        "description": "¿Está seguro de que desea eliminar este perfil? Esta acción no se puede deshacer.",
+        "confirm": "Sí, eliminar",
+        "cancel": "Cancelar"
+      }
+    }
+  },
+  "confirmDialog": {
+    "delete": {
+      "title": "Confirmar eliminación",
+      "description": "¿Está seguro de que desea eliminar este elemento? Esta acción no se puede deshacer.",
+      "confirm": "Sí, eliminar",
+      "cancel": "Cancelar"
+    }
+  },
+  "tags": {
+    "title": "Entrada rápida",
+    "add": "Agregar etiqueta",
+    "edit": "Editar etiqueta",
+    "form": {
+      "name": "Nombre",
+      "description": "Descripción",
+      "rate": "Precio (€)",
+      "quantity": "Cantidad",
+      "color": "Color",
+      "visible": "Visible en entrada rápida",
+      "usesDateRange": "Usa rango de fechas",
+      "personas": "Perfiles asignados"
+    },
+    "emptyState": {
+      "title": "No hay etiquetas rápidas",
+      "description": "Cree etiquetas rápidas para acelerar su proceso de facturación.",
+      "addFirst": "Agregar primera etiqueta"
+    },
+    "actions": {
+      "add": "Agregar etiqueta",
+      "edit": "Editar etiqueta",
+      "delete": "Eliminar etiqueta",
+      "save": "Guardar cambios",
+      "cancel": "Cancelar"
+    },
+    "search": {
+      "placeholder": "Buscar etiquetas...",
+      "noResults": "No se encontraron etiquetas"
+    }
+  },
+  "settings": {
+    "title": "Configuración",
+    "appearance": {
+      "title": "Apariencia",
+      "description": "Personalice la apariencia de su aplicación",
+      "themes": {
+        "light": {
+          "label": "Claro",
+          "description": "Diseño claro para uso diurno"
+        },
+        "dark": {
+          "label": "Oscuro",
+          "description": "Diseño oscuro para uso nocturno"
+        },
+        "system": {
+          "label": "Sistema",
+          "description": "Seguir configuración del sistema"
+        }
+      }
+    },
+    "language": {
+      "title": "Idioma",
+      "description": "Elija su idioma preferido"
+    },
+    "pdf": {
+      "title": "Configuración de PDF",
+      "description": "Configure las opciones de vista previa y guardado de PDF",
+      "preview": {
+        "label": "Mostrar vista previa de PDF",
+        "description": "Muestra una vista previa del PDF antes de guardar"
+      },
+      "save": {
+        "label": "Ubicación de guardado",
+        "description": "Elija la ubicación predeterminada para sus PDFs",
+        "placeholder": "Elija una ubicación de guardado",
+        "browse": "Explorar",
+        "noPath": "No se ha seleccionado ubicación de guardado"
+      }
+    },
+    "dataManagement": {
+      "title": "Gestión de datos",
+      "description": "Exporte o importe sus datos",
+      "export": {
+        "title": "Exportar datos",
+        "description": "Haga una copia de seguridad de sus datos en un archivo",
+        "button": "Exportar datos",
+        "loading": "Exportando...",
+        "success": "Datos exportados exitosamente",
+        "error": "Error al exportar datos",
+        "genericError": "Ha ocurrido un error inesperado"
+      },
+      "import": {
+        "title": "Importar datos",
+        "description": "Cargar datos exportados previamente",
+        "button": "Importar datos",
+        "loading": "Importando...",
+        "success": "Datos importados exitosamente",
+        "error": "Error al importar datos",
+        "genericError": "Ha ocurrido un error inesperado"
+      }
+    },
+    "errors": {
+      "loadSettings": "Error al cargar la configuración",
+      "updateSettings": "Error al actualizar la configuración",
+      "loadLanguage": "Error al cargar la configuración de idioma",
+      "updateLanguage": "Error al actualizar el idioma",
+      "directorySelection": {
+        "notAvailable": "Selección de directorio no disponible",
+        "error": "Error al seleccionar directorio"
+      }
+    },
+    "success": {
+      "saveLocation": "Ubicación de guardado actualizada exitosamente",
+      "language": "Idioma actualizado exitosamente"
+    }
+  },
+  "common": {
+    "loading": "Cargando...",
+    "required": "Campo requerido",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "search": "Buscar",
+    "noResults": "Sin resultados",
+    "address": "Dirección",
+    "taxInfo": "Información fiscal",
+    "bankDetails": "Datos bancarios"
+  },
+  "dialogs": {
+    "warning": {
+      "title": "Valores faltantes",
+      "description": "El precio o la cantidad están vacíos. ¿Desea establecerlos en 0 y continuar?",
+      "cancel": "Cancelar",
+      "confirm": "Establecer en 0 y continuar"
+    },
+    "preview": {
+      "title": "Vista previa de factura - {{fileName}}"
+    }
+  },
+  "messages": {
+    "success": {
+      "invoiceGenerated": "¡Factura generada exitosamente!",
+      "customerAdded": "Cliente agregado exitosamente",
+      "customerUpdated": "Cliente actualizado exitosamente",
+      "profileAdded": "Perfil comercial agregado exitosamente",
+      "profileUpdated": "Perfil comercial actualizado exitosamente"
+    },
+    "error": {
+      "required": "Por favor complete todos los campos requeridos.",
+      "maxProfiles": "Número máximo de perfiles comerciales alcanzado.",
+      "savingInvoice": "Error al guardar la factura. Por favor intente nuevamente.",
+      "generatingInvoice": "Error al generar la factura"
+    },
+    "validation": {
+      "selectCustomer": "Por favor seleccione un cliente.",
+      "selectProfile": "Por favor seleccione un perfil comercial.",
+      "setServicePeriod": "Por favor ingrese el período completo del servicio.",
+      "setServiceDate": "Por favor ingrese la fecha del servicio.",
+      "addItem": "Por favor agregue al menos un elemento a la factura."
+    }
+  }
+}

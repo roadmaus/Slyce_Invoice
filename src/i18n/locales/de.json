@@ -197,6 +197,61 @@
           "description": "Systemeinstellungen folgen"
         }
       }
+    },
+    "language": {
+      "title": "Sprache",
+      "description": "Wählen Sie Ihre bevorzugte Sprache"
+    },
+    "pdf": {
+      "title": "PDF-Einstellungen",
+      "description": "Konfigurieren Sie die PDF-Vorschau und Speicheroptionen",
+      "preview": {
+        "label": "PDF-Vorschau anzeigen",
+        "description": "Zeigt eine Vorschau der PDF an, bevor sie gespeichert wird"
+      },
+      "save": {
+        "label": "Speicherort",
+        "description": "Wählen Sie den Standardspeicherort für Ihre PDFs",
+        "placeholder": "Wählen Sie einen Speicherort",
+        "browse": "Durchsuchen",
+        "noPath": "Kein Speicherort ausgewählt"
+      }
+    },
+    "dataManagement": {
+      "title": "Datenverwaltung",
+      "description": "Exportieren oder importieren Sie Ihre Daten",
+      "export": {
+        "title": "Daten exportieren",
+        "description": "Sichern Sie Ihre Daten in einer Datei",
+        "button": "Daten exportieren",
+        "loading": "Exportiere...",
+        "success": "Daten erfolgreich exportiert",
+        "error": "Fehler beim Exportieren",
+        "genericError": "Ein unerwarteter Fehler ist aufgetreten"
+      },
+      "import": {
+        "title": "Daten importieren",
+        "description": "Laden Sie zuvor exportierte Daten",
+        "button": "Daten importieren",
+        "loading": "Importiere...",
+        "success": "Daten erfolgreich importiert",
+        "error": "Fehler beim Importieren",
+        "genericError": "Ein unerwarteter Fehler ist aufgetreten"
+      }
+    },
+    "errors": {
+      "loadSettings": "Fehler beim Laden der Einstellungen",
+      "updateSettings": "Fehler beim Aktualisieren der Einstellungen",
+      "loadLanguage": "Fehler beim Laden der Spracheinstellungen",
+      "updateLanguage": "Fehler beim Aktualisieren der Sprache",
+      "directorySelection": {
+        "notAvailable": "Verzeichnisauswahl nicht verfügbar",
+        "error": "Fehler bei der Verzeichnisauswahl"
+      }
+    },
+    "success": {
+      "saveLocation": "Speicherort erfolgreich aktualisiert",
+      "language": "Sprache erfolgreich aktualisiert"
     }
   },
   "common": {

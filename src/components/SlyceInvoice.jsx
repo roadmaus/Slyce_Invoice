@@ -583,7 +583,7 @@ const SlyceInvoice = () => {
           });
         }
 
-        toast.success('Invoice generated successfully!');
+        toast.success(t('messages.success.invoiceGenerated'));
         
         // Reset form if not showing preview
         if (!previewSettings.showPreview) {
@@ -592,11 +592,11 @@ const SlyceInvoice = () => {
           setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
         }
       } else {
-        toast.error('Error saving invoice. Please try again.');
+        toast.error(t('messages.error.savingInvoice'));
       }
     } catch (error) {
       console.error('Error generating invoice:', error);
-      toast.error('Error generating invoice');
+      toast.error(t('messages.error.generatingInvoice'));
     } finally {
       setIsLoading(prev => ({ ...prev, invoice: false }));
     }
@@ -1022,7 +1022,7 @@ const PreviewDialog = () => (
   >
     <DialogContent className="pdf-preview-content">
       <DialogHeader>
-        <DialogTitle>Invoice Preview - {pdfPreview.fileName}</DialogTitle>
+        <DialogTitle>{t('invoice.actions.preview')} - {pdfPreview.fileName}</DialogTitle>
       </DialogHeader>
       <div className="pdf-container">
         <iframe
@@ -1041,7 +1041,7 @@ const LoadingOverlay = () => (
   <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-50 flex items-center justify-center">
     <div className="text-center space-y-4">
       <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-      <p className="text-lg font-medium text-foreground">Generating Invoice...</p>
+      <p className="text-lg font-medium text-foreground">{t('invoice.actions.generating')}</p>
     </div>
   </div>
 );

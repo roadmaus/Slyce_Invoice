@@ -183,10 +183,12 @@ const SettingsTab = () => {
               <p className="text-muted-foreground mb-6">
                 {t('settings.language.description')}
               </p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
                   { value: 'en', label: 'English', flag: '🇺🇸' },
-                  { value: 'de', label: 'Deutsch', flag: '🇩🇪' }
+                  { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
+                  { value: 'es', label: 'Español', flag: '🇪🇸' },
+                  { value: 'ko', label: '한국어', flag: '🇰🇷' }
                 ].map(({ value, label, flag }) => (
                   <button
                     key={value}
