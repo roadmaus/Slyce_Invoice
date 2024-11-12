@@ -239,6 +239,14 @@
           "success": "Données importées avec succès",
           "error": "Erreur lors de l'importation",
           "genericError": "Une erreur inattendue s'est produite"
+        },
+        "reset": {
+          "title": "Réinitialiser toutes les configurations",
+          "description": "Cela réinitialisera toutes les configurations à leurs valeurs par défaut et effacera tous les données stockées. Cette action ne peut pas être annulée. Les fichiers de données exportés ne seront pas affectés.",
+          "button": "Réinitialiser toutes les configurations",
+          "confirm": "Êtes-vous sûr de vouloir réinitialiser toutes les configurations ? Cette action ne peut pas être annulée.",
+          "success": "Toutes les configurations ont été réinitialisées avec succès",
+          "error": "Erreur lors de la réinitialisation des configurations"
         }
       },
       "errors": {

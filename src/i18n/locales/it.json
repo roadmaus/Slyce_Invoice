@@ -239,6 +239,14 @@
         "success": "Dati importati con successo",
         "error": "Errore durante l'importazione",
         "genericError": "Si è verificato un errore imprevisto"
+      },
+      "reset": {
+        "title": "Resetta tutte le impostazioni",
+        "description": "Questo ripristinerà tutte le impostazioni alle loro impostazioni predefinite e cancellerà tutti i dati memorizzati. Questa azione non può essere annullata. I file di dati esportati non saranno influenzati.",
+        "button": "Resetta tutte le impostazioni",
+        "confirm": "Sei sicuro di voler ripristinare tutte le impostazioni? Questa azione non può essere annullata.",
+        "success": "Tutte le impostazioni sono state ripristinate con successo",
+        "error": "Errore durante il ripristino delle impostazioni"
       }
     },
     "errors": {

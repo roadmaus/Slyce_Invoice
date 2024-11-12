@@ -239,6 +239,14 @@
         "success": "Datos importados exitosamente",
         "error": "Error al importar datos",
         "genericError": "Ha ocurrido un error inesperado"
+      },
+      "reset": {
+        "title": "Restablecer todas las configuraciones",
+        "description": "Esto restablecerá todas las configuraciones a sus valores predeterminados y borrará todos los datos almacenados. Esta acción no se puede deshacer. Los archivos de datos exportados no serán afectados.",
+        "button": "Restablecer todas las configuraciones",
+        "confirm": "¿Está seguro de que desea restablecer todas las configuraciones? Esta acción no se puede deshacer.",
+        "success": "Todas las configuraciones han sido restablecidas exitosamente",
+        "error": "Error al restablecer las configuraciones"
       }
     },
     "errors": {
