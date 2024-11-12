@@ -269,11 +269,30 @@
       "directorySelection": {
         "notAvailable": "Mapkeuze niet beschikbaar",
         "error": "Fout bij selecteren van map"
-      }
+      },
+      "templateLoad": "Fout bij laden sjabloon",
+      "templateSave": "Fout bij opslaan sjabloon",
+      "templateReset": "Fout bij herstellen sjabloon"
     },
     "success": {
       "saveLocation": "Opslaglocatie succesvol bijgewerkt",
-      "language": "Taal succesvol bijgewerkt"
+      "language": "Taal succesvol bijgewerkt",
+      "templateSave": "Sjabloon succesvol opgeslagen",
+      "templateReset": "Sjabloon succesvol hersteld"
+    },
+    "templateEditor": "Sjablooneditor",
+    "actions": {
+      "reset": "Herstellen",
+      "save": "Opslaan",
+      "close": "Sluiten",
+      "editTemplate": "Sjabloon bewerken"
+    },
+    "confirmations": {
+      "resetTemplate": "Weet u zeker dat u het sjabloon wilt herstellen? Deze actie kan niet ongedaan worden gemaakt."
+    },
+    "invoice": {
+      "template": "Factuursjabloon",
+      "templateDescription": "Pas uw factuursjabloon aan uw merk aan"
     }
   },
   "common": {

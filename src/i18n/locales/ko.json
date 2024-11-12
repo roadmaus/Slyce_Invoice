@@ -269,11 +269,30 @@
       "directorySelection": {
         "notAvailable": "디렉토리 선택을 사용할 수 없습니다",
         "error": "디렉토리 선택 중 오류 발생"
-      }
+      },
+      "templateLoad": "템플릿 로드 오류",
+      "templateSave": "템플릿 저장 오류",
+      "templateReset": "템플릿 초기화 오류"
     },
     "success": {
       "saveLocation": "저장 위치가 성공적으로 업데이트되었습니다",
-      "language": "언어가 성공적으로 업데이트되었습니다"
+      "language": "언어가 성공적으로 업데이트되었습니다",
+      "templateSave": "템플릿이 성공적으로 저장됨",
+      "templateReset": "템플릿이 성공적으로 초기화됨"
+    },
+    "templateEditor": "템플릿 편집기",
+    "actions": {
+      "reset": "초기화",
+      "save": "저장",
+      "close": "닫기",
+      "editTemplate": "템플릿 편집"
+    },
+    "confirmations": {
+      "resetTemplate": "템플릿을 초기화하시겠습니까? 이 작업은 취소할 수 없습니다."
+    },
+    "invoice": {
+      "template": "청구서 템플릿",
+      "templateDescription": "브랜드에 맞게 청구서 템플릿 사용자 지정"
     }
   },
   "common": {

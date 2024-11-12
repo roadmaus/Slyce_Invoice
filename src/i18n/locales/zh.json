@@ -269,11 +269,30 @@
       "directorySelection": {
         "notAvailable": "目录选择不可用",
         "error": "选择目录时出错"
-      }
+      },
+      "templateLoad": "加载模板时出错",
+      "templateSave": "保存模板时出错",
+      "templateReset": "重置模板时出错"
     },
     "success": {
       "saveLocation": "保存位置更新成功",
-      "language": "语言更新成功"
+      "language": "语言更新成功",
+      "templateSave": "模板保存成功",
+      "templateReset": "模板重置成功"
+    },
+    "templateEditor": "模板编辑器",
+    "actions": {
+      "reset": "重置",
+      "save": "保存",
+      "close": "关闭",
+      "editTemplate": "编辑模板"
+    },
+    "confirmations": {
+      "resetTemplate": "您确定要重置模板吗？此操作无法撤消。"
+    },
+    "invoice": {
+      "template": "发票模板",
+      "templateDescription": "自定义发票模板以匹配您的品牌"
     }
   },
   "common": {

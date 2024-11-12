@@ -269,11 +269,30 @@
       "directorySelection": {
         "notAvailable": "Verzeichnisauswahl net verfügbar",
         "error": "Fehler bei dr Verzeichnisauswahl"
-      }
+      },
+      "templateLoad": "Fehler beim Lada von dr Vorlag",
+      "templateSave": "Fehler beim Speichra von dr Vorlag",
+      "templateReset": "Fehler beim Zrucksetzn von dr Vorlag"
     },
     "success": {
       "saveLocation": "Schbeicherort erfolgreich aktualisiert",
-      "language": "Schproch erfolgreich aktualisiert"
+      "language": "Schproch erfolgreich aktualisiert",
+      "templateSave": "Vorlag erfolgreich gspeichert",
+      "templateReset": "Vorlag erfolgreich zruckgsetzt"
+    },
+    "templateEditor": "Vorlaga-Editor",
+    "actions": {
+      "reset": "Zrucksetzn",
+      "save": "Speichra",
+      "close": "Zuamacha",
+      "editTemplate": "Vorlag bearbeita"
+    },
+    "confirmations": {
+      "resetTemplate": "Bisch dr sichr, dass d'Vorlag zrucksetzn willsch? Des ka ma nemme ruckgängig macha."
+    },
+    "invoice": {
+      "template": "Rechnungsvorlag",
+      "templateDescription": "Bass deine Rechnungsvorlag an dei Marke a"
     }
   },
   "common": {

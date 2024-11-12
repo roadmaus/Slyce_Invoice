@@ -277,11 +277,30 @@
       "directorySelection": {
         "notAvailable": "Directory selection not available",
         "error": "Error selecting directory"
-      }
+      },
+      "templateLoad": "Error loading template",
+      "templateSave": "Error saving template",
+      "templateReset": "Error resetting template"
     },
     "success": {
       "saveLocation": "Save location updated successfully",
-      "language": "Language updated successfully"
+      "language": "Language updated successfully",
+      "templateSave": "Template saved successfully",
+      "templateReset": "Template reset successfully"
+    },
+    "templateEditor": "Template Editor",
+    "actions": {
+      "reset": "Reset",
+      "save": "Save",
+      "close": "Close",
+      "editTemplate": "Edit Template"
+    },
+    "confirmations": {
+      "resetTemplate": "Are you sure you want to reset the template? This action cannot be undone."
+    },
+    "invoice": {
+      "template": "Invoice Template",
+      "templateDescription": "Customize your invoice template to match your brand"
     }
   },
   "common": {

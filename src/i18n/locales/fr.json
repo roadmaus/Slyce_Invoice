@@ -277,11 +277,30 @@
       "directorySelection": {
         "notAvailable": "Sélection de répertoire non disponible",
         "error": "Erreur lors de la sélection du répertoire"
-      }
+      },
+      "templateLoad": "Erreur lors du chargement du modèle",
+      "templateSave": "Erreur lors de l'enregistrement du modèle",
+      "templateReset": "Erreur lors de la réinitialisation du modèle"
     },
     "success": {
       "saveLocation": "Emplacement de sauvegarde mis à jour avec succès",
-      "language": "Langue mise à jour avec succès"
+      "language": "Langue mise à jour avec succès",
+      "templateSave": "Modèle enregistré avec succès",
+      "templateReset": "Modèle réinitialisé avec succès"
+    },
+    "templateEditor": "Éditeur de modèle",
+    "actions": {
+      "reset": "Réinitialiser",
+      "save": "Enregistrer",
+      "close": "Fermer",
+      "editTemplate": "Modifier le modèle"
+    },
+    "confirmations": {
+      "resetTemplate": "Êtes-vous sûr de vouloir réinitialiser le modèle ? Cette action ne peut pas être annulée."
+    },
+    "invoice": {
+      "template": "Modèle de facture",
+      "templateDescription": "Personnalisez votre modèle de facture selon votre marque"
     }
   },
   "common": {

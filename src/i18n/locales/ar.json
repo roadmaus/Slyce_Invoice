@@ -277,11 +277,30 @@
       "directorySelection": {
         "notAvailable": "اختيار المجلد غير متاح",
         "error": "خطأ في اختيار المجلد"
-      }
+      },
+      "templateLoad": "خطأ في تحميل القالب",
+      "templateSave": "خطأ في حفظ القالب",
+      "templateReset": "خطأ في إعادة تعيين القالب"
     },
     "success": {
       "saveLocation": "تم تحديث موقع الحفظ بنجاح",
-      "language": "تم تحديث اللغة بنجاح"
+      "language": "تم تحديث اللغة بنجاح",
+      "templateSave": "تم حفظ القالب بنجاح",
+      "templateReset": "تم إعادة تعيين القالب بنجاح"
+    },
+    "templateEditor": "محرر القالب",
+    "actions": {
+      "reset": "إعادة تعيين",
+      "save": "حفظ",
+      "close": "إغلاق",
+      "editTemplate": "تحرير القالب"
+    },
+    "confirmations": {
+      "resetTemplate": "هل أنت متأكد أنك تريد إعادة تعيين القالب؟ لا يمكن التراجع عن هذا الإجراء."
+    },
+    "invoice": {
+      "template": "قالب الفاتورة",
+      "templateDescription": "تخصيص قالب الفاتورة ليتناسب مع علامتك التجارية"
     }
   },
   "common": {

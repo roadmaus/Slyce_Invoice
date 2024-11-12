@@ -277,11 +277,30 @@
       "directorySelection": {
         "notAvailable": "Selezione cartella non disponibile",
         "error": "Errore nella selezione della cartella"
-      }
+      },
+      "templateLoad": "Errore nel caricamento del modello",
+      "templateSave": "Errore nel salvataggio del modello",
+      "templateReset": "Errore nel ripristino del modello"
     },
     "success": {
       "saveLocation": "Posizione di salvataggio aggiornata con successo",
-      "language": "Lingua aggiornata con successo"
+      "language": "Lingua aggiornata con successo",
+      "templateSave": "Modello salvato con successo",
+      "templateReset": "Modello ripristinato con successo"
+    },
+    "templateEditor": "Editor di modelli",
+    "actions": {
+      "reset": "Ripristina",
+      "save": "Salva",
+      "close": "Chiudi",
+      "editTemplate": "Modifica modello"
+    },
+    "confirmations": {
+      "resetTemplate": "Sei sicuro di voler ripristinare il modello? Questa azione non può essere annullata."
+    },
+    "invoice": {
+      "template": "Modello fattura",
+      "templateDescription": "Personalizza il modello della fattura per abbinarlo al tuo marchio"
     }
   },
   "common": {

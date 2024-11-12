@@ -276,11 +276,30 @@
       "directorySelection": {
         "notAvailable": "Verzeichnisauswahl nicht verfügbar",
         "error": "Fehler bei der Verzeichnisauswahl"
-      }
+      },
+      "templateLoad": "Fehler beim Laden der Vorlage",
+      "templateSave": "Fehler beim Speichern der Vorlage",
+      "templateReset": "Fehler beim Zurücksetzen der Vorlage"
     },
     "success": {
       "saveLocation": "Speicherort erfolgreich aktualisiert",
-      "language": "Sprache erfolgreich aktualisiert"
+      "language": "Sprache erfolgreich aktualisiert",
+      "templateSave": "Vorlage erfolgreich gespeichert",
+      "templateReset": "Vorlage erfolgreich zurückgesetzt"
+    },
+    "templateEditor": "Vorlageneditor",
+    "actions": {
+      "reset": "Zurücksetzen",
+      "save": "Speichern",
+      "close": "Schließen",
+      "editTemplate": "Vorlage bearbeiten"
+    },
+    "confirmations": {
+      "resetTemplate": "Sind Sie sicher, dass Sie die Vorlage zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "invoice": {
+      "template": "Rechnungsvorlage",
+      "templateDescription": "Passen Sie Ihre Rechnungsvorlage an Ihre Marke an"
     }
   },
   "common": {

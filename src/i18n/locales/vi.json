@@ -269,11 +269,30 @@
       "directorySelection": {
         "notAvailable": "Không có sẵn chức năng chọn thư mục",
         "error": "Lỗi khi chọn thư mục"
-      }
+      },
+      "templateLoad": "Lỗi khi tải mẫu",
+      "templateSave": "Lỗi khi lưu mẫu",
+      "templateReset": "Lỗi khi đặt lại mẫu"
     },
     "success": {
       "saveLocation": "Cập nhật vị trí lưu thành công",
-      "language": "Cập nhật ngôn ngữ thành công"
+      "language": "Cập nhật ngôn ngữ thành công",
+      "templateSave": "Đã lưu mẫu thành công",
+      "templateReset": "Đã đặt lại mẫu thành công"
+    },
+    "templateEditor": "Trình chỉnh sửa mẫu",
+    "actions": {
+      "reset": "Đặt lại",
+      "save": "Lưu",
+      "close": "Đóng",
+      "editTemplate": "Chỉnh sửa mẫu"
+    },
+    "confirmations": {
+      "resetTemplate": "Bạn có chắc chắn muốn đặt lại mẫu không? Hành động này không thể hoàn tác."
+    },
+    "invoice": {
+      "template": "Mẫu hóa đơn",
+      "templateDescription": "Tùy chỉnh mẫu hóa đơn để phù hợp với thương hiệu của bạn"
     }
   },
   "common": {

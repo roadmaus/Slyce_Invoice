@@ -277,11 +277,30 @@
       "directorySelection": {
         "notAvailable": "Selección de directorio no disponible",
         "error": "Error al seleccionar directorio"
-      }
+      },
+      "templateLoad": "Error al cargar la plantilla",
+      "templateSave": "Error al guardar la plantilla",
+      "templateReset": "Error al restablecer la plantilla"
     },
     "success": {
       "saveLocation": "Ubicación de guardado actualizada exitosamente",
-      "language": "Idioma actualizado exitosamente"
+      "language": "Idioma actualizado exitosamente",
+      "templateSave": "Plantilla guardada con éxito",
+      "templateReset": "Plantilla restablecida con éxito"
+    },
+    "templateEditor": "Editor de plantillas",
+    "actions": {
+      "reset": "Restablecer",
+      "save": "Guardar",
+      "close": "Cerrar",
+      "editTemplate": "Editar plantilla"
+    },
+    "confirmations": {
+      "resetTemplate": "¿Está seguro de que desea restablecer la plantilla? Esta acción no se puede deshacer."
+    },
+    "invoice": {
+      "template": "Plantilla de factura",
+      "templateDescription": "Personalice su plantilla de factura para que coincida con su marca"
     }
   },
   "common": {

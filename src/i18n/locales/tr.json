@@ -269,11 +269,30 @@
       "directorySelection": {
         "notAvailable": "Dizin seçimi kullanılamıyor",
         "error": "Dizin seçiminde hata oluştu"
-      }
+      },
+      "templateLoad": "Şablon yüklenirken hata oluştu",
+      "templateSave": "Şablon kaydedilirken hata oluştu",
+      "templateReset": "Şablon sıfırlanırken hata oluştu"
     },
     "success": {
       "saveLocation": "Kayıt konumu başarıyla güncellendi",
-      "language": "Dil başarıyla güncellendi"
+      "language": "Dil başarıyla güncellendi",
+      "templateSave": "Şablon başarıyla kaydedildi",
+      "templateReset": "Şablon başarıyla sıfırlandı"
+    },
+    "templateEditor": "Şablon Düzenleyici",
+    "actions": {
+      "reset": "Sıfırla",
+      "save": "Kaydet",
+      "close": "Kapat",
+      "editTemplate": "Şablonu düzenle"
+    },
+    "confirmations": {
+      "resetTemplate": "Şablonu sıfırlamak istediğinizden emin misiniz? Bu işlem geri alınamaz."
+    },
+    "invoice": {
+      "template": "Fatura şablonu",
+      "templateDescription": "Fatura şablonunuzu markanıza uyacak şekilde özelleştirin"
     }
   },
   "common": {

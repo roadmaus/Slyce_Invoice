@@ -277,11 +277,30 @@
       "directorySelection": {
         "notAvailable": "ディレクトリ選択が利用できません",
         "error": "ディレクトリ選択中にエラーが発生しました"
-      }
+      },
+      "templateLoad": "テンプレートの読み込みエラー",
+      "templateSave": "テンプレートの保存エラー",
+      "templateReset": "テンプレートのリセットエラー"
     },
     "success": {
       "saveLocation": "保存場所が正常に更新されました",
-      "language": "言語が正常に更新されました"
+      "language": "言語が正常に更新されました",
+      "templateSave": "テンプレートを保存しました",
+      "templateReset": "テンプレートをリセットしました"
+    },
+    "templateEditor": "テンプレートエディタ",
+    "actions": {
+      "reset": "リセット",
+      "save": "保存",
+      "close": "閉じる",
+      "editTemplate": "テンプレートを編集"
+    },
+    "confirmations": {
+      "resetTemplate": "テンプレートをリセットしてもよろしいですか？この操作は元に戻せません。"
+    },
+    "invoice": {
+      "template": "請求書テンプレート",
+      "templateDescription": "請求書テンプレートをブランドに合わせてカスタマイズ"
     }
   },
   "common": {
