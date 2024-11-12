@@ -7,28 +7,14 @@ A modern, desktop invoice generation application built with Electron and React. 
 ## Features
 
 - 📝 Create and manage professional invoices
-- 👥 Customer management system
-- 💼 Multiple business profile support
-- 🏷️ Quick tags for frequent invoice items
-- 💾 Automatic data persistence
-- 📤 Export/Import functionality
-- 🖨️ PDF generation with customizable templates
-- 🌍 German language support
-
-## TODO
-
-- 🎨 Template System Improvements
-  - Multiple template designs for different business sizes
-  - Template preview functionality
-  - Enhanced customization options
-- 👋 Enhanced Customer Interaction
-  - Improved title handling and formal/informal greeting options
-  - Customizable salutations based on locale
-- 💫 UI Feedback Improvements
-  - Non-intrusive success/error notifications
-  - Visual indicators for action completion
-  - Status indicators for ongoing processes
-  - Subtle animation feedback for user interactions
+- 👥 Customer management system with support for business and private customers
+- 💼 Multiple business profile support with default profile selection
+- 🏷️ Quick tags for frequent invoice items with color-coding and search functionality
+- 💾 Automatic data persistence and profile-specific invoice numbers
+- 📤 Export/Import functionality with data management options
+- 🖨️ PDF generation with customizable templates and preview settings
+- 🌍 Support for 17 languages with dynamic language settings
+- 🎨 Theme support with light, dark, and system preferences
 
 ## Installation
 
@@ -64,36 +50,22 @@ npm run start
 - Create preset invoice items for frequent services
 - Customize rates and descriptions
 - Color-code tags for better organization
+- Search and filter tags for quick access
 
 ### Invoice Generation
 1. Select a customer and business profile
 2. Add invoice items manually or using quick tags
 3. Set invoice dates (single date or date range)
-4. Generate PDF invoice
+4. Generate PDF invoice with preview option
 5. Automatically saved in Documents/Invoices/[YEAR]
 
 ## Data Management
 
 ### Export Data
-
-```970:981:src/components/SlyceInvoice.jsx
-                      variant="outline"
-                      onClick={async () => {
-                        const success = await window.electronAPI.exportData();
-                        setShowAlert({
-                          show: true,
-                          message: success ? 'Data exported successfully!' : 'Failed to export data',
-                        });
-                      }}
-                    >
-                      <Save className="h-4 w-4 mr-2" />
-                      Export Data
-                    </Button>
-```
-
+- Export your data for backup or transfer
 
 ### Import Data
-Your data can be imported from previously exported backup files through the business profiles section.
+- Import data from previously exported backup files
 
 ## Development
 
