@@ -584,20 +584,10 @@ const SlyceInvoice = () => {
             data: pdfUrl,
             fileName: fileName
           });
-        }
-
-        toast.success(t('messages.success.invoiceGenerated'));
-        
-        // Save the current invoice number for this profile
-        const updatedNumbers = {
-          ...profileInvoiceNumbers,
-          [selectedProfile.company_name]: currentInvoiceNumber
-        };
-        setProfileInvoiceNumbers(updatedNumbers);
-        await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
-
-        // Only generate next number and clear form if preview is not shown
-        if (!previewSettings.showPreview) {
+        } else {
+          // Only show success toast if preview is not active
+          toast.success(t('messages.success.invoiceGenerated'));
+          
           // Generate next number for this profile
           const nextNumber = generateInvoiceNumber(
             currentInvoiceNumber, 
@@ -608,6 +598,15 @@ const SlyceInvoice = () => {
           setInvoiceItems([]);
           setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
         }
+
+        // Save the current invoice number for this profile
+        const updatedNumbers = {
+          ...profileInvoiceNumbers,
+          [selectedProfile.company_name]: currentInvoiceNumber
+        };
+        setProfileInvoiceNumbers(updatedNumbers);
+        await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
+
       } else {
         toast.error(t('messages.error.savingInvoice'));
       }
