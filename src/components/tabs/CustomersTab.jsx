@@ -175,13 +175,8 @@ const CustomersTab = ({
                   <div className="flex items-center justify-center p-1.5 rounded-md
                     bg-background/40 dark:bg-background/20 backdrop-blur-sm">
                     <span className="text-xs text-muted-foreground">
-                      {customer.title === 'Divers' 
-                        ? t('customers.form.titles.diverse')
-                        : customer.title === 'Herr' 
-                          ? t('customers.form.titles.mr')
-                          : t('customers.form.titles.mrs')}
-                      {customer.zusatz && ` • ${customer.zusatz}`}
-                      {customer.firma && ` • ${t('customers.businessCustomer')}`}
+                      {customer.zusatz && `${customer.zusatz}`}
+                      {customer.firma && (customer.zusatz ? ` • ${t('customers.businessCustomer')}` : t('customers.businessCustomer'))}
                     </span>
                   </div>
                 </div>

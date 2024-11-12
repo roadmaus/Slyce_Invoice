@@ -230,7 +230,7 @@ const InvoiceTab = ({
               </div>
             </div>
             <div className="relative">
-              <div className="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto pr-2 pb-12">
+              <div className="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto pr-2 pb-12 pt-1">
                 {quickTags
                   .filter(tag => 
                     tag.visible && 

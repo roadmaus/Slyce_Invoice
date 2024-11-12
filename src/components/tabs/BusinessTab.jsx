@@ -101,8 +101,8 @@ const BusinessTab = ({
                       setSelectedProfile(newProfile);
                     }
                   } else {
-                    // Handle add case
-                    addBusinessProfile();
+                    // Handle add case - directly add the new profile to the array
+                    setBusinessProfiles([...businessProfiles, newProfile]);
                   }
                   // Clear the state after saving
                   setNewProfile({
