@@ -28,28 +28,37 @@ import InvoiceTab from './tabs/InvoiceTab';
 import TagsTab from './tabs/TagsTab';
 // Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
-  if (lastNumber && !forceGenerate && !lastNumber.includes('_')) {
-    return lastNumber;
-  }
-
   if (!profileId) {
     console.warn('No profile ID provided for invoice number generation');
     return '';
   }
 
-  const year = new Date().getFullYear();
-  const currentYearPrefix = `${year}_${profileId}_`;
+  const currentYear = new Date().getFullYear();
+  const currentYearPrefix = `${currentYear}_${profileId}_`;
   
-  if (forceGenerate && lastNumber && lastNumber.startsWith(currentYearPrefix)) {
-    const sequence = parseInt(lastNumber.split('_')[2]) + 1;
-    return `${currentYearPrefix}${sequence.toString().padStart(5, '0')}`;
-  }
-  
-  if (!lastNumber || !lastNumber.startsWith(currentYearPrefix)) {
-    return `${currentYearPrefix}00001`;
+  // If we have a last number and it's not forced, return it
+  if (lastNumber && !forceGenerate && !lastNumber.includes('_')) {
+    return lastNumber;
   }
 
-  return lastNumber;
+  // If we have a last number, check if it's from the current year
+  if (lastNumber) {
+    const [year] = lastNumber.split('_');
+    
+    // If the last number is from a different year, start new sequence
+    if (parseInt(year) !== currentYear) {
+      return `${currentYearPrefix}00001`;
+    }
+    
+    // If it's the current year and we're forcing a new number
+    if (forceGenerate && lastNumber.startsWith(currentYearPrefix)) {
+      const sequence = parseInt(lastNumber.split('_')[2]) + 1;
+      return `${currentYearPrefix}${sequence.toString().padStart(5, '0')}`;
+    }
+  }
+
+  // If no last number or it's a different year, start with 00001
+  return `${currentYearPrefix}00001`;
 };
 
 const validateBusinessProfile = (profile) => {
@@ -433,8 +442,8 @@ const SlyceInvoice = () => {
 
 // Invoice Management Functions
   const addInvoiceItem = (hasDateRange = true) => {
-    setInvoiceItems([
-      ...invoiceItems,
+    setInvoiceItems(prev => [
+      ...prev,
       {
         description: '',
         quantity: 1,
@@ -444,7 +453,7 @@ const SlyceInvoice = () => {
       },
     ]);
     
-    // Automatically update the date range toggle based on items
+    // Update the date range toggle without clearing existing dates
     updateDateRangeToggle([...invoiceItems, { hasDateRange }]);
   };
 
@@ -821,8 +830,9 @@ const renderCustomerForm = (customer, setCustomer) => {
     setInvoiceDates(prev => ({
       ...prev,
       hasDateRange: needsDateRange,
-      startDate: '',
-      endDate: ''
+      // Only reset dates if switching from date range to single date or vice versa
+      startDate: prev.startDate || '',
+      endDate: needsDateRange ? (prev.endDate || '') : ''
     }));
   };
 
@@ -1117,15 +1127,21 @@ useEffect(() => {
   if (selectedProfile) {
     const profileId = selectedProfile.company_name;
     const lastNumber = profileInvoiceNumbers[profileId];
-    // Only generate a new number if we don't have one for this profile
-    if (!lastNumber) {
-      const newNumber = generateInvoiceNumber(lastNumber, profileId);
-      if (newNumber) {
-        setCurrentInvoiceNumber(newNumber);
-      }
-    } else {
-      // Use the stored number for this profile
-      setCurrentInvoiceNumber(lastNumber);
+    
+    // Generate new number considering the year
+    const newNumber = generateInvoiceNumber(lastNumber, profileId);
+    setCurrentInvoiceNumber(newNumber);
+    
+    // Update stored numbers if the year changed
+    if (newNumber !== lastNumber) {
+      const updatedNumbers = {
+        ...profileInvoiceNumbers,
+        [profileId]: newNumber
+      };
+      setProfileInvoiceNumbers(updatedNumbers);
+      window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
+        console.error('Error saving invoice number:', error);
+      });
     }
   } else {
     setCurrentInvoiceNumber('');
