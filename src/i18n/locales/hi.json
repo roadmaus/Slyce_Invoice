@@ -85,7 +85,8 @@
       "editTitle": "ग्राहक संपादित करें",
       "addDescription": "ग्राहक की जानकारी दर्ज करें",
       "editDescription": "ग्राहक की जानकारी संपादित करें"
-    }
+    },
+    "businessCustomer": "व्यावसायिक ग्राहक"
   },
   "business": {
     "title": "व्यवसाय प्रोफ़ाइल",
@@ -127,7 +128,9 @@
     "status": {
       "isDefault": "डिफ़ॉल्ट प्रोफ़ाइल",
       "notDefault": "डिफ़ॉल्ट के रूप में सेट करें"
-    }
+    },
+    "vatEnabled": "जीएसटी सक्षम ({{rate}}%)",
+    "vatDisabled": "जीएसटी अक्षम"
   },
   "profile": {
     "actions": {
@@ -161,7 +164,8 @@
       "color": "रंग",
       "visible": "त्वरित प्रविष्टि में दिखाएं",
       "usesDateRange": "तिथि सीमा का उपयोग करता है",
-      "personas": "संबंधित प्रोफ़ाइल"
+      "personas": "संबंधित प्रोफ़ाइल",
+      "noDescription": "कोई विवरण उपलब्ध नहीं"
     },
     "emptyState": {
       "title": "कोई त्वरित टैग नहीं",
@@ -178,6 +182,12 @@
     "search": {
       "placeholder": "टैग खोजें...",
       "noResults": "कोई टैग नहीं मिला"
+    },
+    "dialog": {
+      "addTitle": "Add New Tag",
+      "editTitle": "Edit Tag",
+      "addDescription": "Create a new tag for quick entry",
+      "editDescription": "Edit the tag details"
     }
   },
   "settings": {

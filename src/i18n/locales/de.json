@@ -130,7 +130,6 @@
     },
     "vatDisabled": "Umsatzsteuer deaktiviert",
     "vatEnabled": "Umsatzsteuer aktiviert ({{rate}}%)"
-
   },
   "profile": {
     "actions": {
@@ -323,4 +322,4 @@
       "addItem": "Bitte fügen Sie mindestens eine Rechnungsposition hinzu."
     }
   }
-} 
+}

@@ -85,7 +85,8 @@
       "editTitle": "Edit Customer",
       "addDescription": "Enter customer details",
       "editDescription": "Edit customer details"
-    }
+    },
+    "businessCustomer": "Business Customer"
   },
   "business": {
     "title": "Business Profiles",
@@ -127,7 +128,9 @@
     "status": {
       "isDefault": "Default Profile",
       "notDefault": "Set as Default"
-    }
+    },
+    "vatEnabled": "VAT enabled ({{rate}}%)",
+    "vatDisabled": "VAT disabled"
   },
   "profile": {
     "actions": {
@@ -161,7 +164,8 @@
       "color": "Color",
       "visible": "Visible in Quick Input",
       "usesDateRange": "Uses Date Range",
-      "personas": "Assigned Profiles"
+      "personas": "Assigned Profiles",
+      "noDescription": "No description available"
     },
     "emptyState": {
       "title": "No Quick Tags Available",
@@ -178,6 +182,12 @@
     "search": {
       "placeholder": "Search tags...",
       "noResults": "No tags found"
+    },
+    "dialog": {
+      "addTitle": "Add New Tag",
+      "editTitle": "Edit Tag",
+      "addDescription": "Create a new tag for quick entry",
+      "editDescription": "Edit the tag details"
     }
   },
   "settings": {

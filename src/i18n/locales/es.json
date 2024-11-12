@@ -85,7 +85,8 @@
       "editTitle": "Editar cliente",
       "addDescription": "Ingrese los datos del cliente",
       "editDescription": "Edite los datos del cliente"
-    }
+    },
+    "businessCustomer": "Cliente comercial"
   },
   "business": {
     "title": "Perfiles comerciales",
@@ -127,7 +128,9 @@
     "status": {
       "isDefault": "Perfil predeterminado",
       "notDefault": "Establecer como predeterminado"
-    }
+    },
+    "vatEnabled": "IVA activado ({{rate}}%)",
+    "vatDisabled": "IVA desactivado"
   },
   "profile": {
     "actions": {
@@ -161,7 +164,8 @@
       "color": "Color",
       "visible": "Visible en entrada rápida",
       "usesDateRange": "Usa rango de fechas",
-      "personas": "Perfiles asignados"
+      "personas": "Perfiles asignados",
+      "noDescription": "Sin descripción disponible"
     },
     "emptyState": {
       "title": "No hay etiquetas rápidas",
@@ -178,6 +182,12 @@
     "search": {
       "placeholder": "Buscar etiquetas...",
       "noResults": "No se encontraron etiquetas"
+    },
+    "dialog": {
+      "addTitle": "Add New Tag",
+      "editTitle": "Edit Tag",
+      "addDescription": "Create a new tag for quick entry",
+      "editDescription": "Edit the tag details"
     }
   },
   "settings": {

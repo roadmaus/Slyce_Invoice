@@ -85,7 +85,8 @@
       "editTitle": "Редактировать клиента",
       "addDescription": "Введите данные клиента",
       "editDescription": "Отредактируйте данные клиента"
-    }
+    },
+    "businessCustomer": "Корпоративный клиент"
   },
   "business": {
     "title": "Бизнес-профили",
@@ -127,7 +128,9 @@
     "status": {
       "isDefault": "Профиль по умолчанию",
       "notDefault": "Сделать профилем по умолчанию"
-    }
+    },
+    "vatEnabled": "НДС включен ({{rate}}%)",
+    "vatDisabled": "НДС отключен"
   },
   "profile": {
     "actions": {
@@ -161,7 +164,8 @@
       "color": "Цвет",
       "visible": "Отображать в быстром вводе",
       "usesDateRange": "Использует диапазон дат",
-      "personas": "Связанные профили"
+      "personas": "Связанные профили",
+      "noDescription": "Описание отсутствует"
     },
     "emptyState": {
       "title": "Нет быстрых тегов",
@@ -178,6 +182,12 @@
     "search": {
       "placeholder": "Поиск тегов...",
       "noResults": "Теги не найдены"
+    },
+    "dialog": {
+      "addTitle": "Add New Tag",
+      "editTitle": "Edit Tag",
+      "addDescription": "Create a new tag for quick entry",
+      "editDescription": "Edit the tag details"
     }
   },
   "settings": {

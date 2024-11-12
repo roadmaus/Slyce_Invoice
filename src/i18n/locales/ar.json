@@ -85,7 +85,8 @@
       "editTitle": "تعديل العميل",
       "addDescription": "أدخل بيانات العميل",
       "editDescription": "عدّل بيانات العميل"
-    }
+    },
+    "businessCustomer": "عميل تجاري"
   },
   "business": {
     "title": "الملفات التجارية",
@@ -127,7 +128,9 @@
     "status": {
       "isDefault": "الملف الافتراضي",
       "notDefault": "تعيين كافتراضي"
-    }
+    },
+    "vatEnabled": "ضريبة القيمة المضافة مفعلة ({{rate}}%)",
+    "vatDisabled": "ضريبة القيمة المضافة معطلة"
   },
   "profile": {
     "actions": {
@@ -161,7 +164,8 @@
       "color": "اللون",
       "visible": "ظاهر في الإدخال السريع",
       "usesDateRange": "يستخدم نطاق التاريخ",
-      "personas": "الملفات المرتبطة"
+      "personas": "الملفات المرتبطة",
+      "noDescription": "لا يوجد وصف متاح"
     },
     "emptyState": {
       "title": "لا توجد وسوم سريعة",
@@ -178,6 +182,12 @@
     "search": {
       "placeholder": "البحث عن الوسوم...",
       "noResults": "لم يتم العثور على وسوم"
+    },
+    "dialog": {
+      "addTitle": "Add New Tag",
+      "editTitle": "Edit Tag",
+      "addDescription": "Create a new tag for quick entry",
+      "editDescription": "Edit the tag details"
     }
   },
   "settings": {
@@ -238,7 +248,7 @@
         "loading": "جاري الاستيراد...",
         "success": "تم استيراد البيانات بنجاح",
         "error": "خطأ في الاستيراد",
-        "genericError": "حدث خطأ غير متوقع" 
+        "genericError": "حدث خطأ غير متوقع"
       },
       "reset": {
         "title": "إعادة تعيين جميع الإعدادات",

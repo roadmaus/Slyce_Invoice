@@ -85,7 +85,8 @@
       "editTitle": "Chỉnh sửa khách hàng",
       "addDescription": "Nhập thông tin khách hàng",
       "editDescription": "Chỉnh sửa thông tin khách hàng"
-    }
+    },
+    "businessCustomer": "Khách hàng doanh nghiệp"
   },
   "business": {
     "title": "Hồ sơ doanh nghiệp",
@@ -127,7 +128,9 @@
     "status": {
       "isDefault": "Hồ sơ mặc định",
       "notDefault": "Đặt làm mặc định"
-    }
+    },
+    "vatEnabled": "Đã bật VAT ({{rate}}%)",
+    "vatDisabled": "Đã tắt VAT"
   },
   "profile": {
     "actions": {
@@ -161,7 +164,8 @@
       "color": "Màu sắc",
       "visible": "Hiển thị trong nhập nhanh",
       "usesDateRange": "Sử dụng khoảng thời gian",
-      "personas": "Hồ sơ được gán"
+      "personas": "Hồ sơ được gán",
+      "noDescription": "Không có mô tả"
     },
     "emptyState": {
       "title": "Không có thẻ nhanh",
@@ -178,6 +182,12 @@
     "search": {
       "placeholder": "Tìm kiếm thẻ...",
       "noResults": "Không tìm thấy thẻ"
+    },
+    "dialog": {
+      "addTitle": "Add New Tag",
+      "editTitle": "Edit Tag",
+      "addDescription": "Create a new tag for quick entry",
+      "editDescription": "Edit the tag details"
     }
   },
   "settings": {

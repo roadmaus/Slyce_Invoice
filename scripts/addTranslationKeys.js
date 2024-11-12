@@ -1,41 +1,59 @@
 const fs = require('fs');
 const path = require('path');
 
+// Define all supported locales
+const locales = ['en', 'de', 'es', 'ko', 'fr', 'zh', 'ja', 'pt', 'ru', 'hi', 'ar', 'it', 'nl', 'tr', 'vi', 'th', 'swg'];
+
 // New translations to add
 const newTranslations = {
   customers: {
     businessCustomer: {
       en: "Business Customer",
-      de: "Geschäftskunde"
+      de: "Geschäftskunde",
+      swg: "Gschäftskond" // Swabian translation
+      // Other languages will fall back to English
     }
   },
   business: {
     vatEnabled: {
       en: "VAT enabled ({{rate}}%)",
-      de: "Umsatzsteuer aktiviert ({{rate}}%)"
+      de: "Umsatzsteuer aktiviert ({{rate}}%)",
+      swg: "Mehrwertsteuer drzua ({{rate}}%)" // Swabian translation
     },
     vatDisabled: {
       en: "VAT disabled",
-      de: "Umsatzsteuer deaktiviert"
+      de: "Umsatzsteuer deaktiviert",
+      swg: "Mehrwertsteuer weag" // Swabian translation
     }
   },
   tags: {
     dialog: {
       addTitle: {
         en: "Add New Tag",
-        de: "Neuen Tag hinzufügen"
+        de: "Neuen Tag hinzufügen",
+        swg: "Nuis Schild drzua doa" // Swabian translation
       },
       editTitle: {
         en: "Edit Tag",
-        de: "Tag bearbeiten"
+        de: "Tag bearbeiten",
+        swg: "'s Schild ändern" // Swabian translation
       },
       addDescription: {
         en: "Create a new tag for quick entry",
-        de: "Erstellen Sie einen neuen Tag für die Schnelleingabe"
+        de: "Erstellen Sie einen neuen Tag für die Schnelleingabe",
+        swg: "A nuis Schild macha zom schneller schreiba" // Swabian translation
       },
       editDescription: {
         en: "Edit the tag details",
-        de: "Bearbeiten Sie die Details des Tags"
+        de: "Bearbeiten Sie die Details des Tags",
+        swg: "D'Details vom Schild ändern" // Swabian translation
+      }
+    },
+    form: {
+      noDescription: {
+        en: "No description available",
+        de: "Keine Beschreibung verfügbar",
+        swg: "Koi Beschreibung do" // Swabian translation
       }
     }
   }
@@ -54,28 +72,42 @@ function deepMerge(target, source) {
   return target;
 }
 
+// Function to get translation for a specific locale
+function getTranslationForLocale(translations, locale) {
+  return translations[locale] || translations['en']; // Fallback to English if no specific translation
+}
+
 // Function to add translations to a specific locale
 function addTranslationsToLocale(locale) {
   const filePath = path.join(__dirname, '..', 'src', 'i18n', 'locales', `${locale}.json`);
   
   try {
     // Read existing translations
-    const existingContent = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    let existingContent = {};
+    try {
+      existingContent = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    } catch (error) {
+      console.log(`Creating new file for ${locale}`);
+    }
     
     // Create new translations for this locale
     const localeTranslations = {};
     for (const section in newTranslations) {
-      localeTranslations[section] = {};
+      localeTranslations[section] = localeTranslations[section] || {};
       for (const key in newTranslations[section]) {
-        if (typeof newTranslations[section][key] === 'object' && !newTranslations[section][key][locale]) {
+        if (typeof newTranslations[section][key] === 'object' && !Array.isArray(newTranslations[section][key])) {
           // Handle nested objects
           localeTranslations[section][key] = {};
           for (const nestedKey in newTranslations[section][key]) {
-            localeTranslations[section][key][nestedKey] = newTranslations[section][key][nestedKey][locale];
+            if (typeof newTranslations[section][key][nestedKey] === 'object') {
+              localeTranslations[section][key][nestedKey] = getTranslationForLocale(newTranslations[section][key][nestedKey], locale);
+            } else {
+              localeTranslations[section][key][nestedKey] = newTranslations[section][key][nestedKey];
+            }
           }
         } else {
           // Handle direct translations
-          localeTranslations[section][key] = newTranslations[section][key][locale];
+          localeTranslations[section][key] = getTranslationForLocale(newTranslations[section][key], locale);
         }
       }
     }
@@ -91,6 +123,11 @@ function addTranslationsToLocale(locale) {
   }
 }
 
+// Create locales directory if it doesn't exist
+const localesDir = path.join(__dirname, '..', 'src', 'i18n', 'locales');
+if (!fs.existsSync(localesDir)) {
+  fs.mkdirSync(localesDir, { recursive: true });
+}
+
 // Main execution
-const locales = ['en', 'de']; // Add more locales as needed
-locales.forEach(addTranslationsToLocale); 
+locales.forEach(addTranslationsToLocale);
