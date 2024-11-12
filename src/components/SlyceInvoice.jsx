@@ -1056,12 +1056,32 @@ const hexToRgb = (hex) => {
   return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
 };
 
-const getTagBackground = (color, isDark) => {
-  if (isDark) {
-    return `linear-gradient(135deg, rgba(${hexToRgb(color)}, 0.15) 0%, rgba(${hexToRgb(color)}, 0.05) 100%)`;
-  }
-  return `linear-gradient(135deg, ${color}40 0%, ${color}20 100%)`;
-};
+const getTagBackground = (() => {
+  const cache = new Map();
+  
+  return (color, isDark) => {
+    const key = `${color}-${isDark}`;
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    
+    let result;
+    if (isDark) {
+      const rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+      if (rgb) {
+        const r = parseInt(rgb[1], 16);
+        const g = parseInt(rgb[2], 16);
+        const b = parseInt(rgb[3], 16);
+        result = `linear-gradient(135deg, rgba(${r}, ${g}, ${b}, 0.15) 0%, rgba(${r}, ${g}, ${b}, 0.05) 100%)`;
+      }
+    } else {
+      result = `linear-gradient(135deg, ${color}40 0%, ${color}20 100%)`;
+    }
+    
+    cache.set(key, result);
+    return result;
+  };
+})();
 
 // Main Render
   return (
@@ -2065,7 +2085,7 @@ const getTagBackground = (color, isDark) => {
                     className="group relative overflow-hidden border-border/50 hover:border-border 
                       transition-all duration-200 hover:shadow-lg"
                     style={{ 
-                      background: getTagBackground(tag.color || '#f3f4f6', isDarkMode),
+                      background: getTagBackground(tag.color || '#f3f4f6', isDarkMode)
                     }}
                   >
                     {/* Quick Actions */}

@@ -268,6 +268,28 @@
   [data-state=unchecked].dark {
     @apply bg-muted border-transparent;
   }
+
+  /* Update the card hover styles for customers and business profiles */
+  .group:hover {
+    @apply shadow-lg dark:shadow-none;
+    box-shadow: theme('colors.slate.100') 0px 0px 0px 1px,
+                theme('colors.slate.100') 0px 4px 12px;
+  }
+
+  .dark .group:hover {
+    box-shadow: theme('colors.slate.700') 0px 0px 0px 1px,
+                theme('colors.slate.600/20') 0px 4px 12px;
+  }
+
+  /* Base card styling */
+  .group {
+    @apply border border-transparent;
+  }
+
+  .dark .group {
+    @apply border-slate-800;
+    box-shadow: theme('colors.slate.800/50') 0px 1px 3px;
+  }
 }
 
 @media print {
