@@ -19,6 +19,7 @@ A modern, desktop invoice generation application built with Electron and React. 
 ## TODO
 - ~~Correct date handling when new year~~
 - Fix windows related issues
+- Make the  HTML Template editable
 
 ## Installation
 
