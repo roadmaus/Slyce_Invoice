@@ -51,8 +51,7 @@ const validateCustomer = (customer) => {
 
 // Add this near other constants
 const PREDEFINED_COLORS = [
-  { name: 'Gray', value: '#E5E7EB' },
-  { name: 'Light Gray', value: '#F3F4F6' },
+  { name: 'Gray', value: '#D1D5DB' },
   { name: 'Pink', value: '#FCE7F3' },
   { name: 'Orange', value: '#FDDCAB' },
   { name: 'Yellow', value: '#FEF08A' },

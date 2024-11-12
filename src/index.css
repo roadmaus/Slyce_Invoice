@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 90%;
+    --background: 220 0% 90%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -49,7 +49,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 90% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 100% 100%;
+    --border: 220 10% 40%;
     --input: 220 6% 13%;
     --ring: 213 100% 50%;
     --chart-1: 213 100% 50%;
@@ -303,6 +303,21 @@
     box-shadow: theme('colors.slate.950') 0px 0px 0px 1px,
                 theme('colors.slate.950/50') 0px 8px 24px,
                 theme('colors.slate.950/25') 0px 4px 8px;
+  }
+
+  /* Add these new styles for Input components */
+  input:focus-visible {
+    --tw-ring-offset-width: 0px !important;
+    --tw-ring-offset-color: transparent !important;
+    --tw-ring-color: transparent !important;
+    --tw-ring-offset-shadow: none !important;
+    --tw-ring-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  /* If you want to apply it to all form elements */
+  input, select, textarea {
+    @apply focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none;
   }
 }
 
