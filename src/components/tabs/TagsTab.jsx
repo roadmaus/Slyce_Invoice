@@ -213,14 +213,13 @@ const TagsTab = ({
                 background: getTagBackground(tag.color || '#f3f4f6', isDarkMode)
               }}
             >
-              {/* Quick Actions */}
+              {/* Quick Actions - Simplified opacity transition */}
               <div className="absolute top-4 right-4 flex items-center gap-2 opacity-0 
-                group-hover:opacity-100 transition-all duration-200 translate-y-1 
-                group-hover:translate-y-0 z-20">
+                group-hover:opacity-100 transition-opacity duration-200 z-20">
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background shadow-sm"
+                  className="h-8 w-8 bg-background/90 hover:bg-background"
                   onClick={() => handleTagDialog(tag)}
                 >
                   <Edit className="h-4 w-4" />
@@ -228,7 +227,7 @@ const TagsTab = ({
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background shadow-sm"
+                  className="h-8 w-8 bg-background/90 hover:bg-background"
                   onClick={() => {
                     const updatedTags = quickTags.filter((_, i) => i !== index);
                     setQuickTags(updatedTags);
@@ -272,27 +271,24 @@ const TagsTab = ({
                   </p>
                 </div>
 
-                {/* Tag Details */}
+                {/* Tag Details - Simplified backgrounds */}
                 <div className="space-y-2 mb-6">
-                  <div className="flex items-center justify-between p-2 rounded-md
-                    bg-background/40 dark:bg-background/20 backdrop-blur-sm">
+                  <div className="flex items-center justify-between p-2 rounded-md bg-background/50">
                     <span className="text-sm text-foreground/70">{t('tags.form.rate')}:</span>
                     <span className="font-medium text-foreground">€{parseFloat(tag.rate).toFixed(2)}</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-md
-                    bg-background/40 dark:bg-background/20 backdrop-blur-sm">
+                  <div className="flex items-center justify-between p-2 rounded-md bg-background/50">
                     <span className="text-sm text-foreground/70">{t('tags.form.quantity')}:</span>
                     <span className="font-medium text-foreground">{tag.quantity}</span>
                   </div>
                   {tag.hasDateRange && (
-                    <div className="flex items-center justify-center p-1.5 rounded-md
-                      bg-background/40 dark:bg-background/20 backdrop-blur-sm">
+                    <div className="flex items-center justify-center p-1.5 rounded-md bg-background/50">
                       <span className="text-xs text-foreground/70">{t('tags.form.usesDateRange')}</span>
                     </div>
                   )}
                 </div>
 
-                {/* Associated Personas */}
+                {/* Associated Personas - Simplified backgrounds */}
                 <div className="space-y-2">
                   <div className="text-xs font-medium text-foreground/70">{t('tags.form.personas')}:</div>
                   <div className="flex flex-wrap gap-1.5">
@@ -300,19 +296,13 @@ const TagsTab = ({
                       <span
                         key={idx}
                         className="inline-flex items-center px-2 py-1 rounded-full text-xs 
-                          font-medium bg-background/60 dark:bg-background/20 backdrop-blur-sm 
-                          text-foreground/80 border border-border/50"
+                          font-medium bg-background/50 text-foreground/80 border border-border/50"
                       >
                         {persona}
                       </span>
                     ))}
                   </div>
                 </div>
-
-                {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/20 
-                  via-transparent to-transparent opacity-0 group-hover:opacity-100 
-                  transition-opacity duration-200" />
               </CardContent>
             </Card>
           ))}
