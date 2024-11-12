@@ -155,56 +155,6 @@ const SettingsTab = () => {
       <Card className="border-none shadow-none">
         <CardContent className="p-6">
           <div className="flex flex-col space-y-8">
-            {/* Appearance Section */}
-            <section>
-              <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  {t('settings.appearance.title')}
-                </h2>
-                <Info className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground mb-6">
-                {t('settings.appearance.description')}
-              </p>
-              <div className="grid grid-cols-3 gap-4">
-                {[
-                  { 
-                    value: 'light', 
-                    icon: Sun, 
-                    label: t('settings.appearance.themes.light.label'), 
-                    description: t('settings.appearance.themes.light.description') 
-                  },
-                  { 
-                    value: 'dark', 
-                    icon: Moon, 
-                    label: t('settings.appearance.themes.dark.label'), 
-                    description: t('settings.appearance.themes.dark.description') 
-                  },
-                  { 
-                    value: 'system', 
-                    icon: Monitor, 
-                    label: t('settings.appearance.themes.system.label'), 
-                    description: t('settings.appearance.themes.system.description') 
-                  }
-                ].map(({ value, icon: Icon, label, description }) => (
-                  <button
-                    key={value}
-                    onClick={() => setTheme(value)}
-                    className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
-                      ${theme === value 
-                        ? 'border-primary bg-primary/5 shadow-sm' 
-                        : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
-                  >
-                    <Icon className={`w-8 h-8 mb-2 ${theme === value ? 'text-primary' : 'text-muted-foreground'}`} />
-                    <h3 className="font-medium mb-1">{label}</h3>
-                    <p className="text-xs text-center text-muted-foreground">{description}</p>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <Separator />
-
             {/* Language Section */}
             <section>
               <div className="flex items-center gap-2 mb-6">
@@ -252,6 +202,56 @@ const SettingsTab = () => {
                     <h3 className={`font-medium ${language === value ? 'text-primary' : ''}`}>
                       {label}
                     </h3>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Appearance Section */}
+            <section>
+              <div className="flex items-center gap-2 mb-6">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t('settings.appearance.title')}
+                </h2>
+                <Info className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <p className="text-muted-foreground mb-6">
+                {t('settings.appearance.description')}
+              </p>
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { 
+                    value: 'light', 
+                    icon: Sun, 
+                    label: t('settings.appearance.themes.light.label'), 
+                    description: t('settings.appearance.themes.light.description') 
+                  },
+                  { 
+                    value: 'dark', 
+                    icon: Moon, 
+                    label: t('settings.appearance.themes.dark.label'), 
+                    description: t('settings.appearance.themes.dark.description') 
+                  },
+                  { 
+                    value: 'system', 
+                    icon: Monitor, 
+                    label: t('settings.appearance.themes.system.label'), 
+                    description: t('settings.appearance.themes.system.description') 
+                  }
+                ].map(({ value, icon: Icon, label, description }) => (
+                  <button
+                    key={value}
+                    onClick={() => setTheme(value)}
+                    className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
+                      ${theme === value 
+                        ? 'border-primary bg-primary/5 shadow-sm' 
+                        : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
+                  >
+                    <Icon className={`w-8 h-8 mb-2 ${theme === value ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <h3 className="font-medium mb-1">{label}</h3>
+                    <p className="text-xs text-center text-muted-foreground">{description}</p>
                   </button>
                 ))}
               </div>
