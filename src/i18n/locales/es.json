@@ -86,7 +86,12 @@
       "addDescription": "Ingrese los datos del cliente",
       "editDescription": "Edite los datos del cliente"
     },
-    "businessCustomer": "Cliente comercial"
+    "businessCustomer": "Cliente comercial",
+    "emptyState": {
+      "title": "No hay clientes disponibles",
+      "description": "Agregue su primer cliente para comenzar a crear facturas.",
+      "addFirst": "Agregar primer cliente"
+    }
   },
   "business": {
     "title": "Perfiles comerciales",
@@ -130,7 +135,12 @@
       "notDefault": "Establecer como predeterminado"
     },
     "vatEnabled": "IVA activado ({{rate}}%)",
-    "vatDisabled": "IVA desactivado"
+    "vatDisabled": "IVA desactivado",
+    "emptyState": {
+      "title": "Sin perfiles de negocio",
+      "description": "Agregue su primer perfil de negocio para comenzar a crear facturas.",
+      "addFirst": "Agregar primer perfil de negocio"
+    }
   },
   "profile": {
     "actions": {

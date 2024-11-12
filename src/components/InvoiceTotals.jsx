@@ -18,7 +18,7 @@ const InvoiceTotals = ({ items, profile }) => {
       <div className="w-full max-w-[300px] space-y-2">
         {/* Subtotal */}
         <div className="flex justify-between items-center text-sm">
-          <span className="text-muted-foreground">{t('invoice.totals.subtotal')}</span>
+          <span className="text-muted-foreground">{t('invoice.totals.netAmount')}</span>
           <span className="font-medium">€{subtotal.toFixed(2)}</span>
         </div>
 
@@ -34,7 +34,7 @@ const InvoiceTotals = ({ items, profile }) => {
 
         {/* Total */}
         <div className="flex justify-between items-center pt-2 border-t border-border">
-          <span className="font-medium">{t('invoice.totals.total')}</span>
+          <span className="font-medium">{t('invoice.totals.totalAmount')}</span>
           <span className="font-semibold text-lg">€{total.toFixed(2)}</span>
         </div>
       </div>

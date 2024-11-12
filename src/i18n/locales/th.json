@@ -86,7 +86,12 @@
       "addDescription": "กรอกข้อมูลลูกค้า",
       "editDescription": "แก้ไขข้อมูลลูกค้า"
     },
-    "businessCustomer": "ลูกค้าธุรกิจ"
+    "businessCustomer": "ลูกค้าธุรกิจ",
+    "emptyState": {
+      "title": "ไม่มีลูกค้า",
+      "description": "เพิ่มลูกค้าคนแรกของคุณเพื่อเริ่มสร้างใบแจ้งหนี้",
+      "addFirst": "เพิ่มลูกค้าคนแรก"
+    }
   },
   "business": {
     "title": "โปรไฟล์ธุรกิจ",
@@ -130,7 +135,12 @@
       "notDefault": "ตั้งเป็นค่าเริ่มต้น"
     },
     "vatEnabled": "เปิดใช้งาน VAT ({{rate}}%)",
-    "vatDisabled": "ปิดใช้งาน VAT"
+    "vatDisabled": "ปิดใช้งาน VAT",
+    "emptyState": {
+      "title": "ไม่มีโปรไฟล์ธุรกิจ",
+      "description": "เพิ่มโปรไฟล์ธุรกิจแรกของคุณเพื่อเริ่มสร้างใบแจ้งหนี้",
+      "addFirst": "เพิ่มโปรไฟล์ธุรกิจแรก"
+    }
   },
   "profile": {
     "actions": {

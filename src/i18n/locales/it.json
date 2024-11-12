@@ -86,7 +86,12 @@
       "addDescription": "Inserisci i dati del cliente",
       "editDescription": "Modifica i dati del cliente"
     },
-    "businessCustomer": "Cliente aziendale"
+    "businessCustomer": "Cliente aziendale",
+    "emptyState": {
+      "title": "Nessun cliente disponibile",
+      "description": "Aggiungi il tuo primo cliente per iniziare a creare fatture.",
+      "addFirst": "Aggiungi primo cliente"
+    }
   },
   "business": {
     "title": "Profili aziendali",
@@ -130,7 +135,12 @@
       "notDefault": "Imposta come predefinito"
     },
     "vatEnabled": "IVA abilitata ({{rate}}%)",
-    "vatDisabled": "IVA disabilitata"
+    "vatDisabled": "IVA disabilitata",
+    "emptyState": {
+      "title": "Nessun profilo aziendale",
+      "description": "Aggiungi il tuo primo profilo aziendale per iniziare a creare fatture.",
+      "addFirst": "Aggiungi primo profilo aziendale"
+    }
   },
   "profile": {
     "actions": {

@@ -86,7 +86,12 @@
       "addDescription": "顧客情報を入力してください",
       "editDescription": "顧客情報を編集してください"
     },
-    "businessCustomer": "法人顧客"
+    "businessCustomer": "法人顧客",
+    "emptyState": {
+      "title": "顧客がいません",
+      "description": "最初の顧客を追加して請求書の作成を始めましょう。",
+      "addFirst": "最初の顧客を追加"
+    }
   },
   "business": {
     "title": "事業プロファイル",
@@ -130,7 +135,12 @@
       "notDefault": "デフォルトに設定"
     },
     "vatEnabled": "消費税有効 ({{rate}}%)",
-    "vatDisabled": "消費税無効"
+    "vatDisabled": "消費税無効",
+    "emptyState": {
+      "title": "ビジネスプロファイルがありません",
+      "description": "最初のビジネスプロファイルを追加して請求書の作成を始めましょう。",
+      "addFirst": "最初のビジネスプロファイルを追加"
+    }
   },
   "profile": {
     "actions": {

@@ -86,7 +86,12 @@
       "addDescription": "输入客户信息",
       "editDescription": "编辑客户信息"
     },
-    "businessCustomer": "企业客户"
+    "businessCustomer": "企业客户",
+    "emptyState": {
+      "title": "暂无客户",
+      "description": "添加您的第一个客户以开始创建发票。",
+      "addFirst": "添加第一个客户"
+    }
   },
   "business": {
     "title": "业务档案",
@@ -130,7 +135,12 @@
       "notDefault": "设为默认"
     },
     "vatEnabled": "已启用增值税 ({{rate}}%)",
-    "vatDisabled": "已禁用增值税"
+    "vatDisabled": "已禁用增值税",
+    "emptyState": {
+      "title": "没有业务档案",
+      "description": "添加您的第一个业务档案以开始创建发票。",
+      "addFirst": "添加第一个业务档案"
+    }
   },
   "profile": {
     "actions": {

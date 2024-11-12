@@ -86,7 +86,12 @@
       "addDescription": "أدخل بيانات العميل",
       "editDescription": "عدّل بيانات العميل"
     },
-    "businessCustomer": "عميل تجاري"
+    "businessCustomer": "عميل تجاري",
+    "emptyState": {
+      "title": "لا يوجد عملاء متاحين",
+      "description": "أضف عميلك الأول للبدء في إنشاء الفواتير.",
+      "addFirst": "إضافة أول عميل"
+    }
   },
   "business": {
     "title": "الملفات التجارية",
@@ -130,7 +135,12 @@
       "notDefault": "تعيين كافتراضي"
     },
     "vatEnabled": "ضريبة القيمة المضافة مفعلة ({{rate}}%)",
-    "vatDisabled": "ضريبة القيمة المضافة معطلة"
+    "vatDisabled": "ضريبة القيمة المضافة معطلة",
+    "emptyState": {
+      "title": "لا توجد ملفات تعريف تجارية",
+      "description": "أضف ملف تعريف عملك الأول لبدء إنشاء الفواتير.",
+      "addFirst": "إضافة أول ملف تعريف تجاري"
+    }
   },
   "profile": {
     "actions": {

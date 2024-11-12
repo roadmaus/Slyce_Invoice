@@ -86,7 +86,12 @@
       "addDescription": "Voer de klantgegevens in",
       "editDescription": "Bewerk de klantgegevens"
     },
-    "businessCustomer": "Zakelijke klant"
+    "businessCustomer": "Zakelijke klant",
+    "emptyState": {
+      "title": "Geen klanten beschikbaar",
+      "description": "Voeg uw eerste klant toe om te beginnen met het maken van facturen.",
+      "addFirst": "Eerste klant toevoegen"
+    }
   },
   "business": {
     "title": "Bedrijfsprofielen",
@@ -130,7 +135,12 @@
       "notDefault": "Als standaard instellen"
     },
     "vatEnabled": "BTW ingeschakeld ({{rate}}%)",
-    "vatDisabled": "BTW uitgeschakeld"
+    "vatDisabled": "BTW uitgeschakeld",
+    "emptyState": {
+      "title": "Geen bedrijfsprofielen",
+      "description": "Voeg uw eerste bedrijfsprofiel toe om te beginnen met factureren.",
+      "addFirst": "Eerste bedrijfsprofiel toevoegen"
+    }
   },
   "profile": {
     "actions": {

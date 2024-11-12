@@ -86,7 +86,12 @@
       "addDescription": "Gebed Se d'Kundadate ei",
       "editDescription": "Bearbeited Se d'Kundadate"
     },
-    "businessCustomer": "Gschäftskond"
+    "businessCustomer": "Gschäftskond",
+    "emptyState": {
+      "title": "Koine Konda do",
+      "description": "Füag dein erschta Kond drzua zum mit Rechnunga afanga.",
+      "addFirst": "Erschta Kond drzuadoa"
+    }
   },
   "business": {
     "title": "Gschäftsprofil",
@@ -130,7 +135,12 @@
       "notDefault": "Als Standard festlega"
     },
     "vatEnabled": "Mehrwertsteuer drzua ({{rate}}%)",
-    "vatDisabled": "Mehrwertsteuer weag"
+    "vatDisabled": "Mehrwertsteuer weag",
+    "emptyState": {
+      "title": "Koine Gschäftsprofil",
+      "description": "Füag dei erschtes Gschäftsprofil drzua zum mit Rechnunga afanga.",
+      "addFirst": "Erschtes Gschäftsprofil drzuadoa"
+    }
   },
   "profile": {
     "actions": {

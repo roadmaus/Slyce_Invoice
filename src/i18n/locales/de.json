@@ -85,6 +85,11 @@
       "editTitle": "Kunden bearbeiten",
       "addDescription": "Geben Sie die Kundendaten ein",
       "editDescription": "Bearbeiten Sie die Kundendaten"
+    },
+    "emptyState": {
+      "title": "Keine Kunden verfügbar",
+      "description": "Fügen Sie Ihren ersten Kunden hinzu, um mit der Rechnungserstellung zu beginnen.",
+      "addFirst": "Ersten Kunden hinzufügen"
     }
   },
   "business": {
@@ -129,7 +134,12 @@
       "notDefault": "Als Standard festlegen"
     },
     "vatDisabled": "Umsatzsteuer deaktiviert",
-    "vatEnabled": "Umsatzsteuer aktiviert ({{rate}}%)"
+    "vatEnabled": "Umsatzsteuer aktiviert ({{rate}}%)",
+    "emptyState": {
+      "title": "Keine Geschäftsprofile",
+      "description": "Fügen Sie Ihr erstes Geschäftsprofil hinzu, um mit der Rechnungserstellung zu beginnen.",
+      "addFirst": "Erstes Geschäftsprofil hinzufügen"
+    }
   },
   "profile": {
     "actions": {

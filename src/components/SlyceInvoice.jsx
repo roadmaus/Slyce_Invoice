@@ -11,22 +11,11 @@ import html2pdf from 'html2pdf.js';
 import ReactSelect from 'react-select';
 import * as Icons from 'lucide-react';
 import { 
-  PlusCircle, 
-  Trash2, 
-  Edit, 
-  Save, 
-  Upload, 
   FileText, 
   Users, 
   Settings, 
   Tags, 
-  Search, 
-  X,
-  Building2,
-  MapPin,
-  Receipt,
-  Landmark,
-  User2
+  Building2
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { Loader2 } from 'lucide-react';

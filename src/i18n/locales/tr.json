@@ -86,7 +86,12 @@
       "addDescription": "Müşteri bilgilerini girin",
       "editDescription": "Müşteri bilgilerini düzenleyin"
     },
-    "businessCustomer": "Kurumsal Müşteri"
+    "businessCustomer": "Kurumsal Müşteri",
+    "emptyState": {
+      "title": "Müşteri bulunmamakta",
+      "description": "Fatura oluşturmaya başlamak için ilk müşterinizi ekleyin.",
+      "addFirst": "İlk müşteriyi ekle"
+    }
   },
   "business": {
     "title": "İş Profilleri",
@@ -130,7 +135,12 @@
       "notDefault": "Varsayılan olarak ayarla"
     },
     "vatEnabled": "KDV etkin ({{rate}}%)",
-    "vatDisabled": "KDV devre dışı"
+    "vatDisabled": "KDV devre dışı",
+    "emptyState": {
+      "title": "İş profili yok",
+      "description": "Fatura oluşturmaya başlamak için ilk iş profilinizi ekleyin.",
+      "addFirst": "İlk iş profilini ekle"
+    }
   },
   "profile": {
     "actions": {

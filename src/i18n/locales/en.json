@@ -86,7 +86,12 @@
       "addDescription": "Enter customer details",
       "editDescription": "Edit customer details"
     },
-    "businessCustomer": "Business Customer"
+    "businessCustomer": "Business Customer",
+    "emptyState": {
+      "title": "No Customers Available",
+      "description": "Add your first customer to get started with creating invoices.",
+      "addFirst": "Add First Customer"
+    }
   },
   "business": {
     "title": "Business Profiles",
@@ -130,7 +135,12 @@
       "notDefault": "Set as Default"
     },
     "vatEnabled": "VAT enabled ({{rate}}%)",
-    "vatDisabled": "VAT disabled"
+    "vatDisabled": "VAT disabled",
+    "emptyState": {
+      "title": "No Business Profiles",
+      "description": "Add your first business profile to start creating invoices.",
+      "addFirst": "Add First Business Profile"
+    }
   },
   "profile": {
     "actions": {

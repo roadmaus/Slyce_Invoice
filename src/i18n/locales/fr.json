@@ -86,7 +86,12 @@
       "addDescription": "Saisissez les informations du client",
       "editDescription": "Modifiez les informations du client"
     },
-    "businessCustomer": "Client professionnel"
+    "businessCustomer": "Client professionnel",
+    "emptyState": {
+      "title": "Aucun client disponible",
+      "description": "Ajoutez votre premier client pour commencer à créer des factures.",
+      "addFirst": "Ajouter le premier client"
+    }
   },
   "business": {
     "title": "Profils professionnels",
@@ -130,7 +135,12 @@
       "notDefault": "Définir par défaut"
     },
     "vatEnabled": "TVA activée ({{rate}}%)",
-    "vatDisabled": "TVA désactivée"
+    "vatDisabled": "TVA désactivée",
+    "emptyState": {
+      "title": "Aucun profil d'entreprise",
+      "description": "Ajoutez votre premier profil d'entreprise pour commencer à créer des factures.",
+      "addFirst": "Ajouter le premier profil d'entreprise"
+    }
   },
   "profile": {
     "actions": {

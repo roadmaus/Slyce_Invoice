@@ -86,7 +86,12 @@
       "addDescription": "Nhập thông tin khách hàng",
       "editDescription": "Chỉnh sửa thông tin khách hàng"
     },
-    "businessCustomer": "Khách hàng doanh nghiệp"
+    "businessCustomer": "Khách hàng doanh nghiệp",
+    "emptyState": {
+      "title": "Không có khách hàng",
+      "description": "Thêm khách hàng đầu tiên để bắt đầu tạo hóa đơn.",
+      "addFirst": "Thêm khách hàng đầu tiên"
+    }
   },
   "business": {
     "title": "Hồ sơ doanh nghiệp",
@@ -130,7 +135,12 @@
       "notDefault": "Đặt làm mặc định"
     },
     "vatEnabled": "Đã bật VAT ({{rate}}%)",
-    "vatDisabled": "Đã tắt VAT"
+    "vatDisabled": "Đã tắt VAT",
+    "emptyState": {
+      "title": "Không có hồ sơ doanh nghiệp",
+      "description": "Thêm hồ sơ doanh nghiệp đầu tiên để bắt đầu tạo hóa đơn.",
+      "addFirst": "Thêm hồ sơ doanh nghiệp đầu tiên"
+    }
   },
   "profile": {
     "actions": {
