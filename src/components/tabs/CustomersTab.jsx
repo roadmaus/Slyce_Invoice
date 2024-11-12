@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
-import { PlusCircle, Edit, Trash2, Building2, MapPin, User2 } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Building2, MapPin, User2, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const CustomersTab = ({
