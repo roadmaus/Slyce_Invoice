@@ -27,7 +27,11 @@ import CustomersTab from './tabs/CustomersTab';
 import InvoiceTab from './tabs/InvoiceTab';
 import TagsTab from './tabs/TagsTab';
 // Helper Functions
-const generateInvoiceNumber = (lastNumber) => {
+const generateInvoiceNumber = (lastNumber, forceGenerate = false) => {
+  if (lastNumber && !forceGenerate && !lastNumber.includes('_')) {
+    return lastNumber;
+  }
+
   const year = new Date().getFullYear();
   const currentYearPrefix = `${year}_`;
   
@@ -274,7 +278,6 @@ const SlyceInvoice = () => {
         const savedCustomers = await window.electronAPI.getData('customers');
         const savedTags = await window.electronAPI.getData('quickTags');
         const lastInvoiceNumber = await window.electronAPI.getData('lastInvoiceNumber');
-        const savedDefaultProfileId = await window.electronAPI.getData('defaultProfileId');
 
         if (savedProfiles) setBusinessProfiles(savedProfiles);
         if (savedCustomers) {
@@ -284,14 +287,9 @@ const SlyceInvoice = () => {
           setCustomers(customersWithIds);
         }
         if (savedTags) setQuickTags(savedTags);
-        if (lastInvoiceNumber) setCurrentInvoiceNumber(generateInvoiceNumber(lastInvoiceNumber));
         
-        if (savedDefaultProfileId) {
-          setDefaultProfileId(savedDefaultProfileId);
-          const defaultProfile = savedProfiles?.find(p => p.company_name === savedDefaultProfileId);
-          if (defaultProfile) {
-            setSelectedProfile(defaultProfile);
-          }
+        if (!currentInvoiceNumber) {
+          setCurrentInvoiceNumber(generateInvoiceNumber(lastInvoiceNumber));
         }
 
         setIsInitialized(true);
@@ -581,9 +579,15 @@ const SlyceInvoice = () => {
 
         toast.success(t('messages.success.invoiceGenerated'));
         
-        // Reset form if not showing preview
+        // Save the current invoice number only after successful generation
+        await window.electronAPI.setData('lastInvoiceNumber', currentInvoiceNumber);
+
+        // After successful generation, generate the next number
+        const nextNumber = generateInvoiceNumber(currentInvoiceNumber, true);
+
+        // Update the invoice number only if preview is not shown
         if (!previewSettings.showPreview) {
-          setCurrentInvoiceNumber(generateInvoiceNumber(currentInvoiceNumber));
+          setCurrentInvoiceNumber(nextNumber);
           setInvoiceItems([]);
           setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
         }
