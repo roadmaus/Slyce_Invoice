@@ -49,6 +49,7 @@
     "management": "Kundenverwaltung",
     "add": "Kunde hinzufügen",
     "edit": "Kunde bearbeiten",
+    "businessCustomer": "Geschäftskunde",
     "form": {
       "title": "Anrede",
       "selectTitle": "Anrede auswählen",
@@ -70,8 +71,7 @@
       "name": "Name",
       "street": "Straße",
       "postalCode": "Postleitzahl",
-      "city": "Stadt",
-      "businessCustomer": "Geschäftskunde"
+      "city": "Stadt"
     },
     "actions": {
       "add": "Kunde hinzufügen",
@@ -103,7 +103,7 @@
       "bic": "BIC",
       "contactDetails": "Kontaktdaten",
       "contactDetailsPlaceholder": "Telefon, E-Mail, Website, etc.",
-      "vatEnabled": "Umsatzsteuer aktivieren",
+      "vatEnabled": "Umsatzsteuer aktiviert ({{rate}}%)",
       "vatRate": "Umsatzsteuersatz (%)"
     },
     "actions": {
@@ -127,7 +127,10 @@
     "status": {
       "isDefault": "Standardprofil",
       "notDefault": "Als Standard festlegen"
-    }
+    },
+    "vatDisabled": "Umsatzsteuer deaktiviert",
+    "vatEnabled": "Umsatzsteuer aktiviert ({{rate}}%)"
+
   },
   "profile": {
     "actions": {
@@ -156,6 +159,7 @@
     "form": {
       "name": "Name",
       "description": "Beschreibung",
+      "noDescription": "Keine Beschreibung verfügbar",
       "rate": "Preis (€)",
       "quantity": "Menge",
       "color": "Farbe",
@@ -178,6 +182,12 @@
     "search": {
       "placeholder": "Tags durchsuchen...",
       "noResults": "Keine Tags gefunden"
+    },
+    "dialog": {
+      "addTitle": "Neuen Tag hinzufügen",
+      "editTitle": "Tag bearbeiten",
+      "addDescription": "Erstellen Sie einen neuen Tag für die Schnelleingabe",
+      "editDescription": "Bearbeiten Sie die Details des Tags"
     }
   },
   "settings": {

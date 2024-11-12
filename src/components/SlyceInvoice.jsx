@@ -22,7 +22,11 @@ import {
   Tags, 
   Search, 
   X,
-  Building2
+  Building2,
+  MapPin,
+  Receipt,
+  Landmark,
+  User2
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
@@ -1046,6 +1050,19 @@ const LoadingOverlay = () => (
   </div>
 );
 
+// Add these new helper functions
+const hexToRgb = (hex) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
+};
+
+const getTagBackground = (color, isDark) => {
+  if (isDark) {
+    return `linear-gradient(135deg, rgba(${hexToRgb(color)}, 0.15) 0%, rgba(${hexToRgb(color)}, 0.05) 100%)`;
+  }
+  return `linear-gradient(135deg, ${color}40 0%, ${color}20 100%)`;
+};
+
 // Main Render
   return (
     <div className="container-large space-y-6">
@@ -1496,60 +1513,116 @@ const LoadingOverlay = () => (
                 </Dialog>
               </div>
 
+              {/* Customers Grid */}
               <div className="responsive-grid responsive-gap">
                 {customers.map((customer, index) => (
-                  <Card key={index} className="group relative overflow-hidden border-border">
-                    <CardContent className="responsive-p">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex flex-col">
-                          <h3 className="text-lg font-semibold text-foreground">
-                            {customer.title} {customer.name}
-                          </h3>
-                          {customer.zusatz && (
-                            <span className="text-sm text-muted-foreground">
-                              {customer.zusatz}
-                            </span>
-                          )}
-                        </div>
+                  <Card 
+                    key={index} 
+                    className="group relative overflow-hidden border-border/50 hover:border-border 
+                      transition-all duration-200 hover:shadow-lg"
+                  >
+                    {/* Quick Actions */}
+                    <div className="absolute top-4 right-4 flex items-center gap-2 opacity-0 
+                      group-hover:opacity-100 transition-all duration-200 translate-y-1 
+                      group-hover:translate-y-0 z-20">
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background shadow-sm"
+                        onClick={() => handleCustomerDialog(customer)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background shadow-sm"
+                        onClick={() => {
+                          const updatedCustomers = customers.filter((_, i) => i !== index);
+                          setCustomers(updatedCustomers);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    <CardContent className="p-5 mt-8">
+                      {/* Customer Header */}
+                      <div className="mb-4">
                         <div className="flex items-center gap-2">
-                          {customer.firma && (
-                            <Icons.Building2 className="h-4 w-4 text-primary" />
+                          {customer.firma ? (
+                            <Building2 className="h-4 w-4 text-primary" />
+                          ) : (
+                            <User2 className="h-4 w-4 text-muted-foreground" />
                           )}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 hover:bg-secondary"
-                            onClick={() => handleCustomerDialog(customer)}
-                          >
-                            <Edit className="h-4 w-4 text-muted-foreground" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 hover:bg-secondary"
-                            onClick={() => {
-                              const updatedCustomers = customers.filter((_, i) => i !== index);
-                              setCustomers(updatedCustomers);
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4 text-muted-foreground" />
-                          </Button>
+                          <h3 className="font-semibold text-lg text-foreground/90 truncate">
+                            {customer.title === 'Divers' ? (
+                              `${customer.zusatz} ${customer.name}`
+                            ) : (
+                              `${customer.title} ${customer.zusatz} ${customer.name}`
+                            )}
+                          </h3>
                         </div>
                       </div>
 
-                      <div className="space-y-3">
-                        <div className="space-y-1">
-                          <div className="text-sm font-medium text-muted-foreground">{t('common.address')}</div>
-                          <div className="text-sm text-foreground">
+                      {/* Customer Details */}
+                      <div className="space-y-4">
+                        {/* Address Section */}
+                        <div className="space-y-1.5">
+                          <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                            <MapPin className="h-3.5 w-3.5" />
+                            {t('common.address')}
+                          </div>
+                          <div className="text-sm text-foreground/80 pl-5">
                             {customer.street}
                             <br />
                             {customer.postal_code} {customer.city}
                           </div>
                         </div>
+
+                        {/* Customer Type */}
+                        <div className="flex items-center justify-center p-1.5 rounded-md
+                          bg-background/40 dark:bg-background/20 backdrop-blur-sm">
+                          <span className="text-xs text-muted-foreground">
+                            {customer.title === 'Divers' 
+                              ? t('customers.form.titles.diverse')
+                              : customer.title === 'Herr' 
+                                ? t('customers.form.titles.mr')
+                                : t('customers.form.titles.mrs')}
+                            {customer.zusatz && ` • ${customer.zusatz}`}
+                            {customer.firma && ` • ${t('customers.businessCustomer')}`}
+                          </span>
+                        </div>
                       </div>
+
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/20 
+                        via-transparent to-transparent opacity-0 group-hover:opacity-100 
+                        transition-opacity duration-200" />
                     </CardContent>
                   </Card>
                 ))}
+
+                {/* Empty State */}
+                {customers.length === 0 && (
+                  <div className="col-span-full text-center py-12 bg-secondary/50 rounded-lg 
+                    border-2 border-dashed border-border">
+                    <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium text-foreground mb-2">
+                      {t('customers.emptyState.title')}
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      {t('customers.emptyState.description')}
+                    </p>
+                    <Button 
+                      onClick={() => setShowNewCustomerDialog(true)}
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
+                      <PlusCircle className="h-4 w-4 mr-2" />
+                      {t('customers.emptyState.addFirst')}
+                    </Button>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -1662,98 +1735,142 @@ const LoadingOverlay = () => (
                 </Dialog>
               </div>
 
-              {/* Profiles Grid */}
+              {/* Business Profiles Grid */}
               <div className="responsive-grid responsive-gap">
                 {businessProfiles.map((profile, index) => (
-                  <Card key={index} className="group relative overflow-hidden border-border">
-                    <CardContent className="responsive-p">
+                  <Card 
+                    key={index} 
+                    className="group relative overflow-hidden border-border/50 hover:border-border 
+                      transition-all duration-200 hover:shadow-lg"
+                  >
+                    {/* Quick Actions */}
+                    <div className="absolute top-4 right-4 flex items-center gap-2 opacity-0 
+                      group-hover:opacity-100 transition-all duration-200 translate-y-1 
+                      group-hover:translate-y-0 z-20">
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background shadow-sm"
+                        onClick={() => handleProfileDialog(profile)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background shadow-sm"
+                        onClick={() => {
+                          const updatedProfiles = businessProfiles.filter((_, i) => i !== index);
+                          setBusinessProfiles(updatedProfiles);
+                          if (defaultProfileId === profile.company_name) {
+                            setDefaultProfileId(null);
+                          }
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {/* Default Toggle */}
+                    <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+                      <Switch
+                        checked={defaultProfileId === profile.company_name}
+                        onCheckedChange={(checked) => {
+                          const newDefaultId = checked ? profile.company_name : null;
+                          setDefaultProfileId(newDefaultId);
+                          if (checked) {
+                            setSelectedProfile(profile);
+                          } else {
+                            setSelectedProfile(null);
+                          }
+                        }}
+                        className="data-[state=checked]:bg-primary"
+                      />
+                      <span className="text-xs text-muted-foreground">
+                        {t('business.defaultLabel')}
+                      </span>
+                    </div>
+
+                    <CardContent className="p-5 mt-8">
                       {/* Profile Header */}
-                      <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-lg font-semibold text-foreground">
-                          {profile.company_name}
-                        </h3>
+                      <div className="mb-4">
                         <div className="flex items-center gap-2">
-                          <div className="flex items-center">
-                            <Switch
-                              checked={defaultProfileId === profile.company_name}
-                              onCheckedChange={(checked) => {
-                                const newDefaultId = checked ? profile.company_name : null;
-                                setDefaultProfileId(newDefaultId);
-                                if (checked) {
-                                  setSelectedProfile(profile);
-                                } else {
-                                  setSelectedProfile(null);
-                                }
-                              }}
-                              className="data-[state=checked]:bg-primary"
-                            />
-                            <span className="ml-2 text-sm text-muted-foreground">{t('business.defaultLabel')}</span>
-                          </div>
-                          <div className="flex gap-1">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 hover:bg-secondary"
-                              onClick={() => handleProfileDialog(profile)}
-                            >
-                              <Edit className="h-4 w-4 text-muted-foreground" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 hover:bg-secondary"
-                              onClick={() => {
-                                const updatedProfiles = businessProfiles.filter((_, i) => i !== index);
-                                setBusinessProfiles(updatedProfiles);
-                                if (defaultProfileId === profile.company_name) {
-                                  setDefaultProfileId(null);
-                                }
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4 text-muted-foreground" />
-                            </Button>
-                          </div>
+                          <Building2 className="h-4 w-4 text-muted-foreground" />
+                          <h3 className="font-semibold text-lg text-foreground/90 truncate">
+                            {profile.company_name}
+                          </h3>
                         </div>
                       </div>
 
                       {/* Profile Details */}
-                      <div className="space-y-3">
-                        <div className="space-y-1">
-                          <div className="text-sm font-medium text-muted-foreground">{t('common.address')}</div>
-                          <div className="text-sm text-foreground">
+                      <div className="space-y-4">
+                        {/* Address Section */}
+                        <div className="space-y-1.5">
+                          <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                            <MapPin className="h-3.5 w-3.5" />
+                            {t('common.address')}
+                          </div>
+                          <div className="text-sm text-foreground/80 pl-5">
                             {profile.company_street}
                             <br />
                             {profile.company_postalcode} {profile.company_city}
                           </div>
                         </div>
 
+                        {/* Tax Info Section */}
                         {(profile.tax_number || profile.tax_id) && (
-                          <div className="space-y-1">
-                            <div className="text-sm font-medium text-muted-foreground">{t('common.taxInfo')}</div>
-                            {profile.tax_number && (
-                              <div className="text-sm text-foreground">{t('business.form.taxNumber')}: {profile.tax_number}</div>
-                            )}
-                            {profile.tax_id && (
-                              <div className="text-sm text-foreground">{t('business.form.taxId')}: {profile.tax_id}</div>
-                            )}
+                          <div className="space-y-1.5">
+                            <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                              <Receipt className="h-3.5 w-3.5" />
+                              {t('common.taxInfo')}
+                            </div>
+                            <div className="text-sm text-foreground/80 pl-5 space-y-0.5">
+                              {profile.tax_number && (
+                                <div>{t('business.form.taxNumber')}: {profile.tax_number}</div>
+                              )}
+                              {profile.tax_id && (
+                                <div>{t('business.form.taxId')}: {profile.tax_id}</div>
+                              )}
+                            </div>
                           </div>
                         )}
 
+                        {/* Bank Details Section */}
                         {(profile.bank_institute || profile.bank_iban || profile.bank_bic) && (
-                          <div className="space-y-1">
-                            <div className="text-sm font-medium text-muted-foreground">{t('common.bankDetails')}</div>
-                            {profile.bank_institute && (
-                              <div className="text-sm text-foreground">{profile.bank_institute}</div>
-                            )}
-                            {profile.bank_iban && (
-                              <div className="text-sm text-foreground">IBAN: {profile.bank_iban}</div>
-                            )}
-                            {profile.bank_bic && (
-                              <div className="text-sm text-foreground">BIC: {profile.bank_bic}</div>
-                            )}
+                          <div className="space-y-1.5">
+                            <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                              <Landmark className="h-3.5 w-3.5" />
+                              {t('common.bankDetails')}
+                            </div>
+                            <div className="text-sm text-foreground/80 pl-5 space-y-0.5">
+                              {profile.bank_institute && (
+                                <div>{profile.bank_institute}</div>
+                              )}
+                              {profile.bank_iban && (
+                                <div>IBAN: {profile.bank_iban}</div>
+                              )}
+                              {profile.bank_bic && (
+                                <div>BIC: {profile.bank_bic}</div>
+                              )}
+                            </div>
                           </div>
                         )}
+
+                        {/* VAT Status */}
+                        <div className="flex items-center justify-center p-1.5 rounded-md
+                          bg-background/40 dark:bg-background/20 backdrop-blur-sm mt-4">
+                          <span className="text-xs text-muted-foreground">
+                            {profile.vat_enabled 
+                              ? t('business.vatEnabled', { rate: profile.vat_rate })
+                              : t('business.vatDisabled')}
+                          </span>
+                        </div>
                       </div>
+
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/20 
+                        via-transparent to-transparent opacity-0 group-hover:opacity-100 
+                        transition-opacity duration-200" />
                     </CardContent>
                   </Card>
                 ))}
@@ -1766,26 +1883,12 @@ const LoadingOverlay = () => (
         <TabsContent value="tags">
           <Card>
             <CardContent className="responsive-p">
+              {/* Header Section */}
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-medium text-foreground">{t('tags.title')}</h2>
-                <Dialog open={showNewTagDialog} onOpenChange={(open) => {
-                  if (!open) {
-                    // Reset state when dialog closes
-                    setNewTag({
-                      name: '',
-                      description: '',
-                      rate: '',
-                      quantity: '',
-                      color: PREDEFINED_COLORS[0].value,
-                      hasDateRange: true,
-                      visible: true,
-                      personas: [],
-                    });
-                  }
-                  setShowNewTagDialog(open);
-                }}>
+                <Dialog open={showNewTagDialog} onOpenChange={setShowNewTagDialog}>
                   <DialogTrigger asChild>
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Button>
                       <PlusCircle className="h-4 w-4 mr-2" />
                       {t('tags.actions.add')}
                     </Button>
@@ -1954,22 +2057,25 @@ const LoadingOverlay = () => (
                 </Dialog>
               </div>
 
+              {/* Tags Grid */}
               <div className="responsive-grid responsive-gap">
                 {quickTags.map((tag, index) => (
                   <Card
                     key={index}
-                    className="group relative overflow-hidden border-border transition-all hover:shadow-md dark:bg-opacity-20"
+                    className="group relative overflow-hidden border-border/50 hover:border-border 
+                      transition-all duration-200 hover:shadow-lg"
                     style={{ 
-                      backgroundColor: adjustColorForDarkMode(tag.color || '#f3f4f6', isDarkMode),
-                      backdropFilter: 'blur(8px)'
+                      background: getTagBackground(tag.color || '#f3f4f6', isDarkMode),
                     }}
                   >
-                    {/* Action Buttons */}
-                    <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    {/* Quick Actions */}
+                    <div className="absolute top-4 right-4 flex items-center gap-2 opacity-0 
+                      group-hover:opacity-100 transition-all duration-200 translate-y-1 
+                      group-hover:translate-y-0 z-20">
                       <Button
                         variant="secondary"
                         size="icon"
-                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background"
+                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background shadow-sm"
                         onClick={() => handleTagDialog(tag)}
                       >
                         <Edit className="h-4 w-4" />
@@ -1977,7 +2083,7 @@ const LoadingOverlay = () => (
                       <Button
                         variant="secondary"
                         size="icon"
-                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background"
+                        className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background shadow-sm"
                         onClick={() => {
                           const updatedTags = quickTags.filter((_, i) => i !== index);
                           setQuickTags(updatedTags);
@@ -1988,7 +2094,7 @@ const LoadingOverlay = () => (
                     </div>
 
                     {/* Visibility Toggle */}
-                    <div className="absolute top-3 left-3 z-10">
+                    <div className="absolute top-4 left-4 z-20">
                       <Switch
                         checked={tag.visible}
                         onCheckedChange={(checked) => {
@@ -2004,8 +2110,11 @@ const LoadingOverlay = () => (
                       {/* Tag Header */}
                       <div className="mb-4">
                         <div className="flex items-center gap-2">
-                          <Tags className="h-5 w-5 text-foreground/70" />
-                          <h3 className="font-semibold text-lg text-foreground/90 truncate" title={tag.name}>
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: tag.color || '#e2e8f0' }} 
+                          />
+                          <h3 className="font-semibold text-lg text-foreground/90 truncate">
                             {tag.name}
                           </h3>
                         </div>
@@ -2013,47 +2122,64 @@ const LoadingOverlay = () => (
 
                       {/* Description */}
                       <div className="mb-6">
-                        <p className="text-sm text-foreground/70 line-clamp-2" title={tag.description}>
+                        <p className="text-sm text-foreground/70 line-clamp-2">
                           {tag.description || t('tags.form.noDescription')}
                         </p>
                       </div>
 
                       {/* Tag Details */}
                       <div className="space-y-2 mb-6">
-                        <div className="flex items-center justify-between bg-background/40 dark:bg-background/10 rounded-md p-2">
+                        <div className="flex items-center justify-between p-2 rounded-md
+                          bg-background/40 dark:bg-background/20 backdrop-blur-sm">
                           <span className="text-sm text-foreground/70">{t('tags.form.rate')}:</span>
                           <span className="font-medium text-foreground">€{parseFloat(tag.rate).toFixed(2)}</span>
                         </div>
-                        <div className="flex items-center justify-between bg-background/40 dark:bg-background/10 rounded-md p-2">
+                        <div className="flex items-center justify-between p-2 rounded-md
+                          bg-background/40 dark:bg-background/20 backdrop-blur-sm">
                           <span className="text-sm text-foreground/70">{t('tags.form.quantity')}:</span>
                           <span className="font-medium text-foreground">{tag.quantity}</span>
                         </div>
+                        {tag.hasDateRange && (
+                          <div className="flex items-center justify-center p-1.5 rounded-md
+                            bg-background/30 dark:bg-background/10 backdrop-blur-sm">
+                            <span className="text-xs text-foreground/70">{t('tags.form.usesDateRange')}</span>
+                          </div>
+                        )}
                       </div>
 
                       {/* Associated Personas */}
                       <div className="space-y-2">
                         <div className="text-xs font-medium text-foreground/70">{t('tags.form.personas')}:</div>
-                        <div className="flex flex-wrap gap-1.5 max-h-[60px] overflow-y-auto">
+                        <div className="flex flex-wrap gap-1.5">
                           {tag.personas?.map((persona, idx) => (
                             <span
                               key={idx}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-background/60 dark:bg-background/20 backdrop-blur-sm text-foreground/80 hover:bg-background/80 dark:hover:bg-background/30 transition-colors"
-                              title={persona}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs 
+                                font-medium bg-background/60 dark:bg-background/20 backdrop-blur-sm 
+                                text-foreground/80 border border-border/50"
                             >
                               {persona}
                             </span>
                           ))}
                         </div>
                       </div>
+
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/20 
+                        via-transparent to-transparent opacity-0 group-hover:opacity-100 
+                        transition-opacity duration-200" />
                     </CardContent>
                   </Card>
                 ))}
 
                 {/* Empty State */}
                 {quickTags.length === 0 && (
-                  <div className="col-span-4 text-center py-12 bg-secondary/50 rounded-lg border-2 border-dashed border-border">
+                  <div className="col-span-full text-center py-12 bg-secondary/50 rounded-lg 
+                    border-2 border-dashed border-border">
                     <Tags className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium text-foreground mb-2">{t('tags.emptyState.title')}</h3>
+                    <h3 className="text-lg font-medium text-foreground mb-2">
+                      {t('tags.emptyState.title')}
+                    </h3>
                     <p className="text-muted-foreground mb-4">
                       {t('tags.emptyState.description')}
                     </p>
@@ -2067,38 +2193,6 @@ const LoadingOverlay = () => (
                   </div>
                 )}
               </div>
-
-              {/* Search Bar */}
-              {showTagSearch && (
-                <div className="relative flex items-center">
-                  <Input
-                    type="text"
-                    placeholder="Search tags..."
-                    value={tagSearch}
-                    onChange={(e) => setTagSearch(e.target.value)}
-                    className="w-[200px] pl-8 bg-background border-input"
-                    autoFocus
-                    onKeyDown={(e) => {
-                      if (e.key === 'Escape') {
-                        setShowTagSearch(false);
-                        setTagSearch('');
-                      }
-                    }}
-                  />
-                  <Search className="w-4 h-4 absolute left-2.5 text-muted-foreground" />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 ml-1 hover:bg-secondary"
-                    onClick={() => {
-                      setShowTagSearch(false);
-                      setTagSearch('');
-                    }}
-                  >
-                    <X className="h-4 w-4 text-foreground" />
-                  </Button>
-                </div>
-              )}
             </CardContent>
           </Card>
         </TabsContent>
