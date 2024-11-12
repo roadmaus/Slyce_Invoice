@@ -245,7 +245,7 @@
       "selectProfile": "Bitte wählen Sie ein Geschäftsprofil aus.",
       "setServicePeriod": "Bitte geben Sie den vollständigen Leistungszeitraum an.",
       "setServiceDate": "Bitte geben Sie das Leistungsdatum an.",
-      "addInvoiceItem": "Bitte fügen Sie mindestens eine Rechnungsposition hinzu."
+      "addItem": "Bitte fügen Sie mindestens eine Rechnungsposition hinzu."
     }
   }
 } 

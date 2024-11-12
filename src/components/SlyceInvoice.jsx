@@ -326,12 +326,12 @@ const SlyceInvoice = () => {
   // Business Profile Management
   const addBusinessProfile = () => {
     if (!validateBusinessProfile(newProfile)) {
-      toast.error('Please fill in all required fields.');
+      toast.error(t('messages.error.required'));
       return;
     }
 
     if (businessProfiles.length >= 20) {
-      toast.error('Maximum of 20 business profiles reached.');
+      toast.error(t('messages.error.maxProfiles'));
       return;
     }
 
@@ -357,7 +357,7 @@ const SlyceInvoice = () => {
   // Customer Management
   const addCustomer = () => {
     if (!validateCustomer(newCustomer)) {
-      toast.error('Please fill in all required fields.');
+      toast.error(t('messages.error.required'));
       return;
     }
 
@@ -838,27 +838,27 @@ const renderCustomerForm = (customer, setCustomer) => {
 
   const validateInvoice = () => {
     if (!selectedCustomer) {
-      toast.error('Please select a customer.');
+      toast.error(t('messages.validation.selectCustomer'));
       return false;
     }
 
     if (!selectedProfile) {
-      toast.error('Please select a business profile.');
+      toast.error(t('messages.validation.selectProfile'));
       return false;
     }
 
     if (invoiceDates.hasDateRange && (!invoiceDates.startDate || !invoiceDates.endDate)) {
-      toast.error('Please set the complete service period (start and end date).');
+      toast.error(t('messages.validation.setServicePeriod'));
       return false;
     }
 
     if (!invoiceDates.hasDateRange && !invoiceDates.startDate) {
-      toast.error('Please set the service date.');
+      toast.error(t('messages.validation.setServiceDate'));
       return false;
     }
 
     if (invoiceItems.length === 0) {
-      toast.error('Please add at least one invoice item.');
+      toast.error(t('messages.validation.addItem'));
       return false;
     }
 
@@ -1391,12 +1391,12 @@ const LoadingOverlay = () => (
                   {isLoading.invoice ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Generating...
+                      {t('invoice.actions.generating')}
                     </>
                   ) : (
                     <>
                       <Save className="h-4 w-4 mr-2" />
-                      Generate Invoice
+                      {t('invoice.actions.generate')}
                     </>
                   )}
                 </Button>
