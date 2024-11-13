@@ -278,7 +278,8 @@
       "saveLocation": "Opslaglocatie succesvol bijgewerkt",
       "language": "Taal succesvol bijgewerkt",
       "templateSave": "Sjabloon succesvol opgeslagen",
-      "templateReset": "Sjabloon succesvol hersteld"
+      "templateReset": "Sjabloon succesvol hersteld",
+      "previewToggle": "Voorbeeldweergave-instelling succesvol bijgewerkt"
     },
     "templateEditor": "Sjablooneditor",
     "actions": {

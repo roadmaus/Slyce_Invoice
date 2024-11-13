@@ -1050,10 +1050,8 @@ const PreviewDialog = () => (
       if (!open) {
         URL.revokeObjectURL(pdfPreview.data);
         setPdfPreview({ show: false, data: null, fileName: '' });
-        // Reset form after closing preview, but keep the invoice number
         setInvoiceItems([]);
         setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
-        // Generate next invoice number
         if (selectedProfile) {
           const nextNumber = generateInvoiceNumber(
             currentInvoiceNumber, 
@@ -1061,7 +1059,6 @@ const PreviewDialog = () => (
             true
           );
           setCurrentInvoiceNumber(nextNumber);
-          // Update stored numbers
           const updatedNumbers = {
             ...profileInvoiceNumbers,
             [selectedProfile.company_name]: nextNumber
@@ -1073,6 +1070,7 @@ const PreviewDialog = () => (
         }
       }
     }}
+    className="z-[99]"
   >
     <DialogContent className="pdf-preview-content">
       <DialogHeader>
@@ -1091,8 +1089,18 @@ const PreviewDialog = () => (
   </Dialog>
 );
 
+// Update the LoadingOverlay component
 const LoadingOverlay = () => (
-  <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-50 flex items-center justify-center">
+  // Add fixed positioning relative to viewport and increase z-index even higher
+  <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-[9999] flex items-center justify-center" style={{
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100vw',  // Full viewport width
+    height: '100vh', // Full viewport height
+  }}>
     <div className="text-center space-y-4">
       <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
       <p className="text-lg font-medium text-foreground">{t('invoice.actions.generating')}</p>
@@ -1185,150 +1193,151 @@ useEffect(() => {
 
 // Main Render
   return (
-    <div className="container-large space-y-6">
-      <Toaster position="top-right" expand={true} richColors />
+    <>
       {isLoading.invoice && <LoadingOverlay />}
+      <div className="container-large space-y-6">
+        <Toaster position="top-right" expand={true} richColors />
+        <Tabs defaultValue="invoice" className="w-full">
+          <TabsList className="bg-muted">
+            <TabsTrigger value="invoice" className="data-[state=active]:bg-background">
+              <FileText className="w-4 h-4 mr-2" />
+              {t('invoice.title')}
+            </TabsTrigger>
+            <TabsTrigger value="customers" className="data-[state=active]:bg-background">
+              <Users className="w-4 h-4 mr-2" />
+              {t('customers.title')}
+            </TabsTrigger>
+            <TabsTrigger value="business" className="data-[state=active]:bg-background">
+              <Building2 className="w-4 h-4 mr-2" />
+              {t('business.title')}
+            </TabsTrigger>
+            <TabsTrigger value="tags" className="data-[state=active]:bg-background">
+              <Tags className="w-4 h-4 mr-2" />
+              {t('tags.title')}
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="data-[state=active]:bg-background">
+              <Settings className="w-4 h-4 mr-2" />
+              {t('settings.title')}
+            </TabsTrigger>
+          </TabsList>
 
-      <Tabs defaultValue="invoice" className="w-full">
-        <TabsList className="bg-muted">
-          <TabsTrigger value="invoice" className="data-[state=active]:bg-background">
-            <FileText className="w-4 h-4 mr-2" />
-            {t('invoice.title')}
-          </TabsTrigger>
-          <TabsTrigger value="customers" className="data-[state=active]:bg-background">
-            <Users className="w-4 h-4 mr-2" />
-            {t('customers.title')}
-          </TabsTrigger>
-          <TabsTrigger value="business" className="data-[state=active]:bg-background">
-            <Building2 className="w-4 h-4 mr-2" />
-            {t('business.title')}
-          </TabsTrigger>
-          <TabsTrigger value="tags" className="data-[state=active]:bg-background">
-            <Tags className="w-4 h-4 mr-2" />
-            {t('tags.title')}
-          </TabsTrigger>
-          <TabsTrigger value="settings" className="data-[state=active]:bg-background">
-            <Settings className="w-4 h-4 mr-2" />
-            {t('settings.title')}
-          </TabsTrigger>
-        </TabsList>
+          <TabsContent value="invoice">
+            <InvoiceTab 
+              customers={customers}
+              selectedCustomer={selectedCustomer}
+              setSelectedCustomer={setSelectedCustomer}
+              businessProfiles={businessProfiles}
+              selectedProfile={selectedProfile}
+              setSelectedProfile={setSelectedProfile}
+              currentInvoiceNumber={currentInvoiceNumber}
+              setCurrentInvoiceNumber={setCurrentInvoiceNumber}
+              invoiceDates={invoiceDates}
+              setInvoiceDates={setInvoiceDates}
+              showTagSearch={showTagSearch}
+              setShowTagSearch={setShowTagSearch}
+              tagSearch={tagSearch}
+              setTagSearch={setTagSearch}
+              quickTags={quickTags}
+              handleQuickTagClick={handleQuickTagClick}
+              isDarkMode={isDarkMode}
+              adjustColorForDarkMode={adjustColorForDarkMode}
+              Icons={Icons}
+              invoiceItems={invoiceItems}
+              updateInvoiceItem={updateInvoiceItem}
+              deleteInvoiceItem={deleteInvoiceItem}
+              addInvoiceItem={addInvoiceItem}
+              generateInvoice={generateInvoice}
+              isLoading={isLoading}
+              profileInvoiceNumbers={profileInvoiceNumbers}
+              setProfileInvoiceNumbers={setProfileInvoiceNumbers}
+            />
+          </TabsContent>
 
-        <TabsContent value="invoice">
-          <InvoiceTab 
-            customers={customers}
-            selectedCustomer={selectedCustomer}
-            setSelectedCustomer={setSelectedCustomer}
-            businessProfiles={businessProfiles}
-            selectedProfile={selectedProfile}
-            setSelectedProfile={setSelectedProfile}
-            currentInvoiceNumber={currentInvoiceNumber}
-            setCurrentInvoiceNumber={setCurrentInvoiceNumber}
-            invoiceDates={invoiceDates}
-            setInvoiceDates={setInvoiceDates}
-            showTagSearch={showTagSearch}
-            setShowTagSearch={setShowTagSearch}
-            tagSearch={tagSearch}
-            setTagSearch={setTagSearch}
-            quickTags={quickTags}
-            handleQuickTagClick={handleQuickTagClick}
-            isDarkMode={isDarkMode}
-            adjustColorForDarkMode={adjustColorForDarkMode}
-            Icons={Icons}
-            invoiceItems={invoiceItems}
-            updateInvoiceItem={updateInvoiceItem}
-            deleteInvoiceItem={deleteInvoiceItem}
-            addInvoiceItem={addInvoiceItem}
-            generateInvoice={generateInvoice}
-            isLoading={isLoading}
-            profileInvoiceNumbers={profileInvoiceNumbers}
-            setProfileInvoiceNumbers={setProfileInvoiceNumbers}
-          />
-        </TabsContent>
+          {/* Quick Tags Tab */}
+          <TabsContent value="tags">
+            <TagsTab 
+              quickTags={quickTags}
+              setQuickTags={setQuickTags}
+              newTag={newTag}
+              setNewTag={setNewTag}
+              showNewTagDialog={showNewTagDialog}
+              setShowNewTagDialog={setShowNewTagDialog}
+              businessProfiles={businessProfiles}
+              handleTagDialog={handleTagDialog}
+              addQuickTag={addQuickTag}
+              isDarkMode={isDarkMode}
+              getTagBackground={getTagBackground}
+              PREDEFINED_COLORS={PREDEFINED_COLORS}
+            />
+          </TabsContent>
 
-        {/* Quick Tags Tab */}
-        <TabsContent value="tags">
-          <TagsTab 
-            quickTags={quickTags}
-            setQuickTags={setQuickTags}
-            newTag={newTag}
-            setNewTag={setNewTag}
-            showNewTagDialog={showNewTagDialog}
-            setShowNewTagDialog={setShowNewTagDialog}
-            businessProfiles={businessProfiles}
-            handleTagDialog={handleTagDialog}
-            addQuickTag={addQuickTag}
-            isDarkMode={isDarkMode}
-            getTagBackground={getTagBackground}
-            PREDEFINED_COLORS={PREDEFINED_COLORS}
-          />
-        </TabsContent>
+          {/* Customers Tab */}
+          <TabsContent value="customers">
+            <CustomersTab 
+              customers={customers}
+              setCustomers={setCustomers}
+              selectedCustomer={selectedCustomer}
+              setSelectedCustomer={setSelectedCustomer}
+              newCustomer={newCustomer}
+              setNewCustomer={setNewCustomer}
+              showNewCustomerDialog={showNewCustomerDialog}
+              setShowNewCustomerDialog={setShowNewCustomerDialog}
+              renderCustomerForm={renderCustomerForm}
+              handleCustomerDialog={handleCustomerDialog}
+              addCustomer={addCustomer}
+            />
+          </TabsContent>
 
-        {/* Customers Tab */}
-        <TabsContent value="customers">
-          <CustomersTab 
-            customers={customers}
-            setCustomers={setCustomers}
-            selectedCustomer={selectedCustomer}
-            setSelectedCustomer={setSelectedCustomer}
-            newCustomer={newCustomer}
-            setNewCustomer={setNewCustomer}
-            showNewCustomerDialog={showNewCustomerDialog}
-            setShowNewCustomerDialog={setShowNewCustomerDialog}
-            renderCustomerForm={renderCustomerForm}
-            handleCustomerDialog={handleCustomerDialog}
-            addCustomer={addCustomer}
-          />
-        </TabsContent>
+          {/* Business Tab */}
+          <TabsContent value="business">
+            <BusinessTab 
+              businessProfiles={businessProfiles}
+              setBusinessProfiles={setBusinessProfiles}
+              selectedProfile={selectedProfile}
+              setSelectedProfile={setSelectedProfile}
+              defaultProfileId={defaultProfileId}
+              setDefaultProfileId={setDefaultProfileId}
+              newProfile={newProfile}
+              setNewProfile={setNewProfile}
+              showNewProfileDialog={showNewProfileDialog}
+              setShowNewProfileDialog={setShowNewProfileDialog}
+              renderBusinessProfileForm={renderBusinessProfileForm}
+              handleProfileDialog={handleProfileDialog}
+            />
+          </TabsContent>
 
-        {/* Business Tab */}
-        <TabsContent value="business">
-          <BusinessTab 
-            businessProfiles={businessProfiles}
-            setBusinessProfiles={setBusinessProfiles}
-            selectedProfile={selectedProfile}
-            setSelectedProfile={setSelectedProfile}
-            defaultProfileId={defaultProfileId}
-            setDefaultProfileId={setDefaultProfileId}
-            newProfile={newProfile}
-            setNewProfile={setNewProfile}
-            showNewProfileDialog={showNewProfileDialog}
-            setShowNewProfileDialog={setShowNewProfileDialog}
-            renderBusinessProfileForm={renderBusinessProfileForm}
-            handleProfileDialog={handleProfileDialog}
-          />
-        </TabsContent>
+          <TabsContent value="settings">
+            <SettingsTab />
+          </TabsContent>
+        </Tabs>
 
-        <TabsContent value="settings">
-          <SettingsTab />
-        </TabsContent>
-      </Tabs>
+        {/* Add this dialog component near your other dialogs */}
+        <Dialog open={showWarningDialog} onOpenChange={setShowWarningDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Missing Values</DialogTitle>
+              <DialogDescription>
+                Rate or quantity is empty. Would you like to set them to 0 and continue?
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => {
+                setShowWarningDialog(false);
+                setPendingTag(null);
+              }}>
+                Cancel
+              </Button>
+              <Button onClick={() => proceedWithAddingTag(pendingTag)}>
+                Set to 0 and Continue
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
-      {/* Add this dialog component near your other dialogs */}
-      <Dialog open={showWarningDialog} onOpenChange={setShowWarningDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Missing Values</DialogTitle>
-            <DialogDescription>
-              Rate or quantity is empty. Would you like to set them to 0 and continue?
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={() => {
-              setShowWarningDialog(false);
-              setPendingTag(null);
-            }}>
-              Cancel
-            </Button>
-            <Button onClick={() => proceedWithAddingTag(pendingTag)}>
-              Set to 0 and Continue
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Add these dialogs at the bottom */}
-      <PreviewDialog />
-    </div>
+        {/* Add these dialogs at the bottom */}
+        <PreviewDialog />
+      </div>
+    </>
   );
 };
 

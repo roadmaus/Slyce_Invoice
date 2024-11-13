@@ -284,7 +284,8 @@
       "templateReset": "Modelo redefinido com sucesso",
       "templateLoad": "Modelo carregado com sucesso",
       "templateDelete": "Modelo excluído com sucesso",
-      "templateRename": "Modelo renomeado com sucesso"
+      "templateRename": "Modelo renomeado com sucesso",
+      "previewToggle": "Configuração de pré-visualização atualizada com sucesso"
     },
     "templateEditor": "Editor de modelo",
     "actions": {

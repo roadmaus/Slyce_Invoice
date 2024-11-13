@@ -292,7 +292,8 @@
       "templateReset": "Modello ripristinato con successo",
       "templateLoad": "Modello caricato con successo",
       "templateDelete": "Modello eliminato con successo",
-      "templateRename": "Modello rinominato con successo"
+      "templateRename": "Modello rinominato con successo",
+      "previewToggle": "Impostazione anteprima aggiornata con successo"
     },
     "templateEditor": "Editor di modelli",
     "actions": {

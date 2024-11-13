@@ -284,7 +284,8 @@
       "templateReset": "模板重置成功",
       "templateLoad": "模板加载成功",
       "templateDelete": "模板删除成功",
-      "templateRename": "模板重命名成功"
+      "templateRename": "模板重命名成功",
+      "previewToggle": "预览设置已成功更新"
     },
     "templateEditor": "模板编辑器",
     "actions": {

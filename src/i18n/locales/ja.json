@@ -292,7 +292,8 @@
       "templateReset": "テンプレートをリセットしました",
       "templateLoad": "テンプレートを正常に読み込みました",
       "templateDelete": "テンプレートを正常に削除しました",
-      "templateRename": "テンプレートの名前を正常に変更しました"
+      "templateRename": "テンプレートの名前を正常に変更しました",
+      "previewToggle": "プレビュー設定が正常に更新されました"
     },
     "templateEditor": "テンプレートエディタ",
     "actions": {

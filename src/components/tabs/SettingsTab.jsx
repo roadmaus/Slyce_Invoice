@@ -60,7 +60,13 @@ const SettingsTab = () => {
       window.dispatchEvent(new CustomEvent('previewSettingsChanged', { 
         detail: sanitizedSettings 
       }));
-      toast.success(t('settings.success.saveLocation'));
+      
+      // Show different success messages based on what changed
+      if (newSettings.savePath !== previewSettings.savePath) {
+        toast.success(t('settings.success.saveLocation'));
+      } else if (newSettings.showPreview !== previewSettings.showPreview) {
+        toast.success(t('settings.success.previewToggle'));
+      }
     } catch (error) {
       console.error('Error updating settings:', error);
       toast.error(t('settings.errors.updateSettings'));

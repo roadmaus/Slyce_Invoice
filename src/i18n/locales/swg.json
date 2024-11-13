@@ -278,7 +278,8 @@
       "saveLocation": "Schbeicherort erfolgreich aktualisiert",
       "language": "Schproch erfolgreich aktualisiert",
       "templateSave": "Vorlag erfolgreich gspeichert",
-      "templateReset": "Vorlag erfolgreich zruckgsetzt"
+      "templateReset": "Vorlag erfolgreich zruckgsetzt",
+      "previewToggle": "Vorschau-Eistellong erfolgreich aktualisiert"
     },
     "templateEditor": "Vorlaga-Editor",
     "actions": {

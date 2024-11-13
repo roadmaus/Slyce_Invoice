@@ -292,7 +292,8 @@
       "templateReset": "Plantilla restablecida con éxito",
       "templateLoad": "Plantilla cargada con éxito",
       "templateDelete": "Plantilla eliminada con éxito",
-      "templateRename": "Plantilla renombrada con éxito"
+      "templateRename": "Plantilla renombrada con éxito",
+      "previewToggle": "Configuración de vista previa actualizada correctamente"
     },
     "templateEditor": "Editor de plantillas",
     "actions": {

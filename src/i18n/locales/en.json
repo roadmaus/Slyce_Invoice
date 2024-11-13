@@ -292,7 +292,8 @@
       "templateReset": "Template reset successfully",
       "templateLoad": "Template loaded successfully",
       "templateDelete": "Template deleted successfully",
-      "templateRename": "Template renamed successfully"
+      "templateRename": "Template renamed successfully",
+      "previewToggle": "Preview setting updated successfully"
     },
     "templateEditor": "Template Editor",
     "actions": {

@@ -284,7 +284,8 @@
       "templateReset": "템플릿이 성공적으로 초기화됨",
       "templateLoad": "템플릿을 성공적으로 불러왔습니다",
       "templateDelete": "템플릿을 성공적으로 삭제했습니다",
-      "templateRename": "템플릿 이름을 성공적으로 변경했습니다"
+      "templateRename": "템플릿 이름을 성공적으로 변경했습니다",
+      "previewToggle": "미리보기 설정이 성공적으로 업데이트되었습니다"
     },
     "templateEditor": "템플릿 편집기",
     "actions": {

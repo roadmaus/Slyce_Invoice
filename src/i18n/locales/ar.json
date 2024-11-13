@@ -292,7 +292,8 @@
       "templateReset": "تم إعادة تعيين القالب بنجاح",
       "templateLoad": "تم تحميل القالب بنجاح",
       "templateDelete": "تم حذف القالب بنجاح",
-      "templateRename": "تمت إعادة تسمية القالب بنجاح"
+      "templateRename": "تمت إعادة تسمية القالب بنجاح",
+      "previewToggle": "تم تحديث إعداد المعاينة بنجاح"
     },
     "templateEditor": "محرر القالب",
     "actions": {

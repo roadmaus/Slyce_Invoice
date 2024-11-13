@@ -278,7 +278,8 @@
       "saveLocation": "Kayıt konumu başarıyla güncellendi",
       "language": "Dil başarıyla güncellendi",
       "templateSave": "Şablon başarıyla kaydedildi",
-      "templateReset": "Şablon başarıyla sıfırlandı"
+      "templateReset": "Şablon başarıyla sıfırlandı",
+      "previewToggle": "Önizleme ayarı başarıyla güncellendi"
     },
     "templateEditor": "Şablon Düzenleyici",
     "actions": {

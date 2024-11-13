@@ -108,7 +108,7 @@
       "bic": "BIC",
       "contactDetails": "Kontaktdaten",
       "contactDetailsPlaceholder": "Telefon, E-Mail, Website, etc.",
-      "vatEnabled": "Umsatzsteuer aktiviert ({{rate}}%)",
+      "vatEnabled": "Umsatzsteuer aktivieren",
       "vatRate": "Umsatzsteuersatz (%)"
     },
     "actions": {
@@ -291,7 +291,8 @@
       "templateReset": "Vorlage erfolgreich zurückgesetzt",
       "templateLoad": "Vorlage erfolgreich geladen",
       "templateDelete": "Vorlage erfolgreich gelöscht",
-      "templateRename": "Vorlage erfolgreich umbenannt"
+      "templateRename": "Vorlage erfolgreich umbenannt",
+      "previewToggle": "Vorschau-Einstellung erfolgreich aktualisiert"
     },
     "templateEditor": "Vorlageneditor",
     "actions": {

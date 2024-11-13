@@ -278,7 +278,8 @@
       "saveLocation": "Cập nhật vị trí lưu thành công",
       "language": "Cập nhật ngôn ngữ thành công",
       "templateSave": "Đã lưu mẫu thành công",
-      "templateReset": "Đã đặt lại mẫu thành công"
+      "templateReset": "Đã đặt lại mẫu thành công",
+      "previewToggle": "Cập nhật cài đặt xem trước thành công"
     },
     "templateEditor": "Trình chỉnh sửa mẫu",
     "actions": {
