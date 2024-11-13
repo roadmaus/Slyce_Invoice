@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechnung</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 48px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 48px;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.4;
+            background-color: white;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 64px;
+        }
+
+        .company-address {
+            text-align: right;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 48px;
+        }
+
+        .recipient-info {
+            max-width: 280px;
+        }
+
+        .invoice-info {
+            text-align: right;
+            color: #666;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 36px 0;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            font-weight: 500;
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .amount-summary {
+            width: 320px;
+            margin-left: auto;
+            margin-right: 0;
+            border: none;
+        }
+
+        .amount-summary tr td:last-child {
+            text-align: right;
+        }
+
+        .amount-summary tr:last-child {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .payment-info {
+            margin-top: 48px;
+            padding-top: 24px;
+            color: #666;
+        }
+
+        .banking-info {
+            margin-top: 36px;
+            background-color: #fafafa;
+            padding: 24px;
+        }
+
+        .contact-details {
+            text-align: center;
+            margin-top: 48px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .medium-bold {
+            font-weight: 500;
+            color: #333;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div></div>
+        <div class="company-address">
+            {company_name}<br>
+            {company_street}<br>
+            {company_postalcode} {company_city}<br>
+            <p>Steuernummer: {tax_number}<br>
+            SteuerID: {tax_id}</p>
+        </div>
+    </div>
+
+    <div class="invoice-details">
+        <div class="recipient-info">
+            {customer_address}
+        </div>
+        <div class="invoice-info">
+            {invoice_number_date}
+        </div>
+    </div>
+
+    <div class="greeting-section">
+        <p>{greeting}</p>
+        <p>{service_period_text}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>{position_label}</th>
+                <th>{quantity_label}</th>
+                <th>{description_label}</th>
+                <th>{unit_price_label}</th>
+                <th>{total_label}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {invoice_items}
+        </tbody>
+    </table>
+
+    <table class="amount-summary">
+        <tr>
+            <td>{net_amount_label}:</td>
+            <td>{net_amount}</td>
+        </tr>
+        {vat_row}
+        <tr>
+            <td>{total_amount_label}:</td>
+            <td>{total_amount}</td>
+        </tr>
+    </table>
+
+    <div class="payment-info">
+        <p>{payment_instruction}</p>
+        
+        {vat_notice}
+        
+        <div class="banking-info">
+            <p><span class="medium-bold">{name_label}:</span> {company_name}</p>
+            <p><span class="medium-bold">{bank_label}:</span> {bank_institute}</p>
+            <p><span class="medium-bold">IBAN:</span> {bank_iban}</p>
+            <p><span class="medium-bold">BIC:</span> {bank_bic}</p>
+        </div>
+
+        <p>{thank_you_note}</p>
+        <p>{closing}<br>{company_name}</p>
+    </div>
+
+    <div class="contact-details">
+        {contact_details}
+    </div>
+</body>
+</html>

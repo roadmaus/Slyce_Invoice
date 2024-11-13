@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechnung</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 48px;
+        }
+
+        body {
+            font-family: "Times New Roman", Times, serif;
+            margin: 0;
+            padding: 48px;
+            color: #000000;
+            font-size: 14px;
+            line-height: 1.5;
+            background-color: white;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 72px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: bold;
+            font-family: "Times New Roman", serif;
+            letter-spacing: 2px;
+        }
+
+        .company-address {
+            text-align: right;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 48px;
+        }
+
+        .recipient-info {
+            max-width: 280px;
+            border-left: 2px solid #000;
+            padding-left: 16px;
+        }
+
+        .invoice-info {
+            text-align: right;
+        }
+
+        .invoice-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 36px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 36px 0;
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border: 1px solid #000;
+        }
+
+        th {
+            font-weight: bold;
+            background-color: #f8f8f8;
+            font-size: 14px;
+        }
+
+        .amount-summary {
+            width: 320px;
+            margin-left: auto;
+            margin-right: 0;
+            border: 2px solid #000;
+        }
+
+        .amount-summary tr td:last-child {
+            text-align: right;
+        }
+
+        .amount-summary tr:last-child {
+            font-weight: bold;
+            font-size: 16px;
+            background-color: #f8f8f8;
+        }
+
+        .payment-info {
+            margin-top: 48px;
+            border-top: 2px solid #000;
+            padding-top: 24px;
+        }
+
+        .banking-info {
+            margin-top: 36px;
+            border: 1px solid #000;
+            padding: 24px;
+            background-color: #f8f8f8;
+        }
+
+        .banking-info p {
+            margin: 12px 0;
+        }
+
+        .contact-details {
+            text-align: center;
+            margin-top: 48px;
+            font-size: 12px;
+            border-top: 1px solid #000;
+            padding-top: 24px;
+        }
+
+        .medium-bold {
+            font-weight: bold;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-text">INVOICE</div>
+        </div>
+        <div class="company-address">
+            {company_name}<br>
+            {company_street}<br>
+            {company_postalcode} {company_city}<br>
+            <p>Steuernummer: {tax_number}<br>
+            SteuerID: {tax_id}</p>
+        </div>
+    </div>
+
+    <div class="invoice-details">
+        <div class="recipient-info">
+            {customer_address}
+        </div>
+        <div class="invoice-info">
+            {invoice_number_date}
+        </div>
+    </div>
+
+    <div class="greeting-section">
+        <p>{greeting}</p>
+        <p>{service_period_text}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>{position_label}</th>
+                <th>{quantity_label}</th>
+                <th>{description_label}</th>
+                <th>{unit_price_label}</th>
+                <th>{total_label}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {invoice_items}
+        </tbody>
+    </table>
+
+    <table class="amount-summary">
+        <tr>
+            <td>{net_amount_label}:</td>
+            <td>{net_amount}</td>
+        </tr>
+        {vat_row}
+        <tr>
+            <td>{total_amount_label}:</td>
+            <td>{total_amount}</td>
+        </tr>
+    </table>
+
+    <div class="payment-info">
+        <p>{payment_instruction}</p>
+        
+        {vat_notice}
+        
+        <div class="banking-info">
+            <p><span class="medium-bold">{name_label}:</span> {company_name}</p>
+            <p><span class="medium-bold">{bank_label}:</span> {bank_institute}</p>
+            <p><span class="medium-bold">IBAN:</span> {bank_iban}</p>
+            <p><span class="medium-bold">BIC:</span> {bank_bic}</p>
+        </div>
+
+        <p>{thank_you_note}</p>
+        <p>{closing}<br>{company_name}</p>
+    </div>
+
+    <div class="contact-details">
+        {contact_details}
+    </div>
+</body>
+</html>
