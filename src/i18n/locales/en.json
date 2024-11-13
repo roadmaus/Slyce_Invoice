@@ -93,6 +93,7 @@
       "academicTitle": {
         "label": "Academic Title",
         "options": {
+          "none": "None",
           "dr": "Dr.",
           "prof": "Prof.",
           "profDr": "Prof. Dr.",
