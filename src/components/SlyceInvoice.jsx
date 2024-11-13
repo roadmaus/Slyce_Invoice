@@ -204,33 +204,53 @@ const getTranslatedAcademicTitle = (storedTitle, language) => {
   return translatedTitle || storedTitle;
 };
 
-// Update formatCustomerAddress to use both translations
+// Add this new helper function
+const formatCustomerName = (customer, language, includeTitle = true, includeHonorific = true) => {
+  const parts = [];
+
+  // Handle title translation (e.g., Mr/Mrs)
+  if (includeTitle && customer.title && customer.title !== 'neutral') {
+    const translatedTitle = getTranslatedTitle(customer.title, language);
+    if (translatedTitle) {
+      parts.push(translatedTitle);
+    }
+  }
+
+  // Handle academic title (e.g., Prof/Dr)
+  if (includeHonorific && customer.zusatz && customer.zusatz !== 'none') {
+    const translatedAcademicTitle = getTranslatedAcademicTitle(customer.zusatz, language);
+    if (translatedAcademicTitle) {
+      parts.push(translatedAcademicTitle);
+    }
+  }
+
+  // Add name
+  parts.push(customer.name);
+
+  // For Japanese/Chinese, add honorific suffix if in greeting
+  if (includeHonorific && ['ja', 'zh'].includes(language)) {
+    const honorific = language === 'ja' ? '様' : '先生';
+    return parts.join(' ') + honorific;
+  }
+
+  return parts.join(' ');
+};
+
+// Update formatCustomerAddress to use the new function
 const formatCustomerAddress = (customer, language) => {
   const addressParts = [];
 
-  // Handle title translation
-  if (customer.title && customer.title !== 'neutral') {
-    const translatedTitle = getTranslatedTitle(customer.title, language);
-    if (translatedTitle) {
-      addressParts.push(translatedTitle);
-    }
-  }
-
-  // Add academic title if present (now with translation)
-  if (customer.zusatz && customer.zusatz !== 'none') {
-    const translatedAcademicTitle = getTranslatedAcademicTitle(customer.zusatz, language);
-    if (translatedAcademicTitle) {
-      addressParts.push(translatedAcademicTitle);
-    }
-  }
-
-  // Add name and address details
-  addressParts.push(customer.name);
+  // Use the new unified formatting function
+  addressParts.push(formatCustomerName(customer, language));
   addressParts.push(customer.street);
   addressParts.push(`${customer.postal_code} ${customer.city}`);
 
-  // Join with line breaks for HTML
   return addressParts.filter(Boolean).join('<br>');
+};
+
+// Update your greeting generation to use the same function
+const formatGreeting = (customer, language) => {
+  return formatCustomerName(customer, language, true, true);
 };
 
 const SlyceInvoice = () => {
@@ -547,62 +567,6 @@ const SlyceInvoice = () => {
     return invoiceItems.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
   };
 
-  // Format greeting
-  const formatGreeting = () => {
-    // Split name into parts (assuming last word is last name)
-    const nameParts = selectedCustomer.name.trim().split(' ');
-    const lastName = nameParts[nameParts.length - 1];
-    const fullName = selectedCustomer.name;
-
-    // Business customer case
-    if (selectedCustomer.firma) {
-      return t('invoice.greeting.business');
-    }
-
-    // Handle cases based on title
-    switch (selectedCustomer.title) {
-      case 'Divers':
-        return selectedCustomer.zusatz && selectedCustomer.zusatz !== 'none'
-          ? t('invoice.greeting.diverse.academic', {
-              title: selectedCustomer.zusatz,
-              full_name: fullName
-            }).replace('{title}', selectedCustomer.zusatz)
-              .replace('{full_name}', fullName)
-          : t('invoice.greeting.diverse.default', {
-              full_name: fullName
-            }).replace('{full_name}', fullName);
-
-      case 'Herr':
-        return selectedCustomer.zusatz && selectedCustomer.zusatz !== 'none'
-          ? t('invoice.greeting.herr.academic', {
-              title: selectedCustomer.zusatz,
-              last_name: lastName
-            }).replace('{title}', selectedCustomer.zusatz)
-              .replace('{last_name}', lastName)
-          : t('invoice.greeting.herr.default', {
-              last_name: lastName
-            }).replace('{last_name}', lastName);
-
-      case 'Frau':
-        return selectedCustomer.zusatz && selectedCustomer.zusatz !== 'none'
-          ? t('invoice.greeting.frau.academic', {
-              title: selectedCustomer.zusatz,
-              last_name: lastName
-            }).replace('{title}', selectedCustomer.zusatz)
-              .replace('{last_name}', lastName)
-          : t('invoice.greeting.frau.default', {
-              last_name: lastName
-            }).replace('{last_name}', lastName);
-
-      case 'neutral':
-      default:
-        // Fallback for neutral or no title selected
-        return t('invoice.greeting.neutral', {
-          full_name: fullName
-        }).replace('{full_name}', fullName);
-    }
-  };
-
   // Add this useEffect to load the setting
   useEffect(() => {
     const loadInvoiceLanguage = async () => {
@@ -649,11 +613,15 @@ const SlyceInvoice = () => {
 
       const template = await window.electronAPI.getInvoiceTemplate();
       
-      // Format customer address with translated title
+      // Use the same formatting function for both address and greeting
       const customerAddress = formatCustomerAddress(selectedCustomer, invoiceLang);
+      const customerGreeting = formatGreeting(selectedCustomer, invoiceLang);
 
-      // Get formatted greeting using new function
-      const greeting = formatGreeting();
+      const templateData = {
+        customer_address: customerAddress,
+        customer_greeting: customerGreeting,
+        // ... other template data ...
+      };
 
       // Calculate amounts
       const netTotal = calculateTotal();
@@ -723,7 +691,7 @@ const SlyceInvoice = () => {
         .replaceAll('{tax_id}', selectedProfile.tax_id)
         .replaceAll('{customer_address}', customerAddress)
         .replaceAll('{invoice_number_date}', invoiceNumberDate)
-        .replaceAll('{greeting}', greeting)
+        .replaceAll('{greeting}', customerGreeting)
         .replaceAll('{service_period_text}', servicePeriodText)
         .replaceAll('{position_label}', t('invoice.items.position'))
         .replaceAll('{quantity_label}', t('invoice.items.quantity'))
