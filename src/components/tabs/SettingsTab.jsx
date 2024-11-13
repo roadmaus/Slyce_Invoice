@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import '@/i18n/config';
 import TemplateEditor from '../TemplateEditor';
+import { SUPPORTED_CURRENCIES, DEFAULT_CURRENCY } from '@/constants/currencies';
 
 const SettingsTab = () => {
   const { theme, setTheme } = useTheme();
@@ -28,6 +29,7 @@ const SettingsTab = () => {
   const [clickedLanguages, setClickedLanguages] = React.useState(new Set());
   const [showSwabian, setShowSwabian] = React.useState(false);
   const [showTemplateEditor, setShowTemplateEditor] = React.useState(false);
+  const [selectedCurrency, setSelectedCurrency] = React.useState(DEFAULT_CURRENCY);
 
   // Load preview settings on mount
   React.useEffect(() => {
@@ -163,6 +165,38 @@ const SettingsTab = () => {
     window.electronAPI.showItemInFolder(templatePath);
   };
 
+  // Add to existing useEffect or create new one for loading settings
+  React.useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        // ... existing settings loading ...
+        const savedCurrency = await window.electronAPI.getData('currency');
+        if (savedCurrency) {
+          setSelectedCurrency(savedCurrency);
+        }
+      } catch (error) {
+        console.error('Error loading currency settings:', error);
+        toast.error(t('settings.errors.loadCurrency'));
+      }
+    };
+    loadSettings();
+  }, []);
+
+  // Add handler for currency updates
+  const updateCurrency = async (newCurrency) => {
+    try {
+      await window.electronAPI.setData('currency', newCurrency);
+      setSelectedCurrency(newCurrency);
+      window.dispatchEvent(new CustomEvent('currencyChanged', { 
+        detail: newCurrency 
+      }));
+      toast.success(t('settings.success.currency'));
+    } catch (error) {
+      console.error('Error updating currency:', error);
+      toast.error(t('settings.errors.updateCurrency'));
+    }
+  };
+
   return (
     <div className="container max-w-4xl mx-auto">
       <Card className="border-none shadow-none">
@@ -215,6 +249,41 @@ const SettingsTab = () => {
                     <h3 className={`font-medium ${language === value ? 'text-primary' : ''}`}>
                       {label}
                     </h3>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Add Currency Section after Language Section */}
+            <section>
+              <div className="flex items-center gap-2 mb-6">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t('settings.currency.title')}
+                </h2>
+                <Info className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <p className="text-muted-foreground mb-6">
+                {t('settings.currency.description')}
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {SUPPORTED_CURRENCIES.map(({ code, symbol, name }) => (
+                  <button
+                    key={code}
+                    onClick={() => updateCurrency({ code, symbol, name })}
+                    className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
+                      ${selectedCurrency.code === code 
+                        ? 'border-primary bg-primary/5 shadow-sm' 
+                        : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
+                  >
+                    <span className="text-2xl mb-2">{symbol}</span>
+                    <h3 className={`font-medium ${selectedCurrency.code === code ? 'text-primary' : ''}`}>
+                      {name}
+                    </h3>
+                    <span className="text-xs text-muted-foreground mt-1">
+                      {code}
+                    </span>
                   </button>
                 ))}
               </div>

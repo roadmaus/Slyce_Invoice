@@ -36,7 +36,9 @@ const InvoiceTab = ({
   generateInvoice,
   isLoading,
   profileInvoiceNumbers,
-  setProfileInvoiceNumbers
+  setProfileInvoiceNumbers,
+  selectedCurrency,
+  formatCurrency,
 }) => {
   const { t } = useTranslation();
 
@@ -332,12 +334,12 @@ const InvoiceTab = ({
                       onChange={(e) => updateInvoiceItem(index, 'rate', parseFloat(e.target.value))}
                       min="0"
                       step="0.01"
-                      placeholder="Rate in €"
+                      placeholder={`Rate in ${selectedCurrency.symbol}`}
                     />
                   </div>
                   <div className="col-span-1">
                     <Input
-                      value={`€${(item.quantity * item.rate).toFixed(2)}`}
+                      value={formatCurrency(item.quantity * item.rate)}
                       readOnly
                       className="bg-background border-border"
                     />
@@ -370,7 +372,9 @@ const InvoiceTab = ({
         {invoiceItems.length > 0 && (
           <InvoiceTotals 
             items={invoiceItems} 
-            profile={selectedProfile} 
+            profile={selectedProfile}
+            selectedCurrency={selectedCurrency}
+            formatCurrency={formatCurrency}
           />
         )}
 

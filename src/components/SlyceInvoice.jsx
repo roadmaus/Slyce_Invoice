@@ -26,6 +26,7 @@ import BusinessTab from './tabs/BusinessTab';
 import CustomersTab from './tabs/CustomersTab';
 import InvoiceTab from './tabs/InvoiceTab';
 import TagsTab from './tabs/TagsTab';
+import { DEFAULT_CURRENCY } from '@/constants/currencies';
 // Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
   if (!profileId) {
@@ -117,16 +118,6 @@ const adjustColorForDarkMode = (hexColor, isDark) => {
   
   // Add transparency for dark mode
   return `rgba(${r}, ${g}, ${b}, 0.3)`;
-};
-
-// Currency formatting
-const formatCurrency = (amount, locale = 'de-DE', currency = 'EUR') => {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(amount);
 };
 
 // Date formatting
@@ -272,6 +263,9 @@ const SlyceInvoice = () => {
   // Add new state for profile-specific invoice numbers
   const [profileInvoiceNumbers, setProfileInvoiceNumbers] = useState({});
 
+  // Add this with other state declarations
+  const [selectedCurrency, setSelectedCurrency] = useState(DEFAULT_CURRENCY);
+
   // Load saved data on component mount
   useEffect(() => {
     const loadSavedData = async () => {
@@ -280,6 +274,7 @@ const SlyceInvoice = () => {
         const savedCustomers = await window.electronAPI.getData('customers');
         const savedTags = await window.electronAPI.getData('quickTags');
         const savedInvoiceNumbers = await window.electronAPI.getData('profileInvoiceNumbers') || {};
+        const savedCurrency = await window.electronAPI.getData('currency');
 
         if (savedProfiles) setBusinessProfiles(savedProfiles);
         if (savedCustomers) {
@@ -290,6 +285,7 @@ const SlyceInvoice = () => {
         }
         if (savedTags) setQuickTags(savedTags);
         if (savedInvoiceNumbers) setProfileInvoiceNumbers(savedInvoiceNumbers);
+        if (savedCurrency) setSelectedCurrency(savedCurrency);
         
         setIsInitialized(true);
       } catch (error) {
@@ -299,6 +295,16 @@ const SlyceInvoice = () => {
     };
 
     loadSavedData();
+
+    // Add currency change listener
+    const handleCurrencyChange = (event) => {
+      setSelectedCurrency(event.detail);
+    };
+    window.addEventListener('currencyChanged', handleCurrencyChange);
+    
+    return () => {
+      window.removeEventListener('currencyChanged', handleCurrencyChange);
+    };
   }, []);
 
   // Save data whenever it changes
@@ -309,13 +315,14 @@ const SlyceInvoice = () => {
         await window.electronAPI.setData('customers', customers);
         await window.electronAPI.setData('quickTags', quickTags);
         await window.electronAPI.setData('profileInvoiceNumbers', profileInvoiceNumbers);
+        await window.electronAPI.setData('currency', selectedCurrency);
         if (defaultProfileId) {
           await window.electronAPI.setData('defaultProfileId', defaultProfileId);
         }
       };
       saveData();
     }
-  }, [businessProfiles, customers, quickTags, defaultProfileId, profileInvoiceNumbers, isInitialized]);
+  }, [businessProfiles, customers, quickTags, defaultProfileId, profileInvoiceNumbers, selectedCurrency, isInitialized]);
 
   // Business Profile Management
   const addBusinessProfile = () => {
@@ -583,9 +590,11 @@ const SlyceInvoice = () => {
       `).join('');
 
       // Format payment instruction with amount
+      const selectedCurrency = await window.electronAPI.getData('currency') || DEFAULT_CURRENCY;
+      
       const paymentInstruction = t('invoice.payment.instruction', {
-        amount: formatCurrency(totalAmount)
-      }).replace('{amount}', formatCurrency(totalAmount));
+        amount: formatCurrency(totalAmount, 'de-DE', selectedCurrency.code)
+      }).replace('{amount}', formatCurrency(totalAmount, 'de-DE', selectedCurrency.code));
 
       // Format contact details - only include if they exist
       const contactDetailsHtml = selectedProfile.contact_details 
@@ -1228,6 +1237,43 @@ useEffect(() => {
   }
 }, [isInitialized, businessProfiles]);
 
+// Add this useEffect to handle currency changes
+useEffect(() => {
+  const loadCurrency = async () => {
+    const saved = await window.electronAPI.getData('currency');
+    if (saved) {
+      setSelectedCurrency(saved);
+    }
+  };
+  loadCurrency();
+
+  const handleCurrencyChange = (event) => {
+    setSelectedCurrency(event.detail);
+  };
+  window.addEventListener('currencyChanged', handleCurrencyChange);
+  
+  return () => {
+    window.removeEventListener('currencyChanged', handleCurrencyChange);
+  };
+}, []);
+
+// Add formatCurrency inside the component
+const formatCurrency = (amount) => {
+  if (!selectedCurrency?.code) {
+    return new Intl.NumberFormat('de-DE', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  }
+  
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency',
+    currency: selectedCurrency.code,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+};
+
 // Main Render
   return (
     <>
@@ -1287,6 +1333,8 @@ useEffect(() => {
               isLoading={isLoading}
               profileInvoiceNumbers={profileInvoiceNumbers}
               setProfileInvoiceNumbers={setProfileInvoiceNumbers}
+              selectedCurrency={selectedCurrency}
+              formatCurrency={formatCurrency}
             />
           </TabsContent>
 
