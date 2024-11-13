@@ -606,7 +606,24 @@ const SettingsTab = () => {
                   { value: 'en', label: 'English', flag: '🇺🇸' },
                   { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
                   { value: 'es', label: 'Español', flag: '🇪🇸' },
+                  { value: 'ko', label: '한국어', flag: '🇰🇷' },
                   { value: 'fr', label: 'Français', flag: '🇫🇷' },
+                  { value: 'zh', label: '中文', flag: '🇨🇳' },
+                  { value: 'ja', label: '日本語', flag: '🇯🇵' },
+                  { value: 'pt', label: 'Português', flag: '🇵🇹' },
+                  { value: 'ru', label: 'Русский', flag: '🇷🇺' },
+                  { value: 'hi', label: 'हिन्दी', flag: '🇮🇳' },
+                  { value: 'ar', label: 'العربية', flag: '🇸🇦' },
+                  { value: 'it', label: 'Italiano', flag: '🇮🇹' },
+                  { value: 'nl', label: 'Nederlands', flag: '🇳🇱' },
+                  { value: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+                  { value: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
+                  { value: 'th', label: 'ไทย', flag: '🇹🇭' },
+                  ...(showSwabian ? [{ 
+                    value: 'swg', 
+                    label: 'Schwäbisch', 
+                    flag: '🦁'
+                  }] : [])
                 ].map(({ value, label, flag }) => (
                   <div key={value}>
                     <RadioGroupItem
