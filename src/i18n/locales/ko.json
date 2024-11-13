@@ -272,27 +272,43 @@
       },
       "templateLoad": "템플릿 로드 오류",
       "templateSave": "템플릿 저장 오류",
-      "templateReset": "템플릿 초기화 오류"
+      "templateReset": "템플릿 초기화 오류",
+      "templateGalleryLoad": "템플릿 갤러리 로드 중 오류 발생",
+      "templateDelete": "템플릿 삭제 중 오류 발생",
+      "templateRename": "템플릿 이름 변경 중 오류 발생"
     },
     "success": {
       "saveLocation": "저장 위치가 성공적으로 업데이트되었습니다",
       "language": "언어가 성공적으로 업데이트되었습니다",
       "templateSave": "템플릿이 성공적으로 저장됨",
-      "templateReset": "템플릿이 성공적으로 초기화됨"
+      "templateReset": "템플릿이 성공적으로 초기화됨",
+      "templateLoad": "템플릿을 성공적으로 불러왔습니다",
+      "templateDelete": "템플릿을 성공적으로 삭제했습니다",
+      "templateRename": "템플릿 이름을 성공적으로 변경했습니다"
     },
     "templateEditor": "템플릿 편집기",
     "actions": {
       "reset": "초기화",
       "save": "저장",
       "close": "닫기",
-      "editTemplate": "템플릿 편집"
+      "editTemplate": "템플릿 편집",
+      "showGallery": "갤러리 표시",
+      "hideGallery": "갤러리 숨기기",
+      "refresh": "새로고침"
     },
     "confirmations": {
-      "resetTemplate": "템플릿을 초기화하시겠습니까? 이 작업은 취소할 수 없습니다."
+      "resetTemplate": "템플릿을 초기화하시겠습니까? 이 작업은 취소할 수 없습니다.",
+      "deleteTemplate": "이 템플릿을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
     },
     "invoice": {
       "template": "청구서 템플릿",
       "templateDescription": "브랜드에 맞게 청구서 템플릿 사용자 지정"
+    },
+    "gallery": "갤러리",
+    "recentTemplates": "최근 템플릿",
+    "renameTemplate": "템플릿 이름 변경",
+    "placeholders": {
+      "templateName": "템플릿 이름 입력"
     }
   },
   "common": {
@@ -310,7 +326,9 @@
     "noResults": "결과 없음",
     "address": "주소",
     "taxInfo": "세금 정보",
-    "bankDetails": "은행 정보"
+    "bankDetails": "은행 정보",
+    "rename": "이름 변경",
+    "copy": "클립보드에 복사"
   },
   "dialogs": {
     "warning": {

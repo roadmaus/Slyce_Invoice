@@ -280,27 +280,43 @@
       },
       "templateLoad": "خطأ في تحميل القالب",
       "templateSave": "خطأ في حفظ القالب",
-      "templateReset": "خطأ في إعادة تعيين القالب"
+      "templateReset": "خطأ في إعادة تعيين القالب",
+      "templateGalleryLoad": "خطأ في تحميل معرض القوالب",
+      "templateDelete": "خطأ في حذف القالب",
+      "templateRename": "خطأ في إعادة تسمية القالب"
     },
     "success": {
       "saveLocation": "تم تحديث موقع الحفظ بنجاح",
       "language": "تم تحديث اللغة بنجاح",
       "templateSave": "تم حفظ القالب بنجاح",
-      "templateReset": "تم إعادة تعيين القالب بنجاح"
+      "templateReset": "تم إعادة تعيين القالب بنجاح",
+      "templateLoad": "تم تحميل القالب بنجاح",
+      "templateDelete": "تم حذف القالب بنجاح",
+      "templateRename": "تمت إعادة تسمية القالب بنجاح"
     },
     "templateEditor": "محرر القالب",
     "actions": {
       "reset": "إعادة تعيين",
       "save": "حفظ",
       "close": "إغلاق",
-      "editTemplate": "تحرير القالب"
+      "editTemplate": "تحرير القالب",
+      "showGallery": "إظهار المعرض",
+      "hideGallery": "إخفاء المعرض",
+      "refresh": "تحديث"
     },
     "confirmations": {
-      "resetTemplate": "هل أنت متأكد أنك تريد إعادة تعيين القالب؟ لا يمكن التراجع عن هذا الإجراء."
+      "resetTemplate": "هل أنت متأكد أنك تريد إعادة تعيين القالب؟ لا يمكن التراجع عن هذا الإجراء.",
+      "deleteTemplate": "هل أنت متأكد أنك تريد حذف هذا القالب؟ لا يمكن التراجع عن هذا الإجراء."
     },
     "invoice": {
       "template": "قالب الفاتورة",
       "templateDescription": "تخصيص قالب الفاتورة ليتناسب مع علامتك التجارية"
+    },
+    "gallery": "المعرض",
+    "recentTemplates": "القوالب الأخيرة",
+    "renameTemplate": "إعادة تسمية القالب",
+    "placeholders": {
+      "templateName": "أدخل اسم القالب"
     }
   },
   "common": {
@@ -318,7 +334,9 @@
     "noResults": "لا توجد نتائج",
     "address": "العنوان",
     "taxInfo": "المعلومات الضريبية",
-    "bankDetails": "التفاصيل المصرفية"
+    "bankDetails": "التفاصيل المصرفية",
+    "rename": "إعادة تسمية",
+    "copy": "نسخ إلى الحافظة"
   },
   "dialogs": {
     "warning": {

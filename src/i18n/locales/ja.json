@@ -280,27 +280,43 @@
       },
       "templateLoad": "テンプレートの読み込みエラー",
       "templateSave": "テンプレートの保存エラー",
-      "templateReset": "テンプレートのリセットエラー"
+      "templateReset": "テンプレートのリセットエラー",
+      "templateGalleryLoad": "テンプレートギャラリーの読み込みエラー",
+      "templateDelete": "テンプレートの削除エラー",
+      "templateRename": "テンプレートの名前変更エラー"
     },
     "success": {
       "saveLocation": "保存場所が正常に更新されました",
       "language": "言語が正常に更新されました",
       "templateSave": "テンプレートを保存しました",
-      "templateReset": "テンプレートをリセットしました"
+      "templateReset": "テンプレートをリセットしました",
+      "templateLoad": "テンプレートを正常に読み込みました",
+      "templateDelete": "テンプレートを正常に削除しました",
+      "templateRename": "テンプレートの名前を正常に変更しました"
     },
     "templateEditor": "テンプレートエディタ",
     "actions": {
       "reset": "リセット",
       "save": "保存",
       "close": "閉じる",
-      "editTemplate": "テンプレートを編集"
+      "editTemplate": "テンプレートを編集",
+      "showGallery": "ギャラリーを表示",
+      "hideGallery": "ギャラリーを非表示",
+      "refresh": "更新"
     },
     "confirmations": {
-      "resetTemplate": "テンプレートをリセットしてもよろしいですか？この操作は元に戻せません。"
+      "resetTemplate": "テンプレートをリセットしてもよろしいですか？この操作は元に戻せません。",
+      "deleteTemplate": "このテンプレートを削除してもよろしいですか？この操作は元に戻せません。"
     },
     "invoice": {
       "template": "請求書テンプレート",
       "templateDescription": "請求書テンプレートをブランドに合わせてカスタマイズ"
+    },
+    "gallery": "ギャラリー",
+    "recentTemplates": "最近のテンプレート",
+    "renameTemplate": "テンプレートの名前を変更",
+    "placeholders": {
+      "templateName": "テンプレート名を入力"
     }
   },
   "common": {
@@ -318,7 +334,9 @@
     "noResults": "結果なし",
     "address": "住所",
     "taxInfo": "税務情報",
-    "bankDetails": "銀行口座情報"
+    "bankDetails": "銀行口座情報",
+    "rename": "名前を変更",
+    "copy": "クリップボードにコピー"
   },
   "dialogs": {
     "warning": {

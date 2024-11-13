@@ -272,27 +272,43 @@
       },
       "templateLoad": "Erro ao carregar modelo",
       "templateSave": "Erro ao salvar modelo",
-      "templateReset": "Erro ao redefinir modelo"
+      "templateReset": "Erro ao redefinir modelo",
+      "templateGalleryLoad": "Erro ao carregar galeria de modelos",
+      "templateDelete": "Erro ao excluir modelo",
+      "templateRename": "Erro ao renomear modelo"
     },
     "success": {
       "saveLocation": "Local de salvamento atualizado com sucesso",
       "language": "Idioma atualizado com sucesso",
       "templateSave": "Modelo salvo com sucesso",
-      "templateReset": "Modelo redefinido com sucesso"
+      "templateReset": "Modelo redefinido com sucesso",
+      "templateLoad": "Modelo carregado com sucesso",
+      "templateDelete": "Modelo excluído com sucesso",
+      "templateRename": "Modelo renomeado com sucesso"
     },
     "templateEditor": "Editor de modelo",
     "actions": {
       "reset": "Redefinir",
       "save": "Salvar",
       "close": "Fechar",
-      "editTemplate": "Editar modelo"
+      "editTemplate": "Editar modelo",
+      "showGallery": "Mostrar galeria",
+      "hideGallery": "Ocultar galeria",
+      "refresh": "Atualizar"
     },
     "confirmations": {
-      "resetTemplate": "Tem certeza de que deseja redefinir o modelo? Esta ação não pode ser desfeita."
+      "resetTemplate": "Tem certeza de que deseja redefinir o modelo? Esta ação não pode ser desfeita.",
+      "deleteTemplate": "Tem certeza que deseja excluir este modelo? Esta ação não pode ser desfeita."
     },
     "invoice": {
       "template": "Modelo de fatura",
       "templateDescription": "Personalize seu modelo de fatura para corresponder à sua marca"
+    },
+    "gallery": "Galeria",
+    "recentTemplates": "Modelos recentes",
+    "renameTemplate": "Renomear modelo",
+    "placeholders": {
+      "templateName": "Digite o nome do modelo"
     }
   },
   "common": {
@@ -310,7 +326,9 @@
     "noResults": "Nenhum resultado",
     "address": "Endereço",
     "taxInfo": "Informações Fiscais",
-    "bankDetails": "Dados Bancários"
+    "bankDetails": "Dados Bancários",
+    "rename": "Renomear",
+    "copy": "Copiar para área de transferência"
   },
   "dialogs": {
     "warning": {

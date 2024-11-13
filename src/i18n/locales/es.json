@@ -280,27 +280,43 @@
       },
       "templateLoad": "Error al cargar la plantilla",
       "templateSave": "Error al guardar la plantilla",
-      "templateReset": "Error al restablecer la plantilla"
+      "templateReset": "Error al restablecer la plantilla",
+      "templateGalleryLoad": "Error al cargar la galería de plantillas",
+      "templateDelete": "Error al eliminar la plantilla",
+      "templateRename": "Error al renombrar la plantilla"
     },
     "success": {
       "saveLocation": "Ubicación de guardado actualizada exitosamente",
       "language": "Idioma actualizado exitosamente",
       "templateSave": "Plantilla guardada con éxito",
-      "templateReset": "Plantilla restablecida con éxito"
+      "templateReset": "Plantilla restablecida con éxito",
+      "templateLoad": "Plantilla cargada con éxito",
+      "templateDelete": "Plantilla eliminada con éxito",
+      "templateRename": "Plantilla renombrada con éxito"
     },
     "templateEditor": "Editor de plantillas",
     "actions": {
       "reset": "Restablecer",
       "save": "Guardar",
       "close": "Cerrar",
-      "editTemplate": "Editar plantilla"
+      "editTemplate": "Editar plantilla",
+      "showGallery": "Mostrar galería",
+      "hideGallery": "Ocultar galería",
+      "refresh": "Actualizar"
     },
     "confirmations": {
-      "resetTemplate": "¿Está seguro de que desea restablecer la plantilla? Esta acción no se puede deshacer."
+      "resetTemplate": "¿Está seguro de que desea restablecer la plantilla? Esta acción no se puede deshacer.",
+      "deleteTemplate": "¿Está seguro de que desea eliminar esta plantilla? Esta acción no se puede deshacer."
     },
     "invoice": {
       "template": "Plantilla de factura",
       "templateDescription": "Personalice su plantilla de factura para que coincida con su marca"
+    },
+    "gallery": "Galería",
+    "recentTemplates": "Plantillas recientes",
+    "renameTemplate": "Renombrar plantilla",
+    "placeholders": {
+      "templateName": "Introducir nombre de plantilla"
     }
   },
   "common": {
@@ -318,7 +334,9 @@
     "noResults": "Sin resultados",
     "address": "Dirección",
     "taxInfo": "Información fiscal",
-    "bankDetails": "Datos bancarios"
+    "bankDetails": "Datos bancarios",
+    "rename": "Renombrar",
+    "copy": "Copiar al portapapeles"
   },
   "dialogs": {
     "warning": {

@@ -272,27 +272,43 @@
       },
       "templateLoad": "加载模板时出错",
       "templateSave": "保存模板时出错",
-      "templateReset": "重置模板时出错"
+      "templateReset": "重置模板时出错",
+      "templateGalleryLoad": "加载模板画廊时出错",
+      "templateDelete": "删除模板时出错",
+      "templateRename": "重命名模板时出错"
     },
     "success": {
       "saveLocation": "保存位置更新成功",
       "language": "语言更新成功",
       "templateSave": "模板保存成功",
-      "templateReset": "模板重置成功"
+      "templateReset": "模板重置成功",
+      "templateLoad": "模板加载成功",
+      "templateDelete": "模板删除成功",
+      "templateRename": "模板重命名成功"
     },
     "templateEditor": "模板编辑器",
     "actions": {
       "reset": "重置",
       "save": "保存",
       "close": "关闭",
-      "editTemplate": "编辑模板"
+      "editTemplate": "编辑模板",
+      "showGallery": "显示画廊",
+      "hideGallery": "隐藏画廊",
+      "refresh": "刷新"
     },
     "confirmations": {
-      "resetTemplate": "您确定要重置模板吗？此操作无法撤消。"
+      "resetTemplate": "您确定要重置模板吗？此操作无法撤消。",
+      "deleteTemplate": "您确定要删除此模板吗？此操作无法撤消。"
     },
     "invoice": {
       "template": "发票模板",
       "templateDescription": "自定义发票模板以匹配您的品牌"
+    },
+    "gallery": "画廊",
+    "recentTemplates": "最近的模板",
+    "renameTemplate": "重命名模板",
+    "placeholders": {
+      "templateName": "输入模板名称"
     }
   },
   "common": {
@@ -310,7 +326,9 @@
     "noResults": "无结果",
     "address": "地址",
     "taxInfo": "税务信息",
-    "bankDetails": "银行详情"
+    "bankDetails": "银行详情",
+    "rename": "重命名",
+    "copy": "复制到剪贴板"
   },
   "dialogs": {
     "warning": {

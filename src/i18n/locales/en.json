@@ -280,27 +280,43 @@
       },
       "templateLoad": "Error loading template",
       "templateSave": "Error saving template",
-      "templateReset": "Error resetting template"
+      "templateReset": "Error resetting template",
+      "templateGalleryLoad": "Error loading template gallery",
+      "templateDelete": "Error deleting template",
+      "templateRename": "Error renaming template"
     },
     "success": {
       "saveLocation": "Save location updated successfully",
       "language": "Language updated successfully",
       "templateSave": "Template saved successfully",
-      "templateReset": "Template reset successfully"
+      "templateReset": "Template reset successfully",
+      "templateLoad": "Template loaded successfully",
+      "templateDelete": "Template deleted successfully",
+      "templateRename": "Template renamed successfully"
     },
     "templateEditor": "Template Editor",
     "actions": {
       "reset": "Reset",
       "save": "Save",
       "close": "Close",
-      "editTemplate": "Edit Template"
+      "editTemplate": "Edit Template",
+      "showGallery": "Show Gallery",
+      "hideGallery": "Hide Gallery",
+      "refresh": "Refresh"
     },
     "confirmations": {
-      "resetTemplate": "Are you sure you want to reset the template? This action cannot be undone."
+      "resetTemplate": "Are you sure you want to reset the template? This action cannot be undone.",
+      "deleteTemplate": "Are you sure you want to delete this template? This action cannot be undone."
     },
     "invoice": {
       "template": "Invoice Template",
       "templateDescription": "Customize your invoice template to match your brand"
+    },
+    "gallery": "Gallery",
+    "recentTemplates": "Recent Templates",
+    "renameTemplate": "Rename Template",
+    "placeholders": {
+      "templateName": "Enter template name"
     }
   },
   "common": {
@@ -318,7 +334,9 @@
     "noResults": "No results",
     "address": "Address",
     "taxInfo": "Tax Information",
-    "bankDetails": "Bank Details"
+    "bankDetails": "Bank Details",
+    "rename": "Rename",
+    "copy": "Copy to Clipboard"
   },
   "dialogs": {
     "warning": {

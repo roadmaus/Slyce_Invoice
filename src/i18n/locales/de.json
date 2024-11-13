@@ -279,27 +279,43 @@
       },
       "templateLoad": "Fehler beim Laden der Vorlage",
       "templateSave": "Fehler beim Speichern der Vorlage",
-      "templateReset": "Fehler beim Zurücksetzen der Vorlage"
+      "templateReset": "Fehler beim Zurücksetzen der Vorlage",
+      "templateGalleryLoad": "Fehler beim Laden der Vorlagengalerie",
+      "templateDelete": "Fehler beim Löschen der Vorlage",
+      "templateRename": "Fehler beim Umbenennen der Vorlage"
     },
     "success": {
       "saveLocation": "Speicherort erfolgreich aktualisiert",
       "language": "Sprache erfolgreich aktualisiert",
       "templateSave": "Vorlage erfolgreich gespeichert",
-      "templateReset": "Vorlage erfolgreich zurückgesetzt"
+      "templateReset": "Vorlage erfolgreich zurückgesetzt",
+      "templateLoad": "Vorlage erfolgreich geladen",
+      "templateDelete": "Vorlage erfolgreich gelöscht",
+      "templateRename": "Vorlage erfolgreich umbenannt"
     },
     "templateEditor": "Vorlageneditor",
     "actions": {
       "reset": "Zurücksetzen",
       "save": "Speichern",
       "close": "Schließen",
-      "editTemplate": "Vorlage bearbeiten"
+      "editTemplate": "Vorlage bearbeiten",
+      "showGallery": "Galerie anzeigen",
+      "hideGallery": "Galerie ausblenden",
+      "refresh": "Aktualisieren"
     },
     "confirmations": {
-      "resetTemplate": "Sind Sie sicher, dass Sie die Vorlage zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+      "resetTemplate": "Sind Sie sicher, dass Sie die Vorlage zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteTemplate": "Sind Sie sicher, dass Sie diese Vorlage löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
     },
     "invoice": {
       "template": "Rechnungsvorlage",
       "templateDescription": "Passen Sie Ihre Rechnungsvorlage an Ihre Marke an"
+    },
+    "gallery": "Galerie",
+    "recentTemplates": "Kürzlich verwendete Vorlagen",
+    "renameTemplate": "Vorlage umbenennen",
+    "placeholders": {
+      "templateName": "Vorlagennamen eingeben"
     }
   },
   "common": {
@@ -317,7 +333,9 @@
     "noResults": "Keine Ergebnisse",
     "address": "Adresse",
     "taxInfo": "Steuerinformationen",
-    "bankDetails": "Bankverbindung"
+    "bankDetails": "Bankverbindung",
+    "rename": "Umbenennen",
+    "copy": "In die Zwischenablage kopieren"
   },
   "dialogs": {
     "warning": {
