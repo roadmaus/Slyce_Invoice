@@ -27,6 +27,8 @@ import CustomersTab from './tabs/CustomersTab';
 import InvoiceTab from './tabs/InvoiceTab';
 import TagsTab from './tabs/TagsTab';
 import { DEFAULT_CURRENCY } from '@/constants/currencies';
+import { TITLE_KEYS, ACADEMIC_TITLE_KEYS, TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES } from '@/constants/titleMappings';
+import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
 // Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
   if (!profileId) {
@@ -157,6 +159,78 @@ const validateInvoice = () => {
   }
 
   return true;
+};
+
+// Add these helper functions at the top of your file
+const getTranslatedTitle = (storedTitle, language) => {
+  // Find the key for the stored German value
+  const titleKey = Object.entries(TITLE_STORAGE_VALUES)
+    .find(([_, value]) => value === storedTitle)?.[0];
+
+  // Debug logging
+  console.log('Stored Title:', storedTitle);
+  console.log('Title Key:', titleKey);
+  console.log('Language:', language);
+  console.log('Available Translations:', TITLE_TRANSLATIONS[language]);
+
+  // If no key found or neutral, return empty string
+  if (!titleKey || titleKey === TITLE_KEYS.NEUTRAL) return '';
+
+  // Get translations for the requested language, fallback to German if not found
+  const translations = TITLE_TRANSLATIONS[language] || TITLE_TRANSLATIONS['de'];
+  
+  // Get the translated title
+  const translatedTitle = translations[titleKey];
+  console.log('Translated Title:', translatedTitle);
+
+  return translatedTitle || storedTitle;
+};
+
+// Add this helper function alongside getTranslatedTitle
+const getTranslatedAcademicTitle = (storedTitle, language) => {
+  // Find the key for the stored value
+  const academicKey = Object.entries(ACADEMIC_STORAGE_VALUES)
+    .find(([_, value]) => value === storedTitle)?.[0];
+
+  // If no key found or none, return empty string
+  if (!academicKey || academicKey === ACADEMIC_TITLE_KEYS.NONE) return '';
+
+  // Get translations for the requested language, fallback to English
+  const translations = ACADEMIC_TRANSLATIONS[language] || ACADEMIC_TRANSLATIONS['en'];
+  
+  // Get the translated title
+  const translatedTitle = translations[academicKey];
+
+  return translatedTitle || storedTitle;
+};
+
+// Update formatCustomerAddress to use both translations
+const formatCustomerAddress = (customer, language) => {
+  const addressParts = [];
+
+  // Handle title translation
+  if (customer.title && customer.title !== 'neutral') {
+    const translatedTitle = getTranslatedTitle(customer.title, language);
+    if (translatedTitle) {
+      addressParts.push(translatedTitle);
+    }
+  }
+
+  // Add academic title if present (now with translation)
+  if (customer.zusatz && customer.zusatz !== 'none') {
+    const translatedAcademicTitle = getTranslatedAcademicTitle(customer.zusatz, language);
+    if (translatedAcademicTitle) {
+      addressParts.push(translatedAcademicTitle);
+    }
+  }
+
+  // Add name and address details
+  addressParts.push(customer.name);
+  addressParts.push(customer.street);
+  addressParts.push(`${customer.postal_code} ${customer.city}`);
+
+  // Join with line breaks for HTML
+  return addressParts.filter(Boolean).join('<br>');
 };
 
 const SlyceInvoice = () => {
@@ -563,7 +637,6 @@ const SlyceInvoice = () => {
       let invoiceLang = invoiceLanguage;
       if (invoiceLanguage === 'auto') {
         // Use customer's country/region to determine language
-        // This is a simple example - you might want to expand this logic
         if (selectedCustomer?.country === 'DE' || selectedCustomer?.country === 'AT' || selectedCustomer?.country === 'CH') {
           invoiceLang = 'de';
         } else {
@@ -576,14 +649,8 @@ const SlyceInvoice = () => {
 
       const template = await window.electronAPI.getInvoiceTemplate();
       
-      // Format customer address
-      const customerAddress = [
-        selectedCustomer.title !== 'neutral' ? selectedCustomer.title : '',
-        selectedCustomer.zusatz !== 'none' ? selectedCustomer.zusatz : '',
-        selectedCustomer.name,
-        selectedCustomer.street,
-        `${selectedCustomer.postal_code} ${selectedCustomer.city}`
-      ].filter(Boolean).join('<br>');
+      // Format customer address with translated title
+      const customerAddress = formatCustomerAddress(selectedCustomer, invoiceLang);
 
       // Get formatted greeting using new function
       const greeting = formatGreeting();
@@ -876,41 +943,68 @@ const SlyceInvoice = () => {
 
 const renderCustomerForm = (customer, setCustomer) => {
     const { t } = useTranslation();
+    
+    // Helper function to get the title key from storage value
+    const getTitleKeyFromStorage = (storageValue) => {
+      return Object.entries(TITLE_STORAGE_VALUES)
+        .find(([_, value]) => value === storageValue)?.[0] || 'neutral';
+    };
+
+    // Helper function to get the academic title key from storage value
+    const getAcademicTitleKeyFromStorage = (storageValue) => {
+      return Object.entries(ACADEMIC_STORAGE_VALUES)
+        .find(([_, value]) => value === storageValue)?.[0] || 'none';
+    };
+
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-2">
           <div>
             <Label>{t('customers.form.title')}</Label>
             <Select
-              value={customer.title}
-              onValueChange={(value) => setCustomer({ ...customer, title: value })}
+              value={getTitleKeyFromStorage(customer.title)}
+              onValueChange={(key) => setCustomer({ 
+                ...customer, 
+                title: TITLE_STORAGE_VALUES[key] 
+              })}
             >
               <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder={t('customers.form.selectTitle')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="neutral">{t('customers.form.titles.neutral')}</SelectItem>
-                <SelectItem value="Herr">{t('customers.form.titles.mr')}</SelectItem>
-                <SelectItem value="Frau">{t('customers.form.titles.mrs')}</SelectItem>
-                <SelectItem value="Divers">{t('customers.form.titles.diverse')}</SelectItem>
+                <SelectItem value={TITLE_KEYS.NEUTRAL}>
+                  {t('customers.form.titles.neutral')}
+                </SelectItem>
+                <SelectItem value={TITLE_KEYS.MR}>
+                  {t('customers.form.titles.mr')}
+                </SelectItem>
+                <SelectItem value={TITLE_KEYS.MRS}>
+                  {t('customers.form.titles.mrs')}
+                </SelectItem>
+                <SelectItem value={TITLE_KEYS.DIVERSE}>
+                  {t('customers.form.titles.diverse')}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
             <Label>{t('customers.form.academicTitle.label')}</Label>
             <Select
-              value={customer.zusatz}
-              onValueChange={(value) => setCustomer({ ...customer, zusatz: value })}
+              value={getAcademicTitleKeyFromStorage(customer.zusatz)}
+              onValueChange={(key) => setCustomer({ 
+                ...customer, 
+                zusatz: ACADEMIC_STORAGE_VALUES[key] 
+              })}
             >
               <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder={t('customers.form.academicTitle.placeholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">{t('customers.form.academicTitle.options.none')}</SelectItem>
-                <SelectItem value="Dr.">{t('customers.form.academicTitle.options.dr')}</SelectItem>
-                <SelectItem value="Prof.">{t('customers.form.academicTitle.options.prof')}</SelectItem>
-                <SelectItem value="Prof. Dr.">{t('customers.form.academicTitle.options.profDr')}</SelectItem>
-                <SelectItem value="Dr. h.c.">{t('customers.form.academicTitle.options.drHc')}</SelectItem>
+                {Object.entries(ACADEMIC_TITLE_KEYS).map(([key, value]) => (
+                  <SelectItem key={value} value={value}>
+                    {t(`customers.form.academicTitle.options.${value}`)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -1073,8 +1167,8 @@ const handleCustomerDialog = (existingCustomer = null) => {
   } else {
     setNewCustomer({
       id: '',
-      title: '',
-      zusatz: '',
+      title: TITLE_STORAGE_VALUES[TITLE_KEYS.NEUTRAL], // Default to neutral
+      zusatz: ACADEMIC_STORAGE_VALUES[ACADEMIC_TITLE_KEYS.NONE], // Default to none
       name: '',
       street: '',
       postal_code: '',

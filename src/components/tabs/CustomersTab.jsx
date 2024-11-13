@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { PlusCircle, Edit, Trash2, Building2, MapPin, User2, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES } from '@/constants/titleMappings';
 
 const CustomersTab = ({
   customers,
@@ -19,6 +20,27 @@ const CustomersTab = ({
   addCustomer
 }) => {
   const { t } = useTranslation();
+
+  // Helper function to get display name
+  const getCustomerDisplayName = (customer) => {
+    const parts = [];
+    if (customer.title && customer.title !== TITLE_STORAGE_VALUES.neutral) {
+      // Translate the stored title
+      const titleKey = Object.entries(TITLE_STORAGE_VALUES)
+        .find(([_, value]) => value === customer.title)?.[0]?.toLowerCase();
+      if (titleKey) {
+        parts.push(t(`customers.form.titles.${titleKey}`));
+      }
+    }
+    
+    if (customer.zusatz && customer.zusatz !== ACADEMIC_STORAGE_VALUES.none) {
+      // For academic titles, we use the stored value directly as they're standardized
+      parts.push(customer.zusatz);
+    }
+    
+    parts.push(customer.name);
+    return parts.join(' ');
+  };
 
   return (
     <Card className="border-border">
@@ -147,17 +169,7 @@ const CustomersTab = ({
                       <User2 className="h-4 w-4 text-muted-foreground" />
                     )}
                     <h3 className="font-semibold text-lg text-foreground/90 truncate">
-                      {(() => {
-                        const parts = [];
-                        if (customer.title && customer.title !== 'neutral') {
-                          parts.push(customer.title);
-                        }
-                        if (customer.zusatz && customer.zusatz !== 'none') {
-                          parts.push(customer.zusatz);
-                        }
-                        parts.push(customer.name);
-                        return parts.join(' ');
-                      })()}
+                      {getCustomerDisplayName(customer)}
                     </h3>
                   </div>
                 </div>
