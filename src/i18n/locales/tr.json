@@ -26,7 +26,8 @@
       "quantity": "Miktar",
       "rate": "Fiyat (€)",
       "total": "Toplam",
-      "addItem": "Kalem ekle"
+      "addItem": "Kalem ekle",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Net tutar",
@@ -42,6 +43,37 @@
       "generating": "Oluşturuluyor...",
       "preview": "Önizleme",
       "save": "Kaydet"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "Merhaba {full_name}",
+        "academic": "Merhaba {title} {full_name}"
+      },
+      "herr": {
+        "default": "Sayın {last_name} Bey",
+        "academic": "Sayın {title} {last_name}"
+      },
+      "frau": {
+        "default": "Sayın {last_name} Hanım",
+        "academic": "Sayın {title} {last_name}"
+      },
+      "business": "Sayın İlgili",
+      "neutral": "Merhaba {full_name}"
+    },
+    "servicePeriod": {
+      "range": "{startDate} - {endDate} tarihleri arasındaki hizmet dönemi için aşağıdaki tutarı fatura ediyorum:",
+      "single": "{date} tarihindeki hizmetler için aşağıdaki tutarı fatura ediyorum:"
+    },
+    "payment": {
+      "instruction": "Lütfen {amount} tutarını 7 iş günü içinde aşağıdaki hesaba havale ediniz:"
+    },
+    "banking": {
+      "name": "İsim",
+      "institute": "Banka"
+    },
+    "closing": {
+      "thankYou": "Güveniniz için teşekkür ederim. Gelecekte tekrar birlikte çalışmayı dilerim.",
+      "regards": "Saygılarımla"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "Bay",
         "mrs": "Bayan",
-        "diverse": "Diğer"
+        "diverse": "Diğer",
+        "neutral": "Nötr"
       },
       "academicTitle": {
         "label": "Akademik unvan",

@@ -26,7 +26,8 @@
       "quantity": "수량",
       "rate": "가격 (€)",
       "total": "합계",
-      "addItem": "항목 추가"
+      "addItem": "항목 추가",
+      "position": "번호"
     },
     "totals": {
       "netAmount": "순액",
@@ -42,6 +43,37 @@
       "generating": "생성 중...",
       "preview": "미리보기",
       "save": "저장"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "{full_name}님 안녕하세요",
+        "academic": "{title} {full_name}님 안녕하세요"
+      },
+      "herr": {
+        "default": "{last_name}님께",
+        "academic": "{title} {last_name}님께"
+      },
+      "frau": {
+        "default": "{last_name}님께",
+        "academic": "{title} {last_name}님께"
+      },
+      "business": "귀하",
+      "neutral": "{full_name}님 안녕하세요"
+    },
+    "servicePeriod": {
+      "range": "{startDate}부터 {endDate}까지의 서비스 기간에 대한 청구 내역입니다:",
+      "single": "{date}의 서비스에 대한 청구 내역입니다:"
+    },
+    "payment": {
+      "instruction": "청구 금액 {amount}을(를) 7영업일 이내에 아래 계좌로 입금해 주시기 바랍니다:"
+    },
+    "banking": {
+      "name": "예금주",
+      "institute": "은행"
+    },
+    "closing": {
+      "thankYou": "거래해 주셔서 감사합니다. 앞으로도 좋은 협력 관계를 유지하기를 바랍니다.",
+      "regards": "감사합니다"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "남성",
         "mrs": "여성",
-        "diverse": "기타"
+        "diverse": "기타",
+        "neutral": "중립"
       },
       "academicTitle": {
         "label": "학위",

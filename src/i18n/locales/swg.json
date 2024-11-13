@@ -26,7 +26,8 @@
       "quantity": "Menge",
       "rate": "Preis (€)",
       "total": "Gsamt",
-      "addItem": "Poschda neidoa"
+      "addItem": "Poschda neidoa",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Nettobetrag",
@@ -42,6 +43,37 @@
       "generating": "Wird grad gmacht...",
       "preview": "Vorschau",
       "save": "Schbeicha"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "Griaß di {full_name}",
+        "academic": "Griaß di {title} {full_name}"
+      },
+      "herr": {
+        "default": "Liabr Herr {last_name}",
+        "academic": "Liabr {title} {last_name}"
+      },
+      "frau": {
+        "default": "Liabe Frau {last_name}",
+        "academic": "Liabe {title} {last_name}"
+      },
+      "business": "Liabe Leit",
+      "neutral": "Griaß di {full_name}"
+    },
+    "servicePeriod": {
+      "range": "Für d'Arbat vom {startDate} bis {endDate} kriagscht jetzt des do:",
+      "single": "Für d'Arbat am {date} kriagscht jetzt des do:"
+    },
+    "payment": {
+      "instruction": "Bitte überweis mr den Betrag von {amount} innerhalb von 7 Werkdäg auf des Konto:"
+    },
+    "banking": {
+      "name": "Name",
+      "institute": "Bank"
+    },
+    "closing": {
+      "thankYou": "Vielen Dank für dei Vertraua. I freu mi auf d'weitere Zammarbeit.",
+      "regards": "Ade und bleib gsund"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "Herr",
         "mrs": "Frau",
-        "diverse": "Anders"
+        "diverse": "Anders",
+        "neutral": "Neutral"
       },
       "academicTitle": {
         "label": "Akademischer Titel",

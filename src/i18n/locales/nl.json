@@ -26,7 +26,8 @@
       "quantity": "Aantal",
       "rate": "Prijs (€)",
       "total": "Totaal",
-      "addItem": "Regel toevoegen"
+      "addItem": "Regel toevoegen",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Nettobedrag",
@@ -42,6 +43,37 @@
       "generating": "Wordt gemaakt...",
       "preview": "Voorbeeld",
       "save": "Opslaan"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "Hallo {full_name}",
+        "academic": "Hallo {title} {full_name}"
+      },
+      "herr": {
+        "default": "Geachte heer {last_name}",
+        "academic": "Geachte {title} {last_name}"
+      },
+      "frau": {
+        "default": "Geachte mevrouw {last_name}",
+        "academic": "Geachte {title} {last_name}"
+      },
+      "business": "Geachte dames en heren",
+      "neutral": "Hallo {full_name}"
+    },
+    "servicePeriod": {
+      "range": "Voor de dienstperiode van {startDate} tot {endDate} breng ik u het volgende in rekening:",
+      "single": "Voor de diensten op {date} breng ik u het volgende in rekening:"
+    },
+    "payment": {
+      "instruction": "Gelieve het bedrag van {amount} binnen 7 werkdagen over te maken naar het volgende rekeningnummer:"
+    },
+    "banking": {
+      "name": "Naam",
+      "institute": "Bank"
+    },
+    "closing": {
+      "thankYou": "Bedankt voor uw vertrouwen. Ik kijk uit naar onze verdere samenwerking.",
+      "regards": "Met vriendelijke groet"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "Dhr.",
         "mrs": "Mevr.",
-        "diverse": "Anders"
+        "diverse": "Anders",
+        "neutral": "Neutraal"
       },
       "academicTitle": {
         "label": "Academische titel",

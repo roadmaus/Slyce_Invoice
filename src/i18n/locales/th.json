@@ -26,7 +26,8 @@
       "quantity": "จำนวน",
       "rate": "ราคา (€)",
       "total": "รวม",
-      "addItem": "เพิ่มรายการ"
+      "addItem": "เพิ่มรายการ",
+      "position": "ลำดับ"
     },
     "totals": {
       "netAmount": "ยอดสุทธิ",
@@ -42,6 +43,37 @@
       "generating": "กำลังสร้าง...",
       "preview": "ดูตัวอย่าง",
       "save": "บันทึก"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "สวัสดี {full_name}",
+        "academic": "สวัสดี {title} {full_name}"
+      },
+      "herr": {
+        "default": "เรียน คุณ {last_name}",
+        "academic": "เรียน {title} {last_name}"
+      },
+      "frau": {
+        "default": "เรียน คุณ {last_name}",
+        "academic": "เรียน {title} {last_name}"
+      },
+      "business": "เรียน ท่านผู้มีอุปการคุณ",
+      "neutral": "สวัสดี {full_name}"
+    },
+    "servicePeriod": {
+      "range": "สำหรับการให้บริการตั้งแต่ {startDate} ถึง {endDate} ขอเรียกเก็บค่าบริการดังนี้:",
+      "single": "สำหรับการให้บริการวันที่ {date} ขอเรียกเก็บค่าบริการดังนี้:"
+    },
+    "payment": {
+      "instruction": "กรุณาโอนเงินจำนวน {amount} ภายใน 7 วันทำการ ไปยังบัญชีต่อไปนี้:"
+    },
+    "banking": {
+      "name": "ชื่อ",
+      "institute": "ธนาคาร"
+    },
+    "closing": {
+      "thankYou": "ขอบคุณสำหรับความไว้วางใจ หวังว่าจะได้ร่วมงานกันอีกในอนาคต",
+      "regards": "ขอแสดงความนับถือ"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "นาย",
         "mrs": "นาง/นางสาว",
-        "diverse": "อื่นๆ"
+        "diverse": "อื่นๆ",
+        "neutral": "เป็นกลาง"
       },
       "academicTitle": {
         "label": "ตำแหน่งทางวิชาการ",

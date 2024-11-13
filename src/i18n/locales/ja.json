@@ -26,7 +26,8 @@
       "quantity": "数量",
       "rate": "価格 (€)",
       "total": "合計",
-      "addItem": "項目を追加"
+      "addItem": "項目を追加",
+      "position": "番号"
     },
     "totals": {
       "netAmount": "税抜金額",
@@ -42,6 +43,37 @@
       "generating": "作成中...",
       "preview": "プレビュー",
       "save": "保存"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "{full_name}様",
+        "academic": "{title} {full_name}様"
+      },
+      "herr": {
+        "default": "{last_name}様",
+        "academic": "{title} {last_name}様"
+      },
+      "frau": {
+        "default": "{last_name}様",
+        "academic": "{title} {last_name}様"
+      },
+      "business": "御中",
+      "neutral": "{full_name}様"
+    },
+    "servicePeriod": {
+      "range": "{startDate}から{endDate}までのサービス期間について、下記の料金を請求させていただきます：",
+      "single": "{date}のサービスについて、下記の料金を請求させていただきます："
+    },
+    "payment": {
+      "instruction": "請求額{amount}を7営業日以内に下記の口座にお振込みください："
+    },
+    "banking": {
+      "name": "名義",
+      "institute": "金融機関"
+    },
+    "closing": {
+      "thankYou": "いつもお引き立ていただき、ありがとうございます。今後ともよろしくお願いいたします。",
+      "regards": "敬具"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "様（男性）",
         "mrs": "様（女性）",
-        "diverse": "様（その他）"
+        "diverse": "様（その他）",
+        "neutral": "中性"
       },
       "academicTitle": {
         "label": "学位",

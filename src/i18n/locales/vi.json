@@ -26,7 +26,8 @@
       "quantity": "Số lượng",
       "rate": "Giá (€)",
       "total": "Tổng cộng",
-      "addItem": "Thêm mục"
+      "addItem": "Thêm mục",
+      "position": "STT"
     },
     "totals": {
       "netAmount": "Số tiền trước thuế",
@@ -42,6 +43,37 @@
       "generating": "Đang tạo...",
       "preview": "Xem trước",
       "save": "Lưu"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "Xin chào {full_name}",
+        "academic": "Kính chào {title} {full_name}"
+      },
+      "herr": {
+        "default": "Kính gửi ông {last_name}",
+        "academic": "Kính gửi {title} {last_name}"
+      },
+      "frau": {
+        "default": "Kính gửi bà {last_name}",
+        "academic": "Kính gửi {title} {last_name}"
+      },
+      "business": "Kính gửi Quý khách",
+      "neutral": "Xin chào {full_name}"
+    },
+    "servicePeriod": {
+      "range": "Cho thời gian dịch vụ từ {startDate} đến {endDate}, tôi tính phí như sau:",
+      "single": "Cho dịch vụ ngày {date}, tôi tính phí như sau:"
+    },
+    "payment": {
+      "instruction": "Vui lòng chuyển khoản số tiền {amount} trong vòng 7 ngày làm việc vào tài khoản sau:"
+    },
+    "banking": {
+      "name": "Tên",
+      "institute": "Ngân hàng"
+    },
+    "closing": {
+      "thankYou": "Cảm ơn quý khách đã tin tưởng. Rất mong được tiếp tục hợp tác.",
+      "regards": "Trân trọng"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "Ông",
         "mrs": "Bà",
-        "diverse": "Khác"
+        "diverse": "Khác",
+        "neutral": "Trung tính"
       },
       "academicTitle": {
         "label": "Học vị",

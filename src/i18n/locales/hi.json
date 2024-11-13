@@ -26,7 +26,8 @@
       "quantity": "मात्रा",
       "rate": "दर (€)",
       "total": "कुल",
-      "addItem": "मद जोड़ें"
+      "addItem": "मद जोड़ें",
+      "position": "क्र."
     },
     "totals": {
       "netAmount": "शुद्ध राशि",
@@ -42,6 +43,37 @@
       "generating": "बन रहा है...",
       "preview": "पूर्वावलोकन",
       "save": "सहेजें"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "नमस्ते {full_name}",
+        "academic": "नमस्ते {title} {full_name}"
+      },
+      "herr": {
+        "default": "श्रीमान {last_name} जी",
+        "academic": "{title} {last_name} जी"
+      },
+      "frau": {
+        "default": "श्रीमती {last_name} जी",
+        "academic": "{title} {last_name} जी"
+      },
+      "business": "माननीय महोदय/महोदया",
+      "neutral": "नमस्ते {full_name}"
+    },
+    "servicePeriod": {
+      "range": "सेवा अवधि {startDate} से {endDate} तक के लिए, मैं निम्नलिखित शुल्क ले रहा/रही हूं:",
+      "single": "{date} को प्रदान की गई सेवाओं के लिए, मैं निम्नलिखित शुल्क ले रहा/रही हूं:"
+    },
+    "payment": {
+      "instruction": "कृपया {amount} की राशि 7 कार्य दिवसों के भीतर निम्नलिखित खाते में स्थानांतरित करें:"
+    },
+    "banking": {
+      "name": "नाम",
+      "institute": "बैंक"
+    },
+    "closing": {
+      "thankYou": "आपके विश्वास के लिए धन्यवाद। आपके साथ भविष्य में काम करने की प्रतीक्षा कर रहा/रही हूं।",
+      "regards": "सादर"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "श्री",
         "mrs": "श्रीमती",
-        "diverse": "अन्य"
+        "diverse": "अन्य",
+        "neutral": "तटस्थ"
       },
       "academicTitle": {
         "label": "शैक्षणिक उपाधि",

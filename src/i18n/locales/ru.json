@@ -26,7 +26,8 @@
       "quantity": "Количество",
       "rate": "Цена (€)",
       "total": "Итого",
-      "addItem": "Добавить позицию"
+      "addItem": "Добавить позицию",
+      "position": "Поз."
     },
     "totals": {
       "netAmount": "Сумма без НДС",
@@ -42,6 +43,37 @@
       "generating": "Создание...",
       "preview": "Предпросмотр",
       "save": "Сохранить"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "Здравствуйте, {full_name}",
+        "academic": "Здравствуйте, {title} {full_name}"
+      },
+      "herr": {
+        "default": "Уважаемый г-н {last_name}",
+        "academic": "Уважаемый {title} {last_name}"
+      },
+      "frau": {
+        "default": "Уважаемая г-жа {last_name}",
+        "academic": "Уважаемая {title} {last_name}"
+      },
+      "business": "Уважаемые дамы и господа",
+      "neutral": "Здравствуйте, {full_name}"
+    },
+    "servicePeriod": {
+      "range": "За период оказания услуг с {startDate} по {endDate} выставляю следующий счет:",
+      "single": "За услуги, оказанные {date}, выставляю следующий счет:"
+    },
+    "payment": {
+      "instruction": "Пожалуйста, переведите сумму {amount} в течение 7 рабочих дней на следующий счет:"
+    },
+    "banking": {
+      "name": "Имя",
+      "institute": "Банк"
+    },
+    "closing": {
+      "thankYou": "Благодарю за доверие. С нетерпением жду дальнейшего сотрудничества.",
+      "regards": "С уважением"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "Господин",
         "mrs": "Госпожа",
-        "diverse": "Другое"
+        "diverse": "Другое",
+        "neutral": "Нейтральный"
       },
       "academicTitle": {
         "label": "Учёная степень",

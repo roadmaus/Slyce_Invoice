@@ -26,7 +26,8 @@
       "quantity": "数量",
       "rate": "价格 (€)",
       "total": "总计",
-      "addItem": "添加项目"
+      "addItem": "添加项目",
+      "position": "序号"
     },
     "totals": {
       "netAmount": "净额",
@@ -42,6 +43,37 @@
       "generating": "正在生成...",
       "preview": "预览",
       "save": "保存"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "您好，{full_name}",
+        "academic": "您好，{title} {full_name}"
+      },
+      "herr": {
+        "default": "{last_name}先生",
+        "academic": "{title} {last_name}先生"
+      },
+      "frau": {
+        "default": "{last_name}女士",
+        "academic": "{title} {last_name}女士"
+      },
+      "business": "尊敬的先生/女士",
+      "neutral": "您好，{full_name}"
+    },
+    "servicePeriod": {
+      "range": "服务期间从{startDate}至{endDate}，收费明细如下：",
+      "single": "{date}的服务收费明细如下："
+    },
+    "payment": {
+      "instruction": "请在7个工作日内将金额{amount}转入以下账户："
+    },
+    "banking": {
+      "name": "姓名",
+      "institute": "银行"
+    },
+    "closing": {
+      "thankYou": "感谢您的惠顾。期待与您继续合作。",
+      "regards": "此致"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "先生",
         "mrs": "女士",
-        "diverse": "其他"
+        "diverse": "其他",
+        "neutral": "中性"
       },
       "academicTitle": {
         "label": "学术头衔",

@@ -26,7 +26,8 @@
       "quantity": "Quantité",
       "rate": "Prix (€)",
       "total": "Total",
-      "addItem": "Ajouter un article"
+      "addItem": "Ajouter un article",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Montant net",
@@ -42,6 +43,37 @@
       "generating": "Création en cours...",
       "preview": "Aperçu",
       "save": "Enregistrer"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "Bonjour {full_name}",
+        "academic": "Bonjour {title} {full_name}"
+      },
+      "herr": {
+        "default": "Cher M. {last_name}",
+        "academic": "Cher {title} {last_name}"
+      },
+      "frau": {
+        "default": "Chère Mme {last_name}",
+        "academic": "Chère {title} {last_name}"
+      },
+      "business": "Madame, Monsieur",
+      "neutral": "Bonjour {full_name}"
+    },
+    "servicePeriod": {
+      "range": "Pour la période de service du {startDate} au {endDate}, je vous facture ce qui suit :",
+      "single": "Pour les services du {date}, je vous facture ce qui suit :"
+    },
+    "payment": {
+      "instruction": "Veuillez transférer le montant de {amount} dans les 7 jours ouvrables sur le compte suivant :"
+    },
+    "banking": {
+      "name": "Nom",
+      "institute": "Établissement"
+    },
+    "closing": {
+      "thankYou": "Je vous remercie de votre confiance et me réjouis de notre future collaboration.",
+      "regards": "Cordialement"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "Monsieur",
         "mrs": "Madame",
-        "diverse": "Autre"
+        "diverse": "Autre",
+        "neutral": "Neutre"
       },
       "academicTitle": {
         "label": "Titre académique",

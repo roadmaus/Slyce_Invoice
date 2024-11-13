@@ -26,7 +26,8 @@
       "quantity": "Quantidade",
       "rate": "Preço (€)",
       "total": "Total",
-      "addItem": "Adicionar Item"
+      "addItem": "Adicionar Item",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Valor Líquido",
@@ -42,6 +43,37 @@
       "generating": "Gerando...",
       "preview": "Visualizar",
       "save": "Salvar"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "Olá {full_name}",
+        "academic": "Olá {title} {full_name}"
+      },
+      "herr": {
+        "default": "Prezado Sr. {last_name}",
+        "academic": "Prezado {title} {last_name}"
+      },
+      "frau": {
+        "default": "Prezada Sra. {last_name}",
+        "academic": "Prezada {title} {last_name}"
+      },
+      "business": "Prezados Senhores e Senhoras",
+      "neutral": "Olá {full_name}"
+    },
+    "servicePeriod": {
+      "range": "Para o período de serviço de {startDate} a {endDate}, cobro o seguinte:",
+      "single": "Para os serviços em {date}, cobro o seguinte:"
+    },
+    "payment": {
+      "instruction": "Por favor, transfira o valor de {amount} dentro de 7 dias úteis para a seguinte conta:"
+    },
+    "banking": {
+      "name": "Nome",
+      "institute": "Banco"
+    },
+    "closing": {
+      "thankYou": "Obrigado pela sua confiança. Aguardo ansiosamente nossa próxima colaboração.",
+      "regards": "Atenciosamente"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "Sr.",
         "mrs": "Sra.",
-        "diverse": "Outro"
+        "diverse": "Outro",
+        "neutral": "Neutro"
       },
       "academicTitle": {
         "label": "Título Acadêmico",

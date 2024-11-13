@@ -26,7 +26,8 @@
       "quantity": "الكمية",
       "rate": "السعر (€)",
       "total": "المجموع",
-      "addItem": "إضافة بند"
+      "addItem": "إضافة بند",
+      "position": "رقم"
     },
     "totals": {
       "netAmount": "المبلغ الصافي",
@@ -42,6 +43,37 @@
       "generating": "جاري الإنشاء...",
       "preview": "معاينة",
       "save": "حفظ"
+    },
+    "greeting": {
+      "diverse": {
+        "default": "مرحباً {full_name}",
+        "academic": "مرحباً {title} {full_name}"
+      },
+      "herr": {
+        "default": "السيد {last_name} المحترم",
+        "academic": "{title} {last_name} المحترم"
+      },
+      "frau": {
+        "default": "السيدة {last_name} المحترمة",
+        "academic": "{title} {last_name} المحترمة"
+      },
+      "business": "السادة المحترمون",
+      "neutral": "مرحباً {full_name}"
+    },
+    "servicePeriod": {
+      "range": "عن فترة الخدمة من {startDate} إلى {endDate}، أود أن أقدم لكم الفاتورة التالية:",
+      "single": "عن الخدمات المقدمة بتاريخ {date}، أود أن أقدم لكم الفاتورة التالية:"
+    },
+    "payment": {
+      "instruction": "يرجى تحويل المبلغ {amount} خلال 7 أيام عمل إلى الحساب التالي:"
+    },
+    "banking": {
+      "name": "الاسم",
+      "institute": "البنك"
+    },
+    "closing": {
+      "thankYou": "شكراً لثقتكم. نتطلع إلى استمرار تعاوننا.",
+      "regards": "مع أطيب التحيات"
     }
   },
   "customers": {
@@ -55,7 +87,8 @@
       "titles": {
         "mr": "السيد",
         "mrs": "السيدة",
-        "diverse": "آخر"
+        "diverse": "آخر",
+        "neutral": "محايد"
       },
       "academicTitle": {
         "label": "اللقب الأكاديمي",
