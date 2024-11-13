@@ -285,8 +285,9 @@ const InvoiceTab = ({
           <div className="overflow-x-auto rounded-md">
             <div className="min-w-[600px] p-4">
               <div className="grid grid-cols-12 gap-4 mb-4 font-medium text-foreground">
-                <div className="col-span-6">{t('invoice.items.description')}</div>
+                <div className="col-span-1">Pos.</div>
                 <div className="col-span-2">{t('invoice.items.quantity')}</div>
+                <div className="col-span-5">{t('invoice.items.description')}</div>
                 <div className="col-span-2">{t('invoice.items.rate')}</div>
                 <div className="col-span-1">{t('invoice.items.total')}</div>
                 <div className="col-span-1"></div>
@@ -294,12 +295,11 @@ const InvoiceTab = ({
 
               {invoiceItems.map((item, index) => (
                 <div key={index} className="grid grid-cols-12 gap-2 mb-4 mx-0.5">
-                  <div className="col-span-6">
+                  <div className="col-span-1">
                     <Input
-                      value={item.description}
-                      onChange={(e) => updateInvoiceItem(index, 'description', e.target.value)}
-                      placeholder={t('invoice.items.description')}
-                      className="w-full bg-background border-border"
+                      value={index + 1}
+                      readOnly
+                      className="bg-muted text-center"
                     />
                   </div>
                   <div className="col-span-2">
@@ -309,6 +309,14 @@ const InvoiceTab = ({
                       onChange={(e) => updateInvoiceItem(index, 'quantity', parseFloat(e.target.value))}
                       min="0"
                       step="0.5"
+                    />
+                  </div>
+                  <div className="col-span-5">
+                    <Input
+                      value={item.description}
+                      onChange={(e) => updateInvoiceItem(index, 'description', e.target.value)}
+                      placeholder={t('invoice.items.description')}
+                      className="w-full bg-background border-border"
                     />
                   </div>
                   <div className="col-span-2">

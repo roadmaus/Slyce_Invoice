@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechnung</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Serif+Pro:wght@400;600&display=swap');
+
+        :root {
+            --text-primary: #2c1810;
+            --text-secondary: #594a42;
+            --border: #d4c5b9;
+            --background: #fff9f5;
+            --accent: #8b6b5d;
+        }
+
+        @page {
+            size: A4;
+            margin: 48px;
+        }
+
+        body {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            margin: 0;
+            padding: 48px;
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.6;
+            background: var(--background);
+            background-image: 
+                linear-gradient(to right, var(--border) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 72px;
+            border-bottom: 2px double var(--border);
+            padding-bottom: 24px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        .logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60%;
+            height: 1px;
+            background-color: var(--border);
+        }
+
+        .company-address {
+            text-align: right;
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 64px;
+            position: relative;
+        }
+
+        .invoice-details::before {
+            content: '';
+            position: absolute;
+            top: -16px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .recipient-info {
+            max-width: 280px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            background: white;
+        }
+
+        .invoice-info {
+            text-align: right;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            text-align: left;
+            padding: 16px;
+            border-bottom: 2px solid var(--border);
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+            background: rgba(139, 107, 93, 0.1);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .amount-summary {
+            width: 300px;
+            margin-left: auto;
+            border: none;
+        }
+
+        .amount-summary td {
+            padding: 12px 16px;
+            border: none;
+        }
+
+        .amount-summary tr:last-child {
+            font-weight: 600;
+            font-size: 16px;
+            border-top: 2px double var(--border);
+        }
+
+        .payment-info {
+            margin-top: 64px;
+            padding-top: 32px;
+            border-top: 2px double var(--border);
+            color: var(--text-secondary);
+        }
+
+        .banking-info {
+            margin-top: 24px;
+            padding: 24px;
+            background: white;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .banking-info::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 1px solid var(--border);
+            pointer-events: none;
+        }
+
+        .banking-info p {
+            margin: 12px 0;
+        }
+
+        .medium-bold {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .contact-details {
+            margin-top: 64px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+            font-style: italic;
+            page-break-inside: avoid;
+            margin-bottom: 24px;
+        }
+
+        .page-number {
+            margin-top: 32px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .greeting-section {
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-text">LOGO</div>
+        <div class="company-address">
+            {company_name}<br>
+            {company_street}<br>
+            {company_postalcode} {company_city}<br>
+            <p>Steuernummer: {tax_number}<br>
+            SteuerID: {tax_id}</p>
+        </div>
+    </div>
+
+    <div class="invoice-details">
+        <div class="recipient-info">
+            {customer_address}
+        </div>
+        <div class="invoice-info">
+            {invoice_number_date}
+        </div>
+    </div>
+
+    <div class="greeting-section">
+        <p>{greeting}</p>
+        <p>Für den Leistungszeitraum {period} stelle ich Ihnen folgendes in Rechnung:</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Pos.</th>
+                <th>{quantity_label}</th>
+                <th>Description</th>
+                <th>{unit_price_label}</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {invoice_items}
+        </tbody>
+    </table>
+
+    <table class="amount-summary">
+        <tr>
+            <td>Nettobetrag:</td>
+            <td>{net_amount}</td>
+        </tr>
+        {vat_row}
+        <tr>
+            <td>Gesamtbetrag:</td>
+            <td>{total_amount}</td>
+        </tr>
+    </table>
+
+    <div class="payment-info">
+        <p>Bitte überweisen Sie den Betrag von <span class="medium-bold">{total_amount}</span> innerhalb der nächsten 7 Werktage auf folgendes Konto:</p>
+        
+        {vat_notice}
+        
+        <div class="banking-info">
+            <p><span class="medium-bold">Name:</span> {company_name}</p>
+            <p><span class="medium-bold">Institut:</span> {bank_institute}</p>
+            <p><span class="medium-bold">IBAN:</span> {bank_iban}</p>
+            <p><span class="medium-bold">BIC:</span> {bank_bic}</p>
+        </div>
+
+        <p>Ich bedanke mich für den Auftrag und freue mich auf weitere Zusammenarbeit.</p>
+        <p>Mit Besten Grüßen<br>{company_name}</p>
+    </div>
+
+    <div class="contact-details">
+        {contact_details}
+    </div>
+</body>
+</html>

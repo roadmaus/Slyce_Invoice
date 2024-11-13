@@ -108,7 +108,7 @@ function registerIpcHandlers() {
     return path.join(userDataPath, 'templates');
   };
 
-  const ensureTemplateExists = () => {
+  const ensureTemplatesExist = () => {
     const templateDir = getTemplateDirectory();
     const defaultTemplatePath = path.join(templateDir, 'invoice_template.html');
     
@@ -117,22 +117,42 @@ function registerIpcHandlers() {
       fs.mkdirSync(templateDir, { recursive: true });
     }
     
-    // Copy bundled template if default template doesn't exist
+    // Copy all bundled templates if template directory is empty
+    const bundledTemplatesDir = path.join(__dirname, 'src', 'templates');
+    if (fs.existsSync(bundledTemplatesDir)) {
+      const bundledTemplates = fs.readdirSync(bundledTemplatesDir);
+      
+      bundledTemplates.forEach(template => {
+        const bundledPath = path.join(bundledTemplatesDir, template);
+        const userPath = path.join(templateDir, template);
+        
+        if (!fs.existsSync(userPath)) {
+          fs.copyFileSync(bundledPath, userPath);
+        }
+      });
+    }
+    
+    // Ensure at least one template exists (use first template as default)
+    const templates = fs.readdirSync(templateDir).filter(file => file.endsWith('.html'));
+    if (templates.length === 0) {
+      throw new Error('No templates found in templates directory');
+    }
+    
+    // Set the first template as default if default doesn't exist
     if (!fs.existsSync(defaultTemplatePath)) {
-      const bundledTemplatePath = path.join(__dirname, 'src', 'invoice_template.html');
-      fs.copyFileSync(bundledTemplatePath, defaultTemplatePath);
+      fs.copyFileSync(path.join(templateDir, templates[0]), defaultTemplatePath);
     }
     
     return defaultTemplatePath;
   };
 
   ipcMain.handle('getInvoiceTemplate', async () => {
-    const templatePath = ensureTemplateExists();
+    const templatePath = ensureTemplatesExist();
     return fs.readFileSync(templatePath, 'utf8');
   });
 
   ipcMain.handle('getTemplatePath', () => {
-    return ensureTemplateExists();
+    return ensureTemplatesExist();
   });
 
   ipcMain.handle('save-invoice', async (event, pdfArrayBuffer, fileName) => {
@@ -254,7 +274,7 @@ function registerIpcHandlers() {
       const templateDir = getTemplateDirectory();
       
       // Update the default template
-      const defaultTemplatePath = ensureTemplateExists();
+      const defaultTemplatePath = ensureTemplatesExist();
       await fs.promises.writeFile(defaultTemplatePath, content, 'utf8');
       
       // Only create a new template file if it's not the default template
@@ -278,7 +298,7 @@ function registerIpcHandlers() {
       const templateDir = getTemplateDirectory();
       const normalizedTemplatePath = path.normalize(templatePath);
       const normalizedTemplateDir = path.normalize(templateDir);
-      const defaultTemplatePath = ensureTemplateExists();
+      const defaultTemplatePath = ensureTemplatesExist();
 
       if (!normalizedTemplatePath.startsWith(normalizedTemplateDir)) {
         throw new Error('Invalid template path');
@@ -302,7 +322,7 @@ function registerIpcHandlers() {
       const templateDir = getTemplateDirectory();
       const normalizedTemplatePath = path.normalize(templatePath);
       const normalizedTemplateDir = path.normalize(templateDir);
-      const defaultTemplatePath = ensureTemplateExists();
+      const defaultTemplatePath = ensureTemplatesExist();
 
       if (!normalizedTemplatePath.startsWith(normalizedTemplateDir)) {
         throw new Error('Invalid template path');
@@ -323,7 +343,7 @@ function registerIpcHandlers() {
 
   ipcMain.handle('get-template', async () => {
     try {
-      const templatePath = ensureTemplateExists();
+      const templatePath = ensureTemplatesExist();
       const content = await fs.promises.readFile(templatePath, 'utf8');
       return content;
     } catch (error) {
@@ -336,10 +356,16 @@ function registerIpcHandlers() {
     try {
       const templateDir = getTemplateDirectory();
       const userTemplatePath = path.join(templateDir, 'invoice_template.html');
-      const bundledTemplatePath = path.join(__dirname, 'src', 'invoice_template.html');
+      const bundledTemplatesDir = path.join(__dirname, 'src', 'templates');
+      const bundledTemplates = fs.readdirSync(bundledTemplatesDir);
       
-      await fs.promises.copyFile(bundledTemplatePath, userTemplatePath);
-      return true;
+      // Use the first template as default
+      if (bundledTemplates.length > 0) {
+        const defaultBundledPath = path.join(bundledTemplatesDir, bundledTemplates[0]);
+        await fs.promises.copyFile(defaultBundledPath, userTemplatePath);
+        return true;
+      }
+      return false;
     } catch (error) {
       console.error('Error resetting template:', error);
       return false;
@@ -382,7 +408,7 @@ function registerIpcHandlers() {
     try {
       const templateDir = getTemplateDirectory();
       const files = await fs.promises.readdir(templateDir);
-      const defaultTemplatePath = ensureTemplateExists();
+      const defaultTemplatePath = ensureTemplatesExist();
       
       const templates = await Promise.all(
         files
@@ -438,7 +464,7 @@ function registerIpcHandlers() {
       const content = await fs.promises.readFile(templatePath, 'utf8');
       
       // Also update the default template when loading a different one
-      const defaultTemplatePath = ensureTemplateExists();
+      const defaultTemplatePath = ensureTemplatesExist();
       await fs.promises.writeFile(defaultTemplatePath, content, 'utf8');
       
       return content;

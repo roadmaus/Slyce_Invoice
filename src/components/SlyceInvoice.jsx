@@ -100,41 +100,11 @@ const PREDEFINED_COLORS = [
   { name: 'Mint', value: '#A7F3D0' },
 ];
 
-// Create an object with all the icons we want to use (or just use Icons directly)
-const ALL_ICONS = Object.entries(Icons).reduce((acc, [name, Icon]) => {
-  // Filter out non-icon exports and ensure it's a valid component
-  if (
-    typeof Icon === 'function' && 
-    /^[A-Z]/.test(name) && 
-    name !== 'createReactComponent' && 
-    name !== 'default'
-  ) {
-    acc[name] = Icon;
-  }
-  return acc;
-}, {});
-
 // Add this helper function at the top with other helper functions
 const generateUniqueId = () => {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 };
 
-// Add this helper function at the top
-const formatDuration = (totalDays) => {
-  const months = Math.floor(totalDays / 31);
-  const days = totalDays % 31;
-  const parts = [];
-  if (months > 0) parts.push(`${months} ${months === 1 ? 'month' : 'months'}`);
-  if (days > 0) parts.push(`${days} ${days === 1 ? 'day' : 'days'}`);
-  return parts.join(' ');
-};
-
-const daysToMonthsDays = (totalDays) => ({
-  months: Math.floor(totalDays / 31),
-  days: totalDays % 31
-});
-
-const monthsDaysToDays = (months, days) => (months * 31) + days;
 
 // Add this helper function near other helper functions
 const adjustColorForDarkMode = (hexColor, isDark) => {
@@ -147,56 +117,6 @@ const adjustColorForDarkMode = (hexColor, isDark) => {
   
   // Add transparency for dark mode
   return `rgba(${r}, ${g}, ${b}, 0.3)`;
-};
-
-// Add this helper function
-const formatInvoiceItems = (items) => {
-  return items.map(item => `
-    <tr>
-      <td>${item.quantity}</td>
-      <td>${item.description}</td>
-      <td>€${item.rate.toFixed(2)}</td>
-      <td>€${(item.quantity * item.rate).toFixed(2)}</td>
-    </tr>
-  `).join('');
-};
-
-// Add this new component near your other components
-const InvoiceTotals = ({ items, profile }) => {
-  const { t } = useTranslation();
-  const netTotal = items.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
-  const vatRate = profile?.vat_enabled ? (profile.vat_rate || 19) : 0;
-  const vatAmount = profile?.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
-  const totalAmount = netTotal + vatAmount;
-
-  return (
-    <div className="mt-6 space-y-2 w-[300px] ml-auto">
-      <div className="flex justify-between items-center p-2 bg-secondary/50 rounded-md">
-        <span className="text-sm text-muted-foreground">{t('invoice.totals.netAmount')}:</span>
-        <span className="font-medium">€{netTotal.toFixed(2)}</span>
-      </div>
-      
-      {profile?.vat_enabled && (
-        <div className="flex justify-between items-center p-2 bg-secondary/50 rounded-md">
-          <span className="text-sm text-muted-foreground">
-            {t('invoice.totals.vat', { rate: vatRate })}:
-          </span>
-          <span className="font-medium">€{vatAmount.toFixed(2)}</span>
-        </div>
-      )}
-      
-      <div className="flex justify-between items-center p-2 bg-primary/10 rounded-md font-medium">
-        <span className="text-sm">{t('invoice.totals.totalAmount')}:</span>
-        <span>€{totalAmount.toFixed(2)}</span>
-      </div>
-
-      <div className="text-xs text-muted-foreground italic mt-2">
-        {profile?.vat_enabled 
-          ? t('invoice.totals.vatNotice.enabled')
-          : t('invoice.totals.vatNotice.disabled')}
-      </div>
-    </div>
-  );
 };
 
 const SlyceInvoice = () => {
@@ -498,16 +418,22 @@ const SlyceInvoice = () => {
     try {
       const template = await window.electronAPI.getInvoiceTemplate();
       
-      // Format customer address
-      const customerAddress = `${selectedCustomer.title !== 'Divers' ? selectedCustomer.title : ''} ${selectedCustomer.zusatz} ${selectedCustomer.name}<br>
-        ${selectedCustomer.street}<br>
-        ${selectedCustomer.postal_code} ${selectedCustomer.city}`;
+      // Format customer address with proper line breaks
+      const customerAddress = [
+        selectedCustomer.title !== 'Divers' ? selectedCustomer.title : '',
+        selectedCustomer.zusatz,
+        selectedCustomer.name,
+        selectedCustomer.street,
+        `${selectedCustomer.postal_code} ${selectedCustomer.city}`
+      ].filter(Boolean).join('<br>');
 
-      // Format invoice details
-      const invoiceNumberDate = `Rechnungsnummer: ${currentInvoiceNumber}<br>
-        Datum: ${new Date().toLocaleDateString('de-DE')}`;
+      // Format invoice details with proper line breaks
+      const invoiceNumberDate = [
+        `Rechnungsnummer: ${currentInvoiceNumber}`,
+        `Datum: ${new Date().toLocaleDateString('de-DE')}`
+      ].join('<br>');
 
-      // Format greeting
+      // Format greeting with proper spacing
       const greeting = selectedCustomer.title === 'Divers' 
         ? `Sehr geehrte(r) ${selectedCustomer.zusatz} ${selectedCustomer.name},`
         : `Sehr ${selectedCustomer.title === 'Herr' ? 'geehrter Herr' : 'geehrte Frau'} ${selectedCustomer.zusatz} ${selectedCustomer.name},`;
@@ -517,6 +443,17 @@ const SlyceInvoice = () => {
       const vatRate = selectedProfile.vat_enabled ? (selectedProfile.vat_rate || 19) : 0;
       const vatAmount = selectedProfile.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
       const totalAmount = netTotal + vatAmount;
+
+      // Format invoice items with proper table structure and position numbers
+      const formattedInvoiceItems = invoiceItems.map((item, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${item.quantity}</td>
+          <td style="white-space: pre-wrap;">${item.description}</td>
+          <td>€${item.rate.toFixed(2)}</td>
+          <td>€${(item.quantity * item.rate).toFixed(2)}</td>
+        </tr>
+      `).join('');
 
       // Create VAT row HTML if VAT is enabled
       const vatRowHtml = selectedProfile.vat_enabled 
@@ -530,9 +467,6 @@ const SlyceInvoice = () => {
       const vatNoticeHtml = selectedProfile.vat_enabled
         ? `<p class="vat-notice">Umsatzsteuer wird gemäß § 19 UStG berechnet.</p>`
         : `<p class="vat-notice">Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>`;
-
-      // Format invoice items
-      const formattedInvoiceItems = formatInvoiceItems(invoiceItems);
 
       // Replace template placeholders
       let filledTemplate = template
@@ -557,32 +491,39 @@ const SlyceInvoice = () => {
         .replaceAll('{bank_iban}', selectedProfile.bank_iban)
         .replaceAll('{bank_bic}', selectedProfile.bank_bic)
         .replaceAll('{contact_details}', selectedProfile.contact_details || '')
-        .replaceAll('{quantity_label}', 'Menge') // Replace labels
+        .replaceAll('{quantity_label}', 'Menge')
         .replaceAll('{unit_price_label}', 'Einzelpreis');
-        // Add more replacements if needed
 
-      // Remove the static page number from the template
-      filledTemplate = filledTemplate.replace(
-        '<div class="page-number">1/1</div>',
-        '<div class="page-number" id="page-counter"></div>'
-      );
-
-      // Generate PDF with page numbers
+      // Generate PDF with improved settings
       const pdf = await html2pdf().set({
-        margin: 1,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: 'css', before: '.page-break' },
-        footer: {
-          height: '20px',
-          contents: {
-            default: '<div style="text-align: center; font-size: 10px; font-family: Inter, sans-serif;" class="page-number">{{page}}/{{pages}}</div>'
-          }
+        margin: [48, 48, 48, 48], // [top, left, bottom, right]
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+          logging: false
+        },
+        jsPDF: {
+          unit: 'pt',
+          format: 'a4',
+          orientation: 'portrait',
+          compress: true,
+          precision: 16
+        },
+        pagebreak: {
+          mode: ['avoid-all', 'css', 'legacy'],
+          before: '.page-break-before',
+          after: '.page-break-after',
+          avoid: [
+            'tr',
+            '.banking-info',
+            '.payment-info',
+            '.contact-details',
+            '.page-number'
+          ]
         }
-      })
-      .from(filledTemplate)
-      .outputPdf('arraybuffer');
+      }).from(filledTemplate).outputPdf('arraybuffer');
 
       // Create Blob for preview
       const pdfBlob = new Blob([pdf], { type: 'application/pdf' });
@@ -902,24 +843,6 @@ const renderCustomerForm = (customer, setCustomer) => {
     return true;
   };
 
-// Add this component for the color picker
-const ColorPicker = ({ value, onChange }) => (
-  <div className="grid grid-cols-5 gap-1">
-    {PREDEFINED_COLORS.map((color) => (
-      <button
-        key={color.value}
-        type="button"
-        onClick={() => onChange(color.value)}
-        className={`w-6 h-6 rounded-full cursor-pointer transition-all hover:scale-110 ${
-          value === color.value ? 'ring-1 ring-primary ring-offset-1' : ''
-        }`}
-        style={{ backgroundColor: color.value }}
-        title={color.name}
-      />
-    ))}
-  </div>
-);
-
 // Update the dialog trigger for editing
 const handleTagDialog = (existingTag = null) => {
   if (existingTag) {
@@ -1107,12 +1030,6 @@ const LoadingOverlay = () => (
     </div>
   </div>
 );
-
-// Add these new helper functions
-const hexToRgb = (hex) => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
-};
 
 const getTagBackground = (() => {
   const cache = new Map();

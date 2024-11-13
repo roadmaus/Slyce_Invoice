@@ -174,8 +174,10 @@
         .contact-details {
             text-align: center;
             margin-top: 48px;
+            margin-bottom: 24px;
             font-size: 11px;
             color: var(--apple-gray);
+            page-break-inside: avoid;
         }
 
         .page-number {
@@ -234,6 +236,7 @@
     <table>
         <thead>
             <tr>
+                <th>Pos.</th>
                 <th>{quantity_label}</th>
                 <th>Description</th>
                 <th>{unit_price_label}</th>
@@ -276,7 +279,5 @@
     <div class="contact-details">
         {contact_details}
     </div>
-
-    <div class="page-number">1/1</div>
 </body>
 </html>
