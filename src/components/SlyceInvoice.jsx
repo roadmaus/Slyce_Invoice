@@ -482,16 +482,16 @@ const SlyceInvoice = () => {
       let greeting;
       
       if (selectedCustomer.title === 'Divers') {
-        greeting = t('invoice.greeting.diverse', { name: fullName });
+        greeting = t('invoice.greeting.diverse', { name: fullName }).replace('{name}', fullName);
       } else if (selectedCustomer.zusatz) {
         greeting = t('invoice.greeting.academic', { 
           title: selectedCustomer.zusatz,
           name: selectedCustomer.name 
-        });
+        }).replace('{title}', selectedCustomer.zusatz).replace('{name}', selectedCustomer.name);
       } else {
         greeting = t(`invoice.greeting.${selectedCustomer.title.toLowerCase()}`, { 
           name: selectedCustomer.name 
-        });
+        }).replace('{name}', selectedCustomer.name);
       }
 
       // Calculate amounts
@@ -503,12 +503,13 @@ const SlyceInvoice = () => {
       // Format service period text
       const servicePeriodText = invoiceDates.hasDateRange
         ? t('invoice.servicePeriod.range', {
-            startDate: invoiceDates.startDate,
-            endDate: invoiceDates.endDate
-          })
+            startDate: formatDate(invoiceDates.startDate),
+            endDate: formatDate(invoiceDates.endDate)
+          }).replace('{startDate}', formatDate(invoiceDates.startDate))
+            .replace('{endDate}', formatDate(invoiceDates.endDate))
         : t('invoice.servicePeriod.single', {
-            date: invoiceDates.startDate
-          });
+            date: formatDate(invoiceDates.startDate)
+          }).replace('{date}', formatDate(invoiceDates.startDate));
 
       // Create VAT-related HTML
       const vatNoticeHtml = selectedProfile.vat_enabled
@@ -539,8 +540,18 @@ const SlyceInvoice = () => {
         </tr>
       `).join('');
 
+      // Format payment instruction with amount
+      const paymentInstruction = t('invoice.payment.instruction', {
+        amount: formatCurrency(totalAmount)
+      }).replace('{amount}', formatCurrency(totalAmount));
+
+      // Format contact details - only include if they exist
+      const contactDetailsHtml = selectedProfile.contact_details 
+        ? selectedProfile.contact_details.split('\n').join('<br>')
+        : '';
+
       // Replace all placeholders
-      let filledTemplate = template
+      let html = template
         .replaceAll('{company_name}', selectedProfile.company_name)
         .replaceAll('{company_street}', selectedProfile.company_street)
         .replaceAll('{company_postalcode}', selectedProfile.company_postalcode)
@@ -558,9 +569,7 @@ const SlyceInvoice = () => {
         .replaceAll('{total_label}', t('invoice.items.total'))
         .replaceAll('{net_amount_label}', t('invoice.totals.netAmount'))
         .replaceAll('{total_amount_label}', t('invoice.totals.totalAmount'))
-        .replaceAll('{payment_instruction}', t('invoice.payment.instruction', {
-          amount: formatCurrency(totalAmount)
-        }))
+        .replaceAll('{payment_instruction}', paymentInstruction)
         .replaceAll('{thank_you_note}', t('invoice.closing.thankYou'))
         .replaceAll('{closing}', t('invoice.closing.regards'))
         .replaceAll('{name_label}', t('invoice.banking.name'))
@@ -572,7 +581,8 @@ const SlyceInvoice = () => {
         .replaceAll('{total_amount}', formatCurrency(totalAmount))
         .replaceAll('{bank_institute}', selectedProfile.bank_institute)
         .replaceAll('{bank_iban}', selectedProfile.bank_iban)
-        .replaceAll('{bank_bic}', selectedProfile.bank_bic);
+        .replaceAll('{bank_bic}', selectedProfile.bank_bic)
+        .replace('{contact_details}', contactDetailsHtml);
 
       // Generate PDF
       const pdf = await html2pdf().set({
@@ -597,7 +607,7 @@ const SlyceInvoice = () => {
           after: '.page-break-after',
           avoid: ['tr', '.banking-info', '.payment-info', '.contact-details', '.page-number']
         }
-      }).from(filledTemplate).outputPdf('arraybuffer');
+      }).from(html).outputPdf('arraybuffer');
 
       // Handle saving and preview
       const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
