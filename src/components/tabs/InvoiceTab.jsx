@@ -69,10 +69,10 @@ const InvoiceTab = ({
                     {(() => {
                       const parts = [];
                       if (customer.title && customer.title !== 'neutral') {
-                        parts.push(customer.title);
+                        parts.push(t(`customers.form.titles.${customer.title}`));
                       }
                       if (customer.zusatz && customer.zusatz !== 'none') {
-                        parts.push(customer.zusatz);
+                        parts.push(t(`customers.form.academicTitle.options.${customer.zusatz}`));
                       }
                       parts.push(customer.name);
                       return parts.join(' ');

@@ -150,10 +150,10 @@ const CustomersTab = ({
                       {(() => {
                         const parts = [];
                         if (customer.title && customer.title !== 'neutral') {
-                          parts.push(customer.title);
+                          parts.push(t(`customers.form.titles.${customer.title}`));
                         }
                         if (customer.zusatz && customer.zusatz !== 'none') {
-                          parts.push(customer.zusatz);
+                          parts.push(t(`customers.form.academicTitle.options.${customer.zusatz}`));
                         }
                         parts.push(customer.name);
                         return parts.join(' ');
@@ -181,8 +181,12 @@ const CustomersTab = ({
                   <div className="flex items-center justify-center p-1.5 rounded-md
                     bg-background/40 dark:bg-background/20 backdrop-blur-sm">
                     <span className="text-xs text-muted-foreground">
-                      {customer.zusatz !== 'none' && `${customer.zusatz}`}
-                      {customer.firma && (customer.zusatz !== 'none' ? ` • ${t('customers.businessCustomer')}` : t('customers.businessCustomer'))}
+                      {customer.zusatz !== 'none' && t(`customers.form.academicTitle.options.${customer.zusatz}`)}
+                      {customer.firma && (
+                        customer.zusatz !== 'none' 
+                          ? ` • ${t('customers.form.businessCustomer')}` 
+                          : t('customers.form.businessCustomer')
+                      )}
                     </span>
                   </div>
                 </div>
