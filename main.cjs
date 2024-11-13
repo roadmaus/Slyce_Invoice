@@ -28,7 +28,7 @@ function createWindow() {
           'default-src': ["'self'"],
           'script-src': ["'self'"],
           'style-src': ["'self'", "'unsafe-inline'"],
-          'img-src': ["'self'", 'data:'],
+          'img-src': ["'self'", 'data:', 'blob:'],
           'font-src': ["'self'"],
           'connect-src': ["'self'"],
           'base-uri': ["'self'"],
@@ -110,20 +110,20 @@ function registerIpcHandlers() {
 
   const ensureTemplateExists = () => {
     const templateDir = getTemplateDirectory();
-    const userTemplatePath = path.join(templateDir, 'invoice_template.html');
+    const defaultTemplatePath = path.join(templateDir, 'invoice_template.html');
     
     // Create template directory if it doesn't exist
     if (!fs.existsSync(templateDir)) {
       fs.mkdirSync(templateDir, { recursive: true });
     }
     
-    // Copy bundled template if user template doesn't exist
-    if (!fs.existsSync(userTemplatePath)) {
+    // Copy bundled template if default template doesn't exist
+    if (!fs.existsSync(defaultTemplatePath)) {
       const bundledTemplatePath = path.join(__dirname, 'src', 'invoice_template.html');
-      fs.copyFileSync(bundledTemplatePath, userTemplatePath);
+      fs.copyFileSync(bundledTemplatePath, defaultTemplatePath);
     }
     
-    return userTemplatePath;
+    return defaultTemplatePath;
   };
 
   ipcMain.handle('getInvoiceTemplate', async () => {
@@ -249,13 +249,74 @@ function registerIpcHandlers() {
     }
   });
 
-  ipcMain.handle('save-template', async (event, content) => {
+  ipcMain.handle('save-template', async (event, content, isDefault = false) => {
     try {
-      const templatePath = ensureTemplateExists();
-      await fs.promises.writeFile(templatePath, content, 'utf8');
+      const templateDir = getTemplateDirectory();
+      
+      // Update the default template
+      const defaultTemplatePath = ensureTemplateExists();
+      await fs.promises.writeFile(defaultTemplatePath, content, 'utf8');
+      
+      // Only create a new template file if it's not the default template
+      if (!isDefault) {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const templateName = `template_${timestamp}.html`;
+        const templatePath = path.join(templateDir, templateName);
+        await fs.promises.writeFile(templatePath, content, 'utf8');
+      }
+      
       return true;
     } catch (error) {
       console.error('Error saving template:', error);
+      return false;
+    }
+  });
+
+  ipcMain.handle('deleteTemplate', async (event, templatePath) => {
+    try {
+      // Validate that the template is within the templates directory
+      const templateDir = getTemplateDirectory();
+      const normalizedTemplatePath = path.normalize(templatePath);
+      const normalizedTemplateDir = path.normalize(templateDir);
+      const defaultTemplatePath = ensureTemplateExists();
+
+      if (!normalizedTemplatePath.startsWith(normalizedTemplateDir)) {
+        throw new Error('Invalid template path');
+      }
+
+      // Don't allow deletion of the default template
+      if (normalizedTemplatePath === path.normalize(defaultTemplatePath)) {
+        throw new Error('Cannot delete default template');
+      }
+
+      await fs.promises.unlink(templatePath);
+      return true;
+    } catch (error) {
+      console.error('Error deleting template:', error);
+      return false;
+    }
+  });
+
+  ipcMain.handle('renameTemplate', async (event, templatePath, newName) => {
+    try {
+      const templateDir = getTemplateDirectory();
+      const normalizedTemplatePath = path.normalize(templatePath);
+      const normalizedTemplateDir = path.normalize(templateDir);
+      const defaultTemplatePath = ensureTemplateExists();
+
+      if (!normalizedTemplatePath.startsWith(normalizedTemplateDir)) {
+        throw new Error('Invalid template path');
+      }
+
+      if (normalizedTemplatePath === path.normalize(defaultTemplatePath)) {
+        throw new Error('Cannot rename default template');
+      }
+
+      const newPath = path.join(templateDir, `template_${newName}.html`);
+      await fs.promises.rename(templatePath, newPath);
+      return newPath;
+    } catch (error) {
+      console.error('Error renaming template:', error);
       return false;
     }
   });
@@ -282,6 +343,108 @@ function registerIpcHandlers() {
     } catch (error) {
       console.error('Error resetting template:', error);
       return false;
+    }
+  });
+
+  async function generateTemplatePreview(htmlContent) {
+    try {
+      // Create a hidden window for preview generation
+      const previewWindow = new BrowserWindow({
+        width: 800,
+        height: 1131, // A4 ratio
+        show: false,
+        webPreferences: {
+          offscreen: true
+        }
+      });
+
+      // Load the HTML content
+      await previewWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`);
+
+      // Wait for any resources to load
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Capture the preview
+      const image = await previewWindow.webContents.capturePage();
+      const preview = image.toDataURL();
+
+      // Clean up
+      previewWindow.destroy();
+
+      return preview;
+    } catch (error) {
+      console.error('Error generating preview:', error);
+      return null;
+    }
+  }
+
+  ipcMain.handle('getRecentTemplates', async () => {
+    try {
+      const templateDir = getTemplateDirectory();
+      const files = await fs.promises.readdir(templateDir);
+      const defaultTemplatePath = ensureTemplateExists();
+      
+      const templates = await Promise.all(
+        files
+          .filter(file => {
+            // Exclude the default template and only show .html files
+            const filePath = path.join(templateDir, file);
+            return file.endsWith('.html') && 
+                   path.normalize(filePath) !== path.normalize(defaultTemplatePath);
+          })
+          .map(async (file) => {
+            const filePath = path.join(templateDir, file);
+            const stats = await fs.promises.stat(filePath);
+            
+            // Generate preview
+            let preview = null;
+            try {
+              const content = await fs.promises.readFile(filePath, 'utf8');
+              preview = await generateTemplatePreview(content);
+            } catch (err) {
+              console.error('Error generating preview:', err);
+            }
+            
+            return {
+              name: file.replace(/^template_|\.\w+$/g, '').replace(/-/g, ' '),
+              path: filePath,
+              modified: stats.mtime.toLocaleDateString(),
+              preview: preview
+            };
+          })
+      );
+
+      // Sort by most recently modified
+      return templates.sort((a, b) => 
+        new Date(b.modified) - new Date(a.modified)
+      );
+    } catch (error) {
+      console.error('Error getting recent templates:', error);
+      return [];
+    }
+  });
+
+  ipcMain.handle('loadTemplateFromPath', async (event, templatePath) => {
+    try {
+      // Validate that the template is within the templates directory
+      const templateDir = getTemplateDirectory();
+      const normalizedTemplatePath = path.normalize(templatePath);
+      const normalizedTemplateDir = path.normalize(templateDir);
+
+      if (!normalizedTemplatePath.startsWith(normalizedTemplateDir)) {
+        throw new Error('Invalid template path');
+      }
+
+      const content = await fs.promises.readFile(templatePath, 'utf8');
+      
+      // Also update the default template when loading a different one
+      const defaultTemplatePath = ensureTemplateExists();
+      await fs.promises.writeFile(defaultTemplatePath, content, 'utf8');
+      
+      return content;
+    } catch (error) {
+      console.error('Error loading template from path:', error);
+      return null;
     }
   });
 }

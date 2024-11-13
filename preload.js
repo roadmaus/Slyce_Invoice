@@ -18,7 +18,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   clearAllData: () => ipcRenderer.invoke('clearAllData'),
   getTemplatePath: () => ipcRenderer.invoke('getTemplatePath'),
-  saveTemplate: (content) => ipcRenderer.invoke('save-template', content),
+  saveTemplate: (content, isDefault) => ipcRenderer.invoke('save-template', content, isDefault),
   resetTemplate: () => ipcRenderer.invoke('reset-template'),
   getTemplate: () => ipcRenderer.invoke('get-template'),
+  getRecentTemplates: () => ipcRenderer.invoke('getRecentTemplates'),
+  loadTemplateFromPath: (templatePath) => ipcRenderer.invoke('loadTemplateFromPath', templatePath),
+  deleteTemplate: (templatePath) => ipcRenderer.invoke('deleteTemplate', templatePath),
+  renameTemplate: (templatePath, newName) => ipcRenderer.invoke('renameTemplate', templatePath, newName)
 });
