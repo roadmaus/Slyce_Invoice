@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { PlusCircle, Edit, Trash2, Tags } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
+import { SUPPORTED_CURRENCIES, DEFAULT_CURRENCY } from '@/constants/currencies';
 
 const TagsTab = ({
   quickTags,
@@ -24,6 +25,32 @@ const TagsTab = ({
   PREDEFINED_COLORS
 }) => {
   const { t } = useTranslation();
+  const [selectedCurrency, setSelectedCurrency] = React.useState(DEFAULT_CURRENCY);
+
+  // Load currency settings on mount
+  React.useEffect(() => {
+    const loadCurrency = async () => {
+      try {
+        const savedCurrency = await window.electronAPI.getData('currency');
+        if (savedCurrency) {
+          setSelectedCurrency(savedCurrency);
+        }
+      } catch (error) {
+        console.error('Error loading currency settings:', error);
+      }
+    };
+    loadCurrency();
+  }, []);
+
+  // Listen for currency changes
+  React.useEffect(() => {
+    const handleCurrencyChange = (event) => {
+      setSelectedCurrency(event.detail);
+    };
+
+    window.addEventListener('currencyChanged', handleCurrencyChange);
+    return () => window.removeEventListener('currencyChanged', handleCurrencyChange);
+  }, []);
 
   return (
     <Card>
@@ -275,7 +302,9 @@ const TagsTab = ({
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center justify-between p-2 rounded-md bg-background/50">
                     <span className="text-sm text-foreground/70">{t('tags.form.rate')}:</span>
-                    <span className="font-medium text-foreground">€{parseFloat(tag.rate).toFixed(2)}</span>
+                    <span className="font-medium text-foreground">
+                      {selectedCurrency.symbol}{parseFloat(tag.rate).toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between p-2 rounded-md bg-background/50">
                     <span className="text-sm text-foreground/70">{t('tags.form.quantity')}:</span>
