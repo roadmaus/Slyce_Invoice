@@ -24,7 +24,7 @@
       "title": "請求項目",
       "description": "説明",
       "quantity": "数量",
-      "rate": "価格 (€)",
+      "rate": "価格 ",
       "total": "合計",
       "addItem": "項目を追加",
       "position": "番号"
@@ -202,7 +202,7 @@
     "form": {
       "name": "名前",
       "description": "説明",
-      "rate": "価格 (€)",
+      "rate": "価格 ",
       "quantity": "数量",
       "color": "色",
       "visible": "クイック入力で表示",

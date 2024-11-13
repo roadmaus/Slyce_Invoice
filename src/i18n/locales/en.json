@@ -10,7 +10,9 @@
       "selectProfile": "Select Business Profile",
       "number": {
         "label": "Invoice Number",
-        "hint": "The invoice number will be generated automatically, but you can also set it manually."
+        "hint": "The invoice number will be generated automatically, but you can also set it manually.",
+        "invoiceNumber": "Invoice No",
+        "date": "Date"
       },
       "date": {
         "label": "Invoice Date",
@@ -24,7 +26,7 @@
       "title": "Invoice Items",
       "description": "Description",
       "quantity": "Quantity",
-      "rate": "Price (€)",
+      "rate": "Price ",
       "total": "Total",
       "addItem": "Add Item",
       "position": "Pos."
@@ -202,7 +204,7 @@
     "form": {
       "name": "Name",
       "description": "Description",
-      "rate": "Price (€)",
+      "rate": "Price ",
       "quantity": "Quantity",
       "color": "Color",
       "visible": "Visible in Quick Input",

@@ -36,9 +36,30 @@ const InvoiceTab = ({
   generateInvoice,
   isLoading,
   profileInvoiceNumbers,
-  setProfileInvoiceNumbers
+  setProfileInvoiceNumbers,
+  localeSettings,
+  setLocaleSettings,
+  i18n
 }) => {
   const { t } = useTranslation();
+
+  const handleGenerateInvoice = async () => {
+    await generateInvoice(localeSettings, i18n);
+  };
+
+  const formatCurrency = (amount) => {
+    try {
+      return new Intl.NumberFormat(localeSettings.invoiceLocale, {
+        style: 'currency',
+        currency: localeSettings.currency || 'EUR',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount);
+    } catch (error) {
+      console.error('Error formatting currency:', error);
+      return `€${amount.toFixed(2)}`;
+    }
+  };
 
   return (
     <Card className="border-border">
@@ -337,7 +358,7 @@ const InvoiceTab = ({
                   </div>
                   <div className="col-span-1">
                     <Input
-                      value={`€${(item.quantity * item.rate).toFixed(2)}`}
+                      value={formatCurrency(item.quantity * item.rate)}
                       readOnly
                       className="bg-background border-border"
                     />
@@ -371,13 +392,14 @@ const InvoiceTab = ({
           <InvoiceTotals 
             items={invoiceItems} 
             profile={selectedProfile} 
+            localeSettings={localeSettings}
           />
         )}
 
         {/* Total and Generate Section */}
         <div className="mt-6 flex justify-end items-center">
           <Button 
-            onClick={generateInvoice} 
+            onClick={handleGenerateInvoice} 
             disabled={isLoading.invoice}
             className="min-w-[200px]"
           >

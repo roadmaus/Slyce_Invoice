@@ -24,7 +24,7 @@
       "title": "Factuurregels",
       "description": "Omschrijving",
       "quantity": "Aantal",
-      "rate": "Prijs (€)",
+      "rate": "Prijs ",
       "total": "Totaal",
       "addItem": "Regel toevoegen",
       "position": "Pos."
@@ -202,7 +202,7 @@
     "form": {
       "name": "Naam",
       "description": "Omschrijving",
-      "rate": "Prijs (€)",
+      "rate": "Prijs ",
       "quantity": "Aantal",
       "color": "Kleur",
       "visible": "Zichtbaar in snelle invoer",

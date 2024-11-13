@@ -24,7 +24,7 @@
       "title": "发票项目",
       "description": "描述",
       "quantity": "数量",
-      "rate": "价格 (€)",
+      "rate": "价格 ",
       "total": "总计",
       "addItem": "添加项目",
       "position": "序号"
@@ -202,7 +202,7 @@
     "form": {
       "name": "名称",
       "description": "描述",
-      "rate": "价格 (€)",
+      "rate": "价格 ",
       "quantity": "数量",
       "color": "颜色",
       "visible": "在快速输入中可见",

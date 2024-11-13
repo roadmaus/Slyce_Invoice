@@ -24,7 +24,7 @@
       "title": "चालान मदें",
       "description": "विवरण",
       "quantity": "मात्रा",
-      "rate": "दर (€)",
+      "rate": "दर ",
       "total": "कुल",
       "addItem": "मद जोड़ें",
       "position": "क्र."
@@ -202,7 +202,7 @@
     "form": {
       "name": "नाम",
       "description": "विवरण",
-      "rate": "दर (€)",
+      "rate": "दर ",
       "quantity": "मात्रा",
       "color": "रंग",
       "visible": "त्वरित प्रविष्टि में दिखाएं",

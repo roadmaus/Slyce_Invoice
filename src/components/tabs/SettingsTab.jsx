@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import '@/i18n/config';
 import TemplateEditor from '../TemplateEditor';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 
 const SettingsTab = () => {
   const { theme, setTheme } = useTheme();
@@ -28,6 +29,12 @@ const SettingsTab = () => {
   const [clickedLanguages, setClickedLanguages] = React.useState(new Set());
   const [showSwabian, setShowSwabian] = React.useState(false);
   const [showTemplateEditor, setShowTemplateEditor] = React.useState(false);
+  const [localeSettings, setLocaleSettings] = React.useState({
+    uiLocale: 'en',
+    invoiceLocale: 'en',
+    currency: 'EUR'
+  });
+  const [useDifferentInvoiceLocale, setUseDifferentInvoiceLocale] = React.useState(false);
 
   // Load preview settings on mount
   React.useEffect(() => {
@@ -95,35 +102,50 @@ const SettingsTab = () => {
     }
   };
 
-  // Load language settings on mount
+  // Load locale settings on mount
   React.useEffect(() => {
-    const loadLanguageSettings = async () => {
+    const loadLocaleSettings = async () => {
       try {
-        const settings = await window.electronAPI.getData('languageSettings');
-        if (settings?.language) {
-          setLanguage(settings.language);
-          await i18n.changeLanguage(settings.language);
+        const settings = await window.electronAPI.getData('localeSettings');
+        if (settings) {
+          setLocaleSettings(settings);
+          setUseDifferentInvoiceLocale(settings.useDifferentInvoiceLocale ?? (settings.invoiceLocale !== 'de'));
+          await i18n.changeLanguage(settings.uiLocale);
         }
       } catch (error) {
-        console.error('Error loading language settings:', error);
-        toast.error(t('settings.errors.loadLanguage'));
+        console.error('Error loading locale settings:', error);
+        toast.error(t('settings.errors.loadLocale'));
       }
     };
-    loadLanguageSettings();
+    loadLocaleSettings();
   }, [i18n]);
 
-  const updateLanguage = async (newLanguage) => {
+  const updateLocaleSettings = async (newSettings) => {
     try {
-      await window.electronAPI.setData('languageSettings', { language: newLanguage });
-      setLanguage(newLanguage);
-      await i18n.changeLanguage(newLanguage);
-      window.dispatchEvent(new CustomEvent('languageChanged', { 
-        detail: { language: newLanguage } 
+      const updatedSettings = {
+        uiLocale: newSettings.uiLocale || 'en',
+        invoiceLocale: useDifferentInvoiceLocale ? newSettings.invoiceLocale || 'de' : 'de',
+        currency: useDifferentInvoiceLocale ? newSettings.currency || 'EUR' : 'EUR'
+      };
+
+      await window.electronAPI.setData('localeSettings', {
+        ...updatedSettings,
+        useDifferentInvoiceLocale
+      });
+      setLocaleSettings(updatedSettings);
+
+      if (updatedSettings.uiLocale !== localeSettings.uiLocale) {
+        await i18n.changeLanguage(updatedSettings.uiLocale);
+      }
+
+      window.dispatchEvent(new CustomEvent('localeSettingsChanged', { 
+        detail: updatedSettings 
       }));
-      toast.success(t('settings.success.language'));
+
+      toast.success(t('settings.success.locale'));
     } catch (error) {
-      console.error('Error updating language:', error);
-      toast.error(t('settings.errors.updateLanguage'));
+      console.error('Error updating locale settings:', error);
+      toast.error(t('settings.errors.updateLocale'));
     }
   };
 
@@ -168,55 +190,156 @@ const SettingsTab = () => {
       <Card className="border-none shadow-none">
         <CardContent className="p-6">
           <div className="flex flex-col space-y-8">
-            {/* Language Section */}
+            {/* Locale Settings Section */}
             <section>
               <div className="flex items-center gap-2 mb-6">
                 <h2 className="text-2xl font-semibold tracking-tight">
-                  {t('settings.language.title')}
+                  {t('settings.locale.title')}
                 </h2>
                 <Info className="w-4 h-4 text-muted-foreground" />
               </div>
-              <p className="text-muted-foreground mb-6">
-                {t('settings.language.description')}
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { value: 'en', label: 'English', flag: '🇺🇸' },
-                  { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
-                  { value: 'es', label: 'Español', flag: '🇪🇸' },
-                  { value: 'ko', label: '한국어', flag: '🇰🇷' },
-                  { value: 'fr', label: 'Français', flag: '🇫🇷' },
-                  { value: 'zh', label: '中文', flag: '🇨🇳' },
-                  { value: 'ja', label: '日本語', flag: '🇯🇵' },
-                  { value: 'pt', label: 'Português', flag: '🇵🇹' },
-                  { value: 'ru', label: 'Русский', flag: '🇷🇺' },
-                  { value: 'hi', label: 'हिन्दी', flag: '🇮🇳' },
-                  { value: 'ar', label: 'العربية', flag: '🇸🇦' },
-                  { value: 'it', label: 'Italiano', flag: '🇮🇹' },
-                  { value: 'nl', label: 'Nederlands', flag: '🇳🇱' },
-                  { value: 'tr', label: 'Türkçe', flag: '🇹🇷' },
-                  { value: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
-                  { value: 'th', label: 'ไทย', flag: '🇹🇭' },
-                  ...(showSwabian ? [{ 
-                    value: 'swg', 
-                    label: 'Schwäbisch', 
-                    flag: '🦁'  // Using lion emoji for Swabian flag
-                  }] : [])
-                ].map(({ value, label, flag }) => (
-                  <button
-                    key={value}
-                    onClick={() => handleLanguageClick(value)}
-                    className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
-                      ${language === value 
-                        ? 'border-primary bg-primary/5 shadow-sm' 
-                        : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
-                  >
-                    <span className="text-2xl mb-2">{flag}</span>
-                    <h3 className={`font-medium ${language === value ? 'text-primary' : ''}`}>
-                      {label}
-                    </h3>
-                  </button>
-                ))}
+              
+              {/* UI Language */}
+              <div className="mb-8">
+                <h3 className="text-lg font-medium mb-4">{t('settings.locale.ui.title')}</h3>
+                <p className="text-muted-foreground mb-6">
+                  {t('settings.locale.ui.description')}
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {/* Same language buttons as before, but now updating uiLocale */}
+                  {[
+                    { value: 'en', label: 'English', flag: '🇺🇸' },
+                    { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
+                    { value: 'es', label: 'Español', flag: '🇪🇸' },
+                    { value: 'ko', label: '한국어', flag: '🇰🇷' },
+                    { value: 'fr', label: 'Français', flag: '🇫🇷' },
+                    { value: 'zh', label: '中文', flag: '🇨🇳' },
+                    { value: 'ja', label: '日本語', flag: '🇯🇵' },
+                    { value: 'pt', label: 'Português', flag: '🇵🇹' },
+                    { value: 'ru', label: 'Русский', flag: '🇷🇺' },
+                    { value: 'hi', label: 'हिन्दी', flag: '🇮🇳' },
+                    { value: 'ar', label: 'العربية', flag: '🇸🇦' },
+                    { value: 'it', label: 'Italiano', flag: '🇮🇹' },
+                    { value: 'nl', label: 'Nederlands', flag: '🇳🇱' },
+                    { value: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+                    { value: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
+                    { value: 'th', label: 'ไทย', flag: '🇹🇭' },
+                    ...(showSwabian ? [{ 
+                      value: 'swg', 
+                      label: 'Schwäbisch', 
+                      flag: '🦁'  // Using lion emoji for Swabian flag
+                    }] : [])
+                  ].map(({ value, label, flag }) => (
+                    <button
+                      key={value}
+                      onClick={() => updateLocaleSettings({
+                        ...localeSettings,
+                        uiLocale: value
+                      })}
+                      className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
+                        ${localeSettings.uiLocale === value 
+                          ? 'border-primary bg-primary/5 shadow-sm' 
+                          : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
+                    >
+                      <span className="text-2xl mb-2">{flag}</span>
+                      <h3 className={`font-medium ${localeSettings.uiLocale === value ? 'text-primary' : ''}`}>
+                        {label}
+                      </h3>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Invoice Language & Format */}
+              <div>
+                <h3 className="text-lg font-medium mb-4">{t('settings.locale.invoice.title')}</h3>
+                <p className="text-muted-foreground mb-6">
+                  {t('settings.locale.invoice.description')}
+                </p>
+                <div className="space-y-6">
+                  {/* Toggle for different invoice locale */}
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base">
+                      {t('settings.locale.invoice.useDifferentLocale')}
+                    </Label>
+                    <Switch
+                      checked={useDifferentInvoiceLocale}
+                      onCheckedChange={setUseDifferentInvoiceLocale}
+                    />
+                  </div>
+
+                  {useDifferentInvoiceLocale && (
+                    <>
+                      {/* Invoice Language Selection */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {[
+                          { value: 'en', label: 'English', flag: '🇺🇸' },
+                          { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
+                          { value: 'es', label: 'Español', flag: '🇪🇸' },
+                          { value: 'ko', label: '한국어', flag: '🇰🇷' },
+                          { value: 'fr', label: 'Français', flag: '🇫🇷' },
+                          { value: 'zh', label: '中文', flag: '🇨🇳' },
+                          { value: 'ja', label: '日本語', flag: '🇯🇵' },
+                          { value: 'pt', label: 'Português', flag: '🇵🇹' },
+                          { value: 'ru', label: 'Русский', flag: '🇷🇺' },
+                          { value: 'hi', label: 'हिन्दी', flag: '🇮🇳' },
+                          { value: 'ar', label: 'العربية', flag: '🇸🇦' },
+                          { value: 'it', label: 'Italiano', flag: '🇮🇹' },
+                          { value: 'nl', label: 'Nederlands', flag: '🇳🇱' },
+                          { value: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+                          { value: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
+                          { value: 'th', label: 'ไทย', flag: '🇹🇭' },
+                          ...(showSwabian ? [{ 
+                            value: 'swg', 
+                            label: 'Schwäbisch', 
+                            flag: '🦁'  // Using lion emoji for Swabian flag
+                          }] : [])
+                        ].map(({ value, label, flag }) => (
+                          <button
+                            key={value}
+                            onClick={() => updateLocaleSettings({
+                              ...localeSettings,
+                              invoiceLocale: value
+                            })}
+                            className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
+                              ${localeSettings.invoiceLocale === value 
+                                ? 'border-primary bg-primary/5 shadow-sm' 
+                                : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
+                          >
+                            <span className="text-2xl mb-2">{flag}</span>
+                            <h3 className={`font-medium ${localeSettings.invoiceLocale === value ? 'text-primary' : ''}`}>
+                              {label}
+                            </h3>
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Currency Selection */}
+                      <div className="space-y-2">
+                        <Label className="text-base">
+                          {t('settings.locale.currency.label')}
+                        </Label>
+                        <Select
+                          value={localeSettings.currency}
+                          onValueChange={(value) => updateLocaleSettings({
+                            ...localeSettings,
+                            currency: value
+                          })}
+                        >
+                          <SelectTrigger className="w-[200px]">
+                            <SelectValue placeholder={t('settings.locale.currency.placeholder')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="EUR">EUR (€)</SelectItem>
+                            <SelectItem value="USD">USD ($)</SelectItem>
+                            <SelectItem value="GBP">GBP (£)</SelectItem>
+                            {/* Add more currencies as needed */}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </section>
 

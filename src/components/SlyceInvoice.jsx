@@ -119,23 +119,40 @@ const adjustColorForDarkMode = (hexColor, isDark) => {
   return `rgba(${r}, ${g}, ${b}, 0.3)`;
 };
 
-// Currency formatting
-const formatCurrency = (amount, locale = 'de-DE', currency = 'EUR') => {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(amount);
+// Update the currency formatting function with default values and error handling
+const formatCurrency = (amount, localeSettings = {}) => {
+  try {
+    // Default to EUR if no currency is specified
+    const currency = localeSettings.currency || 'EUR';
+    // Default to 'en' if no locale is specified
+    const locale = localeSettings.invoiceLocale || 'en';
+
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  } catch (error) {
+    console.error('Error formatting currency:', error);
+    // Fallback formatting
+    return `€${amount.toFixed(2)}`;
+  }
 };
 
-// Date formatting
-const formatDate = (date) => {
-  return new Intl.DateTimeFormat('de-DE', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  }).format(new Date(date));
+// Also update the date formatting function with similar safeguards
+const formatDate = (date, invoiceLocale = 'en') => {
+  try {
+    return new Intl.DateTimeFormat(invoiceLocale, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(new Date(date));
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    // Fallback formatting
+    return new Date(date).toLocaleDateString();
+  }
 };
 
 // Validation function
@@ -169,7 +186,7 @@ const validateInvoice = () => {
 };
 
 const SlyceInvoice = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Business Profiles State
   const [businessProfiles, setBusinessProfiles] = useState([]);
@@ -271,6 +288,38 @@ const SlyceInvoice = () => {
 
   // Add new state for profile-specific invoice numbers
   const [profileInvoiceNumbers, setProfileInvoiceNumbers] = useState({});
+
+  // Add locale settings state
+  const [localeSettings, setLocaleSettings] = useState({
+    uiLocale: 'en',
+    invoiceLocale: 'en',
+    currency: 'EUR'
+  });
+
+  // Load locale settings
+  useEffect(() => {
+    const loadLocaleSettings = async () => {
+      try {
+        const settings = await window.electronAPI.getData('localeSettings');
+        if (settings) {
+          setLocaleSettings({
+            uiLocale: settings.uiLocale || 'en',
+            invoiceLocale: settings.invoiceLocale || 'en',
+            currency: settings.currency || 'EUR'
+          });
+          await i18n.changeLanguage(settings.uiLocale); // Apply uiLocale for UI
+        }
+      } catch (error) {
+        console.error('Error loading locale settings:', error);
+        setLocaleSettings({
+          uiLocale: 'en',
+          invoiceLocale: 'en',
+          currency: 'EUR'
+        });
+      }
+    };
+    loadLocaleSettings();
+  }, [i18n]);
 
   // Load saved data on component mount
   useEffect(() => {
@@ -461,7 +510,7 @@ const SlyceInvoice = () => {
   };
 
   // Format greeting
-  const formatGreeting = () => {
+  const formatGreeting = (t) => {
     const nameParts = selectedCustomer.name.trim().split(' ');
     const lastName = nameParts[nameParts.length - 1];
     const fullName = selectedCustomer.name;
@@ -511,21 +560,56 @@ const SlyceInvoice = () => {
     }
   };
 
-  const generateInvoice = async () => {
+  const generateInvoice = async (localeSettings, i18nInstance) => {
     if (!validateInvoice()) return;
 
     setIsLoading(prev => ({ ...prev, invoice: true }));
     
     try {
+      const invoiceI18n = i18nInstance.cloneInstance();
+      await invoiceI18n.changeLanguage(localeSettings.invoiceLocale);
+      
+      const invoiceT = invoiceI18n.t;
+
       const template = await window.electronAPI.getInvoiceTemplate();
       
-      // Format customer address with translated title and academic title
+      // Calculate all amounts once at the beginning
+      const netTotal = calculateTotal();
+      const vatRate = selectedProfile.vat_enabled ? (selectedProfile.vat_rate || 19) : 0;
+      const vatAmount = selectedProfile.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
+      const totalAmount = netTotal + vatAmount;
+
+      // Format the invoice number and date
+      const invoiceNumberDate = `${invoiceT('invoice.number')}: ${currentInvoiceNumber}\n${invoiceT('invoice.date')}: ${formatDate(new Date(), localeSettings.invoiceLocale)}`;
+
+      // Format dates using invoice locale
+      const servicePeriodText = invoiceDates.hasDateRange
+        ? invoiceT('invoice.servicePeriod.range', {
+            startDate: formatDate(invoiceDates.startDate, localeSettings.invoiceLocale),
+            endDate: formatDate(invoiceDates.endDate, localeSettings.invoiceLocale)
+          })
+        : invoiceT('invoice.servicePeriod.single', {
+            date: formatDate(invoiceDates.startDate, localeSettings.invoiceLocale)
+          });
+
+      // Format invoice items with invoice locale
+      const formattedInvoiceItems = invoiceItems.map((item, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${item.quantity}</td>
+          <td>${item.description}</td>
+          <td>${formatCurrency(item.rate, localeSettings)}</td>
+          <td>${formatCurrency(item.quantity * item.rate, localeSettings)}</td>
+        </tr>
+      `).join('');
+
+      // Format customer address with invoice locale
       const translatedTitle = selectedCustomer.title !== 'neutral' 
-        ? t(`customers.form.titles.${selectedCustomer.title}`)
+        ? invoiceT(`customers.form.titles.${selectedCustomer.title}`)
         : '';
       
       const translatedAcademicTitle = selectedCustomer.zusatz !== 'none'
-        ? t(`customers.form.academicTitle.options.${selectedCustomer.zusatz}`)
+        ? invoiceT(`customers.form.academicTitle.options.${selectedCustomer.zusatz}`)
         : '';
       
       const customerAddress = [
@@ -536,66 +620,30 @@ const SlyceInvoice = () => {
         `${selectedCustomer.postal_code} ${selectedCustomer.city}`
       ].filter(Boolean).join('<br>');
 
-      // Get formatted greeting using new function
-      const greeting = formatGreeting();
+      // Get formatted greeting with invoice locale
+      const greeting = formatGreeting(invoiceT);
 
-      // Calculate amounts
-      const netTotal = calculateTotal();
-      const vatRate = selectedProfile.vat_enabled ? (selectedProfile.vat_rate || 19) : 0;
-      const vatAmount = selectedProfile.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
-      const totalAmount = netTotal + vatAmount;
-
-      // Format service period text
-      const servicePeriodText = invoiceDates.hasDateRange
-        ? t('invoice.servicePeriod.range', {
-            startDate: formatDate(invoiceDates.startDate),
-            endDate: formatDate(invoiceDates.endDate)
-          }).replace('{startDate}', formatDate(invoiceDates.startDate))
-            .replace('{endDate}', formatDate(invoiceDates.endDate))
-        : t('invoice.servicePeriod.single', {
-            date: formatDate(invoiceDates.startDate)
-          }).replace('{date}', formatDate(invoiceDates.startDate));
-
-      // Create VAT-related HTML
+      // Create VAT-related HTML with invoice locale
       const vatNoticeHtml = selectedProfile.vat_enabled
-        ? `<p>${t('invoice.totals.vatNotice.enabled')}</p>`
-        : `<p>${t('invoice.totals.vatNotice.disabled')}</p>`;
+        ? `<p>${invoiceT('invoice.totals.vatNotice.enabled')}</p>`
+        : `<p>${invoiceT('invoice.totals.vatNotice.disabled')}</p>`;
 
       const vatRowHtml = selectedProfile.vat_enabled 
         ? `<tr>
-            <td>${t('invoice.totals.vat', { rate: vatRate })}:</td>
-            <td>${formatCurrency(vatAmount)}</td>
+            <td>${invoiceT('invoice.totals.vat', { rate: vatRate })}:</td>
+            <td>${formatCurrency(vatAmount, localeSettings)}</td>
           </tr>`
         : '';
 
-      // Format invoice header
-      const invoiceNumberDate = [
-        `${t('invoice.details.number.label')}: ${currentInvoiceNumber}`,
-        `${t('invoice.details.date.label')}: ${formatDate(new Date())}`
-      ].join('<br>');
+      // Format payment instruction with invoice locale
+      const paymentInstruction = invoiceT('invoice.payment.instruction', {
+        amount: formatCurrency(totalAmount, localeSettings)
+      });
 
-      // Format invoice items
-      const formattedInvoiceItems = invoiceItems.map((item, index) => `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${item.quantity}</td>
-          <td>${item.description}</td>
-          <td>${formatCurrency(item.rate)}</td>
-          <td>${formatCurrency(item.quantity * item.rate)}</td>
-        </tr>
-      `).join('');
+      // Define contactDetailsHtml
+      const contactDetailsHtml = selectedProfile.contact_details || '';
 
-      // Format payment instruction with amount
-      const paymentInstruction = t('invoice.payment.instruction', {
-        amount: formatCurrency(totalAmount)
-      }).replace('{amount}', formatCurrency(totalAmount));
-
-      // Format contact details - only include if they exist
-      const contactDetailsHtml = selectedProfile.contact_details 
-        ? selectedProfile.contact_details.split('\n').join('<br>')
-        : '';
-
-      // Replace all placeholders
+      // Replace all placeholders using invoice locale for labels
       let html = template
         .replaceAll('{company_name}', selectedProfile.company_name)
         .replaceAll('{company_street}', selectedProfile.company_street)
@@ -607,23 +655,23 @@ const SlyceInvoice = () => {
         .replaceAll('{invoice_number_date}', invoiceNumberDate)
         .replaceAll('{greeting}', greeting)
         .replaceAll('{service_period_text}', servicePeriodText)
-        .replaceAll('{position_label}', t('invoice.items.position'))
-        .replaceAll('{quantity_label}', t('invoice.items.quantity'))
-        .replaceAll('{description_label}', t('invoice.items.description'))
-        .replaceAll('{unit_price_label}', t('invoice.items.rate'))
-        .replaceAll('{total_label}', t('invoice.items.total'))
-        .replaceAll('{net_amount_label}', t('invoice.totals.netAmount'))
-        .replaceAll('{total_amount_label}', t('invoice.totals.totalAmount'))
+        .replaceAll('{position_label}', invoiceT('invoice.items.position'))
+        .replaceAll('{quantity_label}', invoiceT('invoice.items.quantity'))
+        .replaceAll('{description_label}', invoiceT('invoice.items.description'))
+        .replaceAll('{unit_price_label}', invoiceT('invoice.items.rate'))
+        .replaceAll('{total_label}', invoiceT('invoice.items.total'))
+        .replaceAll('{net_amount_label}', invoiceT('invoice.totals.netAmount'))
+        .replaceAll('{total_amount_label}', invoiceT('invoice.totals.totalAmount'))
         .replaceAll('{payment_instruction}', paymentInstruction)
-        .replaceAll('{thank_you_note}', t('invoice.closing.thankYou'))
-        .replaceAll('{closing}', t('invoice.closing.regards'))
-        .replaceAll('{name_label}', t('invoice.banking.name'))
-        .replaceAll('{bank_label}', t('invoice.banking.institute'))
+        .replaceAll('{thank_you_note}', invoiceT('invoice.closing.thankYou'))
+        .replaceAll('{closing}', invoiceT('invoice.closing.regards'))
+        .replaceAll('{name_label}', invoiceT('invoice.banking.name'))
+        .replaceAll('{bank_label}', invoiceT('invoice.banking.institute'))
         .replaceAll('{invoice_items}', formattedInvoiceItems)
-        .replaceAll('{net_amount}', formatCurrency(netTotal))
+        .replaceAll('{net_amount}', formatCurrency(netTotal, localeSettings))
         .replaceAll('{vat_row}', vatRowHtml)
         .replaceAll('{vat_notice}', vatNoticeHtml)
-        .replaceAll('{total_amount}', formatCurrency(totalAmount))
+        .replaceAll('{total_amount}', formatCurrency(totalAmount, localeSettings))
         .replaceAll('{bank_institute}', selectedProfile.bank_institute)
         .replaceAll('{bank_iban}', selectedProfile.bank_iban)
         .replaceAll('{bank_bic}', selectedProfile.bank_bic)
@@ -1231,6 +1279,18 @@ useEffect(() => {
   }
 }, [isInitialized, businessProfiles]);
 
+useEffect(() => {
+  const handleLocaleSettingsChange = (event) => {
+    setLocaleSettings(event.detail);
+  };
+
+  window.addEventListener('localeSettingsChanged', handleLocaleSettingsChange);
+
+  return () => {
+    window.removeEventListener('localeSettingsChanged', handleLocaleSettingsChange);
+  };
+}, []);
+
 // Main Render
   return (
     <>
@@ -1286,10 +1346,13 @@ useEffect(() => {
               updateInvoiceItem={updateInvoiceItem}
               deleteInvoiceItem={deleteInvoiceItem}
               addInvoiceItem={addInvoiceItem}
-              generateInvoice={generateInvoice}
+              generateInvoice={(localeSettings) => generateInvoice(localeSettings, i18n)}
               isLoading={isLoading}
               profileInvoiceNumbers={profileInvoiceNumbers}
               setProfileInvoiceNumbers={setProfileInvoiceNumbers}
+              localeSettings={localeSettings}
+              setLocaleSettings={setLocaleSettings}
+              i18n={i18n}
             />
           </TabsContent>
 

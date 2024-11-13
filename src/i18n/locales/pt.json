@@ -24,7 +24,7 @@
       "title": "Itens da Fatura",
       "description": "Descrição",
       "quantity": "Quantidade",
-      "rate": "Preço (€)",
+      "rate": "Preço ",
       "total": "Total",
       "addItem": "Adicionar Item",
       "position": "Pos."
@@ -202,7 +202,7 @@
     "form": {
       "name": "Nome",
       "description": "Descrição",
-      "rate": "Preço (€)",
+      "rate": "Preço ",
       "quantity": "Quantidade",
       "color": "Cor",
       "visible": "Visível na Entrada Rápida",

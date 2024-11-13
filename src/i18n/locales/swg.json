@@ -24,7 +24,7 @@
       "title": "Rächnungsposchda",
       "description": "Beschreibung",
       "quantity": "Menge",
-      "rate": "Preis (€)",
+      "rate": "Preis ",
       "total": "Gsamt",
       "addItem": "Poschda neidoa",
       "position": "Pos."
@@ -202,7 +202,7 @@
     "form": {
       "name": "Nam",
       "description": "Beschreibung",
-      "rate": "Preis (€)",
+      "rate": "Preis ",
       "quantity": "Menge",
       "color": "Farb",
       "visible": "In Schnelleignab sichtbar",

@@ -24,7 +24,7 @@
       "title": "Voci fattura",
       "description": "Descrizione",
       "quantity": "Quantità",
-      "rate": "Prezzo (€)",
+      "rate": "Prezzo ",
       "total": "Totale",
       "addItem": "Aggiungi voce",
       "position": "Pos."
@@ -202,7 +202,7 @@
     "form": {
       "name": "Nome",
       "description": "Descrizione",
-      "rate": "Prezzo (€)",
+      "rate": "Prezzo ",
       "quantity": "Quantità",
       "color": "Colore",
       "visible": "Visibile nell'inserimento rapido",

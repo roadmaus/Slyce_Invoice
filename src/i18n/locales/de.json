@@ -10,7 +10,9 @@
       "selectProfile": "Geschäftsprofil auswählen",
       "number": {
         "label": "Rechnungsnummer",
-        "hint": "Die Rechnungsnummer wird automatisch generiert, aber Sie können sie auch manuell setzen."
+        "hint": "Die Rechnungsnummer wird automatisch generiert, aber Sie können sie auch manuell setzen.",
+        "invoiceNumber": "Rechnungsnr",
+        "invoiceDate": "Datum"
       },
       "date": {
         "label": "Rechnungsdatum",
@@ -203,7 +205,7 @@
       "name": "Name",
       "description": "Beschreibung",
       "noDescription": "Keine Beschreibung verfügbar",
-      "rate": "Preis (€)",
+      "rate": "Preis ",
       "quantity": "Menge",
       "color": "Farbe",
       "visible": "In Schnelleingabe sichtbar",
