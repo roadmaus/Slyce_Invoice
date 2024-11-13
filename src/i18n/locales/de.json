@@ -23,6 +23,7 @@
     "items": {
       "title": "Rechnungspositionen",
       "description": "Beschreibung",
+      "position": "Pos.",
       "quantity": "Menge",
       "rate": "Preis (€)",
       "total": "Gesamt",
@@ -44,7 +45,7 @@
       "save": "Speichern"
     },
     "greeting": {
-      "diverse": "Sehr geehrte(r) {name},",
+      "diverse": "Hallo {name},",
       "academic": "Sehr geehrte(r) {title} {name},",
       "herr": "Sehr geehrter Herr {name},",
       "frau": "Sehr geehrte Frau {name},"
@@ -331,7 +332,7 @@
     },
     "invoice": {
       "template": "Rechnungsvorlage",
-      "templateDescription": "Passen Sie Ihre Rechnungsvorlage an Ihre Marke an"
+      "templateDescription": "Passen Sie Ihre Rechnungsvorlage an Ihre Brand an"
     },
     "gallery": "Galerie",
     "recentTemplates": "Kürzlich verwendete Vorlagen",
