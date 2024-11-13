@@ -160,7 +160,7 @@ const validateInvoice = () => {
 };
 
 const SlyceInvoice = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Business Profiles State
   const [businessProfiles, setBusinessProfiles] = useState([]);
@@ -265,6 +265,9 @@ const SlyceInvoice = () => {
 
   // Add this with other state declarations
   const [selectedCurrency, setSelectedCurrency] = useState(DEFAULT_CURRENCY);
+
+  // Add to state declarations at the top
+  const [useGermanInvoices, setUseGermanInvoices] = useState(true);
 
   // Load saved data on component mount
   useEffect(() => {
@@ -523,12 +526,39 @@ const SlyceInvoice = () => {
     }
   };
 
+  // Add this useEffect to load the setting
+  useEffect(() => {
+    const loadInvoiceLanguage = async () => {
+      const settings = await window.electronAPI.getData('invoiceLanguageSettings');
+      if (settings?.useGermanInvoices !== undefined) {
+        setUseGermanInvoices(settings.useGermanInvoices);
+      }
+    };
+    loadInvoiceLanguage();
+
+    const handleInvoiceLanguageChange = (event) => {
+      setUseGermanInvoices(event.detail.useGermanInvoices);
+    };
+    window.addEventListener('invoiceLanguageChanged', handleInvoiceLanguageChange);
+    
+    return () => {
+      window.removeEventListener('invoiceLanguageChanged', handleInvoiceLanguageChange);
+    };
+  }, []);
+
+  // Update the generateInvoice function
   const generateInvoice = async () => {
     if (!validateInvoice()) return;
 
     setIsLoading(prev => ({ ...prev, invoice: true }));
     
     try {
+      // Store current language and switch to German if needed
+      const currentLanguage = i18n.language;
+      if (useGermanInvoices) {
+        await i18n.changeLanguage('de');
+      }
+
       const template = await window.electronAPI.getInvoiceTemplate();
       
       // Format customer address
@@ -698,9 +728,19 @@ const SlyceInvoice = () => {
       } else {
         toast.error(t('messages.error.savingInvoice'));
       }
+
+      // Switch back to original language
+      if (useGermanInvoices) {
+        await i18n.changeLanguage(currentLanguage);
+      }
     } catch (error) {
       console.error('Error generating invoice:', error);
       toast.error(t('messages.error.generatingInvoice'));
+      
+      // Make sure to restore language even if there's an error
+      if (useGermanInvoices) {
+        await i18n.changeLanguage(currentLanguage);
+      }
     } finally {
       setIsLoading(prev => ({ ...prev, invoice: false }));
     }

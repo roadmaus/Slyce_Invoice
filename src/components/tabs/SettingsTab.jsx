@@ -30,6 +30,7 @@ const SettingsTab = () => {
   const [showSwabian, setShowSwabian] = React.useState(false);
   const [showTemplateEditor, setShowTemplateEditor] = React.useState(false);
   const [selectedCurrency, setSelectedCurrency] = React.useState(DEFAULT_CURRENCY);
+  const [useGermanInvoices, setUseGermanInvoices] = React.useState(true);
 
   // Load preview settings on mount
   React.useEffect(() => {
@@ -194,6 +195,36 @@ const SettingsTab = () => {
     } catch (error) {
       console.error('Error updating currency:', error);
       toast.error(t('settings.errors.updateCurrency'));
+    }
+  };
+
+  // Add after other useEffects
+  React.useEffect(() => {
+    const loadInvoiceLanguageSettings = async () => {
+      try {
+        const settings = await window.electronAPI.getData('invoiceLanguageSettings');
+        if (settings?.useGermanInvoices !== undefined) {
+          setUseGermanInvoices(settings.useGermanInvoices);
+        }
+      } catch (error) {
+        console.error('Error loading invoice language settings:', error);
+      }
+    };
+    loadInvoiceLanguageSettings();
+  }, []);
+
+  // Add handler for toggle
+  const updateInvoiceLanguage = async (useGerman) => {
+    try {
+      await window.electronAPI.setData('invoiceLanguageSettings', { useGermanInvoices: useGerman });
+      setUseGermanInvoices(useGerman);
+      window.dispatchEvent(new CustomEvent('invoiceLanguageChanged', { 
+        detail: { useGermanInvoices: useGerman } 
+      }));
+      toast.success(t('settings.success.invoiceLanguage'));
+    } catch (error) {
+      console.error('Error updating invoice language:', error);
+      toast.error(t('settings.errors.updateInvoiceLanguage'));
     }
   };
 
@@ -548,6 +579,26 @@ const SettingsTab = () => {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Language Toggle Section */}
+            <section>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label className="text-base">
+                    {t('settings.language.germanInvoices')}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {t('settings.language.germanInvoicesDescription')}
+                  </p>
+                </div>
+                <Switch
+                  checked={useGermanInvoices}
+                  onCheckedChange={updateInvoiceLanguage}
+                />
               </div>
             </section>
           </div>
