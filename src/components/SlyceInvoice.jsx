@@ -460,6 +460,61 @@ const SlyceInvoice = () => {
     return invoiceItems.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
   };
 
+  // Format greeting
+  const formatGreeting = () => {
+    // Split name into parts (assuming last word is last name)
+    const nameParts = selectedCustomer.name.trim().split(' ');
+    const lastName = nameParts[nameParts.length - 1];
+    const fullName = selectedCustomer.name;
+
+    // Business customer case
+    if (selectedCustomer.firma) {
+      return t('invoice.greeting.business');
+    }
+
+    // Handle cases based on title
+    switch (selectedCustomer.title) {
+      case 'Divers':
+        return selectedCustomer.zusatz
+          ? t('invoice.greeting.diverse.academic', {
+              title: selectedCustomer.zusatz,
+              full_name: fullName
+            }).replace('{title}', selectedCustomer.zusatz)
+              .replace('{full_name}', fullName)
+          : t('invoice.greeting.diverse.default', {
+              full_name: fullName
+            }).replace('{full_name}', fullName);
+
+      case 'Herr':
+        return selectedCustomer.zusatz
+          ? t('invoice.greeting.herr.academic', {
+              title: selectedCustomer.zusatz,
+              last_name: lastName
+            }).replace('{title}', selectedCustomer.zusatz)
+              .replace('{last_name}', lastName)
+          : t('invoice.greeting.herr.default', {
+              last_name: lastName
+            }).replace('{last_name}', lastName);
+
+      case 'Frau':
+        return selectedCustomer.zusatz
+          ? t('invoice.greeting.frau.academic', {
+              title: selectedCustomer.zusatz,
+              last_name: lastName
+            }).replace('{title}', selectedCustomer.zusatz)
+              .replace('{last_name}', lastName)
+          : t('invoice.greeting.frau.default', {
+              last_name: lastName
+            }).replace('{last_name}', lastName);
+
+      default:
+        // Fallback for no title selected
+        return t('invoice.greeting.neutral', {
+          full_name: fullName
+        }).replace('{full_name}', fullName);
+    }
+  };
+
   const generateInvoice = async () => {
     if (!validateInvoice()) return;
 
@@ -477,22 +532,8 @@ const SlyceInvoice = () => {
         `${selectedCustomer.postal_code} ${selectedCustomer.city}`
       ].filter(Boolean).join('<br>');
 
-      // Format greeting
-      const fullName = [selectedCustomer.zusatz, selectedCustomer.name].filter(Boolean).join(' ');
-      let greeting;
-      
-      if (selectedCustomer.title === 'Divers') {
-        greeting = t('invoice.greeting.diverse', { name: fullName }).replace('{name}', fullName);
-      } else if (selectedCustomer.zusatz) {
-        greeting = t('invoice.greeting.academic', { 
-          title: selectedCustomer.zusatz,
-          name: selectedCustomer.name 
-        }).replace('{title}', selectedCustomer.zusatz).replace('{name}', selectedCustomer.name);
-      } else {
-        greeting = t(`invoice.greeting.${selectedCustomer.title.toLowerCase()}`, { 
-          name: selectedCustomer.name 
-        }).replace('{name}', selectedCustomer.name);
-      }
+      // Get formatted greeting using new function
+      const greeting = formatGreeting();
 
       // Calculate amounts
       const netTotal = calculateTotal();

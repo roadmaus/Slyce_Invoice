@@ -45,10 +45,20 @@
       "save": "Speichern"
     },
     "greeting": {
-      "diverse": "Hallo {name},",
-      "academic": "Sehr geehrte(r) {title} {name},",
-      "herr": "Sehr geehrter Herr {name},",
-      "frau": "Sehr geehrte Frau {name},"
+      "diverse": {
+        "default": "Hallo {full_name}",
+        "academic": "Hallo {title} {full_name}"
+      },
+      "herr": {
+        "default": "Sehr geehrter Herr {last_name}",
+        "academic": "Sehr geehrter Herr {title} {last_name}"
+      },
+      "frau": {
+        "default": "Sehr geehrte Frau {last_name}",
+        "academic": "Sehr geehrte Frau {title} {last_name}"
+      },
+      "business": "Sehr geehrte Damen und Herren",
+      "neutral": "Guten Tag {full_name}"
     },
     "servicePeriod": {
       "range": "Für den Leistungszeitraum vom {startDate} bis {endDate} stelle ich Ihnen folgendes in Rechnung:",
