@@ -42,6 +42,27 @@
       "generating": "Wird erstellt...",
       "preview": "Vorschau",
       "save": "Speichern"
+    },
+    "greeting": {
+      "diverse": "Sehr geehrte(r) {name},",
+      "academic": "Sehr geehrte(r) {title} {name},",
+      "herr": "Sehr geehrter Herr {name},",
+      "frau": "Sehr geehrte Frau {name},"
+    },
+    "servicePeriod": {
+      "range": "Für den Leistungszeitraum vom {startDate} bis {endDate} stelle ich Ihnen folgendes in Rechnung:",
+      "single": "Für die Leistungen am {date} stelle ich Ihnen folgendes in Rechnung:"
+    },
+    "payment": {
+      "instruction": "Bitte überweisen Sie den Betrag von {amount} innerhalb der nächsten 7 Werktage auf folgendes Konto:"
+    },
+    "banking": {
+      "name": "Name",
+      "institute": "Institut"
+    },
+    "closing": {
+      "thankYou": "Ich bedanke mich für den Auftrag und freue mich auf weitere Zusammenarbeit.",
+      "regards": "Mit freundlichen Grüßen"
     }
   },
   "customers": {

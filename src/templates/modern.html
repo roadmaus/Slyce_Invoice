@@ -230,17 +230,17 @@
 
     <div class="greeting-section">
         <p>{greeting}</p>
-        <p>Für den Leistungszeitraum {period} stelle ich Ihnen folgendes in Rechnung:</p>
+        <p>{service_period_text}</p>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>Pos.</th>
+                <th>{position_label}</th>
                 <th>{quantity_label}</th>
-                <th>Description</th>
+                <th>{description_label}</th>
                 <th>{unit_price_label}</th>
-                <th>Total</th>
+                <th>{total_label}</th>
             </tr>
         </thead>
         <tbody>
@@ -250,30 +250,30 @@
 
     <table class="amount-summary">
         <tr>
-            <td>Nettobetrag:</td>
+            <td>{net_amount_label}:</td>
             <td>{net_amount}</td>
         </tr>
         {vat_row}
         <tr>
-            <td>Gesamtbetrag:</td>
+            <td>{total_amount_label}:</td>
             <td>{total_amount}</td>
         </tr>
     </table>
 
     <div class="payment-info">
-        <p>Bitte überweisen Sie den Betrag von <span class="medium-bold">{total_amount}</span> innerhalb der nächsten 7 Werktage auf folgendes Konto:</p>
+        <p>{payment_instruction}</p>
         
         {vat_notice}
         
         <div class="banking-info">
-            <p><span class="medium-bold">Name:</span> {company_name}</p>
-            <p><span class="medium-bold">Institut:</span> {bank_institute}</p>
+            <p><span class="medium-bold">{name_label}:</span> {company_name}</p>
+            <p><span class="medium-bold">{bank_label}:</span> {bank_institute}</p>
             <p><span class="medium-bold">IBAN:</span> {bank_iban}</p>
             <p><span class="medium-bold">BIC:</span> {bank_bic}</p>
         </div>
 
-        <p>Ich bedanke mich für den Auftrag und freue mich auf weitere Zusammenarbeit.</p>
-        <p>Mit Besten Grüßen<br>{company_name}</p>
+        <p>{thank_you_note}</p>
+        <p>{closing}<br>{company_name}</p>
     </div>
 
     <div class="contact-details">

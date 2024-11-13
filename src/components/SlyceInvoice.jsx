@@ -119,6 +119,55 @@ const adjustColorForDarkMode = (hexColor, isDark) => {
   return `rgba(${r}, ${g}, ${b}, 0.3)`;
 };
 
+// Currency formatting
+const formatCurrency = (amount, locale = 'de-DE', currency = 'EUR') => {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+};
+
+// Date formatting
+const formatDate = (date) => {
+  return new Intl.DateTimeFormat('de-DE', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date(date));
+};
+
+// Validation function
+const validateInvoice = () => {
+  if (!selectedCustomer) {
+    toast.error(t('messages.validation.selectCustomer'));
+    return false;
+  }
+
+  if (!selectedProfile) {
+    toast.error(t('messages.validation.selectProfile'));
+    return false;
+  }
+
+  if (invoiceDates.hasDateRange && (!invoiceDates.startDate || !invoiceDates.endDate)) {
+    toast.error(t('messages.validation.setServicePeriod'));
+    return false;
+  }
+
+  if (!invoiceDates.hasDateRange && !invoiceDates.startDate) {
+    toast.error(t('messages.validation.setServiceDate'));
+    return false;
+  }
+
+  if (invoiceItems.length === 0) {
+    toast.error(t('messages.validation.addItem'));
+    return false;
+  }
+
+  return true;
+};
+
 const SlyceInvoice = () => {
   const { t } = useTranslation();
 
@@ -153,6 +202,7 @@ const SlyceInvoice = () => {
     city: '',
     firma: false,
   });
+
 
   // Quick Tags State
   const [quickTags, setQuickTags] = useState([]);
@@ -418,7 +468,7 @@ const SlyceInvoice = () => {
     try {
       const template = await window.electronAPI.getInvoiceTemplate();
       
-      // Format customer address with proper line breaks
+      // Format customer address
       const customerAddress = [
         selectedCustomer.title !== 'Divers' ? selectedCustomer.title : '',
         selectedCustomer.zusatz,
@@ -427,16 +477,22 @@ const SlyceInvoice = () => {
         `${selectedCustomer.postal_code} ${selectedCustomer.city}`
       ].filter(Boolean).join('<br>');
 
-      // Format invoice details with proper line breaks
-      const invoiceNumberDate = [
-        `Rechnungsnummer: ${currentInvoiceNumber}`,
-        `Datum: ${new Date().toLocaleDateString('de-DE')}`
-      ].join('<br>');
-
-      // Format greeting with proper spacing
-      const greeting = selectedCustomer.title === 'Divers' 
-        ? `Sehr geehrte(r) ${selectedCustomer.zusatz} ${selectedCustomer.name},`
-        : `Sehr ${selectedCustomer.title === 'Herr' ? 'geehrter Herr' : 'geehrte Frau'} ${selectedCustomer.zusatz} ${selectedCustomer.name},`;
+      // Format greeting
+      const fullName = [selectedCustomer.zusatz, selectedCustomer.name].filter(Boolean).join(' ');
+      let greeting;
+      
+      if (selectedCustomer.title === 'Divers') {
+        greeting = t('invoice.greeting.diverse', { name: fullName });
+      } else if (selectedCustomer.zusatz) {
+        greeting = t('invoice.greeting.academic', { 
+          title: selectedCustomer.zusatz,
+          name: selectedCustomer.name 
+        });
+      } else {
+        greeting = t(`invoice.greeting.${selectedCustomer.title.toLowerCase()}`, { 
+          name: selectedCustomer.name 
+        });
+      }
 
       // Calculate amounts
       const netTotal = calculateTotal();
@@ -444,31 +500,46 @@ const SlyceInvoice = () => {
       const vatAmount = selectedProfile.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
       const totalAmount = netTotal + vatAmount;
 
-      // Format invoice items with proper table structure and position numbers
+      // Format service period text
+      const servicePeriodText = invoiceDates.hasDateRange
+        ? t('invoice.servicePeriod.range', {
+            startDate: invoiceDates.startDate,
+            endDate: invoiceDates.endDate
+          })
+        : t('invoice.servicePeriod.single', {
+            date: invoiceDates.startDate
+          });
+
+      // Create VAT-related HTML
+      const vatNoticeHtml = selectedProfile.vat_enabled
+        ? `<p>${t('invoice.totals.vatNotice.enabled')}</p>`
+        : `<p>${t('invoice.totals.vatNotice.disabled')}</p>`;
+
+      const vatRowHtml = selectedProfile.vat_enabled 
+        ? `<tr>
+            <td>${t('invoice.totals.vat', { rate: vatRate })}:</td>
+            <td>${formatCurrency(vatAmount)}</td>
+          </tr>`
+        : '';
+
+      // Format invoice header
+      const invoiceNumberDate = [
+        `${t('invoice.details.number.label')}: ${currentInvoiceNumber}`,
+        `${t('invoice.details.date.label')}: ${formatDate(new Date())}`
+      ].join('<br>');
+
+      // Format invoice items
       const formattedInvoiceItems = invoiceItems.map((item, index) => `
         <tr>
           <td>${index + 1}</td>
           <td>${item.quantity}</td>
-          <td style="white-space: pre-wrap;">${item.description}</td>
-          <td>€${item.rate.toFixed(2)}</td>
-          <td>€${(item.quantity * item.rate).toFixed(2)}</td>
+          <td>${item.description}</td>
+          <td>${formatCurrency(item.rate)}</td>
+          <td>${formatCurrency(item.quantity * item.rate)}</td>
         </tr>
       `).join('');
 
-      // Create VAT row HTML if VAT is enabled
-      const vatRowHtml = selectedProfile.vat_enabled 
-        ? `<tr>
-            <td>Mehrwertsteuer (${vatRate}%):</td>
-            <td>€${vatAmount.toFixed(2)}</td>
-          </tr>`
-        : '';
-
-      // Create VAT notice based on profile settings
-      const vatNoticeHtml = selectedProfile.vat_enabled
-        ? `<p class="vat-notice">Umsatzsteuer wird gemäß § 19 UStG berechnet.</p>`
-        : `<p class="vat-notice">Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>`;
-
-      // Replace template placeholders
+      // Replace all placeholders
       let filledTemplate = template
         .replaceAll('{company_name}', selectedProfile.company_name)
         .replaceAll('{company_street}', selectedProfile.company_street)
@@ -479,24 +550,33 @@ const SlyceInvoice = () => {
         .replaceAll('{customer_address}', customerAddress)
         .replaceAll('{invoice_number_date}', invoiceNumberDate)
         .replaceAll('{greeting}', greeting)
-        .replaceAll('{period}', invoiceDates.hasDateRange 
-          ? `${invoiceDates.startDate} bis ${invoiceDates.endDate}`
-          : invoiceDates.startDate)
+        .replaceAll('{service_period_text}', servicePeriodText)
+        .replaceAll('{position_label}', t('invoice.items.position'))
+        .replaceAll('{quantity_label}', t('invoice.items.quantity'))
+        .replaceAll('{description_label}', t('invoice.items.description'))
+        .replaceAll('{unit_price_label}', t('invoice.items.rate'))
+        .replaceAll('{total_label}', t('invoice.items.total'))
+        .replaceAll('{net_amount_label}', t('invoice.totals.netAmount'))
+        .replaceAll('{total_amount_label}', t('invoice.totals.totalAmount'))
+        .replaceAll('{payment_instruction}', t('invoice.payment.instruction', {
+          amount: formatCurrency(totalAmount)
+        }))
+        .replaceAll('{thank_you_note}', t('invoice.closing.thankYou'))
+        .replaceAll('{closing}', t('invoice.closing.regards'))
+        .replaceAll('{name_label}', t('invoice.banking.name'))
+        .replaceAll('{bank_label}', t('invoice.banking.institute'))
         .replaceAll('{invoice_items}', formattedInvoiceItems)
-        .replaceAll('{net_amount}', `€${netTotal.toFixed(2)}`)
+        .replaceAll('{net_amount}', formatCurrency(netTotal))
         .replaceAll('{vat_row}', vatRowHtml)
         .replaceAll('{vat_notice}', vatNoticeHtml)
-        .replaceAll('{total_amount}', `€${totalAmount.toFixed(2)}`)
+        .replaceAll('{total_amount}', formatCurrency(totalAmount))
         .replaceAll('{bank_institute}', selectedProfile.bank_institute)
         .replaceAll('{bank_iban}', selectedProfile.bank_iban)
-        .replaceAll('{bank_bic}', selectedProfile.bank_bic)
-        .replaceAll('{contact_details}', selectedProfile.contact_details || '')
-        .replaceAll('{quantity_label}', 'Menge')
-        .replaceAll('{unit_price_label}', 'Einzelpreis');
+        .replaceAll('{bank_bic}', selectedProfile.bank_bic);
 
-      // Generate PDF with improved settings
+      // Generate PDF
       const pdf = await html2pdf().set({
-        margin: [48, 48, 48, 48], // [top, left, bottom, right]
+        margin: [48, 48, 48, 48],
         image: { type: 'jpeg', quality: 1 },
         html2canvas: {
           scale: 2,
@@ -515,41 +595,28 @@ const SlyceInvoice = () => {
           mode: ['avoid-all', 'css', 'legacy'],
           before: '.page-break-before',
           after: '.page-break-after',
-          avoid: [
-            'tr',
-            '.banking-info',
-            '.payment-info',
-            '.contact-details',
-            '.page-number'
-          ]
+          avoid: ['tr', '.banking-info', '.payment-info', '.contact-details', '.page-number']
         }
       }).from(filledTemplate).outputPdf('arraybuffer');
 
-      // Create Blob for preview
-      const pdfBlob = new Blob([pdf], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-
-      // Construct the desired file name
+      // Handle saving and preview
       const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
-
-      // Save using Electron
       const saved = await window.electronAPI.saveInvoice(pdf, fileName);
 
       if (saved) {
-        // Add an artificial delay before hiding the loading overlay
         await new Promise(resolve => setTimeout(resolve, 1500));
         
         if (previewSettings.showPreview) {
+          const pdfBlob = new Blob([pdf], { type: 'application/pdf' });
+          const pdfUrl = URL.createObjectURL(pdfBlob);
           setPdfPreview({
             show: true,
             data: pdfUrl,
             fileName: fileName
           });
         } else {
-          // Only show success toast if preview is not active
           toast.success(t('messages.success.invoiceGenerated'));
           
-          // Generate next number for this profile
           const nextNumber = generateInvoiceNumber(
             currentInvoiceNumber, 
             selectedProfile.company_name, 
@@ -560,14 +627,13 @@ const SlyceInvoice = () => {
           setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
         }
 
-        // Save the current invoice number for this profile
+        // Save the current invoice number
         const updatedNumbers = {
           ...profileInvoiceNumbers,
           [selectedProfile.company_name]: currentInvoiceNumber
         };
         setProfileInvoiceNumbers(updatedNumbers);
         await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
-
       } else {
         toast.error(t('messages.error.savingInvoice'));
       }
