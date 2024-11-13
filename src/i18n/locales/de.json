@@ -203,7 +203,7 @@
       "name": "Name",
       "description": "Beschreibung",
       "noDescription": "Keine Beschreibung verfügbar",
-      "rate": "Preis (€)",
+      "rate": "Preis ",
       "quantity": "Menge",
       "color": "Farbe",
       "visible": "In Schnelleingabe sichtbar",

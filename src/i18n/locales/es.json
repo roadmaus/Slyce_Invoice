@@ -24,7 +24,7 @@
       "title": "Elementos de la factura",
       "description": "Descripción",
       "quantity": "Cantidad",
-      "rate": "Precio (€)",
+      "rate": "Precio ",
       "total": "Total",
       "addItem": "Agregar elemento",
       "position": "Pos."
@@ -202,7 +202,7 @@
     "form": {
       "name": "Nombre",
       "description": "Descripción",
-      "rate": "Precio (€)",
+      "rate": "Precio ",
       "quantity": "Cantidad",
       "color": "Color",
       "visible": "Visible en entrada rápida",

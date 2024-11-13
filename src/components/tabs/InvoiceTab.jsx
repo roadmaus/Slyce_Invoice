@@ -270,14 +270,14 @@ const InvoiceTab = ({
                         className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm 
                           bg-background/50 hover:bg-background border border-border/50 hover:border-border
                           transition-colors duration-200 group relative"
-                        title={`${tag.description}\n€${parseFloat(tag.rate).toFixed(2)} × ${tag.quantity}`}
+                        title={`${tag.description}\n${selectedCurrency.symbol}${parseFloat(tag.rate).toFixed(2)} × ${tag.quantity}`}
                       >
                         <div className="w-2 h-2 rounded-full" 
                           style={{ backgroundColor: adjustColorForDarkMode(tag.color || '#e2e8f0', isDarkMode) }} 
                         />
                         <span className="text-foreground/90">{tag.name}</span>
                         <span className="text-xs text-muted-foreground">
-                          €{parseFloat(tag.rate).toFixed(2)}
+                          {selectedCurrency.symbol}{parseFloat(tag.rate).toFixed(2)}
                         </span>
                       </button>
                     );

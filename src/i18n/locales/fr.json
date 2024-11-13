@@ -24,7 +24,7 @@
       "title": "Articles de la facture",
       "description": "Description",
       "quantity": "Quantité",
-      "rate": "Prix (€)",
+      "rate": "Prix ",
       "total": "Total",
       "addItem": "Ajouter un article",
       "position": "Pos."
@@ -202,7 +202,7 @@
     "form": {
       "name": "Nom",
       "description": "Description",
-      "rate": "Prix (€)",
+      "rate": "Prix ",
       "quantity": "Quantité",
       "color": "Couleur",
       "visible": "Visible en saisie rapide",

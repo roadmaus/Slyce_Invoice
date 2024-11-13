@@ -24,7 +24,7 @@
       "title": "Các mục hóa đơn",
       "description": "Mô tả",
       "quantity": "Số lượng",
-      "rate": "Giá (€)",
+      "rate": "Giá ",
       "total": "Tổng cộng",
       "addItem": "Thêm mục",
       "position": "STT"
@@ -202,7 +202,7 @@
     "form": {
       "name": "Tên",
       "description": "Mô tả",
-      "rate": "Giá (€)",
+      "rate": "Giá ",
       "quantity": "Số lượng",
       "color": "Màu sắc",
       "visible": "Hiển thị trong nhập nhanh",

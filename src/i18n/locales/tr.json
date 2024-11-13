@@ -24,7 +24,7 @@
       "title": "Fatura Kalemleri",
       "description": "Açıklama",
       "quantity": "Miktar",
-      "rate": "Fiyat (€)",
+      "rate": "Fiyat ",
       "total": "Toplam",
       "addItem": "Kalem ekle",
       "position": "Pos."
@@ -202,7 +202,7 @@
     "form": {
       "name": "İsim",
       "description": "Açıklama",
-      "rate": "Fiyat (€)",
+      "rate": "Fiyat ",
       "quantity": "Miktar",
       "color": "Renk",
       "visible": "Hızlı girişte görünür",

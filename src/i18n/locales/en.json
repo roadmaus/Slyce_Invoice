@@ -24,7 +24,7 @@
       "title": "Invoice Items",
       "description": "Description",
       "quantity": "Quantity",
-      "rate": "Price (€)",
+      "rate": "Price ",
       "total": "Total",
       "addItem": "Add Item",
       "position": "Pos."
@@ -203,7 +203,7 @@
     "form": {
       "name": "Name",
       "description": "Description",
-      "rate": "Price (€)",
+      "rate": "Price ",
       "quantity": "Quantity",
       "color": "Color",
       "visible": "Visible in Quick Input",
