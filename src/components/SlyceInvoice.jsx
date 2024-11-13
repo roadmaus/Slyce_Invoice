@@ -269,6 +269,9 @@ const SlyceInvoice = () => {
   // Add to state declarations at the top
   const [useGermanInvoices, setUseGermanInvoices] = useState(true);
 
+  // In SlyceInvoice.jsx, add invoiceLanguage to state declarations
+  const [invoiceLanguage, setInvoiceLanguage] = useState('auto');
+
   // Load saved data on component mount
   useEffect(() => {
     const loadSavedData = async () => {
@@ -530,14 +533,14 @@ const SlyceInvoice = () => {
   useEffect(() => {
     const loadInvoiceLanguage = async () => {
       const settings = await window.electronAPI.getData('invoiceLanguageSettings');
-      if (settings?.useGermanInvoices !== undefined) {
-        setUseGermanInvoices(settings.useGermanInvoices);
+      if (settings?.invoiceLanguage) {
+        setInvoiceLanguage(settings.invoiceLanguage);
       }
     };
     loadInvoiceLanguage();
 
     const handleInvoiceLanguageChange = (event) => {
-      setUseGermanInvoices(event.detail.useGermanInvoices);
+      setInvoiceLanguage(event.detail.invoiceLanguage);
     };
     window.addEventListener('invoiceLanguageChanged', handleInvoiceLanguageChange);
     
@@ -553,11 +556,23 @@ const SlyceInvoice = () => {
     setIsLoading(prev => ({ ...prev, invoice: true }));
     
     try {
-      // Store current language and switch to German if needed
+      // Store current language
       const currentLanguage = i18n.language;
-      if (useGermanInvoices) {
-        await i18n.changeLanguage('de');
+      
+      // Determine invoice language
+      let invoiceLang = invoiceLanguage;
+      if (invoiceLanguage === 'auto') {
+        // Use customer's country/region to determine language
+        // This is a simple example - you might want to expand this logic
+        if (selectedCustomer?.country === 'DE' || selectedCustomer?.country === 'AT' || selectedCustomer?.country === 'CH') {
+          invoiceLang = 'de';
+        } else {
+          invoiceLang = 'en'; // Default to English for auto
+        }
       }
+      
+      // Switch to invoice language
+      await i18n.changeLanguage(invoiceLang);
 
       const template = await window.electronAPI.getInvoiceTemplate();
       
@@ -730,17 +745,13 @@ const SlyceInvoice = () => {
       }
 
       // Switch back to original language
-      if (useGermanInvoices) {
-        await i18n.changeLanguage(currentLanguage);
-      }
+      await i18n.changeLanguage(currentLanguage);
     } catch (error) {
       console.error('Error generating invoice:', error);
       toast.error(t('messages.error.generatingInvoice'));
       
       // Make sure to restore language even if there's an error
-      if (useGermanInvoices) {
-        await i18n.changeLanguage(currentLanguage);
-      }
+      await i18n.changeLanguage(currentLanguage);
     } finally {
       setIsLoading(prev => ({ ...prev, invoice: false }));
     }
@@ -1314,6 +1325,18 @@ const formatCurrency = (amount) => {
   }).format(amount);
 };
 
+// Add this with other function declarations
+const updateInvoiceLanguage = async (language) => {
+  try {
+    await window.electronAPI.setData('invoiceLanguageSettings', { invoiceLanguage: language });
+    setInvoiceLanguage(language);
+    toast.success(t('settings.success.language'));
+  } catch (error) {
+    console.error('Error updating invoice language:', error);
+    toast.error(t('settings.errors.updateLanguage'));
+  }
+};
+
 // Main Render
   return (
     <>
@@ -1432,7 +1455,10 @@ const formatCurrency = (amount) => {
           </TabsContent>
 
           <TabsContent value="settings">
-            <SettingsTab />
+            <SettingsTab 
+              invoiceLanguage={invoiceLanguage}
+              updateInvoiceLanguage={updateInvoiceLanguage}
+            />
           </TabsContent>
         </Tabs>
 

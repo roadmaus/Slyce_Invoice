@@ -31,6 +31,7 @@ const SettingsTab = () => {
   const [showTemplateEditor, setShowTemplateEditor] = React.useState(false);
   const [selectedCurrency, setSelectedCurrency] = React.useState(DEFAULT_CURRENCY);
   const [useGermanInvoices, setUseGermanInvoices] = React.useState(true);
+  const [invoiceLanguage, setInvoiceLanguage] = React.useState('auto');
 
   // Load preview settings on mount
   React.useEffect(() => {
@@ -203,8 +204,8 @@ const SettingsTab = () => {
     const loadInvoiceLanguageSettings = async () => {
       try {
         const settings = await window.electronAPI.getData('invoiceLanguageSettings');
-        if (settings?.useGermanInvoices !== undefined) {
-          setUseGermanInvoices(settings.useGermanInvoices);
+        if (settings?.invoiceLanguage) {
+          setInvoiceLanguage(settings.invoiceLanguage);
         }
       } catch (error) {
         console.error('Error loading invoice language settings:', error);
@@ -214,12 +215,12 @@ const SettingsTab = () => {
   }, []);
 
   // Add handler for toggle
-  const updateInvoiceLanguage = async (useGerman) => {
+  const handleInvoiceLanguageChange = async (newLanguage) => {
     try {
-      await window.electronAPI.setData('invoiceLanguageSettings', { useGermanInvoices: useGerman });
-      setUseGermanInvoices(useGerman);
+      await window.electronAPI.setData('invoiceLanguageSettings', { invoiceLanguage: newLanguage });
+      setInvoiceLanguage(newLanguage);
       window.dispatchEvent(new CustomEvent('invoiceLanguageChanged', { 
-        detail: { useGermanInvoices: useGerman } 
+        detail: { invoiceLanguage: newLanguage } 
       }));
       toast.success(t('settings.success.invoiceLanguage'));
     } catch (error) {
@@ -586,20 +587,45 @@ const SettingsTab = () => {
 
             {/* Language Toggle Section */}
             <section>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label className="text-base">
-                    {t('settings.language.germanInvoices')}
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    {t('settings.language.germanInvoicesDescription')}
-                  </p>
-                </div>
-                <Switch
-                  checked={useGermanInvoices}
-                  onCheckedChange={updateInvoiceLanguage}
-                />
+              <div className="flex items-center gap-2 mb-6">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t('settings.language.invoiceLanguage')}
+                </h2>
+                <Info className="w-4 h-4 text-muted-foreground" />
               </div>
+              <p className="text-muted-foreground mb-6">
+                {t('settings.language.invoiceLanguageDescription')}
+              </p>
+              <RadioGroup 
+                value={invoiceLanguage} 
+                onValueChange={handleInvoiceLanguageChange}
+                className="grid grid-cols-2 md:grid-cols-4 gap-4"
+              >
+                {[
+                  { value: 'auto', label: t('settings.language.invoiceLanguages.auto'), flag: '🌐' },
+                  { value: 'en', label: 'English', flag: '🇺🇸' },
+                  { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
+                  { value: 'es', label: 'Español', flag: '🇪🇸' },
+                  { value: 'fr', label: 'Français', flag: '🇫🇷' },
+                ].map(({ value, label, flag }) => (
+                  <div key={value}>
+                    <RadioGroupItem
+                      value={value}
+                      id={`invoice-lang-${value}`}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={`invoice-lang-${value}`}
+                      className="flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200
+                        peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5
+                        hover:border-primary/50 hover:bg-accent cursor-pointer"
+                    >
+                      <span className="text-2xl mb-2">{flag}</span>
+                      <span className="font-medium">{label}</span>
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </section>
           </div>
         </CardContent>

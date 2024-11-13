@@ -256,7 +256,16 @@
     },
     "language": {
       "title": "Language",
-      "description": "Choose your preferred language"
+      "description": "Choose your preferred language",
+      "invoiceLanguage": "Invoice Language",
+      "invoiceLanguageDescription": "Choose the language for generated invoices. 'Auto' will attempt to use the customer's regional language.",
+      "invoiceLanguages": {
+        "auto": "Automatic",
+        "en": "English",
+        "de": "German",
+        "es": "Spanish",
+        "fr": "French"
+      }
     },
     "pdf": {
       "title": "PDF Settings",
