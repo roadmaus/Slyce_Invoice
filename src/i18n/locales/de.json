@@ -25,7 +25,7 @@
       "description": "Beschreibung",
       "position": "Pos.",
       "quantity": "Menge",
-      "rate": "Preis (€)",
+      "rate": "Preis",
       "total": "Gesamt",
       "addItem": "Position hinzufügen"
     },
@@ -88,11 +88,13 @@
       "titles": {
         "mr": "Herr",
         "mrs": "Frau",
-        "diverse": "Divers"
+        "diverse": "Divers",
+        "neutral": "Neutral"
       },
       "academicTitle": {
         "label": "Akademischer Titel",
         "options": {
+          "none": "Kein Titel",
           "dr": "Dr.",
           "prof": "Prof.",
           "profDr": "Prof. Dr.",

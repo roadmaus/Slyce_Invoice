@@ -66,11 +66,17 @@ const InvoiceTab = ({
                     value={customer.name}
                     className="select-item"
                   >
-                    {customer.title === 'Divers' ? (
-                      `${customer.zusatz} ${customer.name}`
-                    ) : (
-                      `${customer.title} ${customer.zusatz} ${customer.name}`
-                    )}
+                    {(() => {
+                      const parts = [];
+                      if (customer.title && customer.title !== 'neutral') {
+                        parts.push(customer.title);
+                      }
+                      if (customer.zusatz && customer.zusatz !== 'none') {
+                        parts.push(customer.zusatz);
+                      }
+                      parts.push(customer.name);
+                      return parts.join(' ');
+                    })()}
                   </SelectItem>
                 ))}
               </SelectContent>

@@ -475,7 +475,7 @@ const SlyceInvoice = () => {
     // Handle cases based on title
     switch (selectedCustomer.title) {
       case 'Divers':
-        return selectedCustomer.zusatz
+        return selectedCustomer.zusatz && selectedCustomer.zusatz !== 'none'
           ? t('invoice.greeting.diverse.academic', {
               title: selectedCustomer.zusatz,
               full_name: fullName
@@ -486,7 +486,7 @@ const SlyceInvoice = () => {
             }).replace('{full_name}', fullName);
 
       case 'Herr':
-        return selectedCustomer.zusatz
+        return selectedCustomer.zusatz && selectedCustomer.zusatz !== 'none'
           ? t('invoice.greeting.herr.academic', {
               title: selectedCustomer.zusatz,
               last_name: lastName
@@ -497,7 +497,7 @@ const SlyceInvoice = () => {
             }).replace('{last_name}', lastName);
 
       case 'Frau':
-        return selectedCustomer.zusatz
+        return selectedCustomer.zusatz && selectedCustomer.zusatz !== 'none'
           ? t('invoice.greeting.frau.academic', {
               title: selectedCustomer.zusatz,
               last_name: lastName
@@ -507,8 +507,9 @@ const SlyceInvoice = () => {
               last_name: lastName
             }).replace('{last_name}', lastName);
 
+      case 'neutral':
       default:
-        // Fallback for no title selected
+        // Fallback for neutral or no title selected
         return t('invoice.greeting.neutral', {
           full_name: fullName
         }).replace('{full_name}', fullName);
@@ -525,8 +526,8 @@ const SlyceInvoice = () => {
       
       // Format customer address
       const customerAddress = [
-        selectedCustomer.title !== 'Divers' ? selectedCustomer.title : '',
-        selectedCustomer.zusatz,
+        selectedCustomer.title !== 'neutral' ? selectedCustomer.title : '',
+        selectedCustomer.zusatz !== 'none' ? selectedCustomer.zusatz : '',
         selectedCustomer.name,
         selectedCustomer.street,
         `${selectedCustomer.postal_code} ${selectedCustomer.city}`
@@ -828,6 +829,7 @@ const renderCustomerForm = (customer, setCustomer) => {
                 <SelectValue placeholder={t('customers.form.selectTitle')} />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="neutral">{t('customers.form.titles.neutral')}</SelectItem>
                 <SelectItem value="Herr">{t('customers.form.titles.mr')}</SelectItem>
                 <SelectItem value="Frau">{t('customers.form.titles.mrs')}</SelectItem>
                 <SelectItem value="Divers">{t('customers.form.titles.diverse')}</SelectItem>
@@ -844,10 +846,11 @@ const renderCustomerForm = (customer, setCustomer) => {
                 <SelectValue placeholder={t('customers.form.academicTitle.placeholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Dr.">Dr.</SelectItem>
-                <SelectItem value="Prof.">Prof.</SelectItem>
-                <SelectItem value="Prof. Dr.">Prof. Dr.</SelectItem>
-                <SelectItem value="Dr. h.c.">Dr. h.c.</SelectItem>
+                <SelectItem value="none">{t('customers.form.academicTitle.options.none')}</SelectItem>
+                <SelectItem value="Dr.">{t('customers.form.academicTitle.options.dr')}</SelectItem>
+                <SelectItem value="Prof.">{t('customers.form.academicTitle.options.prof')}</SelectItem>
+                <SelectItem value="Prof. Dr.">{t('customers.form.academicTitle.options.profDr')}</SelectItem>
+                <SelectItem value="Dr. h.c.">{t('customers.form.academicTitle.options.drHc')}</SelectItem>
               </SelectContent>
             </Select>
           </div>

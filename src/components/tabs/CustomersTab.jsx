@@ -147,11 +147,17 @@ const CustomersTab = ({
                       <User2 className="h-4 w-4 text-muted-foreground" />
                     )}
                     <h3 className="font-semibold text-lg text-foreground/90 truncate">
-                      {customer.title === 'Divers' ? (
-                        `${customer.zusatz} ${customer.name}`
-                      ) : (
-                        `${customer.title} ${customer.zusatz} ${customer.name}`
-                      )}
+                      {(() => {
+                        const parts = [];
+                        if (customer.title && customer.title !== 'neutral') {
+                          parts.push(customer.title);
+                        }
+                        if (customer.zusatz && customer.zusatz !== 'none') {
+                          parts.push(customer.zusatz);
+                        }
+                        parts.push(customer.name);
+                        return parts.join(' ');
+                      })()}
                     </h3>
                   </div>
                 </div>
@@ -175,8 +181,8 @@ const CustomersTab = ({
                   <div className="flex items-center justify-center p-1.5 rounded-md
                     bg-background/40 dark:bg-background/20 backdrop-blur-sm">
                     <span className="text-xs text-muted-foreground">
-                      {customer.zusatz && `${customer.zusatz}`}
-                      {customer.firma && (customer.zusatz ? ` • ${t('customers.businessCustomer')}` : t('customers.businessCustomer'))}
+                      {customer.zusatz !== 'none' && `${customer.zusatz}`}
+                      {customer.firma && (customer.zusatz !== 'none' ? ` • ${t('customers.businessCustomer')}` : t('customers.businessCustomer'))}
                     </span>
                   </div>
                 </div>
