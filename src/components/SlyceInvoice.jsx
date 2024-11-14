@@ -480,6 +480,9 @@ const SlyceInvoice = () => {
       return;
     }
 
+    // Check if this is the first profile being added
+    const isFirstProfile = businessProfiles.length === 0;
+
     setBusinessProfiles([...businessProfiles, newProfile]);
     setNewProfile({
       company_name: '',
@@ -497,6 +500,12 @@ const SlyceInvoice = () => {
       vat_rate: 19,
     });
     setShowNewProfileDialog(false);
+
+    // If this is the first profile, set it as the default
+    if (isFirstProfile) {
+      setDefaultProfileId(newProfile.company_name);
+      setSelectedProfile(newProfile);
+    }
   };
 
   // Customer Management
