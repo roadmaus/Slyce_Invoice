@@ -115,6 +115,11 @@ A modern, cross-platform invoice generation application built with Electron and 
 * 500MB free disk space
 * 1280x720 minimum screen resolution
 
+## 🛠️ ToDo
+
+- [ ] Add better support for manual invoice numbering
+
+
 ## 📥 Installation
 
 ### Download Release
