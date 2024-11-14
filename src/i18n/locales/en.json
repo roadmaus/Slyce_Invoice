@@ -258,14 +258,15 @@
       "title": "Language",
       "description": "Choose your preferred language",
       "invoiceLanguage": "Invoice Language",
-      "invoiceLanguageDescription": "Choose the language for generated invoices. 'Auto' will attempt to use the customer's regional language.",
+      "invoiceLanguageDescription": "Choose the language for generated invoices. 'Automatic' will attempt to use the customer's regional language.",
       "invoiceLanguages": {
-        "auto": "Automatic",
-        "en": "English",
-        "de": "German",
-        "es": "Spanish",
-        "fr": "French"
+        "auto": "Automatic"
       }
+    },
+    "currency": {
+      "title": "Currency",
+      "description": "Choose the currency for generated invoices.",
+      "currency": "Currency"
     },
     "pdf": {
       "title": "PDF Settings",
