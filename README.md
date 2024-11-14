@@ -4,6 +4,39 @@ A modern, cross-platform invoice generation application built with Electron and 
 
 ![Slyce Invoice Logo](build/icon.png)
 
+## 📸 Screenshots
+
+<div align="center">
+
+### Customer Management
+![Customer Management Tab](data/customer_tab.png)
+*View and manage your customer database with comprehensive contact information*
+
+### Invoice Creation
+![Invoice Creation Tab](data/invoice_tab.png)
+*Create professional invoices with automatic numbering and date range support*
+
+### Business Profiles
+![Profile Management Tab](data/profile_tab.png)
+*Manage multiple business profiles with different tax and banking details*
+
+### Quick Tags
+![Quick Tags Tab](data/quicktag_tab.png)
+*Create preset items for frequently used services with custom pricing*
+
+### Settings & Localization
+![Settings Tab](data/settings_tab.png)
+*Configure language, currency, and other preferences*
+
+### Template Customization
+![Template Editor](data/template_edit.png)
+*Customize invoice templates with your branding*
+
+![Template Gallery](data/template_gallery.png)
+*Choose from multiple professional templates*
+
+</div>
+
 ## 🚀 Key Features
 
 ### 📄 Invoice Management
@@ -96,8 +129,8 @@ Visit our [Releases](https://github.com/roadmaus/Slyce_Invoice/releases) page to
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/roadmaus/slyce-invoice.git
-cd slyce-invoice
+git clone https://github.com/roadmaus/Slyce_Invoice.git
+cd Slyce_Invoice
 ```
 
 2. Install dependencies:
