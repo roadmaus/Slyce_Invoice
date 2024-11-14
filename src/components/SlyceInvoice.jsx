@@ -35,7 +35,6 @@ const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => 
   }
 
   const currentYear = new Date().getFullYear();
-  const currentYearPrefix = `${currentYear}_${profileId}_`;
   
   // If we have a last number and it's not forced, return it
   if (lastNumber && !forceGenerate) {
@@ -55,22 +54,23 @@ const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => 
   if (lastNumber && forceGenerate) {
     // If it's a manually entered number, start new sequence
     if (!lastNumber.includes('_')) {
-      return `${currentYearPrefix}00001`;
+      return `${currentYear}_${profileId}_00001`;
     }
     
-    const [year] = lastNumber.split('_');
+    const [year, customId, sequence] = lastNumber.split('_');
+    
     // If it's from a different year, start new sequence
     if (parseInt(year) !== currentYear) {
-      return `${currentYearPrefix}00001`;
+      return `${currentYear}_${customId}_00001`;
     }
     
-    // Increment the sequence number
-    const sequence = parseInt(lastNumber.split('_')[2]) + 1;
-    return `${currentYearPrefix}${sequence.toString().padStart(5, '0')}`;
+    // Use the custom ID from the last number instead of the profile ID
+    const nextSequence = (parseInt(sequence) + 1).toString().padStart(5, '0');
+    return `${currentYear}_${customId}_${nextSequence}`;
   }
 
   // Default case: start new sequence
-  return `${currentYearPrefix}00001`;
+  return `${currentYear}_${profileId}_00001`;
 };
 
 const validateBusinessProfile = (profile) => {
