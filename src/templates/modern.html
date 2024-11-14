@@ -214,8 +214,8 @@
             {company_name}<br>
             {company_street}<br>
             {company_postalcode} {company_city}<br>
-            <p>Steuernummer: {tax_number}<br>
-            SteuerID: {tax_id}</p>
+            <p>{tax_number_label}: {tax_number}<br>
+            {tax_id_label}: {tax_id}</p>
         </div>
     </div>
 
@@ -266,10 +266,9 @@
         {vat_notice}
         
         <div class="banking-info">
-            <p><span class="medium-bold">{name_label}:</span> {company_name}</p>
-            <p><span class="medium-bold">{bank_label}:</span> {bank_institute}</p>
-            <p><span class="medium-bold">IBAN:</span> {bank_iban}</p>
-            <p><span class="medium-bold">BIC:</span> {bank_bic}</p>
+            {bank_institute_label}: {bank_institute}
+            <p>{bank_iban_label}: {bank_iban}</p>
+            <p>{bank_bic_label}: {bank_bic}</p>
         </div>
 
         <p>{thank_you_note}</p>

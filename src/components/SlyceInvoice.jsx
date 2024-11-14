@@ -29,6 +29,9 @@ import TagsTab from './tabs/TagsTab';
 import { DEFAULT_CURRENCY } from '@/constants/currencies';
 import { TITLE_KEYS, ACADEMIC_TITLE_KEYS, TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES } from '@/constants/titleMappings';
 import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
+import { BUSINESS_KEYS, BUSINESS_STORAGE_VALUES, BUSINESS_TRANSLATIONS } from '@/constants/businessMappings';
+import LoadingOverlay from './LoadingOverlay';
+
 // Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
   if (!profileId) {
@@ -251,6 +254,33 @@ const formatCustomerAddress = (customer, language) => {
 // Update your greeting generation to use the same function
 const formatGreeting = (customer, language) => {
   return formatCustomerName(customer, language, true, true);
+};
+
+// Add this helper function alongside other translation helpers
+const getTranslatedBusinessField = (storedValue, fieldKey, language) => {
+  // Debug log to see what we're getting
+  console.log('Translation input:', { storedValue, fieldKey, language });
+
+  // Find the key for the stored value by matching against BUSINESS_STORAGE_VALUES
+  const businessKey = Object.entries(BUSINESS_STORAGE_VALUES)
+    .find(([_, value]) => value === storedValue)?.[0] 
+    || Object.entries(BUSINESS_STORAGE_VALUES)
+    .find(([_, value]) => storedValue.includes(value))?.[0]
+    || fieldKey;
+
+  // Get translations for the requested language, fallback to English
+  const translations = BUSINESS_TRANSLATIONS[language] || BUSINESS_TRANSLATIONS['en'];
+  
+  // Get the translated value
+  const translatedValue = translations[businessKey];
+
+  console.log('Translation result:', {
+    businessKey,
+    translations,
+    translatedValue
+  });
+
+  return translatedValue || storedValue;
 };
 
 const SlyceInvoice = () => {
@@ -594,34 +624,96 @@ const SlyceInvoice = () => {
     setIsLoading(prev => ({ ...prev, invoice: true }));
     
     try {
-      // Store current language
-      const currentLanguage = i18n.language;
+      // Store current UI language
+      const uiLanguage = i18n.language;
+      
+      // Create a separate i18n instance for invoice generation
+      const invoiceI18n = i18n.cloneInstance();
       
       // Determine invoice language
       let invoiceLang = invoiceLanguage;
       if (invoiceLanguage === 'auto') {
-        // Use customer's country/region to determine language
         if (selectedCustomer?.country === 'DE' || selectedCustomer?.country === 'AT' || selectedCustomer?.country === 'CH') {
           invoiceLang = 'de';
         } else {
-          invoiceLang = 'en'; // Default to English for auto
+          invoiceLang = 'en';
         }
       }
       
-      // Switch to invoice language
-      await i18n.changeLanguage(invoiceLang);
-
+      // Change language only for invoice generation
+      await invoiceI18n.changeLanguage(invoiceLang);
+      
+      // Use invoiceI18n for template translations
       const template = await window.electronAPI.getInvoiceTemplate();
       
       // Use the same formatting function for both address and greeting
       const customerAddress = formatCustomerAddress(selectedCustomer, invoiceLang);
       const customerGreeting = formatGreeting(selectedCustomer, invoiceLang);
 
+      // Get translations for business fields
+      const taxNumberLabel = await getTranslatedBusinessField(
+        BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.TAX_NUMBER],
+        'taxNumber',
+        invoiceLang
+      );
+      
+      const taxIdLabel = await getTranslatedBusinessField(
+        BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.TAX_ID],
+        'taxId',
+        invoiceLang
+      );
+
+      // Prepare template data
       const templateData = {
         customer_address: customerAddress,
         customer_greeting: customerGreeting,
         // ... other template data ...
+        
+        // Tax information with labels
+        tax_number_label: taxNumberLabel,
+        tax_id_label: taxIdLabel,
+        tax_number: selectedProfile.tax_number,
+        tax_id: selectedProfile.tax_id,
+        bank_institute_label: getTranslatedBusinessField(
+          BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.BANK_INSTITUTE],
+          BUSINESS_KEYS.BANK_INSTITUTE,
+          invoiceLang
+        ),
+        bank_iban_label: getTranslatedBusinessField(
+          BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.BANK_IBAN],
+          BUSINESS_KEYS.BANK_IBAN,
+          invoiceLang
+        ),
+        bank_bic_label: getTranslatedBusinessField(
+          BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.BANK_BIC],
+          BUSINESS_KEYS.BANK_BIC,
+          invoiceLang
+        ),
+        // The actual values remain unchanged
+        bank_institute: selectedProfile.bank_institute,
+        bank_iban: selectedProfile.bank_iban,
+        bank_bic: selectedProfile.bank_bic
       };
+
+      // Replace placeholders in template
+      let html = template;
+      
+      // Log the values before replacement
+      console.log('Tax Labels:', {
+        tax_number_label: templateData.tax_number_label,
+        tax_id_label: templateData.tax_id_label,
+        tax_number: templateData.tax_number,
+        tax_id: templateData.tax_id
+      });
+
+      // Replace each placeholder
+      Object.entries(templateData).forEach(([key, value]) => {
+        const placeholder = `{${key}}`;
+        html = html.replaceAll(placeholder, value || '');
+      });
+
+      // Log a snippet of the HTML after replacement
+      console.log('HTML after replacement (snippet):', html.substring(0, 500));
 
       // Calculate amounts
       const netTotal = calculateTotal();
@@ -682,7 +774,7 @@ const SlyceInvoice = () => {
         : '';
 
       // Replace all placeholders
-      let html = template
+      html = html
         .replaceAll('{company_name}', selectedProfile.company_name)
         .replaceAll('{company_street}', selectedProfile.company_street)
         .replaceAll('{company_postalcode}', selectedProfile.company_postalcode)
@@ -780,13 +872,13 @@ const SlyceInvoice = () => {
       }
 
       // Switch back to original language
-      await i18n.changeLanguage(currentLanguage);
+      await i18n.changeLanguage(uiLanguage);
     } catch (error) {
       console.error('Error generating invoice:', error);
       toast.error(t('messages.error.generatingInvoice'));
       
       // Make sure to restore language even if there's an error
-      await i18n.changeLanguage(currentLanguage);
+      await i18n.changeLanguage(uiLanguage);
     } finally {
       setIsLoading(prev => ({ ...prev, invoice: false }));
     }
@@ -1252,25 +1344,6 @@ const PreviewDialog = () => (
       </div>
     </DialogContent>
   </Dialog>
-);
-
-// Update the LoadingOverlay component
-const LoadingOverlay = () => (
-  // Add fixed positioning relative to viewport and increase z-index even higher
-  <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-[9999] flex items-center justify-center" style={{
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: '100vw',  // Full viewport width
-    height: '100vh', // Full viewport height
-  }}>
-    <div className="text-center space-y-4">
-      <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-      <p className="text-lg font-medium text-foreground">{t('invoice.actions.generating')}</p>
-    </div>
-  </div>
 );
 
 const getTagBackground = (() => {

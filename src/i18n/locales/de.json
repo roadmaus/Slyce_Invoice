@@ -359,6 +359,7 @@
     "required": "Pflichtfeld",
     "error": "Fehler",
     "success": "Erfolgreich",
+    "generating": "Wird erstellt...",
     "save": "Speichern",
     "cancel": "Abbrechen",
     "delete": "Löschen",

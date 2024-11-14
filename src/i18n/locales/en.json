@@ -369,6 +369,7 @@
     "required": "Required field",
     "error": "Error",
     "success": "Success",
+    "generating": "Generating...",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
