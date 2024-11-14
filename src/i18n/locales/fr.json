@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "Langue",
-      "description": "Sélectionnez votre langue préférée"
+      "description": "Sélectionnez votre langue préférée",
+      "invoiceLanguage": "Langue de la facture",
+      "invoiceLanguageDescription": "Choisissez la langue pour les factures générées. 'Automatique' tentera d'utiliser la langue régionale du client.",
+      "invoiceLanguages": {
+        "auto": "Automatique"
+      }
     },
     "pdf": {
       "title": "Paramètres PDF",
@@ -326,7 +331,9 @@
       "templateLoad": "Modèle chargé avec succès",
       "templateDelete": "Modèle supprimé avec succès",
       "templateRename": "Modèle renommé avec succès",
-      "previewToggle": "Paramètre d'aperçu mis à jour avec succès"
+      "previewToggle": "Paramètre d'aperçu mis à jour avec succès",
+      "invoiceLanguage": "Langue de la facture mise à jour avec succès",
+      "currency": "Devise mise à jour avec succès"
     },
     "templateEditor": "Éditeur de modèle",
     "actions": {
@@ -351,6 +358,11 @@
     "renameTemplate": "Renommer le modèle",
     "placeholders": {
       "templateName": "Entrer le nom du modèle"
+    },
+    "currency": {
+      "title": "Devise",
+      "description": "Choisissez la devise pour les factures générées.",
+      "currency": "Devise"
     }
   },
   "common": {
@@ -370,7 +382,8 @@
     "taxInfo": "Informations fiscales",
     "bankDetails": "Coordonnées bancaires",
     "rename": "Renommer",
-    "copy": "Copier dans le presse-papiers"
+    "copy": "Copier dans le presse-papiers",
+    "generating": "Génération en cours..."
   },
   "dialogs": {
     "warning": {

@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "Lingua",
-      "description": "Seleziona la tua lingua preferita"
+      "description": "Seleziona la tua lingua preferita",
+      "invoiceLanguage": "Lingua della fattura",
+      "invoiceLanguageDescription": "Scegli la lingua per le fatture generate. 'Automatico' tenterà di utilizzare la lingua regionale del cliente.",
+      "invoiceLanguages": {
+        "auto": "Automatico"
+      }
     },
     "pdf": {
       "title": "Impostazioni PDF",
@@ -326,7 +331,9 @@
       "templateLoad": "Modello caricato con successo",
       "templateDelete": "Modello eliminato con successo",
       "templateRename": "Modello rinominato con successo",
-      "previewToggle": "Impostazione anteprima aggiornata con successo"
+      "previewToggle": "Impostazione anteprima aggiornata con successo",
+      "invoiceLanguage": "Lingua della fattura aggiornata con successo",
+      "currency": "Valuta aggiornata con successo"
     },
     "templateEditor": "Editor di modelli",
     "actions": {
@@ -351,6 +358,11 @@
     "renameTemplate": "Rinomina modello",
     "placeholders": {
       "templateName": "Inserisci il nome del modello"
+    },
+    "currency": {
+      "title": "Valuta",
+      "description": "Scegli la valuta per le fatture generate.",
+      "currency": "Valuta"
     }
   },
   "common": {
@@ -370,7 +382,8 @@
     "taxInfo": "Informazioni fiscali",
     "bankDetails": "Dati bancari",
     "rename": "Rinomina",
-    "copy": "Copia nel portapapere"
+    "copy": "Copia nel portapapere",
+    "generating": "Generazione in corso..."
   },
   "dialogs": {
     "warning": {

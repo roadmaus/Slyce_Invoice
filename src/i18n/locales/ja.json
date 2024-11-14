@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "言語",
-      "description": "優先言語を選択してください"
+      "description": "優先言語を選択してください",
+      "invoiceLanguage": "請求書の言語",
+      "invoiceLanguageDescription": "生成された請求書の言語を選択してください。'自動'は顧客の地域言語を使用しようとします。",
+      "invoiceLanguages": {
+        "auto": "自動"
+      }
     },
     "pdf": {
       "title": "PDF設定",
@@ -326,7 +331,9 @@
       "templateLoad": "テンプレートを正常に読み込みました",
       "templateDelete": "テンプレートを正常に削除しました",
       "templateRename": "テンプレートの名前を正常に変更しました",
-      "previewToggle": "プレビュー設定が正常に更新されました"
+      "previewToggle": "プレビュー設定が正常に更新されました",
+      "invoiceLanguage": "請求書の言語が正常に更新されました",
+      "currency": "通貨が正常に更新されました"
     },
     "templateEditor": "テンプレートエディタ",
     "actions": {
@@ -351,6 +358,11 @@
     "renameTemplate": "テンプレートの名前を変更",
     "placeholders": {
       "templateName": "テンプレート名を入力"
+    },
+    "currency": {
+      "title": "通貨",
+      "description": "生成された請求書の通貨を選択してください。",
+      "currency": "通貨"
     }
   },
   "common": {
@@ -370,7 +382,8 @@
     "taxInfo": "税務情報",
     "bankDetails": "銀行口座情報",
     "rename": "名前を変更",
-    "copy": "クリップボードにコピー"
+    "copy": "クリップボードにコピー",
+    "generating": "生成中..."
   },
   "dialogs": {
     "warning": {

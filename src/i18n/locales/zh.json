@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "语言",
-      "description": "选择您的首选语言"
+      "description": "选择您的首选语言",
+      "invoiceLanguage": "发票语言",
+      "invoiceLanguageDescription": "选择生成发票的语言。'自动'将尝试使用客户的区域语言。",
+      "invoiceLanguages": {
+        "auto": "自动"
+      }
     },
     "pdf": {
       "title": "PDF设置",
@@ -318,7 +323,9 @@
       "templateLoad": "模板加载成功",
       "templateDelete": "模板删除成功",
       "templateRename": "模板重命名成功",
-      "previewToggle": "预览设置已成功更新"
+      "previewToggle": "预览设置已成功更新",
+      "invoiceLanguage": "发票语言更新成功",
+      "currency": "货币更新成功"
     },
     "templateEditor": "模板编辑器",
     "actions": {
@@ -343,6 +350,11 @@
     "renameTemplate": "重命名模板",
     "placeholders": {
       "templateName": "输入模板名称"
+    },
+    "currency": {
+      "title": "货币",
+      "description": "选择生成发票的货币。",
+      "currency": "货币"
     }
   },
   "common": {
@@ -362,7 +374,8 @@
     "taxInfo": "税务信息",
     "bankDetails": "银行详情",
     "rename": "重命名",
-    "copy": "复制到剪贴板"
+    "copy": "复制到剪贴板",
+    "generating": "生成中..."
   },
   "dialogs": {
     "warning": {

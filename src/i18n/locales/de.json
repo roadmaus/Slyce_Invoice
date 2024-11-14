@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "Sprache",
-      "description": "Wählen Sie Ihre bevorzugte Sprache"
+      "description": "Wählen Sie Ihre bevorzugte Sprache",
+      "invoiceLanguage": "Rechnungssprache",
+      "invoiceLanguageDescription": "Wählen Sie die Sprache für generierte Rechnungen. 'Automatisch' versucht, die regionale Sprache des Kunden zu verwenden.",
+      "invoiceLanguages": {
+        "auto": "Automatisch"
+      }
     },
     "pdf": {
       "title": "PDF-Einstellungen",
@@ -326,7 +331,9 @@
       "templateLoad": "Vorlage erfolgreich geladen",
       "templateDelete": "Vorlage erfolgreich gelöscht",
       "templateRename": "Vorlage erfolgreich umbenannt",
-      "previewToggle": "Vorschau-Einstellung erfolgreich aktualisiert"
+      "previewToggle": "Vorschau-Einstellung erfolgreich aktualisiert",
+      "invoiceLanguage": "Rechnungssprache erfolgreich aktualisiert",
+      "currency": "Währung erfolgreich aktualisiert"
     },
     "templateEditor": "Vorlageneditor",
     "actions": {
@@ -351,6 +358,11 @@
     "renameTemplate": "Vorlage umbenennen",
     "placeholders": {
       "templateName": "Vorlagennamen eingeben"
+    },
+    "currency": {
+      "title": "Währung",
+      "description": "Wählen Sie die Währung für generierte Rechnungen.",
+      "currency": "Währung"
     }
   },
   "common": {
@@ -359,7 +371,7 @@
     "required": "Pflichtfeld",
     "error": "Fehler",
     "success": "Erfolgreich",
-    "generating": "Wird erstellt...",
+    "generating": "Wird generiert...",
     "save": "Speichern",
     "cancel": "Abbrechen",
     "delete": "Löschen",

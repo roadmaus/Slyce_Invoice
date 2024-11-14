@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "Ngôn ngữ",
-      "description": "Chọn ngôn ngữ ưa thích"
+      "description": "Chọn ngôn ngữ ưa thích",
+      "invoiceLanguage": "Ngôn ngữ hóa đơn",
+      "invoiceLanguageDescription": "Chọn ngôn ngữ cho hóa đơn được tạo. 'Tự động' sẽ cố gắng sử dụng ngôn ngữ khu vực của khách hàng.",
+      "invoiceLanguages": {
+        "auto": "Tự động"
+      }
     },
     "pdf": {
       "title": "Cài đặt PDF",
@@ -312,7 +317,9 @@
       "language": "Cập nhật ngôn ngữ thành công",
       "templateSave": "Đã lưu mẫu thành công",
       "templateReset": "Đã đặt lại mẫu thành công",
-      "previewToggle": "Cập nhật cài đặt xem trước thành công"
+      "previewToggle": "Cập nhật cài đặt xem trước thành công",
+      "invoiceLanguage": "Cập nhật ngôn ngữ hóa đơn thành công",
+      "currency": "Cập nhật tiền tệ thành công"
     },
     "templateEditor": "Trình chỉnh sửa mẫu",
     "actions": {
@@ -327,6 +334,11 @@
     "invoice": {
       "template": "Mẫu hóa đơn",
       "templateDescription": "Tùy chỉnh mẫu hóa đơn để phù hợp với thương hiệu của bạn"
+    },
+    "currency": {
+      "title": "Tiền tệ",
+      "description": "Chọn tiền tệ cho hóa đơn được tạo.",
+      "currency": "Tiền tệ"
     }
   },
   "common": {
@@ -344,7 +356,8 @@
     "noResults": "Không có kết quả",
     "address": "Địa chỉ",
     "taxInfo": "Thông tin thuế",
-    "bankDetails": "Thông tin ngân hàng"
+    "bankDetails": "Thông tin ngân hàng",
+    "generating": "Đang tạo..."
   },
   "dialogs": {
     "warning": {

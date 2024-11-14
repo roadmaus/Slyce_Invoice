@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "Idioma",
-      "description": "Elija su idioma preferido"
+      "description": "Elija su idioma preferido",
+      "invoiceLanguage": "Idioma de la factura",
+      "invoiceLanguageDescription": "Elija el idioma para las facturas generadas. 'Automático' intentará usar el idioma regional del cliente.",
+      "invoiceLanguages": {
+        "auto": "Automático"
+      }
     },
     "pdf": {
       "title": "Configuración de PDF",
@@ -326,7 +331,9 @@
       "templateLoad": "Plantilla cargada con éxito",
       "templateDelete": "Plantilla eliminada con éxito",
       "templateRename": "Plantilla renombrada con éxito",
-      "previewToggle": "Configuración de vista previa actualizada correctamente"
+      "previewToggle": "Configuración de vista previa actualizada correctamente",
+      "invoiceLanguage": "Idioma de la factura actualizado con éxito",
+      "currency": "Moneda actualizada con éxito"
     },
     "templateEditor": "Editor de plantillas",
     "actions": {
@@ -351,6 +358,11 @@
     "renameTemplate": "Renombrar plantilla",
     "placeholders": {
       "templateName": "Introducir nombre de plantilla"
+    },
+    "currency": {
+      "title": "Moneda",
+      "description": "Elija la moneda para las facturas generadas.",
+      "currency": "Moneda"
     }
   },
   "common": {
@@ -370,7 +382,8 @@
     "taxInfo": "Información fiscal",
     "bankDetails": "Datos bancarios",
     "rename": "Renombrar",
-    "copy": "Copiar al portapapeles"
+    "copy": "Copiar al portapapeles",
+    "generating": "Generando..."
   },
   "dialogs": {
     "warning": {

@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "اللغة",
-      "description": "اختر لغتك المفضلة"
+      "description": "اختر لغتك المفضلة",
+      "invoiceLanguage": "لغة الفاتورة",
+      "invoiceLanguageDescription": "اختر لغة الفواتير المنشأة. سيحاول 'تلقائي' استخدام اللغة الإقليمية للعميل.",
+      "invoiceLanguages": {
+        "auto": "تلقائي"
+      }
     },
     "pdf": {
       "title": "إعدادات PDF",
@@ -326,7 +331,9 @@
       "templateLoad": "تم تحميل القالب بنجاح",
       "templateDelete": "تم حذف القالب بنجاح",
       "templateRename": "تمت إعادة تسمية القالب بنجاح",
-      "previewToggle": "تم تحديث إعداد المعاينة بنجاح"
+      "previewToggle": "تم تحديث إعداد المعاينة بنجاح",
+      "invoiceLanguage": "تم تحديث لغة الفاتورة بنجاح",
+      "currency": "تم تحديث العملة بنجاح"
     },
     "templateEditor": "محرر القالب",
     "actions": {
@@ -351,6 +358,11 @@
     "renameTemplate": "إعادة تسمية القالب",
     "placeholders": {
       "templateName": "أدخل اسم القالب"
+    },
+    "currency": {
+      "title": "العملة",
+      "description": "اختر العملة للفواتير المنشأة.",
+      "currency": "العملة"
     }
   },
   "common": {
@@ -370,7 +382,8 @@
     "taxInfo": "المعلومات الضريبية",
     "bankDetails": "التفاصيل المصرفية",
     "rename": "إعادة تسمية",
-    "copy": "نسخ إلى الحافظة"
+    "copy": "نسخ إلى الحافظة",
+    "generating": "جاري الإنشاء..."
   },
   "dialogs": {
     "warning": {

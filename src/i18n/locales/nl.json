@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "Taal",
-      "description": "Selecteer uw voorkeurstaal"
+      "description": "Selecteer uw voorkeurstaal",
+      "invoiceLanguage": "Factuur taal",
+      "invoiceLanguageDescription": "Kies de taal voor gegenereerde facturen. 'Automatisch' zal proberen de regionale taal van de klant te gebruiken.",
+      "invoiceLanguages": {
+        "auto": "Automatisch"
+      }
     },
     "pdf": {
       "title": "PDF-instellingen",
@@ -312,7 +317,9 @@
       "language": "Taal succesvol bijgewerkt",
       "templateSave": "Sjabloon succesvol opgeslagen",
       "templateReset": "Sjabloon succesvol hersteld",
-      "previewToggle": "Voorbeeldweergave-instelling succesvol bijgewerkt"
+      "previewToggle": "Voorbeeldweergave-instelling succesvol bijgewerkt",
+      "invoiceLanguage": "Factuur taal succesvol bijgewerkt",
+      "currency": "Valuta succesvol bijgewerkt"
     },
     "templateEditor": "Sjablooneditor",
     "actions": {
@@ -327,6 +334,11 @@
     "invoice": {
       "template": "Factuursjabloon",
       "templateDescription": "Pas uw factuursjabloon aan uw merk aan"
+    },
+    "currency": {
+      "title": "Valuta",
+      "description": "Kies de valuta voor gegenereerde facturen.",
+      "currency": "Valuta"
     }
   },
   "common": {
@@ -344,7 +356,8 @@
     "noResults": "Geen resultaten",
     "address": "Adres",
     "taxInfo": "Belastinggegevens",
-    "bankDetails": "Bankgegevens"
+    "bankDetails": "Bankgegevens",
+    "generating": "Genereren..."
   },
   "dialogs": {
     "warning": {

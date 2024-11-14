@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "Dil",
-      "description": "Tercih ettiğiniz dili seçin"
+      "description": "Tercih ettiğiniz dili seçin",
+      "invoiceLanguage": "Fatura dili",
+      "invoiceLanguageDescription": "Oluşturulan faturalar için dil seçin. 'Otomatik' müşterinin bölgesel dilini kullanmaya çalışacaktır.",
+      "invoiceLanguages": {
+        "auto": "Otomatik"
+      }
     },
     "pdf": {
       "title": "PDF Ayarları",
@@ -312,7 +317,9 @@
       "language": "Dil başarıyla güncellendi",
       "templateSave": "Şablon başarıyla kaydedildi",
       "templateReset": "Şablon başarıyla sıfırlandı",
-      "previewToggle": "Önizleme ayarı başarıyla güncellendi"
+      "previewToggle": "Önizleme ayarı başarıyla güncellendi",
+      "invoiceLanguage": "Fatura dili başarıyla güncellendi",
+      "currency": "Para birimi başarıyla güncellendi"
     },
     "templateEditor": "Şablon Düzenleyici",
     "actions": {
@@ -327,6 +334,11 @@
     "invoice": {
       "template": "Fatura şablonu",
       "templateDescription": "Fatura şablonunuzu markanıza uyacak şekilde özelleştirin"
+    },
+    "currency": {
+      "title": "Para birimi",
+      "description": "Oluşturulan faturalar için para birimi seçin.",
+      "currency": "Para birimi"
     }
   },
   "common": {
@@ -344,7 +356,8 @@
     "noResults": "Sonuç bulunamadı",
     "address": "Adres",
     "taxInfo": "Vergi bilgileri",
-    "bankDetails": "Banka bilgileri"
+    "bankDetails": "Banka bilgileri",
+    "generating": "Oluşturuluyor..."
   },
   "dialogs": {
     "warning": {

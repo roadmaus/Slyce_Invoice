@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "Schproch",
-      "description": "Wähled Se Ihre Schproch aus"
+      "description": "Wähled Se Ihre Schproch aus",
+      "invoiceLanguage": "Rechnongssprooch",
+      "invoiceLanguageDescription": "Wähl d'Sproch für d'Rechnonga. 'Automatisch' versuacht, d'regional Sproch vom Kund z'nutza.",
+      "invoiceLanguages": {
+        "auto": "Automatisch"
+      }
     },
     "pdf": {
       "title": "PDF-Eistellunga",
@@ -312,7 +317,9 @@
       "language": "Schproch erfolgreich aktualisiert",
       "templateSave": "Vorlag erfolgreich gspeichert",
       "templateReset": "Vorlag erfolgreich zruckgsetzt",
-      "previewToggle": "Vorschau-Eistellong erfolgreich aktualisiert"
+      "previewToggle": "Vorschau-Eistellong erfolgreich aktualisiert",
+      "invoiceLanguage": "Rechnongssprooch erfolgreich aktualisiert",
+      "currency": "Währung erfolgreich aktualisiert"
     },
     "templateEditor": "Vorlaga-Editor",
     "actions": {
@@ -327,6 +334,11 @@
     "invoice": {
       "template": "Rechnungsvorlag",
       "templateDescription": "Bass deine Rechnungsvorlag an dei Marke a"
+    },
+    "currency": {
+      "title": "Währung",
+      "description": "Wähl d'Währung für d'Rechnonga.",
+      "currency": "Währung"
     }
   },
   "common": {
@@ -344,7 +356,8 @@
     "noResults": "Koi Ergebnis",
     "address": "Adress",
     "taxInfo": "Steuerinfo",
-    "bankDetails": "Bankverbindung"
+    "bankDetails": "Bankverbindung",
+    "generating": "Wird generiert..."
   },
   "dialogs": {
     "warning": {

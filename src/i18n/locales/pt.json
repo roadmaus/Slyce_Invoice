@@ -255,7 +255,12 @@
     },
     "language": {
       "title": "Idioma",
-      "description": "Selecione seu idioma preferido"
+      "description": "Selecione seu idioma preferido",
+      "invoiceLanguage": "Idioma da fatura",
+      "invoiceLanguageDescription": "Escolha o idioma para faturas geradas. 'Automático' tentará usar o idioma regional do cliente.",
+      "invoiceLanguages": {
+        "auto": "Automático"
+      }
     },
     "pdf": {
       "title": "Configurações de PDF",
@@ -318,7 +323,9 @@
       "templateLoad": "Modelo carregado com sucesso",
       "templateDelete": "Modelo excluído com sucesso",
       "templateRename": "Modelo renomeado com sucesso",
-      "previewToggle": "Configuração de pré-visualização atualizada com sucesso"
+      "previewToggle": "Configuração de pré-visualização atualizada com sucesso",
+      "invoiceLanguage": "Idioma da fatura atualizado com sucesso",
+      "currency": "Moeda atualizada com sucesso"
     },
     "templateEditor": "Editor de modelo",
     "actions": {
@@ -343,6 +350,11 @@
     "renameTemplate": "Renomear modelo",
     "placeholders": {
       "templateName": "Digite o nome do modelo"
+    },
+    "currency": {
+      "title": "Moeda",
+      "description": "Escolha a moeda para faturas geradas.",
+      "currency": "Moeda"
     }
   },
   "common": {
@@ -362,7 +374,8 @@
     "taxInfo": "Informações Fiscais",
     "bankDetails": "Dados Bancários",
     "rename": "Renomear",
-    "copy": "Copiar para área de transferência"
+    "copy": "Copiar para área de transferência",
+    "generating": "Gerando..."
   },
   "dialogs": {
     "warning": {
