@@ -45,20 +45,23 @@
       "save": "저장"
     },
     "greeting": {
+      "mr": {
+        "default": "{last_name}님께",
+        "academic": "{title} {last_name}님께"
+      },
+      "mrs": {
+        "default": "{last_name}님께",
+        "academic": "{title} {last_name}님께"
+      },
       "diverse": {
-        "default": "{full_name}님 안녕하세요",
-        "academic": "{title} {full_name}님 안녕하세요"
+        "default": "{full_name}님께",
+        "academic": "{title} {full_name}님께"
       },
-      "herr": {
-        "default": "{last_name}님께",
-        "academic": "{title} {last_name}님께"
+      "neutral": {
+        "default": "{full_name}님께",
+        "academic": "{title} {full_name}님께"
       },
-      "frau": {
-        "default": "{last_name}님께",
-        "academic": "{title} {last_name}님께"
-      },
-      "business": "귀하",
-      "neutral": "{full_name}님 안녕하세요"
+      "business": "귀사 귀중"
     },
     "servicePeriod": {
       "range": "{startDate}부터 {endDate}까지의 서비스 기간에 대한 청구 내역입니다:",

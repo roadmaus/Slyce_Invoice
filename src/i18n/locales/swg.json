@@ -45,20 +45,23 @@
       "save": "Schbeicha"
     },
     "greeting": {
+      "mr": {
+        "default": "Lieber Herr {last_name}",
+        "academic": "Lieber {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Liebe Frau {last_name}",
+        "academic": "Liebe {title} {last_name}"
+      },
       "diverse": {
-        "default": "Griaß di {full_name}",
-        "academic": "Griaß di {title} {full_name}"
+        "default": "Hallo {full_name}",
+        "academic": "Hallo {title} {full_name}"
       },
-      "herr": {
-        "default": "Liabr Herr {last_name}",
-        "academic": "Liabr {title} {last_name}"
+      "neutral": {
+        "default": "Grüß Gott {full_name}",
+        "academic": "Grüß Gott {title} {full_name}"
       },
-      "frau": {
-        "default": "Liabe Frau {last_name}",
-        "academic": "Liabe {title} {last_name}"
-      },
-      "business": "Liabe Leit",
-      "neutral": "Griaß di {full_name}"
+      "business": "Grüß Gott miteinander"
     },
     "servicePeriod": {
       "range": "Für d'Arbat vom {startDate} bis {endDate} kriagscht jetzt des do:",

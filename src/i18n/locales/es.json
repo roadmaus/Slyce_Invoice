@@ -45,20 +45,23 @@
       "save": "Guardar"
     },
     "greeting": {
+      "mr": {
+        "default": "Estimado Sr. {last_name}",
+        "academic": "Estimado {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Estimada Sra. {last_name}",
+        "academic": "Estimada {title} {last_name}"
+      },
       "diverse": {
         "default": "Hola {full_name}",
         "academic": "Hola {title} {full_name}"
       },
-      "herr": {
-        "default": "Estimado Sr. {last_name}",
-        "academic": "Estimado {title} {last_name}"
+      "neutral": {
+        "default": "Estimado/a {full_name}",
+        "academic": "Estimado/a {title} {full_name}"
       },
-      "frau": {
-        "default": "Estimada Sra. {last_name}",
-        "academic": "Estimada {title} {last_name}"
-      },
-      "business": "Estimados Señores y Señoras",
-      "neutral": "Hola {full_name}"
+      "business": "Estimados Señores"
     },
     "servicePeriod": {
       "range": "Por el período de servicio desde {startDate} hasta {endDate}, le cobro lo siguiente:",

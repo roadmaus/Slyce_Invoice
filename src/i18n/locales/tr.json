@@ -45,20 +45,23 @@
       "save": "Kaydet"
     },
     "greeting": {
+      "mr": {
+        "default": "Sayın {last_name}",
+        "academic": "Sayın {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Sayın {last_name}",
+        "academic": "Sayın {title} {last_name}"
+      },
       "diverse": {
         "default": "Merhaba {full_name}",
         "academic": "Merhaba {title} {full_name}"
       },
-      "herr": {
-        "default": "Sayın {last_name} Bey",
-        "academic": "Sayın {title} {last_name}"
+      "neutral": {
+        "default": "Sayın {full_name}",
+        "academic": "Sayın {title} {full_name}"
       },
-      "frau": {
-        "default": "Sayın {last_name} Hanım",
-        "academic": "Sayın {title} {last_name}"
-      },
-      "business": "Sayın İlgili",
-      "neutral": "Merhaba {full_name}"
+      "business": "Sayın Yetkili"
     },
     "servicePeriod": {
       "range": "{startDate} - {endDate} tarihleri arasındaki hizmet dönemi için aşağıdaki tutarı fatura ediyorum:",

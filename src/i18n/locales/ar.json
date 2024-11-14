@@ -45,20 +45,23 @@
       "save": "حفظ"
     },
     "greeting": {
+      "mr": {
+        "default": "السيد {last_name} المحترم",
+        "academic": "{title} {last_name} المحترم"
+      },
+      "mrs": {
+        "default": "السيدة {last_name} المحترمة",
+        "academic": "{title} {last_name} المحترمة"
+      },
       "diverse": {
         "default": "مرحباً {full_name}",
         "academic": "مرحباً {title} {full_name}"
       },
-      "herr": {
-        "default": "السيد {last_name} المحترم",
-        "academic": "{title} {last_name} المحترم"
+      "neutral": {
+        "default": "مرحباً {full_name}",
+        "academic": "مرحباً {title} {full_name}"
       },
-      "frau": {
-        "default": "السيدة {last_name} المحترمة",
-        "academic": "{title} {last_name} المحترمة"
-      },
-      "business": "السادة المحترمون",
-      "neutral": "مرحباً {full_name}"
+      "business": "السادة المحترمون"
     },
     "servicePeriod": {
       "range": "عن فترة الخدمة من {startDate} إلى {endDate}، أود أن أقدم لكم الفاتورة التالية:",

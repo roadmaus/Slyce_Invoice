@@ -45,20 +45,23 @@
       "save": "保存"
     },
     "greeting": {
+      "mr": {
+        "default": "亲爱的{last_name}先生",
+        "academic": "亲爱的{title} {last_name}先生"
+      },
+      "mrs": {
+        "default": "亲爱的{last_name}女士",
+        "academic": "亲爱的{title} {last_name}女士"
+      },
       "diverse": {
-        "default": "您好，{full_name}",
-        "academic": "您好，{title} {full_name}"
+        "default": "亲爱的{full_name}",
+        "academic": "亲爱的{title} {full_name}"
       },
-      "herr": {
-        "default": "{last_name}先生",
-        "academic": "{title} {last_name}先生"
+      "neutral": {
+        "default": "亲爱的{full_name}",
+        "academic": "亲爱的{title} {full_name}"
       },
-      "frau": {
-        "default": "{last_name}女士",
-        "academic": "{title} {last_name}女士"
-      },
-      "business": "尊敬的先生/女士",
-      "neutral": "您好，{full_name}"
+      "business": "尊敬的先生/女士"
     },
     "servicePeriod": {
       "range": "服务期间从{startDate}至{endDate}，收费明细如下：",

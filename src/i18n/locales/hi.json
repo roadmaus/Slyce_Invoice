@@ -45,20 +45,23 @@
       "save": "सहेजें"
     },
     "greeting": {
+      "mr": {
+        "default": "प्रिय श्री {last_name}",
+        "academic": "प्रिय {title} {last_name}"
+      },
+      "mrs": {
+        "default": "प्रिय श्रीमती {last_name}",
+        "academic": "प्रिय {title} {last_name}"
+      },
       "diverse": {
         "default": "नमस्ते {full_name}",
         "academic": "नमस्ते {title} {full_name}"
       },
-      "herr": {
-        "default": "श्रीमान {last_name} जी",
-        "academic": "{title} {last_name} जी"
+      "neutral": {
+        "default": "प्रिय {full_name}",
+        "academic": "प्रिय {title} {full_name}"
       },
-      "frau": {
-        "default": "श्रीमती {last_name} जी",
-        "academic": "{title} {last_name} जी"
-      },
-      "business": "माननीय महोदय/महोदया",
-      "neutral": "नमस्ते {full_name}"
+      "business": "महोदय/महोदया"
     },
     "servicePeriod": {
       "range": "सेवा अवधि {startDate} से {endDate} तक के लिए, मैं निम्नलिखित शुल्क ले रहा/रही हूं:",
@@ -207,7 +210,7 @@
       "color": "रंग",
       "visible": "त्वरित प्रविष्टि में दिखाएं",
       "usesDateRange": "तिथि सीमा का उपयोग करता है",
-      "personas": "संबंधित प्रोफ़ाइल",
+      "personas": "संबंधित प्रोफ़ा��ल",
       "noDescription": "कोई विवरण उपलब्ध नहीं"
     },
     "emptyState": {
@@ -326,7 +329,7 @@
     "success": {
       "saveLocation": "सहेजने का स्थान सफलतापूर्वक अपडेट किया गया",
       "language": "भाषा सफलतापूर्वक अपडेट की गई",
-      "templateSave": "टेम्पलेट सफलतापूर्वक सहेजा गया",
+      "templateSave": "टेम्पलेट सफलतापूर्वक सहेजा ��या",
       "templateReset": "टेम्पलेट सफलतापूर्वक रीसेट किया गया",
       "templateLoad": "टेम्पलेट सफलतापूर्वक लोड हुआ",
       "templateDelete": "टेम्पलेट सफलतापूर्वक हटा दिया गया",
@@ -393,7 +396,7 @@
       "confirm": "0 पर सेट करें और जारी रखें"
     },
     "preview": {
-      "title": "चालान पूर्वावलोकन - {{fileName}}"
+      "title": "चालान पूर्वाव��ोकन - {{fileName}}"
     }
   },
   "messages": {
@@ -411,7 +414,7 @@
       "generatingInvoice": "चालान बनाने में त्रुटि"
     },
     "validation": {
-      "selectCustomer": "कृपया एक ग्राहक चुनें।",
+      "selectCustomer": "कृपया ए�� ग्राहक चुनें।",
       "selectProfile": "कृपया एक व्यवसाय प्रोफ़ाइल चुनें।",
       "setServicePeriod": "कृपया पूरी सेवा अवधि दर्ज करें।",
       "setServiceDate": "कृपया सेवा तिथि दर्ज करें।",

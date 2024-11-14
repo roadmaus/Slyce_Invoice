@@ -45,20 +45,23 @@
       "save": "Lưu"
     },
     "greeting": {
-      "diverse": {
-        "default": "Xin chào {full_name}",
-        "academic": "Kính chào {title} {full_name}"
-      },
-      "herr": {
+      "mr": {
         "default": "Kính gửi ông {last_name}",
         "academic": "Kính gửi {title} {last_name}"
       },
-      "frau": {
+      "mrs": {
         "default": "Kính gửi bà {last_name}",
         "academic": "Kính gửi {title} {last_name}"
       },
-      "business": "Kính gửi Quý khách",
-      "neutral": "Xin chào {full_name}"
+      "diverse": {
+        "default": "Kính gửi {full_name}",
+        "academic": "Kính gửi {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Kính gửi {full_name}",
+        "academic": "Kính gửi {title} {full_name}"
+      },
+      "business": "Kính gửi Quý công ty"
     },
     "servicePeriod": {
       "range": "Cho thời gian dịch vụ từ {startDate} đến {endDate}, tôi tính phí như sau:",
@@ -283,7 +286,7 @@
       "export": {
         "title": "Xuất dữ liệu",
         "description": "Sao lưu dữ liệu vào tệp",
-        "button": "Xuất d�� liệu",
+        "button": "Xuất d liệu",
         "loading": "Đang xuất...",
         "success": "Xuất dữ liệu thành công",
         "error": "Lỗi khi xuất",

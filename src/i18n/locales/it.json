@@ -45,20 +45,23 @@
       "save": "Salva"
     },
     "greeting": {
-      "diverse": {
-        "default": "Ciao {full_name}",
-        "academic": "Gentile {title} {full_name}"
-      },
-      "herr": {
+      "mr": {
         "default": "Egregio Sig. {last_name}",
         "academic": "Egregio {title} {last_name}"
       },
-      "frau": {
+      "mrs": {
         "default": "Gentile Sig.ra {last_name}",
         "academic": "Gentile {title} {last_name}"
       },
-      "business": "Spettabili Signori",
-      "neutral": "Gentile {full_name}"
+      "diverse": {
+        "default": "Gentile {full_name}",
+        "academic": "Gentile {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Gentile {full_name}",
+        "academic": "Gentile {title} {full_name}"
+      },
+      "business": "Egregi Signori"
     },
     "servicePeriod": {
       "range": "Per il periodo di servizio dal {startDate} al {endDate}, addebito quanto segue:",

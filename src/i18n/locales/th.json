@@ -45,20 +45,23 @@
       "save": "บันทึก"
     },
     "greeting": {
+      "mr": {
+        "default": "เรียน {last_name}",
+        "academic": "เรียน {title} {last_name}"
+      },
+      "mrs": {
+        "default": "เรียน {last_name}",
+        "academic": "เรียน {title} {last_name}"
+      },
       "diverse": {
-        "default": "สวัสดี {full_name}",
-        "academic": "สวัสดี {title} {full_name}"
+        "default": "เรียน {full_name}",
+        "academic": "เรียน {title} {full_name}"
       },
-      "herr": {
-        "default": "เรียน คุณ {last_name}",
-        "academic": "เรียน {title} {last_name}"
+      "neutral": {
+        "default": "เรียน {full_name}",
+        "academic": "เรียน {title} {full_name}"
       },
-      "frau": {
-        "default": "เรียน คุณ {last_name}",
-        "academic": "เรียน {title} {last_name}"
-      },
-      "business": "เรียน ท่านผู้มีอุปการคุณ",
-      "neutral": "สวัสดี {full_name}"
+      "business": "เรียน ท่านผู้มีอำนาจ"
     },
     "servicePeriod": {
       "range": "สำหรับการให้บริการตั้งแต่ {startDate} ถึง {endDate} ขอเรียกเก็บค่าบริการดังนี้:",
@@ -303,7 +306,7 @@
       "loadSettings": "เกิดข้อผิดพลาดในการโหลดการตั้งค่า",
       "updateSettings": "เกิดข้อผิดพลาดในการอัปเดตการตั้งค่า",
       "loadLanguage": "เกิดข้อผิดพลาดในการโหลดการตั้งค่าภาษา",
-      "updateLanguage": "เกิดข้อผิดพลาดในการอัปเดตภาษา",
+      "updateLanguage": "เกิดข้อผิ���พลาดในการอัปเดตภาษา",
       "directorySelection": {
         "notAvailable": "ไม่สามารถเลือกไดเรกทอรีได้",
         "error": "เกิดข้อผิดพลาดในการเลือกไดเรกทอรี"
@@ -382,7 +385,7 @@
       "required": "กรุณากรอกข้อมูลในช่องที่จำเป็นทั้งหมด",
       "maxProfiles": "ถึงจำนวนโปรไฟล์ธุรกิจสูงสุดแล้ว",
       "savingInvoice": "เกิดข้อผิดพลาดในการบันทึกใบแจ้งหนี้ กรุณาลองอีกครั้ง",
-      "generatingInvoice": "เกิดข้อผิดพลาดในการสร้างใบแจ้งหนี้"
+      "generatingInvoice": "เกิดข้อ��ิดพลาดในการสร้างใบแจ้งหนี้"
     },
     "validation": {
       "selectCustomer": "กรุณาเลือกลูกค้า",

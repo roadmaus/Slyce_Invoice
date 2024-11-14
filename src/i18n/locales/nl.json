@@ -45,20 +45,23 @@
       "save": "Opslaan"
     },
     "greeting": {
-      "diverse": {
-        "default": "Hallo {full_name}",
-        "academic": "Hallo {title} {full_name}"
-      },
-      "herr": {
+      "mr": {
         "default": "Geachte heer {last_name}",
         "academic": "Geachte {title} {last_name}"
       },
-      "frau": {
+      "mrs": {
         "default": "Geachte mevrouw {last_name}",
         "academic": "Geachte {title} {last_name}"
       },
-      "business": "Geachte dames en heren",
-      "neutral": "Hallo {full_name}"
+      "diverse": {
+        "default": "Beste {full_name}",
+        "academic": "Beste {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Geachte {full_name}",
+        "academic": "Geachte {title} {full_name}"
+      },
+      "business": "Geachte dames en heren"
     },
     "servicePeriod": {
       "range": "Voor de dienstperiode van {startDate} tot {endDate} breng ik u het volgende in rekening:",

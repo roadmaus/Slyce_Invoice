@@ -45,20 +45,23 @@
       "save": "Salvar"
     },
     "greeting": {
+      "mr": {
+        "default": "Prezado Sr. {last_name}",
+        "academic": "Prezado {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Prezada Sra. {last_name}",
+        "academic": "Prezada {title} {last_name}"
+      },
       "diverse": {
         "default": "Olá {full_name}",
         "academic": "Olá {title} {full_name}"
       },
-      "herr": {
-        "default": "Prezado Sr. {last_name}",
-        "academic": "Prezado {title} {last_name}"
+      "neutral": {
+        "default": "Prezado(a) {full_name}",
+        "academic": "Prezado(a) {title} {full_name}"
       },
-      "frau": {
-        "default": "Prezada Sra. {last_name}",
-        "academic": "Prezada {title} {last_name}"
-      },
-      "business": "Prezados Senhores e Senhoras",
-      "neutral": "Olá {full_name}"
+      "business": "Prezados Senhores"
     },
     "servicePeriod": {
       "range": "Para o período de serviço de {startDate} a {endDate}, cobro o seguinte:",

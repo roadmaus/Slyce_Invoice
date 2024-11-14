@@ -45,20 +45,23 @@
       "save": "Сохранить"
     },
     "greeting": {
+      "mr": {
+        "default": "Уважаемый господин {last_name}",
+        "academic": "Уважаемый {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Уважаемая госпожа {last_name}",
+        "academic": "Уважаемая {title} {last_name}"
+      },
       "diverse": {
         "default": "Здравствуйте, {full_name}",
         "academic": "Здравствуйте, {title} {full_name}"
       },
-      "herr": {
-        "default": "Уважаемый г-н {last_name}",
-        "academic": "Уважаемый {title} {last_name}"
+      "neutral": {
+        "default": "Здравствуйте, {full_name}",
+        "academic": "Здравствуйте, {title} {full_name}"
       },
-      "frau": {
-        "default": "Уважаемая г-жа {last_name}",
-        "academic": "Уважаемая {title} {last_name}"
-      },
-      "business": "Уважаемые дамы и господа",
-      "neutral": "Здравствуйте, {full_name}"
+      "business": "Уважаемые дамы и господа"
     },
     "servicePeriod": {
       "range": "За период оказания услуг с {startDate} по {endDate} выставляю следующий счет:",
@@ -264,7 +267,7 @@
     },
     "pdf": {
       "title": "Настройки PDF",
-      "description": "Настройте параметры предпросмотра и сохранения PDF",
+      "description": "Настройте параметры предпро��мотра и сохранения PDF",
       "preview": {
         "label": "Показывать предпросмотр PDF",
         "description": "Показывает предпросмотр PDF перед сохранением"

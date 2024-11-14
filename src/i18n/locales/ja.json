@@ -45,20 +45,23 @@
       "save": "保存"
     },
     "greeting": {
+      "mr": {
+        "default": "{last_name}様",
+        "academic": "{title} {last_name}様"
+      },
+      "mrs": {
+        "default": "{last_name}様",
+        "academic": "{title} {last_name}様"
+      },
       "diverse": {
         "default": "{full_name}様",
         "academic": "{title} {full_name}様"
       },
-      "herr": {
-        "default": "{last_name}様",
-        "academic": "{title} {last_name}様"
+      "neutral": {
+        "default": "{full_name}様",
+        "academic": "{title} {full_name}様"
       },
-      "frau": {
-        "default": "{last_name}様",
-        "academic": "{title} {last_name}様"
-      },
-      "business": "御中",
-      "neutral": "{full_name}様"
+      "business": "御社御中"
     },
     "servicePeriod": {
       "range": "{startDate}から{endDate}までのサービス期間について、下記の料金を請求させていただきます：",
@@ -170,7 +173,7 @@
     "vatEnabled": "消費税有効 ({{rate}}%)",
     "vatDisabled": "消費税無効",
     "emptyState": {
-      "title": "ビジネスプロファイルがありません",
+      "title": "ビジネスプ��ファイルがありません",
       "description": "最初のビジネスプロファイルを追加して請求書の作成を始めましょう。",
       "addFirst": "最初のビジネスプロファイルを追加"
     }
@@ -279,7 +282,7 @@
     },
     "dataManagement": {
       "title": "データ管理",
-      "description": "データのエクスポートまたはインポート",
+      "description": "データの���クスポートまたはインポート",
       "export": {
         "title": "データをエクスポート",
         "description": "データをファイルにバックアップ",
@@ -329,7 +332,7 @@
       "templateSave": "テンプレートを保存しました",
       "templateReset": "テンプレートをリセットしました",
       "templateLoad": "テンプレートを正常に読み込みました",
-      "templateDelete": "テンプレートを正常に削除しました",
+      "templateDelete": "���ンプレートを正常���削除しました",
       "templateRename": "テンプレートの名前を正常に変更しました",
       "previewToggle": "プレビュー設定が正常に更新されました",
       "invoiceLanguage": "請求書の言語が正常に更新されました",

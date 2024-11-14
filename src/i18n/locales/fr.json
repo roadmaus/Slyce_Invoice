@@ -45,20 +45,23 @@
       "save": "Enregistrer"
     },
     "greeting": {
+      "mr": {
+        "default": "Cher Monsieur {last_name}",
+        "academic": "Cher {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Chère Madame {last_name}",
+        "academic": "Chère {title} {last_name}"
+      },
       "diverse": {
         "default": "Bonjour {full_name}",
         "academic": "Bonjour {title} {full_name}"
       },
-      "herr": {
-        "default": "Cher M. {last_name}",
-        "academic": "Cher {title} {last_name}"
+      "neutral": {
+        "default": "Cher/Chère {full_name}",
+        "academic": "Cher/Chère {title} {full_name}"
       },
-      "frau": {
-        "default": "Chère Mme {last_name}",
-        "academic": "Chère {title} {last_name}"
-      },
-      "business": "Madame, Monsieur",
-      "neutral": "Bonjour {full_name}"
+      "business": "Madame, Monsieur"
     },
     "servicePeriod": {
       "range": "Pour la période de service du {startDate} au {endDate}, je vous facture ce qui suit :",
