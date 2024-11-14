@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { PlusCircle, Edit, Trash2, Building2, MapPin, User2, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES, TITLE_KEYS } from '@/constants/titleMappings';
+import { TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES, TITLE_KEYS, ACADEMIC_TITLE_KEYS } from '@/constants/titleMappings';
+import { ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
 
 const CustomersTab = ({
   customers,
@@ -19,7 +20,18 @@ const CustomersTab = ({
   handleCustomerDialog,
   addCustomer
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // Add helper function for academic title translation
+  const getTranslatedAcademicTitle = (storedTitle) => {
+    const academicKey = Object.entries(ACADEMIC_STORAGE_VALUES)
+      .find(([_, value]) => value === storedTitle)?.[0];
+    if (academicKey) {
+      const translations = ACADEMIC_TRANSLATIONS[i18n.language] || ACADEMIC_TRANSLATIONS['en'];
+      return translations[academicKey];
+    }
+    return storedTitle;
+  };
 
   // Helper function to get display name
   const getCustomerDisplayName = (customer) => {
@@ -36,8 +48,12 @@ const CustomersTab = ({
     }
     
     if (customer.zusatz && customer.zusatz !== ACADEMIC_STORAGE_VALUES.none) {
-      // For academic titles, we use the stored value directly as they're standardized
-      parts.push(customer.zusatz);
+      const academicKey = Object.entries(ACADEMIC_STORAGE_VALUES)
+        .find(([_, value]) => value === customer.zusatz)?.[0];
+      if (academicKey) {
+        const translations = ACADEMIC_TRANSLATIONS[i18n.language] || ACADEMIC_TRANSLATIONS['en'];
+        parts.push(translations[academicKey]);
+      }
     }
     
     parts.push(customer.name);
@@ -195,8 +211,13 @@ const CustomersTab = ({
                   <div className="flex items-center justify-center p-1.5 rounded-md
                     bg-background/40 dark:bg-background/20 backdrop-blur-sm">
                     <span className="text-xs text-muted-foreground">
-                      {customer.zusatz !== 'none' && `${customer.zusatz}`}
-                      {customer.firma && (customer.zusatz !== 'none' ? ` • ${t('customers.businessCustomer')}` : t('customers.businessCustomer'))}
+                      {customer.zusatz !== ACADEMIC_STORAGE_VALUES.none && 
+                        getTranslatedAcademicTitle(customer.zusatz)}
+                      {customer.firma && (
+                        customer.zusatz !== ACADEMIC_STORAGE_VALUES.none 
+                          ? ` • ${t('customers.businessCustomer')}` 
+                          : t('customers.businessCustomer')
+                      )}
                     </span>
                   </div>
                 </div>
