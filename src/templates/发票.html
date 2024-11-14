@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        body {
+            font-family: "SimSun", "宋体", serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000;
+        }
+
+        .red-text {
+            color: #CF1322;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2em;
+            border-bottom: 3px double #000;
+            padding-bottom: 1em;
+        }
+
+        .header h1 {
+            font-size: 24pt;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            color: #CF1322;
+        }
+
+        .company-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2em;
+            padding: 1em;
+            border: 1px solid #000;
+            background-color: #FAFAFA;
+        }
+
+        .tax-info {
+            border: 2px solid #CF1322;
+            padding: 15px;
+            margin-bottom: 2em;
+            background-color: #FFF1F0;
+        }
+
+        .customer-info {
+            margin-bottom: 2em;
+            padding: 1em;
+            border: 1px dashed #000;
+        }
+
+        .invoice-details {
+            margin-bottom: 2em;
+            font-weight: bold;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2em;
+            page-break-inside: avoid;
+        }
+
+        .invoice-table th, 
+        .invoice-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .invoice-table th {
+            background-color: #F5F5F5;
+            font-weight: bold;
+        }
+
+        .totals {
+            width: 50%;
+            margin-left: auto;
+            margin-bottom: 2em;
+            border: 2px solid #CF1322;
+            padding: 15px;
+        }
+
+        .totals div {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+
+        .payment-info {
+            margin-bottom: 2em;
+            page-break-inside: avoid;
+            background-color: #FAFAFA;
+            padding: 1em;
+            border: 1px solid #000;
+        }
+
+        .bank-details {
+            border-left: 4px solid #CF1322;
+            padding: 10px;
+            margin: 1em 0;
+            background-color: #FFF;
+        }
+
+        .footer {
+            margin-top: 2em;
+            page-break-inside: avoid;
+            text-align: center;
+        }
+
+        .stamps {
+            margin-top: 3em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stamp-box {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #CF1322;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #CF1322;
+            font-size: 14pt;
+            margin: 0 1em;
+        }
+
+        .signature-line {
+            border-bottom: 1px solid #000;
+            width: 200px;
+            margin-top: 1em;
+            padding-top: 50px;
+        }
+
+        .chop-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .date-area {
+            margin-top: 1em;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>发 票</h1>
+        <div class="red-text">INVOICE / 付款通知书</div>
+    </div>
+
+    <div class="company-info">
+        <div>
+            {company_name}<br>
+            {company_street}<br>
+            {company_postalcode} {company_city}
+        </div>
+    </div>
+
+    <div class="tax-info">
+        <div>{tax_number_label}: {tax_number}</div>
+        <div>{tax_id_label}: {tax_id}</div>
+    </div>
+
+    <div class="customer-info">
+        <strong>收件方 / To:</strong><br>
+        {customer_address}
+    </div>
+
+    <div class="invoice-details">
+        <div>发票号码 / Invoice No.: {invoice_number_date}</div>
+    </div>
+
+    {greeting}
+
+    <div>{service_period_text}</div>
+
+    <table class="invoice-table">
+        <thead>
+            <tr>
+                <th>项目<br>{position_label}</th>
+                <th>数量<br>{quantity_label}</th>
+                <th>描述<br>{description_label}</th>
+                <th>单价<br>{unit_price_label}</th>
+                <th>金额<br>{total_label}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {invoice_items}
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <div>
+            <span>金额小计 / {net_amount_label}:</span>
+            <span>{net_amount}</span>
+        </div>
+        <div>{vat_row}</div>
+        <div>
+            <strong>总计 / {total_amount_label}:</strong>
+            <strong>{total_amount}</strong>
+        </div>
+    </div>
+
+    <div class="payment-info">
+        <strong>付款方式 / Payment Information:</strong>
+        <div>{payment_instruction}</div>
+        
+        <div class="bank-details">
+            <div>{bank_institute_label}: {bank_institute}</div>
+            <div>{bank_iban_label}: {bank_iban}</div>
+            <div>{bank_bic_label}: {bank_bic}</div>
+        </div>
+        
+        <div class="red-text">{vat_notice}</div>
+    </div>
+
+    <div class="footer">
+        {thank_you_note}
+        
+        <div class="stamps">
+            <div class="chop-area">
+                <div class="stamp-box">公司盖章<br>Company Chop</div>
+                <div class="date-area">日期 / Date</div>
+            </div>
+            
+            <div class="chop-area">
+                <div class="stamp-box">财务专用章<br>Financial Chop</div>
+                <div class="signature-line">授权签字 / Authorized Signature</div>
+            </div>
+        </div>
+
+        {closing}
+        
+        <div class="contact-details">
+            {contact_details}
+        </div>
+    </div>
+</body>
+</html>

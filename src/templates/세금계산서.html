@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #000;
+            padding-bottom: 20px;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .company-info {
+            float: left;
+            width: 50%;
+        }
+
+        .customer-info {
+            float: right;
+            width: 45%;
+            border: 1px solid #ccc;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .invoice-details {
+            margin: 30px 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .invoice-details th {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .invoice-details td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .summary {
+            margin-top: 30px;
+            float: right;
+            width: 40%;
+        }
+
+        .summary table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .summary td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .summary td:first-child {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        .bank-details {
+            margin-top: 40px;
+            border-top: 2px solid #000;
+            padding-top: 20px;
+        }
+
+        .stamp-area {
+            text-align: right;
+            margin-top: 40px;
+        }
+
+        .circular-stamp {
+            border: 2px solid #000;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+            text-align: center;
+            line-height: 100px;
+            font-weight: bold;
+        }
+
+        @media print {
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">세금계산서</div>
+        <div>{invoice_number_date}</div>
+    </div>
+
+    <div class="clearfix">
+        <div class="company-info">
+            <h3>공급자</h3>
+            <p>{company_name}</p>
+            <p>{company_street}</p>
+            <p>{company_postalcode} {company_city}</p>
+            <p>{tax_number_label}: {tax_number}</p>
+            <p>{tax_id_label}: {tax_id}</p>
+        </div>
+
+        <div class="customer-info">
+            <h3>공급받는 자</h3>
+            <p>{customer_address}</p>
+        </div>
+    </div>
+
+    <table class="invoice-details">
+        <thead>
+            <tr>
+                <th>{position_label}</th>
+                <th>{quantity_label}</th>
+                <th>{description_label}</th>
+                <th>{unit_price_label}</th>
+                <th>{total_label}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {invoice_items}
+        </tbody>
+    </table>
+
+    <div class="summary">
+        <table>
+            <tr>
+                <td>{net_amount_label}</td>
+                <td>{net_amount}</td>
+            </tr>
+            <tr>
+                <td>VAT</td>
+                <td>{vat_row}</td>
+            </tr>
+            <tr>
+                <td>{total_amount_label}</td>
+                <td>{total_amount}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bank-details">
+        <p>{payment_instruction}</p>
+        <p>{vat_notice}</p>
+        <table>
+            <tr>
+                <td>{bank_institute_label}</td>
+                <td>{bank_institute}</td>
+            </tr>
+            <tr>
+                <td>{bank_iban_label}</td>
+                <td>{bank_iban}</td>
+            </tr>
+            <tr>
+                <td>{bank_bic_label}</td>
+                <td>{bank_bic}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="stamp-area">
+        <div class="circular-stamp">
+            {company_name}
+        </div>
+    </div>
+
+    <footer>
+        <p>{thank_you_note}</p>
+        <p>{closing}</p>
+        <p>{contact_details}</p>
+    </footer>
+</body>
+</html>

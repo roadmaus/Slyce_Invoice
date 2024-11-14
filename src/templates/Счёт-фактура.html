@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.4;
+            color: #000;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2em;
+        }
+
+        .company-info {
+            text-align: left;
+            margin-bottom: 2em;
+        }
+
+        .tax-info {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 2em;
+        }
+
+        .customer-info {
+            margin-bottom: 2em;
+        }
+
+        .invoice-details {
+            margin-bottom: 2em;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2em;
+            page-break-inside: avoid;
+        }
+
+        .invoice-table th, 
+        .invoice-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .invoice-table th {
+            background-color: #f0f0f0;
+        }
+
+        .totals {
+            width: 50%;
+            margin-left: auto;
+            margin-bottom: 2em;
+        }
+
+        .payment-info {
+            margin-bottom: 2em;
+            page-break-inside: avoid;
+        }
+
+        .bank-details {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 2em;
+        }
+
+        .footer {
+            margin-top: 2em;
+            page-break-inside: avoid;
+        }
+
+        .stamp-signature {
+            margin-top: 3em;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stamp-area, .signature-area {
+            width: 200px;
+            height: 80px;
+            border-bottom: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>СЧЕТ-ФАКТУРА</h1>
+    </div>
+
+    <div class="company-info">
+        {company_name}<br>
+        {company_street}<br>
+        {company_postalcode} {company_city}
+    </div>
+
+    <div class="tax-info">
+        <div>{tax_number_label}: {tax_number}</div>
+        <div>{tax_id_label}: {tax_id}</div>
+    </div>
+
+    <div class="customer-info">
+        <strong>ПОКУПАТЕЛЬ:</strong><br>
+        {customer_address}
+    </div>
+
+    <div class="invoice-details">
+        {invoice_number_date}
+    </div>
+
+    {greeting}
+
+    <div>{service_period_text}</div>
+
+    <table class="invoice-table">
+        <thead>
+            <tr>
+                <th>{position_label}</th>
+                <th>{quantity_label}</th>
+                <th>{description_label}</th>
+                <th>{unit_price_label}</th>
+                <th>{total_label}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {invoice_items}
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <div>{net_amount_label}: {net_amount}</div>
+        <div>{vat_row}</div>
+        <div><strong>{total_amount_label}: {total_amount}</strong></div>
+    </div>
+
+    <div class="payment-info">
+        {payment_instruction}
+        <div class="bank-details">
+            <div>{bank_institute_label}: {bank_institute}</div>
+            <div>{bank_iban_label}: {bank_iban}</div>
+            <div>{bank_bic_label}: {bank_bic}</div>
+        </div>
+        <div>{vat_notice}</div>
+    </div>
+
+    <div class="footer">
+        {thank_you_note}
+        <div class="stamp-signature">
+            <div class="stamp-area">
+                М.П.
+            </div>
+            <div class="signature-area">
+                Подпись
+            </div>
+        </div>
+        {closing}
+        <div class="contact-details">
+            {contact_details}
+        </div>
+    </div>
+</body>
+</html>
