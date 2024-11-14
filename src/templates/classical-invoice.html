@@ -1,195 +1,184 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rechnung</title>
+    <title>Professional Invoice</title>
     <style>
         :root {
-            --apple-gray: #86868b;
-            --apple-light-gray: #f5f5f7;
-            --apple-border: #d2d2d7;
-            --apple-blue: #0066cc;
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #7f8c8d;
+            --border-color: #ecf0f1;
+            --background-color: #ffffff;
+            --subtle-bg: #f9fafb;
         }
 
         @page {
             size: A4;
-            margin: 48px;
+            margin: 40px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 48px;
-            color: #1d1d1f;
+            padding: 40px;
+            color: var(--primary-color);
             font-size: 14px;
-            line-height: 1.47059;
-            background-color: white;
+            line-height: 1.6;
+            background-color: var(--background-color);
             -webkit-font-smoothing: antialiased;
-        }
-
-        .header,
-        .invoice-details,
-        .greeting-section,
-        table,
-        .payment-info,
-        .banking-info {
-            page-break-inside: avoid;
-        }
-
-        .payment-info {
-            page-break-before: auto;
-        }
-
-        .contact-details,
-        .page-number {
-            page-break-after: auto;
-        }
-
-        tr {
-            page-break-inside: avoid;
-        }
-
-        thead {
-            display: table-header-group;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 72px;
-            align-items: flex-start;
+            margin-bottom: 60px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 30px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: #000000;
-            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            background: var(--primary-color);
             position: relative;
+            border-radius: 4px;
         }
 
         .logo-text {
-            font-size: 21px;
+            font-size: 24px;
             font-weight: 600;
-            letter-spacing: -0.022em;
+            letter-spacing: -0.02em;
+            color: var(--primary-color);
         }
 
         .company-address {
             text-align: right;
-            color: var(--apple-gray);
-            font-size: 12px;
-            line-height: 1.33337;
+            color: var(--accent-color);
+            font-size: 13px;
+            line-height: 1.5;
         }
 
         .invoice-details {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 48px;
+            margin-bottom: 50px;
         }
 
         .recipient-info {
-            max-width: 280px;
-            line-height: 1.4;
+            max-width: 300px;
+            line-height: 1.5;
         }
 
         .invoice-info {
             text-align: right;
-            color: var(--apple-gray);
+            background: var(--subtle-bg);
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 200px;
         }
 
         .invoice-title {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: -0.003em;
-            margin-bottom: 36px;
-            color: #1d1d1f;
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 30px;
+            color: var(--primary-color);
         }
 
         .greeting-section {
-            margin-bottom: 36px;
-            line-height: 1.4;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            color: var(--secondary-color);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 36px 0;
+            margin: 40px 0;
         }
 
         th, td {
-            padding: 12px 8px;
+            padding: 15px 12px;
             text-align: left;
-            border-bottom: 1px solid var(--apple-border);
+            border-bottom: 1px solid var(--border-color);
         }
 
         th {
             font-weight: 600;
-            color: var(--apple-gray);
+            color: var(--accent-color);
             font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.05em;
+            background-color: var(--subtle-bg);
+        }
+
+        tbody tr:hover {
+            background-color: var(--subtle-bg);
         }
 
         .amount-summary {
-            width: 320px;
+            width: 350px;
             margin-left: auto;
             margin-right: 0;
-            border: none;
+            margin-top: 30px;
+        }
+
+        .amount-summary td {
+            padding: 12px 0;
+        }
+
+        .amount-summary tr:last-child {
+            font-weight: 600;
+            font-size: 16px;
+            border-top: 2px solid var(--border-color);
+            border-bottom: none;
         }
 
         .amount-summary tr td:last-child {
             text-align: right;
         }
 
-        .amount-summary tr:last-child {
-            font-weight: 600;
-            font-size: 16px;
-        }
-
         .payment-info {
-            margin-top: 48px;
-            border-top: 1px solid var(--apple-border);
-            padding-top: 24px;
-            color: var(--apple-gray);
+            margin-top: 50px;
+            border-top: 2px solid var(--border-color);
+            padding-top: 30px;
+            color: var(--secondary-color);
         }
 
         .banking-info {
-            margin-top: 36px;
-            background-color: var(--apple-light-gray);
-            padding: 24px;
-            border-radius: 12px;
+            margin: 30px 0;
+            background-color: var(--subtle-bg);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
 
         .banking-info p {
-            margin: 8px 0;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .banking-info p span:first-child {
+            color: var(--accent-color);
+            margin-right: 20px;
         }
 
         .contact-details {
             text-align: center;
-            margin-top: 48px;
-            margin-bottom: 24px;
-            font-size: 11px;
-            color: var(--apple-gray);
-            page-break-inside: avoid;
-        }
-
-        .page-number {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 11px;
-            color: var(--apple-gray);
-        }
-
-        .medium-bold {
-            font-weight: 600;
-            color: #1d1d1f;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--accent-color);
         }
 
         @media print {
@@ -208,10 +197,9 @@
     <div class="header">
         <div class="logo">
             <div class="logo-icon"></div>
-            <div class="logo-text">LOGO</div>
+            <div class="logo-text">{company_name}</div>
         </div>
         <div class="company-address">
-            {company_name}<br>
             {company_street}<br>
             {company_postalcode} {company_city}<br>
             <p>{tax_number_label}: {tax_number}<br>
@@ -221,6 +209,7 @@
 
     <div class="invoice-details">
         <div class="recipient-info">
+            <div class="invoice-title">INVOICE</div>
             {customer_address}
         </div>
         <div class="invoice-info">
@@ -250,12 +239,12 @@
 
     <table class="amount-summary">
         <tr>
-            <td>{net_amount_label}:</td>
+            <td>{net_amount_label}</td>
             <td>{net_amount}</td>
         </tr>
         {vat_row}
         <tr>
-            <td>{total_amount_label}:</td>
+            <td>{total_amount_label}</td>
             <td>{total_amount}</td>
         </tr>
     </table>
@@ -266,9 +255,9 @@
         {vat_notice}
         
         <div class="banking-info">
-            {bank_institute_label}: {bank_institute}
-            <p>{bank_iban_label}: {bank_iban}</p>
-            <p>{bank_bic_label}: {bank_bic}</p>
+            <p><span>{bank_institute_label}</span> <span>{bank_institute}</span></p>
+            <p><span>{bank_iban_label}</span> <span>{bank_iban}</span></p>
+            <p><span>{bank_bic_label}</span> <span>{bank_bic}</span></p>
         </div>
 
         <p>{thank_you_note}</p>

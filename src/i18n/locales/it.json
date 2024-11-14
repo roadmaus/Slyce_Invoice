@@ -24,9 +24,10 @@
       "title": "Voci fattura",
       "description": "Descrizione",
       "quantity": "Quantità",
-      "rate": "Prezzo (€)",
+      "rate": "Prezzo ",
       "total": "Totale",
-      "addItem": "Aggiungi voce"
+      "addItem": "Aggiungi voce",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Importo netto",
@@ -42,6 +43,40 @@
       "generating": "Generazione in corso...",
       "preview": "Anteprima",
       "save": "Salva"
+    },
+    "greeting": {
+      "mr": {
+        "default": "Egregio Sig. {last_name}",
+        "academic": "Egregio {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Gentile Sig.ra {last_name}",
+        "academic": "Gentile {title} {last_name}"
+      },
+      "diverse": {
+        "default": "Gentile {full_name}",
+        "academic": "Gentile {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Gentile {full_name}",
+        "academic": "Gentile {title} {full_name}"
+      },
+      "business": "Egregi Signori"
+    },
+    "servicePeriod": {
+      "range": "Per il periodo di servizio dal {startDate} al {endDate}, addebito quanto segue:",
+      "single": "Per i servizi del {date}, addebito quanto segue:"
+    },
+    "payment": {
+      "instruction": "La prego di trasferire l'importo di {amount} entro 7 giorni lavorativi sul seguente conto:"
+    },
+    "banking": {
+      "name": "Nome",
+      "institute": "Istituto"
+    },
+    "closing": {
+      "thankYou": "Grazie per la fiducia. Non vedo l'ora di collaborare nuovamente con Lei.",
+      "regards": "Cordiali saluti"
     }
   },
   "customers": {
@@ -55,7 +90,8 @@
       "titles": {
         "mr": "Sig.",
         "mrs": "Sig.ra",
-        "diverse": "Altro"
+        "diverse": "Altro",
+        "neutral": "Neutro"
       },
       "academicTitle": {
         "label": "Titolo accademico",
@@ -169,7 +205,7 @@
     "form": {
       "name": "Nome",
       "description": "Descrizione",
-      "rate": "Prezzo (€)",
+      "rate": "Prezzo ",
       "quantity": "Quantità",
       "color": "Colore",
       "visible": "Visibile nell'inserimento rapido",
@@ -222,7 +258,12 @@
     },
     "language": {
       "title": "Lingua",
-      "description": "Seleziona la tua lingua preferita"
+      "description": "Seleziona la tua lingua preferita",
+      "invoiceLanguage": "Lingua della fattura",
+      "invoiceLanguageDescription": "Scegli la lingua per le fatture generate. 'Automatico' tenterà di utilizzare la lingua regionale del cliente.",
+      "invoiceLanguages": {
+        "auto": "Automatico"
+      }
     },
     "pdf": {
       "title": "Impostazioni PDF",
@@ -293,7 +334,9 @@
       "templateLoad": "Modello caricato con successo",
       "templateDelete": "Modello eliminato con successo",
       "templateRename": "Modello rinominato con successo",
-      "previewToggle": "Impostazione anteprima aggiornata con successo"
+      "previewToggle": "Impostazione anteprima aggiornata con successo",
+      "invoiceLanguage": "Lingua della fattura aggiornata con successo",
+      "currency": "Valuta aggiornata con successo"
     },
     "templateEditor": "Editor di modelli",
     "actions": {
@@ -318,6 +361,11 @@
     "renameTemplate": "Rinomina modello",
     "placeholders": {
       "templateName": "Inserisci il nome del modello"
+    },
+    "currency": {
+      "title": "Valuta",
+      "description": "Scegli la valuta per le fatture generate.",
+      "currency": "Valuta"
     }
   },
   "common": {
@@ -337,7 +385,8 @@
     "taxInfo": "Informazioni fiscali",
     "bankDetails": "Dati bancari",
     "rename": "Rinomina",
-    "copy": "Copia nel portapapere"
+    "copy": "Copia nel portapapere",
+    "generating": "Generazione in corso..."
   },
   "dialogs": {
     "warning": {

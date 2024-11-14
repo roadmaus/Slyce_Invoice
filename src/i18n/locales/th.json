@@ -24,9 +24,10 @@
       "title": "รายการในใบแจ้งหนี้",
       "description": "รายละเอียด",
       "quantity": "จำนวน",
-      "rate": "ราคา (€)",
+      "rate": "ราคา ",
       "total": "รวม",
-      "addItem": "เพิ่มรายการ"
+      "addItem": "เพิ่มรายการ",
+      "position": "ลำดับ"
     },
     "totals": {
       "netAmount": "ยอดสุทธิ",
@@ -42,6 +43,40 @@
       "generating": "กำลังสร้าง...",
       "preview": "ดูตัวอย่าง",
       "save": "บันทึก"
+    },
+    "greeting": {
+      "mr": {
+        "default": "เรียน {last_name}",
+        "academic": "เรียน {title} {last_name}"
+      },
+      "mrs": {
+        "default": "เรียน {last_name}",
+        "academic": "เรียน {title} {last_name}"
+      },
+      "diverse": {
+        "default": "เรียน {full_name}",
+        "academic": "เรียน {title} {full_name}"
+      },
+      "neutral": {
+        "default": "เรียน {full_name}",
+        "academic": "เรียน {title} {full_name}"
+      },
+      "business": "เรียน ท่านผู้มีอำนาจ"
+    },
+    "servicePeriod": {
+      "range": "สำหรับการให้บริการตั้งแต่ {startDate} ถึง {endDate} ขอเรียกเก็บค่าบริการดังนี้:",
+      "single": "สำหรับการให้บริการวันที่ {date} ขอเรียกเก็บค่าบริการดังนี้:"
+    },
+    "payment": {
+      "instruction": "กรุณาโอนเงินจำนวน {amount} ภายใน 7 วันทำการ ไปยังบัญชีต่อไปนี้:"
+    },
+    "banking": {
+      "name": "ชื่อ",
+      "institute": "ธนาคาร"
+    },
+    "closing": {
+      "thankYou": "ขอบคุณสำหรับความไว้วางใจ หวังว่าจะได้ร่วมงานกันอีกในอนาคต",
+      "regards": "ขอแสดงความนับถือ"
     }
   },
   "customers": {
@@ -55,7 +90,8 @@
       "titles": {
         "mr": "นาย",
         "mrs": "นาง/นางสาว",
-        "diverse": "อื่นๆ"
+        "diverse": "อื่นๆ",
+        "neutral": "เป็นกลาง"
       },
       "academicTitle": {
         "label": "ตำแหน่งทางวิชาการ",
@@ -169,7 +205,7 @@
     "form": {
       "name": "ชื่อ",
       "description": "รายละเอียด",
-      "rate": "ราคา (€)",
+      "rate": "ราคา ",
       "quantity": "จำนวน",
       "color": "สี",
       "visible": "แสดงในป้ายกำกับด่วน",
@@ -222,7 +258,12 @@
     },
     "language": {
       "title": "ภาษา",
-      "description": "เลือกภาษาที่ต้องการ"
+      "description": "เลือกภาษาที่ต้องการ",
+      "invoiceLanguage": "ภาษาใบแจ้งหนี้",
+      "invoiceLanguageDescription": "เลือกภาษาสำหรับใบแจ้งหนี้ที่สร้างขึ้น 'อัตโนมัติ' จะพยายามใช้ภาษาภูมิภาคของลูกค้า",
+      "invoiceLanguages": {
+        "auto": "อัตโนมัติ"
+      }
     },
     "pdf": {
       "title": "การตั้งค่า PDF",
@@ -265,7 +306,7 @@
       "loadSettings": "เกิดข้อผิดพลาดในการโหลดการตั้งค่า",
       "updateSettings": "เกิดข้อผิดพลาดในการอัปเดตการตั้งค่า",
       "loadLanguage": "เกิดข้อผิดพลาดในการโหลดการตั้งค่าภาษา",
-      "updateLanguage": "เกิดข้อผิดพลาดในการอัปเดตภาษา",
+      "updateLanguage": "เกิดข้อผิ���พลาดในการอัปเดตภาษา",
       "directorySelection": {
         "notAvailable": "ไม่สามารถเลือกไดเรกทอรีได้",
         "error": "เกิดข้อผิดพลาดในการเลือกไดเรกทอรี"
@@ -279,7 +320,9 @@
       "language": "อัปเดตภาษาสำเร็จ",
       "templateSave": "บันทึกเทมเพลตสำเร็จ",
       "templateReset": "รีเซ็ตเทมเพลตสำเร็จ",
-      "previewToggle": "อัปเดตการตั้งค่าการแสดงตัวอย่างสำเร็จแล้ว"
+      "previewToggle": "อัปเดตการตั้งค่าการแสดงตัวอย่างสำเร็จแล้ว",
+      "invoiceLanguage": "อัปเดตภาษาใบแจ้งหนี้สำเร็จ",
+      "currency": "อัปเดตสกุลเงินสำเร็จ"
     },
     "templateEditor": "ตัวแก้ไขเทมเพลต",
     "actions": {
@@ -294,6 +337,11 @@
     "invoice": {
       "template": "เทมเพลตใบแจ้งหนี้",
       "templateDescription": "ปรับแต่งเทมเพลตใบแจ้งหนี้ให้ตรงกับแบรนด์ของคุณ"
+    },
+    "currency": {
+      "title": "สกุลเงิน",
+      "description": "เลือกสกุลเงินสำหรับใบแจ้งหนี้ที่สร้างขึ้น",
+      "currency": "สกุลเงิน"
     }
   },
   "common": {
@@ -311,7 +359,8 @@
     "noResults": "ไม่พบผลลัพธ์",
     "address": "ที่อยู่",
     "taxInfo": "ข้อมูลภาษี",
-    "bankDetails": "ข้อมูลธนาคาร"
+    "bankDetails": "ข้อมูลธนาคาร",
+    "generating": "กำลังสร้าง..."
   },
   "dialogs": {
     "warning": {
@@ -336,7 +385,7 @@
       "required": "กรุณากรอกข้อมูลในช่องที่จำเป็นทั้งหมด",
       "maxProfiles": "ถึงจำนวนโปรไฟล์ธุรกิจสูงสุดแล้ว",
       "savingInvoice": "เกิดข้อผิดพลาดในการบันทึกใบแจ้งหนี้ กรุณาลองอีกครั้ง",
-      "generatingInvoice": "เกิดข้อผิดพลาดในการสร้างใบแจ้งหนี้"
+      "generatingInvoice": "เกิดข้อ��ิดพลาดในการสร้างใบแจ้งหนี้"
     },
     "validation": {
       "selectCustomer": "กรุณาเลือกลูกค้า",

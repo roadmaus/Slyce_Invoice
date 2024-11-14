@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,8 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import html2pdf from 'html2pdf.js';
-import ReactSelect from 'react-select';
 import * as Icons from 'lucide-react';
 import { 
   FileText, 
@@ -18,14 +15,18 @@ import {
   Building2
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
 import SettingsTab from './tabs/SettingsTab';
-import { PDFObject } from 'react-pdfobject';
 import { useTranslation } from 'react-i18next';
 import BusinessTab from './tabs/BusinessTab';
 import CustomersTab from './tabs/CustomersTab';
 import InvoiceTab from './tabs/InvoiceTab';
 import TagsTab from './tabs/TagsTab';
+import { DEFAULT_CURRENCY } from '@/constants/currencies';
+import { TITLE_KEYS, ACADEMIC_TITLE_KEYS, TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES } from '@/constants/titleMappings';
+import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
+import { BUSINESS_KEYS, BUSINESS_STORAGE_VALUES, BUSINESS_TRANSLATIONS } from '@/constants/businessMappings';
+import LoadingOverlay from './LoadingOverlay';
+
 // Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
   if (!profileId) {
@@ -119,8 +120,183 @@ const adjustColorForDarkMode = (hexColor, isDark) => {
   return `rgba(${r}, ${g}, ${b}, 0.3)`;
 };
 
+// Date formatting
+const formatDate = (date) => {
+  return new Intl.DateTimeFormat('de-DE', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date(date));
+};
+
+// Add these helper functions at the top of your file
+const getTranslatedTitle = (storedTitle, language) => {
+  // Find the key for the stored German value
+  const titleKey = Object.entries(TITLE_STORAGE_VALUES)
+    .find(([_, value]) => value === storedTitle)?.[0];
+
+  // Debug logging
+  console.log('Stored Title:', storedTitle);
+  console.log('Title Key:', titleKey);
+  console.log('Language:', language);
+  console.log('Available Translations:', TITLE_TRANSLATIONS[language]);
+
+  // If no key found or neutral, return empty string
+  if (!titleKey || titleKey === TITLE_KEYS.NEUTRAL) return '';
+
+  // Get translations for the requested language, fallback to German if not found
+  const translations = TITLE_TRANSLATIONS[language] || TITLE_TRANSLATIONS['de'];
+  
+  // Get the translated title
+  const translatedTitle = translations[titleKey];
+  console.log('Translated Title:', translatedTitle);
+
+  return translatedTitle || storedTitle;
+};
+
+// Add this helper function alongside getTranslatedTitle
+const getTranslatedAcademicTitle = (storedTitle, language) => {
+  // Find the key for the stored value
+  const academicKey = Object.entries(ACADEMIC_STORAGE_VALUES)
+    .find(([_, value]) => value === storedTitle)?.[0];
+
+  // If no key found or none, return empty string
+  if (!academicKey || academicKey === ACADEMIC_TITLE_KEYS.NONE) return '';
+
+  // Get translations for the requested language, fallback to English
+  const translations = ACADEMIC_TRANSLATIONS[language] || ACADEMIC_TRANSLATIONS['en'];
+  
+  // Get the translated title
+  const translatedTitle = translations[academicKey];
+
+  return translatedTitle || storedTitle;
+};
+
+// Add this new helper function
+const formatCustomerName = (customer, language, includeTitle = true, includeHonorific = true) => {
+  const parts = [];
+
+  // Handle title translation (e.g., Mr/Mrs)
+  if (includeTitle && customer.title && customer.title !== 'neutral') {
+    // Skip diverse title in address formatting
+    if (customer.title !== TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
+      const translatedTitle = getTranslatedTitle(customer.title, language);
+      if (translatedTitle) {
+        parts.push(translatedTitle);
+      }
+    }
+  }
+
+  // Handle academic title (e.g., Prof/Dr)
+  if (includeHonorific && customer.zusatz && customer.zusatz !== 'none') {
+    const translatedAcademicTitle = getTranslatedAcademicTitle(customer.zusatz, language);
+    if (translatedAcademicTitle) {
+      parts.push(translatedAcademicTitle);
+    }
+  }
+
+  // Add name
+  parts.push(customer.name);
+
+  // For Japanese/Chinese, add honorific suffix if in greeting
+  if (includeHonorific && ['ja', 'zh'].includes(language)) {
+    const honorific = language === 'ja' ? '様' : '先生';
+    return parts.join(' ') + honorific;
+  }
+
+  return parts.join(' ');
+};
+
+// Update formatCustomerAddress to use the new function
+const formatCustomerAddress = (customer, language) => {
+  const addressParts = [];
+
+  // Use the new unified formatting function
+  addressParts.push(formatCustomerName(customer, language));
+  addressParts.push(customer.street);
+  addressParts.push(`${customer.postal_code} ${customer.city}`);
+
+  return addressParts.filter(Boolean).join('<br>');
+};
+
+// Update the formatGreeting function
+const formatGreeting = (customer, language, t) => {
+  // If it's a business customer, use business greeting
+  if (customer.firma) {
+    return t('invoice.greeting.business');
+  }
+
+  // Map the stored title value back to the TITLE_KEY
+  const titleKey = Object.entries(TITLE_STORAGE_VALUES)
+    .find(([_, value]) => value === customer.title)?.[0];
+
+  // Map TITLE_KEYS to the greeting keys used in locale files
+  const greetingKeyMap = {
+    [TITLE_KEYS.MR]: 'mr',
+    [TITLE_KEYS.MRS]: 'mrs',
+    [TITLE_KEYS.DIVERSE]: 'diverse',
+    [TITLE_KEYS.NEUTRAL]: 'neutral'
+  };
+
+  // Get the greeting key, defaulting to neutral if not found
+  const greetingKey = greetingKeyMap[titleKey] || 'neutral';
+
+  // Check if customer has an academic title
+  const hasAcademicTitle = customer.zusatz && 
+    customer.zusatz !== ACADEMIC_STORAGE_VALUES[ACADEMIC_TITLE_KEYS.NONE];
+
+  // Get the full i18n key path based on whether there's an academic title
+  const greetingPath = `invoice.greeting.${greetingKey}.${hasAcademicTitle ? 'academic' : 'default'}`;
+
+  // Get the greeting template from i18n
+  const greetingTemplate = t(greetingPath);
+
+  // Get the translated academic title if needed
+  const academicTitle = hasAcademicTitle 
+    ? getTranslatedAcademicTitle(customer.zusatz, language)
+    : '';
+
+  // Extract name parts
+  const nameParts = customer.name.split(' ');
+  const lastName = nameParts[nameParts.length - 1];
+  const fullName = customer.name;
+
+  // Replace placeholders in the template
+  return greetingTemplate
+    .replace('{title}', academicTitle)
+    .replace('{last_name}', lastName)
+    .replace('{full_name}', fullName);
+};
+
+// Add this helper function alongside other translation helpers
+const getTranslatedBusinessField = (storedValue, fieldKey, language) => {
+  // Debug log to see what we're getting
+  console.log('Translation input:', { storedValue, fieldKey, language });
+
+  // Find the key for the stored value by matching against BUSINESS_STORAGE_VALUES
+  const businessKey = Object.entries(BUSINESS_STORAGE_VALUES)
+    .find(([_, value]) => value === storedValue)?.[0] 
+    || Object.entries(BUSINESS_STORAGE_VALUES)
+    .find(([_, value]) => storedValue.includes(value))?.[0]
+    || fieldKey;
+
+  // Get translations for the requested language, fallback to English
+  const translations = BUSINESS_TRANSLATIONS[language] || BUSINESS_TRANSLATIONS['en'];
+  
+  // Get the translated value
+  const translatedValue = translations[businessKey];
+
+  console.log('Translation result:', {
+    businessKey,
+    translations,
+    translatedValue
+  });
+
+  return translatedValue || storedValue;
+};
+
 const SlyceInvoice = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Business Profiles State
   const [businessProfiles, setBusinessProfiles] = useState([]);
@@ -153,6 +329,7 @@ const SlyceInvoice = () => {
     city: '',
     firma: false,
   });
+
 
   // Quick Tags State
   const [quickTags, setQuickTags] = useState([]);
@@ -222,6 +399,12 @@ const SlyceInvoice = () => {
   // Add new state for profile-specific invoice numbers
   const [profileInvoiceNumbers, setProfileInvoiceNumbers] = useState({});
 
+  // Add this with other state declarations
+  const [selectedCurrency, setSelectedCurrency] = useState(DEFAULT_CURRENCY);
+
+  // In SlyceInvoice.jsx, add invoiceLanguage to state declarations
+  const [invoiceLanguage, setInvoiceLanguage] = useState('auto');
+
   // Load saved data on component mount
   useEffect(() => {
     const loadSavedData = async () => {
@@ -230,6 +413,7 @@ const SlyceInvoice = () => {
         const savedCustomers = await window.electronAPI.getData('customers');
         const savedTags = await window.electronAPI.getData('quickTags');
         const savedInvoiceNumbers = await window.electronAPI.getData('profileInvoiceNumbers') || {};
+        const savedCurrency = await window.electronAPI.getData('currency');
 
         if (savedProfiles) setBusinessProfiles(savedProfiles);
         if (savedCustomers) {
@@ -240,6 +424,7 @@ const SlyceInvoice = () => {
         }
         if (savedTags) setQuickTags(savedTags);
         if (savedInvoiceNumbers) setProfileInvoiceNumbers(savedInvoiceNumbers);
+        if (savedCurrency) setSelectedCurrency(savedCurrency);
         
         setIsInitialized(true);
       } catch (error) {
@@ -249,6 +434,16 @@ const SlyceInvoice = () => {
     };
 
     loadSavedData();
+
+    // Add currency change listener
+    const handleCurrencyChange = (event) => {
+      setSelectedCurrency(event.detail);
+    };
+    window.addEventListener('currencyChanged', handleCurrencyChange);
+    
+    return () => {
+      window.removeEventListener('currencyChanged', handleCurrencyChange);
+    };
   }, []);
 
   // Save data whenever it changes
@@ -259,13 +454,14 @@ const SlyceInvoice = () => {
         await window.electronAPI.setData('customers', customers);
         await window.electronAPI.setData('quickTags', quickTags);
         await window.electronAPI.setData('profileInvoiceNumbers', profileInvoiceNumbers);
+        await window.electronAPI.setData('currency', selectedCurrency);
         if (defaultProfileId) {
           await window.electronAPI.setData('defaultProfileId', defaultProfileId);
         }
       };
       saveData();
     }
-  }, [businessProfiles, customers, quickTags, defaultProfileId, profileInvoiceNumbers, isInitialized]);
+  }, [businessProfiles, customers, quickTags, defaultProfileId, profileInvoiceNumbers, selectedCurrency, isInitialized]);
 
   // Business Profile Management
   const addBusinessProfile = () => {
@@ -278,6 +474,9 @@ const SlyceInvoice = () => {
       toast.error(t('messages.error.maxProfiles'));
       return;
     }
+
+    // Check if this is the first profile being added
+    const isFirstProfile = businessProfiles.length === 0;
 
     setBusinessProfiles([...businessProfiles, newProfile]);
     setNewProfile({
@@ -296,6 +495,12 @@ const SlyceInvoice = () => {
       vat_rate: 19,
     });
     setShowNewProfileDialog(false);
+
+    // If this is the first profile, set it as the default
+    if (isFirstProfile) {
+      setDefaultProfileId(newProfile.company_name);
+      setSelectedProfile(newProfile);
+    }
   };
 
   // Customer Management
@@ -410,33 +615,120 @@ const SlyceInvoice = () => {
     return invoiceItems.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
   };
 
+  // Add this useEffect to load the setting
+  useEffect(() => {
+    const loadInvoiceLanguage = async () => {
+      const settings = await window.electronAPI.getData('invoiceLanguageSettings');
+      if (settings?.invoiceLanguage) {
+        setInvoiceLanguage(settings.invoiceLanguage);
+      }
+    };
+    loadInvoiceLanguage();
+
+    const handleInvoiceLanguageChange = (event) => {
+      setInvoiceLanguage(event.detail.invoiceLanguage);
+    };
+    window.addEventListener('invoiceLanguageChanged', handleInvoiceLanguageChange);
+    
+    return () => {
+      window.removeEventListener('invoiceLanguageChanged', handleInvoiceLanguageChange);
+    };
+  }, []);
+
+  // Update the generateInvoice function
   const generateInvoice = async () => {
     if (!validateInvoice()) return;
 
     setIsLoading(prev => ({ ...prev, invoice: true }));
     
     try {
+      // Store current language
+      const currentLanguage = i18n.language;
+      
+      // Determine invoice language
+      let invoiceLang = invoiceLanguage;
+      if (invoiceLanguage === 'auto') {
+        // Use customer's country/region to determine language
+        if (selectedCustomer?.country === 'DE' || selectedCustomer?.country === 'AT' || selectedCustomer?.country === 'CH') {
+          invoiceLang = 'de';
+        } else {
+          invoiceLang = 'en'; // Default to English for auto
+        }
+      }
+      
+      // Switch to invoice language
+      await i18n.changeLanguage(invoiceLang);
+
       const template = await window.electronAPI.getInvoiceTemplate();
       
-      // Format customer address with proper line breaks
-      const customerAddress = [
-        selectedCustomer.title !== 'Divers' ? selectedCustomer.title : '',
-        selectedCustomer.zusatz,
-        selectedCustomer.name,
-        selectedCustomer.street,
-        `${selectedCustomer.postal_code} ${selectedCustomer.city}`
-      ].filter(Boolean).join('<br>');
+      // Use the same formatting function for both address and greeting
+      const customerAddress = formatCustomerAddress(selectedCustomer, invoiceLang);
+      const customerGreeting = formatGreeting(selectedCustomer, invoiceLang, t);
 
-      // Format invoice details with proper line breaks
-      const invoiceNumberDate = [
-        `Rechnungsnummer: ${currentInvoiceNumber}`,
-        `Datum: ${new Date().toLocaleDateString('de-DE')}`
-      ].join('<br>');
+      // Get translations for business fields
+      const taxNumberLabel = await getTranslatedBusinessField(
+        BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.TAX_NUMBER],
+        'taxNumber',
+        invoiceLang
+      );
+      
+      const taxIdLabel = await getTranslatedBusinessField(
+        BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.TAX_ID],
+        'taxId',
+        invoiceLang
+      );
 
-      // Format greeting with proper spacing
-      const greeting = selectedCustomer.title === 'Divers' 
-        ? `Sehr geehrte(r) ${selectedCustomer.zusatz} ${selectedCustomer.name},`
-        : `Sehr ${selectedCustomer.title === 'Herr' ? 'geehrter Herr' : 'geehrte Frau'} ${selectedCustomer.zusatz} ${selectedCustomer.name},`;
+      // Prepare template data
+      const templateData = {
+        customer_address: customerAddress,
+        customer_greeting: customerGreeting,
+        // ... other template data ...
+        
+        // Tax information with labels
+        tax_number_label: taxNumberLabel,
+        tax_id_label: taxIdLabel,
+        tax_number: selectedProfile.tax_number,
+        tax_id: selectedProfile.tax_id,
+        bank_institute_label: getTranslatedBusinessField(
+          BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.BANK_INSTITUTE],
+          BUSINESS_KEYS.BANK_INSTITUTE,
+          invoiceLang
+        ),
+        bank_iban_label: getTranslatedBusinessField(
+          BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.BANK_IBAN],
+          BUSINESS_KEYS.BANK_IBAN,
+          invoiceLang
+        ),
+        bank_bic_label: getTranslatedBusinessField(
+          BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.BANK_BIC],
+          BUSINESS_KEYS.BANK_BIC,
+          invoiceLang
+        ),
+        // The actual values remain unchanged
+        bank_institute: selectedProfile.bank_institute,
+        bank_iban: selectedProfile.bank_iban,
+        bank_bic: selectedProfile.bank_bic
+      };
+
+      // Replace placeholders in template
+      let html = template;
+      
+      // Log the values before replacement
+      console.log('Tax Labels:', {
+        tax_number_label: templateData.tax_number_label,
+        tax_id_label: templateData.tax_id_label,
+        tax_number: templateData.tax_number,
+        tax_id: templateData.tax_id
+      });
+
+      // Replace each placeholder
+      Object.entries(templateData).forEach(([key, value]) => {
+        const placeholder = `{${key}}`;
+        html = html.replaceAll(placeholder, value || '');
+      });
+
+      // Log a snippet of the HTML after replacement
+      console.log('HTML after replacement (snippet):', html.substring(0, 500));
 
       // Calculate amounts
       const netTotal = calculateTotal();
@@ -444,32 +736,60 @@ const SlyceInvoice = () => {
       const vatAmount = selectedProfile.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
       const totalAmount = netTotal + vatAmount;
 
-      // Format invoice items with proper table structure and position numbers
+      // Format service period text
+      const servicePeriodText = invoiceDates.hasDateRange
+        ? t('invoice.servicePeriod.range', {
+            startDate: formatDate(invoiceDates.startDate),
+            endDate: formatDate(invoiceDates.endDate)
+          }).replace('{startDate}', formatDate(invoiceDates.startDate))
+            .replace('{endDate}', formatDate(invoiceDates.endDate))
+        : t('invoice.servicePeriod.single', {
+            date: formatDate(invoiceDates.startDate)
+          }).replace('{date}', formatDate(invoiceDates.startDate));
+
+      // Create VAT-related HTML
+      const vatNoticeHtml = selectedProfile.vat_enabled
+        ? `<p>${t('invoice.totals.vatNotice.enabled')}</p>`
+        : `<p>${t('invoice.totals.vatNotice.disabled')}</p>`;
+
+      const vatRowHtml = selectedProfile.vat_enabled 
+        ? `<tr>
+            <td>${t('invoice.totals.vat', { rate: vatRate })}:</td>
+            <td>${formatCurrency(vatAmount)}</td>
+          </tr>`
+        : '';
+
+      // Format invoice header
+      const invoiceNumberDate = [
+        `${t('invoice.details.number.label')}: ${currentInvoiceNumber}`,
+        `${t('invoice.details.date.label')}: ${formatDate(new Date())}`
+      ].join('<br>');
+
+      // Format invoice items
       const formattedInvoiceItems = invoiceItems.map((item, index) => `
         <tr>
           <td>${index + 1}</td>
           <td>${item.quantity}</td>
-          <td style="white-space: pre-wrap;">${item.description}</td>
-          <td>€${item.rate.toFixed(2)}</td>
-          <td>€${(item.quantity * item.rate).toFixed(2)}</td>
+          <td>${item.description}</td>
+          <td>${formatCurrency(item.rate)}</td>
+          <td>${formatCurrency(item.quantity * item.rate)}</td>
         </tr>
       `).join('');
 
-      // Create VAT row HTML if VAT is enabled
-      const vatRowHtml = selectedProfile.vat_enabled 
-        ? `<tr>
-            <td>Mehrwertsteuer (${vatRate}%):</td>
-            <td>€${vatAmount.toFixed(2)}</td>
-          </tr>`
+      // Format payment instruction with amount
+      const selectedCurrency = await window.electronAPI.getData('currency') || DEFAULT_CURRENCY;
+      
+      const paymentInstruction = t('invoice.payment.instruction', {
+        amount: formatCurrency(totalAmount, 'de-DE', selectedCurrency.code)
+      }).replace('{amount}', formatCurrency(totalAmount, 'de-DE', selectedCurrency.code));
+
+      // Format contact details - only include if they exist
+      const contactDetailsHtml = selectedProfile.contact_details 
+        ? selectedProfile.contact_details.split('\n').join('<br>')
         : '';
 
-      // Create VAT notice based on profile settings
-      const vatNoticeHtml = selectedProfile.vat_enabled
-        ? `<p class="vat-notice">Umsatzsteuer wird gemäß § 19 UStG berechnet.</p>`
-        : `<p class="vat-notice">Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>`;
-
-      // Replace template placeholders
-      let filledTemplate = template
+      // Replace all placeholders
+      html = html
         .replaceAll('{company_name}', selectedProfile.company_name)
         .replaceAll('{company_street}', selectedProfile.company_street)
         .replaceAll('{company_postalcode}', selectedProfile.company_postalcode)
@@ -478,102 +798,99 @@ const SlyceInvoice = () => {
         .replaceAll('{tax_id}', selectedProfile.tax_id)
         .replaceAll('{customer_address}', customerAddress)
         .replaceAll('{invoice_number_date}', invoiceNumberDate)
-        .replaceAll('{greeting}', greeting)
-        .replaceAll('{period}', invoiceDates.hasDateRange 
-          ? `${invoiceDates.startDate} bis ${invoiceDates.endDate}`
-          : invoiceDates.startDate)
+        .replaceAll('{greeting}', customerGreeting)
+        .replaceAll('{service_period_text}', servicePeriodText)
+        .replaceAll('{position_label}', t('invoice.items.position'))
+        .replaceAll('{quantity_label}', t('invoice.items.quantity'))
+        .replaceAll('{description_label}', t('invoice.items.description'))
+        .replaceAll('{unit_price_label}', t('invoice.items.rate'))
+        .replaceAll('{total_label}', t('invoice.items.total'))
+        .replaceAll('{net_amount_label}', t('invoice.totals.netAmount'))
+        .replaceAll('{total_amount_label}', t('invoice.totals.totalAmount'))
+        .replaceAll('{payment_instruction}', paymentInstruction)
+        .replaceAll('{thank_you_note}', t('invoice.closing.thankYou'))
+        .replaceAll('{closing}', t('invoice.closing.regards'))
+        .replaceAll('{name_label}', t('invoice.banking.name'))
+        .replaceAll('{bank_label}', t('invoice.banking.institute'))
         .replaceAll('{invoice_items}', formattedInvoiceItems)
-        .replaceAll('{net_amount}', `€${netTotal.toFixed(2)}`)
+        .replaceAll('{net_amount}', formatCurrency(netTotal))
         .replaceAll('{vat_row}', vatRowHtml)
         .replaceAll('{vat_notice}', vatNoticeHtml)
-        .replaceAll('{total_amount}', `€${totalAmount.toFixed(2)}`)
+        .replaceAll('{total_amount}', formatCurrency(totalAmount))
         .replaceAll('{bank_institute}', selectedProfile.bank_institute)
         .replaceAll('{bank_iban}', selectedProfile.bank_iban)
         .replaceAll('{bank_bic}', selectedProfile.bank_bic)
-        .replaceAll('{contact_details}', selectedProfile.contact_details || '')
-        .replaceAll('{quantity_label}', 'Menge')
-        .replaceAll('{unit_price_label}', 'Einzelpreis');
+        .replace('{contact_details}', contactDetailsHtml);
 
-      // Generate PDF with improved settings
-      const pdf = await html2pdf().set({
-        margin: [48, 48, 48, 48], // [top, left, bottom, right]
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          letterRendering: true,
-          logging: false
-        },
-        jsPDF: {
-          unit: 'pt',
-          format: 'a4',
-          orientation: 'portrait',
-          compress: true,
-          precision: 16
-        },
-        pagebreak: {
-          mode: ['avoid-all', 'css', 'legacy'],
-          before: '.page-break-before',
-          after: '.page-break-after',
-          avoid: [
-            'tr',
-            '.banking-info',
-            '.payment-info',
-            '.contact-details',
-            '.page-number'
-          ]
+      // Generate PDF using Puppeteer through Electron
+      const pdfData = await window.electronAPI.generatePDF({
+        html,
+        options: {
+          format: 'A4',
+          margin: {
+            top: '48px',
+            right: '48px',
+            bottom: '48px',
+            left: '48px'
+          },
+          printBackground: true,
+          preferCSSPageSize: true
         }
-      }).from(filledTemplate).outputPdf('arraybuffer');
+      });
 
-      // Create Blob for preview
-      const pdfBlob = new Blob([pdf], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
+      if (pdfData) {
+        const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
+        const saved = await window.electronAPI.saveInvoice(pdfData, fileName);
 
-      // Construct the desired file name
-      const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
+        if (saved) {
+          if (previewSettings.showPreview) {
+            // Convert the Buffer to ArrayBuffer
+            const arrayBuffer = pdfData.buffer.slice(
+              pdfData.byteOffset, 
+              pdfData.byteOffset + pdfData.byteLength
+            );
+            // Create Blob and URL for preview
+            const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+            const pdfUrl = URL.createObjectURL(blob);
+            
+            setPdfPreview({
+              show: true,
+              data: pdfUrl,
+              fileName: fileName
+            });
+          } else {
+            toast.success(t('messages.success.invoiceGenerated'));
+            
+            const nextNumber = generateInvoiceNumber(
+              currentInvoiceNumber, 
+              selectedProfile.company_name, 
+              true
+            );
+            setCurrentInvoiceNumber(nextNumber);
+            setInvoiceItems([]);
+            setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
+          }
 
-      // Save using Electron
-      const saved = await window.electronAPI.saveInvoice(pdf, fileName);
-
-      if (saved) {
-        // Add an artificial delay before hiding the loading overlay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        if (previewSettings.showPreview) {
-          setPdfPreview({
-            show: true,
-            data: pdfUrl,
-            fileName: fileName
-          });
+          // Save the current invoice number
+          const updatedNumbers = {
+            ...profileInvoiceNumbers,
+            [selectedProfile.company_name]: currentInvoiceNumber
+          };
+          setProfileInvoiceNumbers(updatedNumbers);
+          await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
         } else {
-          // Only show success toast if preview is not active
-          toast.success(t('messages.success.invoiceGenerated'));
-          
-          // Generate next number for this profile
-          const nextNumber = generateInvoiceNumber(
-            currentInvoiceNumber, 
-            selectedProfile.company_name, 
-            true
-          );
-          setCurrentInvoiceNumber(nextNumber);
-          setInvoiceItems([]);
-          setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
+          toast.error(t('messages.error.savingInvoice'));
         }
-
-        // Save the current invoice number for this profile
-        const updatedNumbers = {
-          ...profileInvoiceNumbers,
-          [selectedProfile.company_name]: currentInvoiceNumber
-        };
-        setProfileInvoiceNumbers(updatedNumbers);
-        await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
-
       } else {
         toast.error(t('messages.error.savingInvoice'));
       }
+
+      // Switch back to original language
+      await i18n.changeLanguage(currentLanguage);
     } catch (error) {
       console.error('Error generating invoice:', error);
       toast.error(t('messages.error.generatingInvoice'));
+      await i18n.changeLanguage(currentLanguage);
     } finally {
       setIsLoading(prev => ({ ...prev, invoice: false }));
     }
@@ -698,39 +1015,68 @@ const SlyceInvoice = () => {
 
 const renderCustomerForm = (customer, setCustomer) => {
     const { t } = useTranslation();
+    
+    // Helper function to get the title key from storage value
+    const getTitleKeyFromStorage = (storageValue) => {
+      return Object.entries(TITLE_STORAGE_VALUES)
+        .find(([_, value]) => value === storageValue)?.[0] || 'neutral';
+    };
+
+    // Helper function to get the academic title key from storage value
+    const getAcademicTitleKeyFromStorage = (storageValue) => {
+      return Object.entries(ACADEMIC_STORAGE_VALUES)
+        .find(([_, value]) => value === storageValue)?.[0] || 'none';
+    };
+
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-2">
           <div>
             <Label>{t('customers.form.title')}</Label>
             <Select
-              value={customer.title}
-              onValueChange={(value) => setCustomer({ ...customer, title: value })}
+              value={getTitleKeyFromStorage(customer.title)}
+              onValueChange={(key) => setCustomer({ 
+                ...customer, 
+                title: TITLE_STORAGE_VALUES[key] 
+              })}
             >
               <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder={t('customers.form.selectTitle')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Herr">{t('customers.form.titles.mr')}</SelectItem>
-                <SelectItem value="Frau">{t('customers.form.titles.mrs')}</SelectItem>
-                <SelectItem value="Divers">{t('customers.form.titles.diverse')}</SelectItem>
+                <SelectItem value={TITLE_KEYS.NEUTRAL}>
+                  {t('customers.form.titles.neutral')}
+                </SelectItem>
+                <SelectItem value={TITLE_KEYS.MR}>
+                  {t('customers.form.titles.mr')}
+                </SelectItem>
+                <SelectItem value={TITLE_KEYS.MRS}>
+                  {t('customers.form.titles.mrs')}
+                </SelectItem>
+                <SelectItem value={TITLE_KEYS.DIVERSE}>
+                  {t('customers.form.titles.diverse')}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
             <Label>{t('customers.form.academicTitle.label')}</Label>
             <Select
-              value={customer.zusatz}
-              onValueChange={(value) => setCustomer({ ...customer, zusatz: value })}
+              value={getAcademicTitleKeyFromStorage(customer.zusatz)}
+              onValueChange={(key) => setCustomer({ 
+                ...customer, 
+                zusatz: ACADEMIC_STORAGE_VALUES[key] 
+              })}
             >
               <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder={t('customers.form.academicTitle.placeholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Dr.">Dr.</SelectItem>
-                <SelectItem value="Prof.">Prof.</SelectItem>
-                <SelectItem value="Prof. Dr.">Prof. Dr.</SelectItem>
-                <SelectItem value="Dr. h.c.">Dr. h.c.</SelectItem>
+                {Object.entries(ACADEMIC_TITLE_KEYS).map(([key, value]) => (
+                  <SelectItem key={value} value={value}>
+                    {t(`customers.form.academicTitle.options.${value}`)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -893,8 +1239,8 @@ const handleCustomerDialog = (existingCustomer = null) => {
   } else {
     setNewCustomer({
       id: '',
-      title: '',
-      zusatz: '',
+      title: TITLE_STORAGE_VALUES[TITLE_KEYS.NEUTRAL], // Default to neutral
+      zusatz: ACADEMIC_STORAGE_VALUES[ACADEMIC_TITLE_KEYS.NONE], // Default to none
       name: '',
       street: '',
       postal_code: '',
@@ -1012,25 +1358,6 @@ const PreviewDialog = () => (
   </Dialog>
 );
 
-// Update the LoadingOverlay component
-const LoadingOverlay = () => (
-  // Add fixed positioning relative to viewport and increase z-index even higher
-  <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-[9999] flex items-center justify-center" style={{
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: '100vw',  // Full viewport width
-    height: '100vh', // Full viewport height
-  }}>
-    <div className="text-center space-y-4">
-      <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-      <p className="text-lg font-medium text-foreground">{t('invoice.actions.generating')}</p>
-    </div>
-  </div>
-);
-
 const getTagBackground = (() => {
   const cache = new Map();
   
@@ -1108,6 +1435,55 @@ useEffect(() => {
   }
 }, [isInitialized, businessProfiles]);
 
+// Add this useEffect to handle currency changes
+useEffect(() => {
+  const loadCurrency = async () => {
+    const saved = await window.electronAPI.getData('currency');
+    if (saved) {
+      setSelectedCurrency(saved);
+    }
+  };
+  loadCurrency();
+
+  const handleCurrencyChange = (event) => {
+    setSelectedCurrency(event.detail);
+  };
+  window.addEventListener('currencyChanged', handleCurrencyChange);
+  
+  return () => {
+    window.removeEventListener('currencyChanged', handleCurrencyChange);
+  };
+}, []);
+
+// Add formatCurrency inside the component
+const formatCurrency = (amount) => {
+  if (!selectedCurrency?.code) {
+    return new Intl.NumberFormat('de-DE', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  }
+  
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency',
+    currency: selectedCurrency.code,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+};
+
+// Add this with other function declarations
+const updateInvoiceLanguage = async (language) => {
+  try {
+    await window.electronAPI.setData('invoiceLanguageSettings', { invoiceLanguage: language });
+    setInvoiceLanguage(language);
+    toast.success(t('settings.success.language'));
+  } catch (error) {
+    console.error('Error updating invoice language:', error);
+    toast.error(t('settings.errors.updateLanguage'));
+  }
+};
+
 // Main Render
   return (
     <>
@@ -1167,6 +1543,8 @@ useEffect(() => {
               isLoading={isLoading}
               profileInvoiceNumbers={profileInvoiceNumbers}
               setProfileInvoiceNumbers={setProfileInvoiceNumbers}
+              selectedCurrency={selectedCurrency}
+              formatCurrency={formatCurrency}
             />
           </TabsContent>
 
@@ -1224,7 +1602,10 @@ useEffect(() => {
           </TabsContent>
 
           <TabsContent value="settings">
-            <SettingsTab />
+            <SettingsTab 
+              invoiceLanguage={invoiceLanguage}
+              updateInvoiceLanguage={updateInvoiceLanguage}
+            />
           </TabsContent>
         </Tabs>
 

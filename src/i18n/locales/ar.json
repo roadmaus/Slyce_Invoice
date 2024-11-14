@@ -24,9 +24,10 @@
       "title": "بنود الفاتورة",
       "description": "الوصف",
       "quantity": "الكمية",
-      "rate": "السعر (€)",
+      "rate": "السعر ",
       "total": "المجموع",
-      "addItem": "إضافة بند"
+      "addItem": "إضافة بند",
+      "position": "رقم"
     },
     "totals": {
       "netAmount": "المبلغ الصافي",
@@ -42,6 +43,40 @@
       "generating": "جاري الإنشاء...",
       "preview": "معاينة",
       "save": "حفظ"
+    },
+    "greeting": {
+      "mr": {
+        "default": "السيد {last_name} المحترم",
+        "academic": "{title} {last_name} المحترم"
+      },
+      "mrs": {
+        "default": "السيدة {last_name} المحترمة",
+        "academic": "{title} {last_name} المحترمة"
+      },
+      "diverse": {
+        "default": "مرحباً {full_name}",
+        "academic": "مرحباً {title} {full_name}"
+      },
+      "neutral": {
+        "default": "مرحباً {full_name}",
+        "academic": "مرحباً {title} {full_name}"
+      },
+      "business": "السادة المحترمون"
+    },
+    "servicePeriod": {
+      "range": "عن فترة الخدمة من {startDate} إلى {endDate}، أود أن أقدم لكم الفاتورة التالية:",
+      "single": "عن الخدمات المقدمة بتاريخ {date}، أود أن أقدم لكم الفاتورة التالية:"
+    },
+    "payment": {
+      "instruction": "يرجى تحويل المبلغ {amount} خلال 7 أيام عمل إلى الحساب التالي:"
+    },
+    "banking": {
+      "name": "الاسم",
+      "institute": "البنك"
+    },
+    "closing": {
+      "thankYou": "شكراً لثقتكم. نتطلع إلى استمرار تعاوننا.",
+      "regards": "مع أطيب التحيات"
     }
   },
   "customers": {
@@ -55,7 +90,8 @@
       "titles": {
         "mr": "السيد",
         "mrs": "السيدة",
-        "diverse": "آخر"
+        "diverse": "آخر",
+        "neutral": "محايد"
       },
       "academicTitle": {
         "label": "اللقب الأكاديمي",
@@ -169,7 +205,7 @@
     "form": {
       "name": "الاسم",
       "description": "الوصف",
-      "rate": "السعر (€)",
+      "rate": "السعر ",
       "quantity": "الكمية",
       "color": "اللون",
       "visible": "ظاهر في الإدخال السريع",
@@ -222,7 +258,12 @@
     },
     "language": {
       "title": "اللغة",
-      "description": "اختر لغتك المفضلة"
+      "description": "اختر لغتك المفضلة",
+      "invoiceLanguage": "لغة الفاتورة",
+      "invoiceLanguageDescription": "اختر لغة الفواتير المنشأة. سيحاول 'تلقائي' استخدام اللغة الإقليمية للعميل.",
+      "invoiceLanguages": {
+        "auto": "تلقائي"
+      }
     },
     "pdf": {
       "title": "إعدادات PDF",
@@ -293,7 +334,9 @@
       "templateLoad": "تم تحميل القالب بنجاح",
       "templateDelete": "تم حذف القالب بنجاح",
       "templateRename": "تمت إعادة تسمية القالب بنجاح",
-      "previewToggle": "تم تحديث إعداد المعاينة بنجاح"
+      "previewToggle": "تم تحديث إعداد المعاينة بنجاح",
+      "invoiceLanguage": "تم تحديث لغة الفاتورة بنجاح",
+      "currency": "تم تحديث العملة بنجاح"
     },
     "templateEditor": "محرر القالب",
     "actions": {
@@ -318,6 +361,11 @@
     "renameTemplate": "إعادة تسمية القالب",
     "placeholders": {
       "templateName": "أدخل اسم القالب"
+    },
+    "currency": {
+      "title": "العملة",
+      "description": "اختر العملة للفواتير المنشأة.",
+      "currency": "العملة"
     }
   },
   "common": {
@@ -337,7 +385,8 @@
     "taxInfo": "المعلومات الضريبية",
     "bankDetails": "التفاصيل المصرفية",
     "rename": "إعادة تسمية",
-    "copy": "نسخ إلى الحافظة"
+    "copy": "نسخ إلى الحافظة",
+    "generating": "جاري الإنشاء..."
   },
   "dialogs": {
     "warning": {

@@ -24,9 +24,10 @@
       "title": "Fatura Kalemleri",
       "description": "Açıklama",
       "quantity": "Miktar",
-      "rate": "Fiyat (€)",
+      "rate": "Fiyat ",
       "total": "Toplam",
-      "addItem": "Kalem ekle"
+      "addItem": "Kalem ekle",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Net tutar",
@@ -42,6 +43,40 @@
       "generating": "Oluşturuluyor...",
       "preview": "Önizleme",
       "save": "Kaydet"
+    },
+    "greeting": {
+      "mr": {
+        "default": "Sayın {last_name}",
+        "academic": "Sayın {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Sayın {last_name}",
+        "academic": "Sayın {title} {last_name}"
+      },
+      "diverse": {
+        "default": "Merhaba {full_name}",
+        "academic": "Merhaba {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Sayın {full_name}",
+        "academic": "Sayın {title} {full_name}"
+      },
+      "business": "Sayın Yetkili"
+    },
+    "servicePeriod": {
+      "range": "{startDate} - {endDate} tarihleri arasındaki hizmet dönemi için aşağıdaki tutarı fatura ediyorum:",
+      "single": "{date} tarihindeki hizmetler için aşağıdaki tutarı fatura ediyorum:"
+    },
+    "payment": {
+      "instruction": "Lütfen {amount} tutarını 7 iş günü içinde aşağıdaki hesaba havale ediniz:"
+    },
+    "banking": {
+      "name": "İsim",
+      "institute": "Banka"
+    },
+    "closing": {
+      "thankYou": "Güveniniz için teşekkür ederim. Gelecekte tekrar birlikte çalışmayı dilerim.",
+      "regards": "Saygılarımla"
     }
   },
   "customers": {
@@ -55,7 +90,8 @@
       "titles": {
         "mr": "Bay",
         "mrs": "Bayan",
-        "diverse": "Diğer"
+        "diverse": "Diğer",
+        "neutral": "Nötr"
       },
       "academicTitle": {
         "label": "Akademik unvan",
@@ -169,7 +205,7 @@
     "form": {
       "name": "İsim",
       "description": "Açıklama",
-      "rate": "Fiyat (€)",
+      "rate": "Fiyat ",
       "quantity": "Miktar",
       "color": "Renk",
       "visible": "Hızlı girişte görünür",
@@ -222,7 +258,12 @@
     },
     "language": {
       "title": "Dil",
-      "description": "Tercih ettiğiniz dili seçin"
+      "description": "Tercih ettiğiniz dili seçin",
+      "invoiceLanguage": "Fatura dili",
+      "invoiceLanguageDescription": "Oluşturulan faturalar için dil seçin. 'Otomatik' müşterinin bölgesel dilini kullanmaya çalışacaktır.",
+      "invoiceLanguages": {
+        "auto": "Otomatik"
+      }
     },
     "pdf": {
       "title": "PDF Ayarları",
@@ -279,7 +320,9 @@
       "language": "Dil başarıyla güncellendi",
       "templateSave": "Şablon başarıyla kaydedildi",
       "templateReset": "Şablon başarıyla sıfırlandı",
-      "previewToggle": "Önizleme ayarı başarıyla güncellendi"
+      "previewToggle": "Önizleme ayarı başarıyla güncellendi",
+      "invoiceLanguage": "Fatura dili başarıyla güncellendi",
+      "currency": "Para birimi başarıyla güncellendi"
     },
     "templateEditor": "Şablon Düzenleyici",
     "actions": {
@@ -294,6 +337,11 @@
     "invoice": {
       "template": "Fatura şablonu",
       "templateDescription": "Fatura şablonunuzu markanıza uyacak şekilde özelleştirin"
+    },
+    "currency": {
+      "title": "Para birimi",
+      "description": "Oluşturulan faturalar için para birimi seçin.",
+      "currency": "Para birimi"
     }
   },
   "common": {
@@ -311,7 +359,8 @@
     "noResults": "Sonuç bulunamadı",
     "address": "Adres",
     "taxInfo": "Vergi bilgileri",
-    "bankDetails": "Banka bilgileri"
+    "bankDetails": "Banka bilgileri",
+    "generating": "Oluşturuluyor..."
   },
   "dialogs": {
     "warning": {

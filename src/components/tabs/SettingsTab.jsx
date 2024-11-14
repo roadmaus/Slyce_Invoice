@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import '@/i18n/config';
 import TemplateEditor from '../TemplateEditor';
+import { SUPPORTED_CURRENCIES, DEFAULT_CURRENCY } from '@/constants/currencies';
 
 const SettingsTab = () => {
   const { theme, setTheme } = useTheme();
@@ -28,6 +29,9 @@ const SettingsTab = () => {
   const [clickedLanguages, setClickedLanguages] = React.useState(new Set());
   const [showSwabian, setShowSwabian] = React.useState(false);
   const [showTemplateEditor, setShowTemplateEditor] = React.useState(false);
+  const [selectedCurrency, setSelectedCurrency] = React.useState(DEFAULT_CURRENCY);
+  const [useGermanInvoices, setUseGermanInvoices] = React.useState(true);
+  const [invoiceLanguage, setInvoiceLanguage] = React.useState('auto');
 
   // Load preview settings on mount
   React.useEffect(() => {
@@ -163,6 +167,68 @@ const SettingsTab = () => {
     window.electronAPI.showItemInFolder(templatePath);
   };
 
+  // Add to existing useEffect or create new one for loading settings
+  React.useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        // ... existing settings loading ...
+        const savedCurrency = await window.electronAPI.getData('currency');
+        if (savedCurrency) {
+          setSelectedCurrency(savedCurrency);
+        }
+      } catch (error) {
+        console.error('Error loading currency settings:', error);
+        toast.error(t('settings.errors.loadCurrency'));
+      }
+    };
+    loadSettings();
+  }, []);
+
+  // Add handler for currency updates
+  const updateCurrency = async (newCurrency) => {
+    try {
+      await window.electronAPI.setData('currency', newCurrency);
+      setSelectedCurrency(newCurrency);
+      window.dispatchEvent(new CustomEvent('currencyChanged', { 
+        detail: newCurrency 
+      }));
+      toast.success(t('settings.success.currency'));
+    } catch (error) {
+      console.error('Error updating currency:', error);
+      toast.error(t('settings.errors.updateCurrency'));
+    }
+  };
+
+  // Add after other useEffects
+  React.useEffect(() => {
+    const loadInvoiceLanguageSettings = async () => {
+      try {
+        const settings = await window.electronAPI.getData('invoiceLanguageSettings');
+        if (settings?.invoiceLanguage) {
+          setInvoiceLanguage(settings.invoiceLanguage);
+        }
+      } catch (error) {
+        console.error('Error loading invoice language settings:', error);
+      }
+    };
+    loadInvoiceLanguageSettings();
+  }, []);
+
+  // Add handler for toggle
+  const handleInvoiceLanguageChange = async (newLanguage) => {
+    try {
+      await window.electronAPI.setData('invoiceLanguageSettings', { invoiceLanguage: newLanguage });
+      setInvoiceLanguage(newLanguage);
+      window.dispatchEvent(new CustomEvent('invoiceLanguageChanged', { 
+        detail: { invoiceLanguage: newLanguage } 
+      }));
+      toast.success(t('settings.success.invoiceLanguage'));
+    } catch (error) {
+      console.error('Error updating invoice language:', error);
+      toast.error(t('settings.errors.updateInvoiceLanguage'));
+    }
+  };
+
   return (
     <div className="container max-w-4xl mx-auto">
       <Card className="border-none shadow-none">
@@ -215,6 +281,41 @@ const SettingsTab = () => {
                     <h3 className={`font-medium ${language === value ? 'text-primary' : ''}`}>
                       {label}
                     </h3>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Add Currency Section after Language Section */}
+            <section>
+              <div className="flex items-center gap-2 mb-6">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t('settings.currency.title')}
+                </h2>
+                <Info className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <p className="text-muted-foreground mb-6">
+                {t('settings.currency.description')}
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {SUPPORTED_CURRENCIES.map(({ code, symbol, name }) => (
+                  <button
+                    key={code}
+                    onClick={() => updateCurrency({ code, symbol, name })}
+                    className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
+                      ${selectedCurrency.code === code 
+                        ? 'border-primary bg-primary/5 shadow-sm' 
+                        : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
+                  >
+                    <span className="text-2xl mb-2">{symbol}</span>
+                    <h3 className={`font-medium ${selectedCurrency.code === code ? 'text-primary' : ''}`}>
+                      {name}
+                    </h3>
+                    <span className="text-xs text-muted-foreground mt-1">
+                      {code}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -480,6 +581,68 @@ const SettingsTab = () => {
                   </Card>
                 ))}
               </div>
+            </section>
+
+            <Separator />
+
+            {/* Language Toggle Section */}
+            <section>
+              <div className="flex items-center gap-2 mb-6">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t('settings.language.invoiceLanguage')}
+                </h2>
+                <Info className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <p className="text-muted-foreground mb-6">
+                {t('settings.language.invoiceLanguageDescription')}
+              </p>
+              <RadioGroup 
+                value={invoiceLanguage} 
+                onValueChange={handleInvoiceLanguageChange}
+                className="grid grid-cols-2 md:grid-cols-4 gap-4"
+              >
+                {[
+                  { value: 'auto', label: t('settings.language.invoiceLanguages.auto'), flag: '🌐' },
+                  { value: 'en', label: 'English', flag: '🇺🇸' },
+                  { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
+                  { value: 'es', label: 'Español', flag: '🇪🇸' },
+                  { value: 'ko', label: '한국어', flag: '🇰🇷' },
+                  { value: 'fr', label: 'Français', flag: '🇫🇷' },
+                  { value: 'zh', label: '中文', flag: '🇨🇳' },
+                  { value: 'ja', label: '日本語', flag: '🇯🇵' },
+                  { value: 'pt', label: 'Português', flag: '🇵🇹' },
+                  { value: 'ru', label: 'Русский', flag: '🇷🇺' },
+                  { value: 'hi', label: 'हिन्दी', flag: '🇮🇳' },
+                  { value: 'ar', label: 'العربية', flag: '🇸🇦' },
+                  { value: 'it', label: 'Italiano', flag: '🇮🇹' },
+                  { value: 'nl', label: 'Nederlands', flag: '🇳🇱' },
+                  { value: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+                  { value: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
+                  { value: 'th', label: 'ไทย', flag: '🇹🇭' },
+                  ...(showSwabian ? [{ 
+                    value: 'swg', 
+                    label: 'Schwäbisch', 
+                    flag: '🦁'
+                  }] : [])
+                ].map(({ value, label, flag }) => (
+                  <div key={value}>
+                    <RadioGroupItem
+                      value={value}
+                      id={`invoice-lang-${value}`}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={`invoice-lang-${value}`}
+                      className="flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200
+                        peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5
+                        hover:border-primary/50 hover:bg-accent cursor-pointer"
+                    >
+                      <span className="text-2xl mb-2">{flag}</span>
+                      <span className="font-medium">{label}</span>
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </section>
           </div>
         </CardContent>

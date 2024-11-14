@@ -187,7 +187,7 @@ const BusinessTab = ({
                 {/* Default Toggle */}
                 <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
                   <Switch
-                    checked={defaultProfileId === profile.company_name}
+                    checked={!defaultProfileId ? false : defaultProfileId === profile.company_name}
                     onCheckedChange={(checked) => {
                       const newDefaultId = checked ? profile.company_name : null;
                       setDefaultProfileId(newDefaultId);

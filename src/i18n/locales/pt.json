@@ -24,9 +24,10 @@
       "title": "Itens da Fatura",
       "description": "Descrição",
       "quantity": "Quantidade",
-      "rate": "Preço (€)",
+      "rate": "Preço ",
       "total": "Total",
-      "addItem": "Adicionar Item"
+      "addItem": "Adicionar Item",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Valor Líquido",
@@ -42,6 +43,40 @@
       "generating": "Gerando...",
       "preview": "Visualizar",
       "save": "Salvar"
+    },
+    "greeting": {
+      "mr": {
+        "default": "Prezado Sr. {last_name}",
+        "academic": "Prezado {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Prezada Sra. {last_name}",
+        "academic": "Prezada {title} {last_name}"
+      },
+      "diverse": {
+        "default": "Olá {full_name}",
+        "academic": "Olá {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Prezado(a) {full_name}",
+        "academic": "Prezado(a) {title} {full_name}"
+      },
+      "business": "Prezados Senhores"
+    },
+    "servicePeriod": {
+      "range": "Para o período de serviço de {startDate} a {endDate}, cobro o seguinte:",
+      "single": "Para os serviços em {date}, cobro o seguinte:"
+    },
+    "payment": {
+      "instruction": "Por favor, transfira o valor de {amount} dentro de 7 dias úteis para a seguinte conta:"
+    },
+    "banking": {
+      "name": "Nome",
+      "institute": "Banco"
+    },
+    "closing": {
+      "thankYou": "Obrigado pela sua confiança. Aguardo ansiosamente nossa próxima colaboração.",
+      "regards": "Atenciosamente"
     }
   },
   "customers": {
@@ -55,7 +90,8 @@
       "titles": {
         "mr": "Sr.",
         "mrs": "Sra.",
-        "diverse": "Outro"
+        "diverse": "Outro",
+        "neutral": "Neutro"
       },
       "academicTitle": {
         "label": "Título Acadêmico",
@@ -169,7 +205,7 @@
     "form": {
       "name": "Nome",
       "description": "Descrição",
-      "rate": "Preço (€)",
+      "rate": "Preço ",
       "quantity": "Quantidade",
       "color": "Cor",
       "visible": "Visível na Entrada Rápida",
@@ -222,7 +258,12 @@
     },
     "language": {
       "title": "Idioma",
-      "description": "Selecione seu idioma preferido"
+      "description": "Selecione seu idioma preferido",
+      "invoiceLanguage": "Idioma da fatura",
+      "invoiceLanguageDescription": "Escolha o idioma para faturas geradas. 'Automático' tentará usar o idioma regional do cliente.",
+      "invoiceLanguages": {
+        "auto": "Automático"
+      }
     },
     "pdf": {
       "title": "Configurações de PDF",
@@ -285,7 +326,9 @@
       "templateLoad": "Modelo carregado com sucesso",
       "templateDelete": "Modelo excluído com sucesso",
       "templateRename": "Modelo renomeado com sucesso",
-      "previewToggle": "Configuração de pré-visualização atualizada com sucesso"
+      "previewToggle": "Configuração de pré-visualização atualizada com sucesso",
+      "invoiceLanguage": "Idioma da fatura atualizado com sucesso",
+      "currency": "Moeda atualizada com sucesso"
     },
     "templateEditor": "Editor de modelo",
     "actions": {
@@ -310,6 +353,11 @@
     "renameTemplate": "Renomear modelo",
     "placeholders": {
       "templateName": "Digite o nome do modelo"
+    },
+    "currency": {
+      "title": "Moeda",
+      "description": "Escolha a moeda para faturas geradas.",
+      "currency": "Moeda"
     }
   },
   "common": {
@@ -329,7 +377,8 @@
     "taxInfo": "Informações Fiscais",
     "bankDetails": "Dados Bancários",
     "rename": "Renomear",
-    "copy": "Copiar para área de transferência"
+    "copy": "Copiar para área de transferência",
+    "generating": "Gerando..."
   },
   "dialogs": {
     "warning": {

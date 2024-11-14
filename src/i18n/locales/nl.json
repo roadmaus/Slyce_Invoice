@@ -24,9 +24,10 @@
       "title": "Factuurregels",
       "description": "Omschrijving",
       "quantity": "Aantal",
-      "rate": "Prijs (€)",
+      "rate": "Prijs ",
       "total": "Totaal",
-      "addItem": "Regel toevoegen"
+      "addItem": "Regel toevoegen",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Nettobedrag",
@@ -42,6 +43,40 @@
       "generating": "Wordt gemaakt...",
       "preview": "Voorbeeld",
       "save": "Opslaan"
+    },
+    "greeting": {
+      "mr": {
+        "default": "Geachte heer {last_name}",
+        "academic": "Geachte {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Geachte mevrouw {last_name}",
+        "academic": "Geachte {title} {last_name}"
+      },
+      "diverse": {
+        "default": "Beste {full_name}",
+        "academic": "Beste {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Geachte {full_name}",
+        "academic": "Geachte {title} {full_name}"
+      },
+      "business": "Geachte dames en heren"
+    },
+    "servicePeriod": {
+      "range": "Voor de dienstperiode van {startDate} tot {endDate} breng ik u het volgende in rekening:",
+      "single": "Voor de diensten op {date} breng ik u het volgende in rekening:"
+    },
+    "payment": {
+      "instruction": "Gelieve het bedrag van {amount} binnen 7 werkdagen over te maken naar het volgende rekeningnummer:"
+    },
+    "banking": {
+      "name": "Naam",
+      "institute": "Bank"
+    },
+    "closing": {
+      "thankYou": "Bedankt voor uw vertrouwen. Ik kijk uit naar onze verdere samenwerking.",
+      "regards": "Met vriendelijke groet"
     }
   },
   "customers": {
@@ -55,7 +90,8 @@
       "titles": {
         "mr": "Dhr.",
         "mrs": "Mevr.",
-        "diverse": "Anders"
+        "diverse": "Anders",
+        "neutral": "Neutraal"
       },
       "academicTitle": {
         "label": "Academische titel",
@@ -169,7 +205,7 @@
     "form": {
       "name": "Naam",
       "description": "Omschrijving",
-      "rate": "Prijs (€)",
+      "rate": "Prijs ",
       "quantity": "Aantal",
       "color": "Kleur",
       "visible": "Zichtbaar in snelle invoer",
@@ -222,7 +258,12 @@
     },
     "language": {
       "title": "Taal",
-      "description": "Selecteer uw voorkeurstaal"
+      "description": "Selecteer uw voorkeurstaal",
+      "invoiceLanguage": "Factuur taal",
+      "invoiceLanguageDescription": "Kies de taal voor gegenereerde facturen. 'Automatisch' zal proberen de regionale taal van de klant te gebruiken.",
+      "invoiceLanguages": {
+        "auto": "Automatisch"
+      }
     },
     "pdf": {
       "title": "PDF-instellingen",
@@ -279,7 +320,9 @@
       "language": "Taal succesvol bijgewerkt",
       "templateSave": "Sjabloon succesvol opgeslagen",
       "templateReset": "Sjabloon succesvol hersteld",
-      "previewToggle": "Voorbeeldweergave-instelling succesvol bijgewerkt"
+      "previewToggle": "Voorbeeldweergave-instelling succesvol bijgewerkt",
+      "invoiceLanguage": "Factuur taal succesvol bijgewerkt",
+      "currency": "Valuta succesvol bijgewerkt"
     },
     "templateEditor": "Sjablooneditor",
     "actions": {
@@ -294,6 +337,11 @@
     "invoice": {
       "template": "Factuursjabloon",
       "templateDescription": "Pas uw factuursjabloon aan uw merk aan"
+    },
+    "currency": {
+      "title": "Valuta",
+      "description": "Kies de valuta voor gegenereerde facturen.",
+      "currency": "Valuta"
     }
   },
   "common": {
@@ -311,7 +359,8 @@
     "noResults": "Geen resultaten",
     "address": "Adres",
     "taxInfo": "Belastinggegevens",
-    "bankDetails": "Bankgegevens"
+    "bankDetails": "Bankgegevens",
+    "generating": "Genereren..."
   },
   "dialogs": {
     "warning": {

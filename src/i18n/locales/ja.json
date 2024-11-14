@@ -24,9 +24,10 @@
       "title": "請求項目",
       "description": "説明",
       "quantity": "数量",
-      "rate": "価格 (€)",
+      "rate": "価格 ",
       "total": "合計",
-      "addItem": "項目を追加"
+      "addItem": "項目を追加",
+      "position": "番号"
     },
     "totals": {
       "netAmount": "税抜金額",
@@ -42,6 +43,40 @@
       "generating": "作成中...",
       "preview": "プレビュー",
       "save": "保存"
+    },
+    "greeting": {
+      "mr": {
+        "default": "{last_name}様",
+        "academic": "{title} {last_name}様"
+      },
+      "mrs": {
+        "default": "{last_name}様",
+        "academic": "{title} {last_name}様"
+      },
+      "diverse": {
+        "default": "{full_name}様",
+        "academic": "{title} {full_name}様"
+      },
+      "neutral": {
+        "default": "{full_name}様",
+        "academic": "{title} {full_name}様"
+      },
+      "business": "御社御中"
+    },
+    "servicePeriod": {
+      "range": "{startDate}から{endDate}までのサービス期間について、下記の料金を請求させていただきます：",
+      "single": "{date}のサービスについて、下記の料金を請求させていただきます："
+    },
+    "payment": {
+      "instruction": "請求額{amount}を7営業日以内に下記の口座にお振込みください："
+    },
+    "banking": {
+      "name": "名義",
+      "institute": "金融機関"
+    },
+    "closing": {
+      "thankYou": "いつもお引き立ていただき、ありがとうございます。今後ともよろしくお願いいたします。",
+      "regards": "敬具"
     }
   },
   "customers": {
@@ -55,7 +90,8 @@
       "titles": {
         "mr": "様（男性）",
         "mrs": "様（女性）",
-        "diverse": "様（その他）"
+        "diverse": "様（その他）",
+        "neutral": "中性"
       },
       "academicTitle": {
         "label": "学位",
@@ -137,7 +173,7 @@
     "vatEnabled": "消費税有効 ({{rate}}%)",
     "vatDisabled": "消費税無効",
     "emptyState": {
-      "title": "ビジネスプロファイルがありません",
+      "title": "ビジネスプ��ファイルがありません",
       "description": "最初のビジネスプロファイルを追加して請求書の作成を始めましょう。",
       "addFirst": "最初のビジネスプロファイルを追加"
     }
@@ -169,7 +205,7 @@
     "form": {
       "name": "名前",
       "description": "説明",
-      "rate": "価格 (€)",
+      "rate": "価格 ",
       "quantity": "数量",
       "color": "色",
       "visible": "クイック入力で表示",
@@ -222,7 +258,12 @@
     },
     "language": {
       "title": "言語",
-      "description": "優先言語を選択してください"
+      "description": "優先言語を選択してください",
+      "invoiceLanguage": "請求書の言語",
+      "invoiceLanguageDescription": "生成された請求書の言語を選択してください。'自動'は顧客の地域言語を使用しようとします。",
+      "invoiceLanguages": {
+        "auto": "自動"
+      }
     },
     "pdf": {
       "title": "PDF設定",
@@ -241,7 +282,7 @@
     },
     "dataManagement": {
       "title": "データ管理",
-      "description": "データのエクスポートまたはインポート",
+      "description": "データの���クスポートまたはインポート",
       "export": {
         "title": "データをエクスポート",
         "description": "データをファイルにバックアップ",
@@ -291,9 +332,11 @@
       "templateSave": "テンプレートを保存しました",
       "templateReset": "テンプレートをリセットしました",
       "templateLoad": "テンプレートを正常に読み込みました",
-      "templateDelete": "テンプレートを正常に削除しました",
+      "templateDelete": "���ンプレートを正常���削除しました",
       "templateRename": "テンプレートの名前を正常に変更しました",
-      "previewToggle": "プレビュー設定が正常に更新されました"
+      "previewToggle": "プレビュー設定が正常に更新されました",
+      "invoiceLanguage": "請求書の言語が正常に更新されました",
+      "currency": "通貨が正常に更新されました"
     },
     "templateEditor": "テンプレートエディタ",
     "actions": {
@@ -318,6 +361,11 @@
     "renameTemplate": "テンプレートの名前を変更",
     "placeholders": {
       "templateName": "テンプレート名を入力"
+    },
+    "currency": {
+      "title": "通貨",
+      "description": "生成された請求書の通貨を選択してください。",
+      "currency": "通貨"
     }
   },
   "common": {
@@ -337,7 +385,8 @@
     "taxInfo": "税務情報",
     "bankDetails": "銀行口座情報",
     "rename": "名前を変更",
-    "copy": "クリップボードにコピー"
+    "copy": "クリップボードにコピー",
+    "generating": "生成中..."
   },
   "dialogs": {
     "warning": {

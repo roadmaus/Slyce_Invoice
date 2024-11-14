@@ -23,8 +23,9 @@
     "items": {
       "title": "Rechnungspositionen",
       "description": "Beschreibung",
+      "position": "Pos.",
       "quantity": "Menge",
-      "rate": "Preis (€)",
+      "rate": "Preis",
       "total": "Gesamt",
       "addItem": "Position hinzufügen"
     },
@@ -42,6 +43,40 @@
       "generating": "Wird erstellt...",
       "preview": "Vorschau",
       "save": "Speichern"
+    },
+    "greeting": {
+      "mr": {
+        "default": "Sehr geehrter Herr {last_name}",
+        "academic": "Sehr geehrter Herr {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Sehr geehrte Frau {last_name}",
+        "academic": "Sehr geehrte Frau {title} {last_name}"
+      },
+      "diverse": {
+        "default": "Hallo {full_name}",
+        "academic": "Hallo {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Guten Tag {full_name}",
+        "academic": "Guten Tag {title} {full_name}"
+      },
+      "business": "Sehr geehrte Damen und Herren"
+    },
+    "servicePeriod": {
+      "range": "Für den Leistungszeitraum vom {startDate} bis {endDate} stelle ich Ihnen folgendes in Rechnung:",
+      "single": "Für die Leistungen am {date} stelle ich Ihnen folgendes in Rechnung:"
+    },
+    "payment": {
+      "instruction": "Bitte überweisen Sie den Betrag von {amount} innerhalb der nächsten 7 Werktage auf folgendes Konto:"
+    },
+    "banking": {
+      "name": "Name",
+      "institute": "Institut"
+    },
+    "closing": {
+      "thankYou": "Ich bedanke mich für den Auftrag und freue mich auf weitere Zusammenarbeit.",
+      "regards": "Mit freundlichen Grüßen"
     }
   },
   "customers": {
@@ -56,11 +91,13 @@
       "titles": {
         "mr": "Herr",
         "mrs": "Frau",
-        "diverse": "Divers"
+        "diverse": "Divers",
+        "neutral": "Neutral"
       },
       "academicTitle": {
         "label": "Akademischer Titel",
         "options": {
+          "none": "Kein Titel",
           "dr": "Dr.",
           "prof": "Prof.",
           "profDr": "Prof. Dr.",
@@ -169,7 +206,7 @@
       "name": "Name",
       "description": "Beschreibung",
       "noDescription": "Keine Beschreibung verfügbar",
-      "rate": "Preis (€)",
+      "rate": "Preis ",
       "quantity": "Menge",
       "color": "Farbe",
       "visible": "In Schnelleingabe sichtbar",
@@ -221,7 +258,12 @@
     },
     "language": {
       "title": "Sprache",
-      "description": "Wählen Sie Ihre bevorzugte Sprache"
+      "description": "Wählen Sie Ihre bevorzugte Sprache",
+      "invoiceLanguage": "Rechnungssprache",
+      "invoiceLanguageDescription": "Wählen Sie die Sprache für generierte Rechnungen. 'Automatisch' versucht, die regionale Sprache des Kunden zu verwenden.",
+      "invoiceLanguages": {
+        "auto": "Automatisch"
+      }
     },
     "pdf": {
       "title": "PDF-Einstellungen",
@@ -292,7 +334,9 @@
       "templateLoad": "Vorlage erfolgreich geladen",
       "templateDelete": "Vorlage erfolgreich gelöscht",
       "templateRename": "Vorlage erfolgreich umbenannt",
-      "previewToggle": "Vorschau-Einstellung erfolgreich aktualisiert"
+      "previewToggle": "Vorschau-Einstellung erfolgreich aktualisiert",
+      "invoiceLanguage": "Rechnungssprache erfolgreich aktualisiert",
+      "currency": "Währung erfolgreich aktualisiert"
     },
     "templateEditor": "Vorlageneditor",
     "actions": {
@@ -310,13 +354,18 @@
     },
     "invoice": {
       "template": "Rechnungsvorlage",
-      "templateDescription": "Passen Sie Ihre Rechnungsvorlage an Ihre Marke an"
+      "templateDescription": "Passen Sie Ihre Rechnungsvorlage an Ihre Brand an"
     },
     "gallery": "Galerie",
     "recentTemplates": "Kürzlich verwendete Vorlagen",
     "renameTemplate": "Vorlage umbenennen",
     "placeholders": {
       "templateName": "Vorlagennamen eingeben"
+    },
+    "currency": {
+      "title": "Währung",
+      "description": "Wählen Sie die Währung für generierte Rechnungen.",
+      "currency": "Währung"
     }
   },
   "common": {
@@ -325,6 +374,7 @@
     "required": "Pflichtfeld",
     "error": "Fehler",
     "success": "Erfolgreich",
+    "generating": "Wird generiert...",
     "save": "Speichern",
     "cancel": "Abbrechen",
     "delete": "Löschen",

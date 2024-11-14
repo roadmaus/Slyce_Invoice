@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { PlusCircle, Edit, Trash2, Building2, MapPin, User2, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES, TITLE_KEYS, ACADEMIC_TITLE_KEYS } from '@/constants/titleMappings';
+import { ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
 
 const CustomersTab = ({
   customers,
@@ -18,7 +20,45 @@ const CustomersTab = ({
   handleCustomerDialog,
   addCustomer
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // Add helper function for academic title translation
+  const getTranslatedAcademicTitle = (storedTitle) => {
+    const academicKey = Object.entries(ACADEMIC_STORAGE_VALUES)
+      .find(([_, value]) => value === storedTitle)?.[0];
+    if (academicKey) {
+      const translations = ACADEMIC_TRANSLATIONS[i18n.language] || ACADEMIC_TRANSLATIONS['en'];
+      return translations[academicKey];
+    }
+    return storedTitle;
+  };
+
+  // Helper function to get display name
+  const getCustomerDisplayName = (customer) => {
+    const parts = [];
+    if (customer.title && 
+        customer.title !== TITLE_STORAGE_VALUES.neutral && 
+        customer.title !== TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
+      // Translate the stored title
+      const titleKey = Object.entries(TITLE_STORAGE_VALUES)
+        .find(([_, value]) => value === customer.title)?.[0]?.toLowerCase();
+      if (titleKey) {
+        parts.push(t(`customers.form.titles.${titleKey}`));
+      }
+    }
+    
+    if (customer.zusatz && customer.zusatz !== ACADEMIC_STORAGE_VALUES.none) {
+      const academicKey = Object.entries(ACADEMIC_STORAGE_VALUES)
+        .find(([_, value]) => value === customer.zusatz)?.[0];
+      if (academicKey) {
+        const translations = ACADEMIC_TRANSLATIONS[i18n.language] || ACADEMIC_TRANSLATIONS['en'];
+        parts.push(translations[academicKey]);
+      }
+    }
+    
+    parts.push(customer.name);
+    return parts.join(' ');
+  };
 
   return (
     <Card className="border-border">
@@ -147,11 +187,7 @@ const CustomersTab = ({
                       <User2 className="h-4 w-4 text-muted-foreground" />
                     )}
                     <h3 className="font-semibold text-lg text-foreground/90 truncate">
-                      {customer.title === 'Divers' ? (
-                        `${customer.zusatz} ${customer.name}`
-                      ) : (
-                        `${customer.title} ${customer.zusatz} ${customer.name}`
-                      )}
+                      {getCustomerDisplayName(customer)}
                     </h3>
                   </div>
                 </div>
@@ -175,8 +211,13 @@ const CustomersTab = ({
                   <div className="flex items-center justify-center p-1.5 rounded-md
                     bg-background/40 dark:bg-background/20 backdrop-blur-sm">
                     <span className="text-xs text-muted-foreground">
-                      {customer.zusatz && `${customer.zusatz}`}
-                      {customer.firma && (customer.zusatz ? ` • ${t('customers.businessCustomer')}` : t('customers.businessCustomer'))}
+                      {customer.zusatz !== ACADEMIC_STORAGE_VALUES.none && 
+                        getTranslatedAcademicTitle(customer.zusatz)}
+                      {customer.firma && (
+                        customer.zusatz !== ACADEMIC_STORAGE_VALUES.none 
+                          ? ` • ${t('customers.businessCustomer')}` 
+                          : t('customers.businessCustomer')
+                      )}
                     </span>
                   </div>
                 </div>

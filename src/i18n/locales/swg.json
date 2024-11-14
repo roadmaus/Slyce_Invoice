@@ -24,9 +24,10 @@
       "title": "Rächnungsposchda",
       "description": "Beschreibung",
       "quantity": "Menge",
-      "rate": "Preis (€)",
+      "rate": "Preis ",
       "total": "Gsamt",
-      "addItem": "Poschda neidoa"
+      "addItem": "Poschda neidoa",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Nettobetrag",
@@ -42,6 +43,40 @@
       "generating": "Wird grad gmacht...",
       "preview": "Vorschau",
       "save": "Schbeicha"
+    },
+    "greeting": {
+      "mr": {
+        "default": "Lieber Herr {last_name}",
+        "academic": "Lieber {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Liebe Frau {last_name}",
+        "academic": "Liebe {title} {last_name}"
+      },
+      "diverse": {
+        "default": "Hallo {full_name}",
+        "academic": "Hallo {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Grüß Gott {full_name}",
+        "academic": "Grüß Gott {title} {full_name}"
+      },
+      "business": "Grüß Gott miteinander"
+    },
+    "servicePeriod": {
+      "range": "Für d'Arbat vom {startDate} bis {endDate} kriagscht jetzt des do:",
+      "single": "Für d'Arbat am {date} kriagscht jetzt des do:"
+    },
+    "payment": {
+      "instruction": "Bitte überweis mr den Betrag von {amount} innerhalb von 7 Werkdäg auf des Konto:"
+    },
+    "banking": {
+      "name": "Name",
+      "institute": "Bank"
+    },
+    "closing": {
+      "thankYou": "Vielen Dank für dei Vertraua. I freu mi auf d'weitere Zammarbeit.",
+      "regards": "Ade und bleib gsund"
     }
   },
   "customers": {
@@ -55,7 +90,8 @@
       "titles": {
         "mr": "Herr",
         "mrs": "Frau",
-        "diverse": "Anders"
+        "diverse": "Anders",
+        "neutral": "Neutral"
       },
       "academicTitle": {
         "label": "Akademischer Titel",
@@ -169,7 +205,7 @@
     "form": {
       "name": "Nam",
       "description": "Beschreibung",
-      "rate": "Preis (€)",
+      "rate": "Preis ",
       "quantity": "Menge",
       "color": "Farb",
       "visible": "In Schnelleignab sichtbar",
@@ -222,7 +258,12 @@
     },
     "language": {
       "title": "Schproch",
-      "description": "Wähled Se Ihre Schproch aus"
+      "description": "Wähled Se Ihre Schproch aus",
+      "invoiceLanguage": "Rechnongssprooch",
+      "invoiceLanguageDescription": "Wähl d'Sproch für d'Rechnonga. 'Automatisch' versuacht, d'regional Sproch vom Kund z'nutza.",
+      "invoiceLanguages": {
+        "auto": "Automatisch"
+      }
     },
     "pdf": {
       "title": "PDF-Eistellunga",
@@ -279,7 +320,9 @@
       "language": "Schproch erfolgreich aktualisiert",
       "templateSave": "Vorlag erfolgreich gspeichert",
       "templateReset": "Vorlag erfolgreich zruckgsetzt",
-      "previewToggle": "Vorschau-Eistellong erfolgreich aktualisiert"
+      "previewToggle": "Vorschau-Eistellong erfolgreich aktualisiert",
+      "invoiceLanguage": "Rechnongssprooch erfolgreich aktualisiert",
+      "currency": "Währung erfolgreich aktualisiert"
     },
     "templateEditor": "Vorlaga-Editor",
     "actions": {
@@ -294,6 +337,11 @@
     "invoice": {
       "template": "Rechnungsvorlag",
       "templateDescription": "Bass deine Rechnungsvorlag an dei Marke a"
+    },
+    "currency": {
+      "title": "Währung",
+      "description": "Wähl d'Währung für d'Rechnonga.",
+      "currency": "Währung"
     }
   },
   "common": {
@@ -311,7 +359,8 @@
     "noResults": "Koi Ergebnis",
     "address": "Adress",
     "taxInfo": "Steuerinfo",
-    "bankDetails": "Bankverbindung"
+    "bankDetails": "Bankverbindung",
+    "generating": "Wird generiert..."
   },
   "dialogs": {
     "warning": {

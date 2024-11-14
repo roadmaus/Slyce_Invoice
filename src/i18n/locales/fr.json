@@ -24,9 +24,10 @@
       "title": "Articles de la facture",
       "description": "Description",
       "quantity": "Quantité",
-      "rate": "Prix (€)",
+      "rate": "Prix ",
       "total": "Total",
-      "addItem": "Ajouter un article"
+      "addItem": "Ajouter un article",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Montant net",
@@ -42,6 +43,40 @@
       "generating": "Création en cours...",
       "preview": "Aperçu",
       "save": "Enregistrer"
+    },
+    "greeting": {
+      "mr": {
+        "default": "Cher Monsieur {last_name}",
+        "academic": "Cher {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Chère Madame {last_name}",
+        "academic": "Chère {title} {last_name}"
+      },
+      "diverse": {
+        "default": "Bonjour {full_name}",
+        "academic": "Bonjour {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Cher/Chère {full_name}",
+        "academic": "Cher/Chère {title} {full_name}"
+      },
+      "business": "Madame, Monsieur"
+    },
+    "servicePeriod": {
+      "range": "Pour la période de service du {startDate} au {endDate}, je vous facture ce qui suit :",
+      "single": "Pour les services du {date}, je vous facture ce qui suit :"
+    },
+    "payment": {
+      "instruction": "Veuillez transférer le montant de {amount} dans les 7 jours ouvrables sur le compte suivant :"
+    },
+    "banking": {
+      "name": "Nom",
+      "institute": "Établissement"
+    },
+    "closing": {
+      "thankYou": "Je vous remercie de votre confiance et me réjouis de notre future collaboration.",
+      "regards": "Cordialement"
     }
   },
   "customers": {
@@ -55,7 +90,8 @@
       "titles": {
         "mr": "Monsieur",
         "mrs": "Madame",
-        "diverse": "Autre"
+        "diverse": "Autre",
+        "neutral": "Neutre"
       },
       "academicTitle": {
         "label": "Titre académique",
@@ -169,7 +205,7 @@
     "form": {
       "name": "Nom",
       "description": "Description",
-      "rate": "Prix (€)",
+      "rate": "Prix ",
       "quantity": "Quantité",
       "color": "Couleur",
       "visible": "Visible en saisie rapide",
@@ -222,7 +258,12 @@
     },
     "language": {
       "title": "Langue",
-      "description": "Sélectionnez votre langue préférée"
+      "description": "Sélectionnez votre langue préférée",
+      "invoiceLanguage": "Langue de la facture",
+      "invoiceLanguageDescription": "Choisissez la langue pour les factures générées. 'Automatique' tentera d'utiliser la langue régionale du client.",
+      "invoiceLanguages": {
+        "auto": "Automatique"
+      }
     },
     "pdf": {
       "title": "Paramètres PDF",
@@ -293,7 +334,9 @@
       "templateLoad": "Modèle chargé avec succès",
       "templateDelete": "Modèle supprimé avec succès",
       "templateRename": "Modèle renommé avec succès",
-      "previewToggle": "Paramètre d'aperçu mis à jour avec succès"
+      "previewToggle": "Paramètre d'aperçu mis à jour avec succès",
+      "invoiceLanguage": "Langue de la facture mise à jour avec succès",
+      "currency": "Devise mise à jour avec succès"
     },
     "templateEditor": "Éditeur de modèle",
     "actions": {
@@ -318,6 +361,11 @@
     "renameTemplate": "Renommer le modèle",
     "placeholders": {
       "templateName": "Entrer le nom du modèle"
+    },
+    "currency": {
+      "title": "Devise",
+      "description": "Choisissez la devise pour les factures générées.",
+      "currency": "Devise"
     }
   },
   "common": {
@@ -337,7 +385,8 @@
     "taxInfo": "Informations fiscales",
     "bankDetails": "Coordonnées bancaires",
     "rename": "Renommer",
-    "copy": "Copier dans le presse-papiers"
+    "copy": "Copier dans le presse-papiers",
+    "generating": "Génération en cours..."
   },
   "dialogs": {
     "warning": {

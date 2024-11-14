@@ -24,9 +24,10 @@
       "title": "청구 항목",
       "description": "설명",
       "quantity": "수량",
-      "rate": "가격 (€)",
+      "rate": "가격 ",
       "total": "합계",
-      "addItem": "항목 추가"
+      "addItem": "항목 추가",
+      "position": "번호"
     },
     "totals": {
       "netAmount": "순액",
@@ -42,6 +43,40 @@
       "generating": "생성 중...",
       "preview": "미리보기",
       "save": "저장"
+    },
+    "greeting": {
+      "mr": {
+        "default": "{last_name}님께",
+        "academic": "{title} {last_name}님께"
+      },
+      "mrs": {
+        "default": "{last_name}님께",
+        "academic": "{title} {last_name}님께"
+      },
+      "diverse": {
+        "default": "{full_name}님께",
+        "academic": "{title} {full_name}님께"
+      },
+      "neutral": {
+        "default": "{full_name}님께",
+        "academic": "{title} {full_name}님께"
+      },
+      "business": "귀사 귀중"
+    },
+    "servicePeriod": {
+      "range": "{startDate}부터 {endDate}까지의 서비스 기간에 대한 청구 내역입니다:",
+      "single": "{date}의 서비스에 대한 청구 내역입니다:"
+    },
+    "payment": {
+      "instruction": "청구 금액 {amount}을(를) 7영업일 이내에 아래 계좌로 입금해 주시기 바랍니다:"
+    },
+    "banking": {
+      "name": "예금주",
+      "institute": "은행"
+    },
+    "closing": {
+      "thankYou": "거래해 주셔서 감사합니다. 앞으로도 좋은 협력 관계를 유지하기를 바랍니다.",
+      "regards": "감사합니다"
     }
   },
   "customers": {
@@ -55,7 +90,8 @@
       "titles": {
         "mr": "남성",
         "mrs": "여성",
-        "diverse": "기타"
+        "diverse": "기타",
+        "neutral": "중립"
       },
       "academicTitle": {
         "label": "학위",
@@ -169,7 +205,7 @@
     "form": {
       "name": "이름",
       "description": "설명",
-      "rate": "가격 (€)",
+      "rate": "가격 ",
       "quantity": "수량",
       "color": "색상",
       "visible": "빠른 입력에서 표시",
@@ -222,7 +258,12 @@
     },
     "language": {
       "title": "언어",
-      "description": "선호하는 언어를 선택하세요"
+      "description": "선호하는 언어를 선택하세요",
+      "invoiceLanguage": "청구서 언어",
+      "invoiceLanguageDescription": "생성된 청구서의 언어를 선택하세요. '자동'은 고객의 지역 언어를 사용하려고 시도합니다.",
+      "invoiceLanguages": {
+        "auto": "자동"
+      }
     },
     "pdf": {
       "title": "PDF 설정",
@@ -285,7 +326,9 @@
       "templateLoad": "템플릿을 성공적으로 불러왔습니다",
       "templateDelete": "템플릿을 성공적으로 삭제했습니다",
       "templateRename": "템플릿 이름을 성공적으로 변경했습니다",
-      "previewToggle": "미리보기 설정이 성공적으로 업데이트되었습니다"
+      "previewToggle": "미리보기 설정이 성공적으로 업데이트되었습니다",
+      "invoiceLanguage": "청구서 언어가 성공적으로 업데이트되었습니다",
+      "currency": "통화가 성공적으로 업데이트되었습니다"
     },
     "templateEditor": "템플릿 편집기",
     "actions": {
@@ -310,6 +353,11 @@
     "renameTemplate": "템플릿 이름 변경",
     "placeholders": {
       "templateName": "템플릿 이름 입력"
+    },
+    "currency": {
+      "title": "통화",
+      "description": "생성된 청구서의 통화를 선택하세요.",
+      "currency": "통화"
     }
   },
   "common": {
@@ -329,7 +377,8 @@
     "taxInfo": "세금 정보",
     "bankDetails": "은행 정보",
     "rename": "이름 변경",
-    "copy": "클립보드에 복사"
+    "copy": "클립보드에 복사",
+    "generating": "생성 중..."
   },
   "dialogs": {
     "warning": {

@@ -8,6 +8,8 @@ import { Switch } from '@/components/ui/switch';
 import { PlusCircle, Trash2, Search, X, Save, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import InvoiceTotals from '../InvoiceTotals';
+import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
+import { TITLE_KEYS, ACADEMIC_TITLE_KEYS, TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES } from '@/constants/titleMappings';
 
 const InvoiceTab = ({
   customers,
@@ -36,9 +38,36 @@ const InvoiceTab = ({
   generateInvoice,
   isLoading,
   profileInvoiceNumbers,
-  setProfileInvoiceNumbers
+  setProfileInvoiceNumbers,
+  selectedCurrency,
+  formatCurrency,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // Helper function to get translated title
+  const getTranslatedTitle = (storedTitle) => {
+    // Skip diverse titles
+    if (storedTitle === TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
+      return '';
+    }
+
+    // Find the key for the stored German value
+    const titleKey = Object.entries(TITLE_STORAGE_VALUES)
+      .find(([_, value]) => value === storedTitle)?.[0];
+
+    // Get translation for current language, fallback to English
+    const translations = TITLE_TRANSLATIONS[i18n.language] || TITLE_TRANSLATIONS['en'];
+    return titleKey ? translations[titleKey] : storedTitle;
+  };
+
+  // Helper function to get translated academic title
+  const getTranslatedAcademicTitle = (storedTitle) => {
+    const titleKey = Object.entries(ACADEMIC_STORAGE_VALUES)
+      .find(([_, value]) => value === storedTitle)?.[0];
+
+    const translations = ACADEMIC_TRANSLATIONS[i18n.language] || ACADEMIC_TRANSLATIONS['en'];
+    return titleKey ? translations[titleKey] : storedTitle;
+  };
 
   return (
     <Card className="border-border">
@@ -66,11 +95,17 @@ const InvoiceTab = ({
                     value={customer.name}
                     className="select-item"
                   >
-                    {customer.title === 'Divers' ? (
-                      `${customer.zusatz} ${customer.name}`
-                    ) : (
-                      `${customer.title} ${customer.zusatz} ${customer.name}`
-                    )}
+                    {(() => {
+                      const parts = [];
+                      if (customer.title && customer.title !== 'neutral') {
+                        parts.push(getTranslatedTitle(customer.title));
+                      }
+                      if (customer.zusatz && customer.zusatz !== 'none') {
+                        parts.push(getTranslatedAcademicTitle(customer.zusatz));
+                      }
+                      parts.push(customer.name);
+                      return parts.join(' ');
+                    })()}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -162,8 +197,17 @@ const InvoiceTab = ({
                     endDate: ''
                   })}
                   disabled={invoiceItems.length > 0}
+                  className="
+                    data-[state=checked]:!bg-[hsl(var(--chart-2))] 
+                    data-[state=unchecked]:!bg-[hsl(var(--muted-foreground))] 
+                    data-[state=unchecked]:!opacity-50
+                    data-[state=unchecked]:hover:!opacity-70
+                    transition-colors
+                  "
                 />
-                <Label>{invoiceDates.hasDateRange ? t('invoice.details.date.servicePeriod') : t('invoice.details.date.serviceDate')}</Label>
+                <Label className="text-sm text-muted-foreground">
+                  {invoiceDates.hasDateRange ? t('invoice.details.date.servicePeriod') : t('invoice.details.date.serviceDate')}
+                </Label>
               </div>
               
               <div className="grid grid-cols-2 gap-2">
@@ -262,14 +306,14 @@ const InvoiceTab = ({
                         className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm 
                           bg-background/50 hover:bg-background border border-border/50 hover:border-border
                           transition-colors duration-200 group relative"
-                        title={`${tag.description}\n€${parseFloat(tag.rate).toFixed(2)} × ${tag.quantity}`}
+                        title={`${tag.description}\n${selectedCurrency.symbol}${parseFloat(tag.rate).toFixed(2)} × ${tag.quantity}`}
                       >
                         <div className="w-2 h-2 rounded-full" 
                           style={{ backgroundColor: adjustColorForDarkMode(tag.color || '#e2e8f0', isDarkMode) }} 
                         />
                         <span className="text-foreground/90">{tag.name}</span>
                         <span className="text-xs text-muted-foreground">
-                          €{parseFloat(tag.rate).toFixed(2)}
+                          {selectedCurrency.symbol}{parseFloat(tag.rate).toFixed(2)}
                         </span>
                       </button>
                     );
@@ -326,12 +370,12 @@ const InvoiceTab = ({
                       onChange={(e) => updateInvoiceItem(index, 'rate', parseFloat(e.target.value))}
                       min="0"
                       step="0.01"
-                      placeholder="Rate in €"
+                      placeholder={`Rate in ${selectedCurrency.symbol}`}
                     />
                   </div>
                   <div className="col-span-1">
                     <Input
-                      value={`€${(item.quantity * item.rate).toFixed(2)}`}
+                      value={formatCurrency(item.quantity * item.rate)}
                       readOnly
                       className="bg-background border-border"
                     />
@@ -364,7 +408,9 @@ const InvoiceTab = ({
         {invoiceItems.length > 0 && (
           <InvoiceTotals 
             items={invoiceItems} 
-            profile={selectedProfile} 
+            profile={selectedProfile}
+            selectedCurrency={selectedCurrency}
+            formatCurrency={formatCurrency}
           />
         )}
 

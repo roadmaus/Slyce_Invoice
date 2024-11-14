@@ -24,9 +24,10 @@
       "title": "Invoice Items",
       "description": "Description",
       "quantity": "Quantity",
-      "rate": "Price (€)",
+      "rate": "Price ",
       "total": "Total",
-      "addItem": "Add Item"
+      "addItem": "Add Item",
+      "position": "Pos."
     },
     "totals": {
       "netAmount": "Net Amount",
@@ -42,6 +43,40 @@
       "generating": "Generating...",
       "preview": "Preview",
       "save": "Save"
+    },
+    "greeting": {
+      "mr": {
+        "default": "Dear Mr. {last_name}",
+        "academic": "Dear {title} {last_name}"
+      },
+      "mrs": {
+        "default": "Dear Mrs. {last_name}",
+        "academic": "Dear {title} {last_name}"
+      },
+      "diverse": {
+        "default": "Hello {full_name}",
+        "academic": "Hello {title} {full_name}"
+      },
+      "neutral": {
+        "default": "Dear {full_name}",
+        "academic": "Dear {title} {full_name}"
+      },
+      "business": "Dear Sir or Madam"
+    },
+    "servicePeriod": {
+      "range": "For the service period from {startDate} to {endDate}, I am charging you the following:",
+      "single": "For the services on {date}, I am charging you the following:"
+    },
+    "payment": {
+      "instruction": "Please transfer the amount of {amount} within the next 7 business days to the following account:"
+    },
+    "banking": {
+      "name": "Name",
+      "institute": "Institute"
+    },
+    "closing": {
+      "thankYou": "Thank you for your business. I look forward to working with you again.",
+      "regards": "Kind regards"
     }
   },
   "customers": {
@@ -55,11 +90,13 @@
       "titles": {
         "mr": "Mr",
         "mrs": "Mrs",
-        "diverse": "Other"
+        "diverse": "Other",
+        "neutral": "Neutral"
       },
       "academicTitle": {
         "label": "Academic Title",
         "options": {
+          "none": "None",
           "dr": "Dr.",
           "prof": "Prof.",
           "profDr": "Prof. Dr.",
@@ -169,7 +206,7 @@
     "form": {
       "name": "Name",
       "description": "Description",
-      "rate": "Price (€)",
+      "rate": "Price ",
       "quantity": "Quantity",
       "color": "Color",
       "visible": "Visible in Quick Input",
@@ -222,7 +259,17 @@
     },
     "language": {
       "title": "Language",
-      "description": "Choose your preferred language"
+      "description": "Choose your preferred language",
+      "invoiceLanguage": "Invoice Language",
+      "invoiceLanguageDescription": "Choose the language for generated invoices. 'Automatic' will attempt to use the customer's regional language.",
+      "invoiceLanguages": {
+        "auto": "Automatic"
+      }
+    },
+    "currency": {
+      "title": "Currency",
+      "description": "Choose the currency for generated invoices.",
+      "currency": "Currency"
     },
     "pdf": {
       "title": "PDF Settings",
@@ -288,6 +335,8 @@
     "success": {
       "saveLocation": "Save location updated successfully",
       "language": "Language updated successfully",
+      "invoiceLanguage": "Invoice language updated successfully",
+      "currency": "Currency updated successfully",
       "templateSave": "Template saved successfully",
       "templateReset": "Template reset successfully",
       "templateLoad": "Template loaded successfully",
@@ -326,6 +375,7 @@
     "required": "Required field",
     "error": "Error",
     "success": "Success",
+    "generating": "Generating...",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
