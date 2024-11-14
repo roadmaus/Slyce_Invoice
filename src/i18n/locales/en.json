@@ -331,6 +331,8 @@
     "success": {
       "saveLocation": "Save location updated successfully",
       "language": "Language updated successfully",
+      "invoiceLanguage": "Invoice language updated successfully",
+      "currency": "Currency updated successfully",
       "templateSave": "Template saved successfully",
       "templateReset": "Template reset successfully",
       "templateLoad": "Template loaded successfully",
