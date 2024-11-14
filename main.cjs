@@ -5,6 +5,7 @@ const fs = require('fs');
 const os = require('os');
 const Store = require('electron-store');
 const store = new Store();
+const puppeteer = require('puppeteer');
 
 if (process.platform === 'darwin') {
   app.applicationSupportsSecureRestorableState = () => true;
@@ -471,6 +472,56 @@ function registerIpcHandlers() {
     } catch (error) {
       console.error('Error loading template from path:', error);
       return null;
+    }
+  });
+
+  ipcMain.handle('generatePDF', async (event, { html, options }) => {
+    let browser;
+    try {
+      browser = await puppeteer.launch({
+        headless: 'new',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-notifications',
+          '--disable-extensions'
+        ]
+      });
+
+      const page = await browser.newPage();
+      
+      // Disable dialog boxes and notifications
+      page.on('dialog', async dialog => {
+        await dialog.dismiss();
+      });
+
+      // Set content and wait for network idle
+      await page.setContent(html, {
+        waitUntil: 'networkidle0'
+      });
+
+      // Generate PDF
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        margin: {
+          top: '48px',
+          right: '48px',
+          bottom: '48px',
+          left: '48px'
+        },
+        printBackground: true,
+        preferCSSPageSize: true,
+        ...options
+      });
+
+      return pdfBuffer;
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      throw error;
+    } finally {
+      if (browser) {
+        await browser.close();
+      }
     }
   });
 }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,8 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import html2pdf from 'html2pdf.js';
-import ReactSelect from 'react-select';
 import * as Icons from 'lucide-react';
 import { 
   FileText, 
@@ -18,9 +15,7 @@ import {
   Building2
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
 import SettingsTab from './tabs/SettingsTab';
-import { PDFObject } from 'react-pdfobject';
 import { useTranslation } from 'react-i18next';
 import BusinessTab from './tabs/BusinessTab';
 import CustomersTab from './tabs/CustomersTab';
@@ -827,66 +822,65 @@ const SlyceInvoice = () => {
         .replaceAll('{bank_bic}', selectedProfile.bank_bic)
         .replace('{contact_details}', contactDetailsHtml);
 
-      // Generate PDF
-      const pdf = await html2pdf().set({
-        margin: [48, 48, 48, 48],
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          letterRendering: true,
-          logging: false
-        },
-        jsPDF: {
-          unit: 'pt',
-          format: 'a4',
-          orientation: 'portrait',
-          compress: true,
-          precision: 16
-        },
-        pagebreak: {
-          mode: ['avoid-all', 'css', 'legacy'],
-          before: '.page-break-before',
-          after: '.page-break-after',
-          avoid: ['tr', '.banking-info', '.payment-info', '.contact-details', '.page-number']
+      // Generate PDF using Puppeteer through Electron
+      const pdfData = await window.electronAPI.generatePDF({
+        html,
+        options: {
+          format: 'A4',
+          margin: {
+            top: '48px',
+            right: '48px',
+            bottom: '48px',
+            left: '48px'
+          },
+          printBackground: true,
+          preferCSSPageSize: true
         }
-      }).from(html).outputPdf('arraybuffer');
+      });
 
-      // Handle saving and preview
-      const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
-      const saved = await window.electronAPI.saveInvoice(pdf, fileName);
+      if (pdfData) {
+        const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
+        const saved = await window.electronAPI.saveInvoice(pdfData, fileName);
 
-      if (saved) {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        if (previewSettings.showPreview) {
-          const pdfBlob = new Blob([pdf], { type: 'application/pdf' });
-          const pdfUrl = URL.createObjectURL(pdfBlob);
-          setPdfPreview({
-            show: true,
-            data: pdfUrl,
-            fileName: fileName
-          });
+        if (saved) {
+          if (previewSettings.showPreview) {
+            // Convert the Buffer to ArrayBuffer
+            const arrayBuffer = pdfData.buffer.slice(
+              pdfData.byteOffset, 
+              pdfData.byteOffset + pdfData.byteLength
+            );
+            // Create Blob and URL for preview
+            const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+            const pdfUrl = URL.createObjectURL(blob);
+            
+            setPdfPreview({
+              show: true,
+              data: pdfUrl,
+              fileName: fileName
+            });
+          } else {
+            toast.success(t('messages.success.invoiceGenerated'));
+            
+            const nextNumber = generateInvoiceNumber(
+              currentInvoiceNumber, 
+              selectedProfile.company_name, 
+              true
+            );
+            setCurrentInvoiceNumber(nextNumber);
+            setInvoiceItems([]);
+            setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
+          }
+
+          // Save the current invoice number
+          const updatedNumbers = {
+            ...profileInvoiceNumbers,
+            [selectedProfile.company_name]: currentInvoiceNumber
+          };
+          setProfileInvoiceNumbers(updatedNumbers);
+          await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
         } else {
-          toast.success(t('messages.success.invoiceGenerated'));
-          
-          const nextNumber = generateInvoiceNumber(
-            currentInvoiceNumber, 
-            selectedProfile.company_name, 
-            true
-          );
-          setCurrentInvoiceNumber(nextNumber);
-          setInvoiceItems([]);
-          setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
+          toast.error(t('messages.error.savingInvoice'));
         }
-
-        // Save the current invoice number
-        const updatedNumbers = {
-          ...profileInvoiceNumbers,
-          [selectedProfile.company_name]: currentInvoiceNumber
-        };
-        setProfileInvoiceNumbers(updatedNumbers);
-        await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
       } else {
         toast.error(t('messages.error.savingInvoice'));
       }
@@ -896,8 +890,6 @@ const SlyceInvoice = () => {
     } catch (error) {
       console.error('Error generating invoice:', error);
       toast.error(t('messages.error.generatingInvoice'));
-      
-      // Make sure to restore language even if there's an error
       await i18n.changeLanguage(currentLanguage);
     } finally {
       setIsLoading(prev => ({ ...prev, invoice: false }));
