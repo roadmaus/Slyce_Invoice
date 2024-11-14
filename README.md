@@ -1,122 +1,150 @@
 # Slyce Invoice
 
-A modern, desktop invoice generation application built with Electron and React. Slyce Invoice helps freelancers and small businesses create, manage, and track invoices efficiently.
+A modern, cross-platform invoice generation application built with Electron and React. Designed for freelancers and small businesses to create, manage, and track invoices efficiently.
 
 ![Slyce Invoice Logo](build/icon.png)
 
-## Features
+## 🚀 Key Features
 
-- 📝 Create and manage professional invoices
-- 👥 Customer management system with support for business and private customers
-- 💼 Multiple business profile support with default profile selection
-- 🏷️ Quick tags for frequent invoice items with color-coding and search functionality
-- 💾 Automatic data persistence and profile-specific invoice numbers
-- 📤 Export/Import functionality with data management options
-- 🖨️ PDF generation with customizable templates and preview settings
-- 🌍 Support for 17 languages with dynamic language settings
-- 🎨 Theme support with light, dark, and system preferences
+### Invoice Management
+- Create and manage professional invoices with customizable templates
+- Automatic invoice numbering with profile-specific sequences
+- Support for both single date and date range services
+- PDF generation with live preview
+- Automatic file organization by year and customer
+- Multiple professional templates included
+- Custom template support with HTML/CSS
+- Template preview and management system
 
-## TODO
-- ~~Correct date handling when new year~~
-- Fix windows related issues
-- ~~Make the  HTML Template editable~~
-- Fix Titles and additional customer details in regards to language changes
-
-## Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/roadmaus/slyce-invoice.git
-cd slyce-invoice
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development environment:
-```bash
-npm run start
-```
-
-## Usage
-
-### Business Profiles
-- Create multiple business profiles with company details
-- Set default profile for quick invoice generation
-- Store banking information and tax details
+### Business Management
+- Multiple business profiles support
+- Default profile selection for quick invoice generation
+- Comprehensive business details including:
+  - Company information
+  - Tax details (VAT/GST support)
+  - Banking information
+  - Contact details
+- Profile-specific invoice numbering
+- Profile-specific templates
 
 ### Customer Management
-- Add and manage customer information
-- Support for different title formats (Dr., Prof., etc.)
-- Business/Private customer distinction
+- Detailed customer database
+- Support for both business and private customers
+- Custom title formats (Dr., Prof., etc.)
+- Address and contact management
+- Customer-specific currency settings
+- Automatic language selection based on customer region
+- Customer categorization and filtering
 
-### Quick Tags
+### Quick Tags System
 - Create preset invoice items for frequent services
-- Customize rates and descriptions
-- Color-code tags for better organization
-- Search and filter tags for quick access
+- Customizable rates and descriptions
+- Color-coding for better organization
+- Search and filter functionality
+- Profile-specific tags
+- Support for date ranges in services
+- Bulk tag management
+- Tag categories and sorting
 
-### Invoice Generation
-1. Select a customer and business profile
-2. Add invoice items manually or using quick tags
-3. Set invoice dates (single date or date range)
-4. Generate PDF invoice with preview option
-5. Automatically saved in Documents/Invoices/[YEAR]
+### Localization & Customization
+- Support for 16 languages:
+  - English, German, Spanish, French, Italian
+  - Chinese, Japanese, Korean, Vietnamese
+  - Russian, Arabic, Hindi, Turkish
+  - Dutch, Portuguese, Thai
+- Dynamic language switching
+- Automatic invoice language based on customer region
+- Theme support (Light/Dark/System)
+- RTL language support
+- Custom currency formats
+- Customizable date formats
 
-## Data Management
+### Data Management
+- Export/Import functionality for data backup
+- Profile-specific settings
+- Automatic data persistence
+- Secure data storage
+- Automatic backups
+- Data migration tools
+- Settings sync across devices
 
-### Export Data
-- Export your data for backup or transfer
+## 💻 System Requirements
 
-### Import Data
-- Import data from previously exported backup files
-
-## Development
-
-To run the application in development mode:
-```bash
-npm run dev
-```
-
-For production build:
-```bash
-npm run build
-```
-
-## System Requirements
-
-- Windows, macOS, or Linux operating system
-- Node.js 18 or higher
+- Windows 10/11, macOS 10.13+, or Linux with modern desktop environment
+- Node.js 18 or higher (for development)
 - 4GB RAM minimum
 - 500MB free disk space
+- 1280x720 minimum screen resolution
 
-## File Structure
+## 📥 Installation
 
-The application automatically organizes generated invoices in:
-```
+### Download Release
+Visit our [Releases](https://github.com/roadmaus/slyce-invoice/releases) page to download the latest version for your platform:
+
+- Windows: .exe installer (x64/ARM64)
+- macOS: .dmg installer (Intel/Apple Silicon)
+- Linux: .AppImage or .deb package (x64/ARM64)
+
+### Development Setup
+
+1. Clone the repository:
+git clone https://github.com/roadmaus/slyce-invoice.git
+cd slyce-invoice
+
+2. Install dependencies:
+npm install
+
+3. Start the development environment:
+npm run start
+
+## 🛠️ Development Commands
+
+- npm run dev - Start development server
+- npm run build - Build production version
+- npm run dist - Create distributables for current platform
+- npm run dist:all - Create distributables for all platforms
+- npm run test - Run test suite
+- npm run lint - Run linting
+- npm run format - Format code
+
+## 📁 File Structure
+
+Generated invoices are automatically organized in:
 Documents/
 └── Invoices/
     └── [YEAR]/
         └── [CUSTOMER]_[INVOICE_NUMBER].pdf
-```
 
-## Support
+Application data is stored in:
+- Windows: %APPDATA%/slyce-invoice
+- macOS: ~/Library/Application Support/slyce-invoice
+- Linux: ~/.config/slyce-invoice
 
-For issues and feature requests, please open an issue in the GitHub repository.
+## 🔒 Security
 
-## License
+- Secure data storage using electron-store
+- Sandboxed renderer process with context isolation
+- IPC communication through secure preload bridge
+- Secure PDF generation using sandboxed windows
+- Protected file system access
+- Controlled external resource access
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (git checkout -b feature/AmazingFeature)
+3. Commit your changes (git commit -m Add some AmazingFeature)
+4. Push to the branch (git push origin feature/AmazingFeature)
+5. Open a Pull Request
+
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Contributing
+## 🛟 Support
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+For issues and feature requests, please [open an issue](https://github.com/roadmaus/slyce-invoice/issues) in the GitHub repository.
+
 
 ---
 
