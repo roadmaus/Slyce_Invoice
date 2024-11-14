@@ -197,8 +197,17 @@ const InvoiceTab = ({
                     endDate: ''
                   })}
                   disabled={invoiceItems.length > 0}
+                  className="
+                    data-[state=checked]:!bg-[hsl(var(--chart-2))] 
+                    data-[state=unchecked]:!bg-[hsl(var(--muted-foreground))] 
+                    data-[state=unchecked]:!opacity-50
+                    data-[state=unchecked]:hover:!opacity-70
+                    transition-colors
+                  "
                 />
-                <Label>{invoiceDates.hasDateRange ? t('invoice.details.date.servicePeriod') : t('invoice.details.date.serviceDate')}</Label>
+                <Label className="text-sm text-muted-foreground">
+                  {invoiceDates.hasDateRange ? t('invoice.details.date.servicePeriod') : t('invoice.details.date.serviceDate')}
+                </Label>
               </div>
               
               <div className="grid grid-cols-2 gap-2">
