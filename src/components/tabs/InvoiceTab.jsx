@@ -8,6 +8,8 @@ import { Switch } from '@/components/ui/switch';
 import { PlusCircle, Trash2, Search, X, Save, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import InvoiceTotals from '../InvoiceTotals';
+import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
+import { TITLE_KEYS, ACADEMIC_TITLE_KEYS, TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES } from '@/constants/titleMappings';
 
 const InvoiceTab = ({
   customers,
@@ -40,7 +42,32 @@ const InvoiceTab = ({
   selectedCurrency,
   formatCurrency,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // Helper function to get translated title
+  const getTranslatedTitle = (storedTitle) => {
+    // Skip diverse titles
+    if (storedTitle === TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
+      return '';
+    }
+
+    // Find the key for the stored German value
+    const titleKey = Object.entries(TITLE_STORAGE_VALUES)
+      .find(([_, value]) => value === storedTitle)?.[0];
+
+    // Get translation for current language, fallback to English
+    const translations = TITLE_TRANSLATIONS[i18n.language] || TITLE_TRANSLATIONS['en'];
+    return titleKey ? translations[titleKey] : storedTitle;
+  };
+
+  // Helper function to get translated academic title
+  const getTranslatedAcademicTitle = (storedTitle) => {
+    const titleKey = Object.entries(ACADEMIC_STORAGE_VALUES)
+      .find(([_, value]) => value === storedTitle)?.[0];
+
+    const translations = ACADEMIC_TRANSLATIONS[i18n.language] || ACADEMIC_TRANSLATIONS['en'];
+    return titleKey ? translations[titleKey] : storedTitle;
+  };
 
   return (
     <Card className="border-border">
@@ -71,10 +98,10 @@ const InvoiceTab = ({
                     {(() => {
                       const parts = [];
                       if (customer.title && customer.title !== 'neutral') {
-                        parts.push(customer.title);
+                        parts.push(getTranslatedTitle(customer.title));
                       }
                       if (customer.zusatz && customer.zusatz !== 'none') {
-                        parts.push(customer.zusatz);
+                        parts.push(getTranslatedAcademicTitle(customer.zusatz));
                       }
                       parts.push(customer.name);
                       return parts.join(' ');

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { PlusCircle, Edit, Trash2, Building2, MapPin, User2, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES } from '@/constants/titleMappings';
+import { TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES, TITLE_KEYS } from '@/constants/titleMappings';
 
 const CustomersTab = ({
   customers,
@@ -24,7 +24,9 @@ const CustomersTab = ({
   // Helper function to get display name
   const getCustomerDisplayName = (customer) => {
     const parts = [];
-    if (customer.title && customer.title !== TITLE_STORAGE_VALUES.neutral) {
+    if (customer.title && 
+        customer.title !== TITLE_STORAGE_VALUES.neutral && 
+        customer.title !== TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
       // Translate the stored title
       const titleKey = Object.entries(TITLE_STORAGE_VALUES)
         .find(([_, value]) => value === customer.title)?.[0]?.toLowerCase();
