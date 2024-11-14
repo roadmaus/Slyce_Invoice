@@ -624,26 +624,23 @@ const SlyceInvoice = () => {
     setIsLoading(prev => ({ ...prev, invoice: true }));
     
     try {
-      // Store current UI language
-      const uiLanguage = i18n.language;
-      
-      // Create a separate i18n instance for invoice generation
-      const invoiceI18n = i18n.cloneInstance();
+      // Store current language
+      const currentLanguage = i18n.language;
       
       // Determine invoice language
       let invoiceLang = invoiceLanguage;
       if (invoiceLanguage === 'auto') {
+        // Use customer's country/region to determine language
         if (selectedCustomer?.country === 'DE' || selectedCustomer?.country === 'AT' || selectedCustomer?.country === 'CH') {
           invoiceLang = 'de';
         } else {
-          invoiceLang = 'en';
+          invoiceLang = 'en'; // Default to English for auto
         }
       }
       
-      // Change language only for invoice generation
-      await invoiceI18n.changeLanguage(invoiceLang);
-      
-      // Use invoiceI18n for template translations
+      // Switch to invoice language
+      await i18n.changeLanguage(invoiceLang);
+
       const template = await window.electronAPI.getInvoiceTemplate();
       
       // Use the same formatting function for both address and greeting
@@ -872,13 +869,13 @@ const SlyceInvoice = () => {
       }
 
       // Switch back to original language
-      await i18n.changeLanguage(uiLanguage);
+      await i18n.changeLanguage(currentLanguage);
     } catch (error) {
       console.error('Error generating invoice:', error);
       toast.error(t('messages.error.generatingInvoice'));
       
       // Make sure to restore language even if there's an error
-      await i18n.changeLanguage(uiLanguage);
+      await i18n.changeLanguage(currentLanguage);
     } finally {
       setIsLoading(prev => ({ ...prev, invoice: false }));
     }
