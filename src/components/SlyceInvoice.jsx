@@ -226,40 +226,47 @@ const formatCustomerAddress = (customer, language) => {
 
 // Update the formatGreeting function
 const formatGreeting = (customer, language, t) => {
-  // Determine the greeting key based on title
-  let greetingKey = 'neutral';
-  if (customer.title === TITLE_STORAGE_VALUES[TITLE_KEYS.MR]) {
-    greetingKey = 'herr';
-  } else if (customer.title === TITLE_STORAGE_VALUES[TITLE_KEYS.MRS]) {
-    greetingKey = 'frau';
-  } else if (customer.title === TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
-    greetingKey = 'diverse';
-  }
-
   // If it's a business customer, use business greeting
   if (customer.firma) {
     return t('invoice.greeting.business');
   }
 
-  // Get the translated academic title if present
-  const hasAcademicTitle = customer.zusatz && customer.zusatz !== ACADEMIC_STORAGE_VALUES[ACADEMIC_TITLE_KEYS.NONE];
-  
-  // Get the appropriate greeting template
-  const greetingTemplate = hasAcademicTitle 
-    ? t(`invoice.greeting.${greetingKey}.academic`)
-    : t(`invoice.greeting.${greetingKey}.default`);
+  // Map the stored title value back to the TITLE_KEY
+  const titleKey = Object.entries(TITLE_STORAGE_VALUES)
+    .find(([_, value]) => value === customer.title)?.[0];
+
+  // Map TITLE_KEYS to the greeting keys used in locale files
+  const greetingKeyMap = {
+    [TITLE_KEYS.MR]: 'mr',
+    [TITLE_KEYS.MRS]: 'mrs',
+    [TITLE_KEYS.DIVERSE]: 'diverse',
+    [TITLE_KEYS.NEUTRAL]: 'neutral'
+  };
+
+  // Get the greeting key, defaulting to neutral if not found
+  const greetingKey = greetingKeyMap[titleKey] || 'neutral';
+
+  // Check if customer has an academic title
+  const hasAcademicTitle = customer.zusatz && 
+    customer.zusatz !== ACADEMIC_STORAGE_VALUES[ACADEMIC_TITLE_KEYS.NONE];
+
+  // Get the full i18n key path based on whether there's an academic title
+  const greetingPath = `invoice.greeting.${greetingKey}.${hasAcademicTitle ? 'academic' : 'default'}`;
+
+  // Get the greeting template from i18n
+  const greetingTemplate = t(greetingPath);
 
   // Get the translated academic title if needed
   const academicTitle = hasAcademicTitle 
     ? getTranslatedAcademicTitle(customer.zusatz, language)
     : '';
 
-  // Extract last name for formal greetings
+  // Extract name parts
   const nameParts = customer.name.split(' ');
   const lastName = nameParts[nameParts.length - 1];
   const fullName = customer.name;
 
-  // Replace placeholders in the greeting template
+  // Replace placeholders in the template
   return greetingTemplate
     .replace('{title}', academicTitle)
     .replace('{last_name}', lastName)

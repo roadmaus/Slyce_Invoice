@@ -4,97 +4,97 @@ export const TITLE_TRANSLATIONS = {
   en: {
     [TITLE_KEYS.MR]: 'Mr',
     [TITLE_KEYS.MRS]: 'Mrs',
-    [TITLE_KEYS.DIVERSE]: '',
-    [TITLE_KEYS.NEUTRAL]: ''
+    [TITLE_KEYS.DIVERSE]: 'Other',
+    [TITLE_KEYS.NEUTRAL]: 'Neutral'
   },
   de: {
     [TITLE_KEYS.MR]: 'Herr',
     [TITLE_KEYS.MRS]: 'Frau',
-    [TITLE_KEYS.DIVERSE]: '',
-    [TITLE_KEYS.NEUTRAL]: ''
+    [TITLE_KEYS.DIVERSE]: 'Divers',
+    [TITLE_KEYS.NEUTRAL]: 'Neutral'
   },
   es: {
     [TITLE_KEYS.MR]: 'Sr',
     [TITLE_KEYS.MRS]: 'Sra',
-    [TITLE_KEYS.DIVERSE]: '',
-    [TITLE_KEYS.NEUTRAL]: ''
+    [TITLE_KEYS.DIVERSE]: 'Otro',
+    [TITLE_KEYS.NEUTRAL]: 'Neutral'
   },
   fr: {
     [TITLE_KEYS.MR]: 'M',
     [TITLE_KEYS.MRS]: 'Mme',
-    [TITLE_KEYS.DIVERSE]: '',
-    [TITLE_KEYS.NEUTRAL]: ''
+    [TITLE_KEYS.DIVERSE]: 'Autre',
+    [TITLE_KEYS.NEUTRAL]: 'Neutral'
   },
   it: {
     [TITLE_KEYS.MR]: 'Sig',
     [TITLE_KEYS.MRS]: 'Sig.ra',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: 'Altro',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   nl: {
     [TITLE_KEYS.MR]: 'Dhr',
     [TITLE_KEYS.MRS]: 'Mevr',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: 'Anders',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   pt: {
     [TITLE_KEYS.MR]: 'Sr',
     [TITLE_KEYS.MRS]: 'Sra',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: 'Outro',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   ru: {
     [TITLE_KEYS.MR]: 'Уважаемый',
     [TITLE_KEYS.MRS]: 'Уважаемая',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: 'Уважаемые',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   zh: {
     [TITLE_KEYS.MR]: '先生',
     [TITLE_KEYS.MRS]: '女士',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: '其他',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   ja: {
     [TITLE_KEYS.MR]: '様',
     [TITLE_KEYS.MRS]: '様',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: 'その他',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   ko: {
     [TITLE_KEYS.MR]: '씨',
     [TITLE_KEYS.MRS]: '씨',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: '기타',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   hi: {
     [TITLE_KEYS.MR]: 'श्री',
     [TITLE_KEYS.MRS]: 'श्रीमती',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: 'अन्य',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   ar: {
     [TITLE_KEYS.MR]: 'السيد',
     [TITLE_KEYS.MRS]: 'السيدة',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: 'آخر',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   tr: {
     [TITLE_KEYS.MR]: 'Bay',
     [TITLE_KEYS.MRS]: 'Bayan',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: 'Diğer',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   vi: {
     [TITLE_KEYS.MR]: 'Ông',
     [TITLE_KEYS.MRS]: 'Bà',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: 'Khác',
     [TITLE_KEYS.NEUTRAL]: ''
   },
   th: {
     [TITLE_KEYS.MR]: 'นาย',
     [TITLE_KEYS.MRS]: 'นาง',
-    [TITLE_KEYS.DIVERSE]: '',
+    [TITLE_KEYS.DIVERSE]: 'อื่นๆ',
     [TITLE_KEYS.NEUTRAL]: ''
   }
 };
