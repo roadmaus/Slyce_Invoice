@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .company-info {
+            float: left;
+        }
+        .customer-info {
+            float: right;
+            width: 40%;
+        }
+        .invoice-details {
+            clear: both;
+            padding-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f8f8;
+        }
+        .amounts {
+            width: 35%;
+            float: right;
+            margin-top: 20px;
+        }
+        .amounts table {
+            margin-bottom: 30px;
+        }
+        .payment-info {
+            clear: both;
+            border-top: 2px solid #ccc;
+            margin-top: 30px;
+            padding-top: 20px;
+            page-break-inside: avoid;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            page-break-inside: avoid;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company-info">
+            <h1>{company_name}</h1>
+            <p>{company_street}<br>
+            {company_postalcode} {company_city}</p>
+            <p>{tax_number_label}: {tax_number}<br>
+            {tax_id_label}: {tax_id}</p>
+        </div>
+        <div class="customer-info">
+            {customer_address}
+        </div>
+    </div>
+
+    <div class="invoice-details">
+        <h2>FACTURA</h2>
+        <p>{invoice_number_date}</p>
+        <p>{greeting}</p>
+        <p>{service_period_text}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>{position_label}</th>
+                <th>{quantity_label}</th>
+                <th>{description_label}</th>
+                <th>{unit_price_label}</th>
+                <th>{total_label}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {invoice_items}
+        </tbody>
+    </table>
+
+    <div class="amounts">
+        <table>
+            <tr>
+                <td>{net_amount_label}</td>
+                <td>{net_amount}</td>
+            </tr>
+            {vat_row}
+            <tr>
+                <td><strong>{total_amount_label}</strong></td>
+                <td><strong>{total_amount}</strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="payment-info">
+        <p>{payment_instruction}</p>
+        <p>{vat_notice}</p>
+        <p>
+            {bank_institute_label}: {bank_institute}<br>
+            {bank_iban_label}: {bank_iban}<br>
+            {bank_bic_label}: {bank_bic}
+        </p>
+    </div>
+
+    <div class="footer">
+        <p>{thank_you_note}</p>
+        <p>{closing}</p>
+        <p>{contact_details}</p>
+    </div>
+</body>
+</html>
