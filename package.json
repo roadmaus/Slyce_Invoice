@@ -140,7 +140,7 @@
       "main.cjs",
       "preload.js",
       "package.json",
-      "src/invoice_template.html"
+      "src/templates/**/*"
     ],
     "mac": {
       "category": "public.app-category.business",
