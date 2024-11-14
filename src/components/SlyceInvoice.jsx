@@ -134,36 +134,6 @@ const formatDate = (date) => {
   }).format(new Date(date));
 };
 
-// Validation function
-const validateInvoice = () => {
-  if (!selectedCustomer) {
-    toast.error(t('messages.validation.selectCustomer'));
-    return false;
-  }
-
-  if (!selectedProfile) {
-    toast.error(t('messages.validation.selectProfile'));
-    return false;
-  }
-
-  if (invoiceDates.hasDateRange && (!invoiceDates.startDate || !invoiceDates.endDate)) {
-    toast.error(t('messages.validation.setServicePeriod'));
-    return false;
-  }
-
-  if (!invoiceDates.hasDateRange && !invoiceDates.startDate) {
-    toast.error(t('messages.validation.setServiceDate'));
-    return false;
-  }
-
-  if (invoiceItems.length === 0) {
-    toast.error(t('messages.validation.addItem'));
-    return false;
-  }
-
-  return true;
-};
-
 // Add these helper functions at the top of your file
 const getTranslatedTitle = (storedTitle, language) => {
   // Find the key for the stored German value
@@ -251,9 +221,46 @@ const formatCustomerAddress = (customer, language) => {
   return addressParts.filter(Boolean).join('<br>');
 };
 
-// Update your greeting generation to use the same function
-const formatGreeting = (customer, language) => {
-  return formatCustomerName(customer, language, true, true);
+// Update the formatGreeting function
+const formatGreeting = (customer, language, t) => {
+  // Determine the greeting key based on title
+  let greetingKey = 'neutral';
+  if (customer.title === TITLE_STORAGE_VALUES[TITLE_KEYS.MR]) {
+    greetingKey = 'herr';
+  } else if (customer.title === TITLE_STORAGE_VALUES[TITLE_KEYS.MRS]) {
+    greetingKey = 'frau';
+  } else if (customer.title === TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
+    greetingKey = 'diverse';
+  }
+
+  // If it's a business customer, use business greeting
+  if (customer.firma) {
+    return t('invoice.greeting.business');
+  }
+
+  // Get the translated academic title if present
+  const hasAcademicTitle = customer.zusatz && customer.zusatz !== ACADEMIC_STORAGE_VALUES[ACADEMIC_TITLE_KEYS.NONE];
+  
+  // Get the appropriate greeting template
+  const greetingTemplate = hasAcademicTitle 
+    ? t(`invoice.greeting.${greetingKey}.academic`)
+    : t(`invoice.greeting.${greetingKey}.default`);
+
+  // Get the translated academic title if needed
+  const academicTitle = hasAcademicTitle 
+    ? getTranslatedAcademicTitle(customer.zusatz, language)
+    : '';
+
+  // Extract last name for formal greetings
+  const nameParts = customer.name.split(' ');
+  const lastName = nameParts[nameParts.length - 1];
+  const fullName = customer.name;
+
+  // Replace placeholders in the greeting template
+  return greetingTemplate
+    .replace('{title}', academicTitle)
+    .replace('{last_name}', lastName)
+    .replace('{full_name}', fullName);
 };
 
 // Add this helper function alongside other translation helpers
@@ -389,9 +396,6 @@ const SlyceInvoice = () => {
 
   // Add this with other state declarations
   const [selectedCurrency, setSelectedCurrency] = useState(DEFAULT_CURRENCY);
-
-  // Add to state declarations at the top
-  const [useGermanInvoices, setUseGermanInvoices] = useState(true);
 
   // In SlyceInvoice.jsx, add invoiceLanguage to state declarations
   const [invoiceLanguage, setInvoiceLanguage] = useState('auto');
@@ -645,7 +649,7 @@ const SlyceInvoice = () => {
       
       // Use the same formatting function for both address and greeting
       const customerAddress = formatCustomerAddress(selectedCustomer, invoiceLang);
-      const customerGreeting = formatGreeting(selectedCustomer, invoiceLang);
+      const customerGreeting = formatGreeting(selectedCustomer, invoiceLang, t);
 
       // Get translations for business fields
       const taxNumberLabel = await getTranslatedBusinessField(
