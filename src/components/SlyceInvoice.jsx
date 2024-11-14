@@ -183,9 +183,12 @@ const formatCustomerName = (customer, language, includeTitle = true, includeHono
 
   // Handle title translation (e.g., Mr/Mrs)
   if (includeTitle && customer.title && customer.title !== 'neutral') {
-    const translatedTitle = getTranslatedTitle(customer.title, language);
-    if (translatedTitle) {
-      parts.push(translatedTitle);
+    // Skip diverse title in address formatting
+    if (customer.title !== TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
+      const translatedTitle = getTranslatedTitle(customer.title, language);
+      if (translatedTitle) {
+        parts.push(translatedTitle);
+      }
     }
   }
 
