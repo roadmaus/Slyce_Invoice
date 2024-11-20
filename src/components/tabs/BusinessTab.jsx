@@ -101,9 +101,17 @@ const BusinessTab = ({
                       setSelectedProfile(newProfile);
                     }
                   } else {
-                    // Handle add case - directly add the new profile to the array
+                    // Handle add case
+                    const isFirstProfile = businessProfiles.length === 0;
                     setBusinessProfiles([...businessProfiles, newProfile]);
+                    
+                    // If this is the first profile, set it as default
+                    if (isFirstProfile) {
+                      setDefaultProfileId(newProfile.company_name);
+                      setSelectedProfile(newProfile);
+                    }
                   }
+                  
                   // Clear the state after saving
                   setNewProfile({
                     company_name: '',
