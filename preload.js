@@ -25,5 +25,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   loadTemplateFromPath: (templatePath) => ipcRenderer.invoke('loadTemplateFromPath', templatePath),
   deleteTemplate: (templatePath) => ipcRenderer.invoke('deleteTemplate', templatePath),
   renameTemplate: (templatePath, newName) => ipcRenderer.invoke('renameTemplate', templatePath, newName),
-  generatePDF: (data) => ipcRenderer.invoke('generatePDF', data),
+  generatePDF: async (data) => {
+    try {
+      const result = await ipcRenderer.invoke('generatePDF', data);
+      return result;
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+      throw error;
+    }
+  },
 });

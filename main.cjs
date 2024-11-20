@@ -5,12 +5,14 @@ const fs = require('fs');
 const os = require('os');
 const Store = require('electron-store');
 const store = new Store();
+const puppeteer = require('puppeteer');
 
 if (process.platform === 'darwin') {
   app.applicationSupportsSecureRestorableState = () => true;
 }
 
 let mainWindow;
+let browser = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -474,13 +476,78 @@ function registerIpcHandlers() {
     }
   });
 
-  ipcMain.handle('generatePDF', async (event, { html }) => {
+  async function ensureBrowser() {
     try {
-      // We'll handle the PDF generation in the renderer process
-      return html;
+      if (browser) {
+        return browser;
+      }
+
+      const launchOptions = {
+        headless: 'new',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-gpu',
+          '--disable-dev-shm-usage',
+          '--disable-software-rasterizer',
+        ]
+      };
+
+      browser = await puppeteer.launch(launchOptions);
+
+      // Handle browser disconnection
+      browser.on('disconnected', () => {
+        browser = null;
+      });
+
+      return browser;
     } catch (error) {
-      console.error('Error in generatePDF:', error);
+      console.error('Error in ensureBrowser:', error);
       throw error;
+    }
+  }
+
+  ipcMain.handle('generatePDF', async (event, { html, options }) => {
+    let page = null;
+    try {
+      const browser = await ensureBrowser();
+      page = await browser.newPage();
+      
+      // Configure page settings
+      await page.setContent(html, {
+        waitUntil: ['load', 'networkidle0'],
+        timeout: 30000
+      });
+
+      // Set viewport to A4 size
+      await page.setViewport({
+        width: 794,  // A4 width in pixels at 96 DPI
+        height: 1123, // A4 height in pixels at 96 DPI
+        deviceScaleFactor: 2
+      });
+
+      // Generate PDF with default options
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '10mm',
+          right: '10mm',
+          bottom: '10mm',
+          left: '10mm'
+        },
+        preferCSSPageSize: true,
+        ...options
+      });
+
+      return pdfBuffer;
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      throw error;
+    } finally {
+      if (page) {
+        await page.close().catch(console.error);
+      }
     }
   });
 }
@@ -502,6 +569,17 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
+  }
+});
+
+app.on('before-quit', async () => {
+  if (browser) {
+    try {
+      await browser.close();
+      browser = null;
+    } catch (error) {
+      console.error('Error closing browser:', error);
+    }
   }
 });
 

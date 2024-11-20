@@ -26,7 +26,6 @@ import { TITLE_KEYS, ACADEMIC_TITLE_KEYS, TITLE_STORAGE_VALUES, ACADEMIC_STORAGE
 import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
 import { BUSINESS_KEYS, BUSINESS_STORAGE_VALUES, BUSINESS_TRANSLATIONS } from '@/constants/businessMappings';
 import LoadingOverlay from './LoadingOverlay';
-import html2pdf from 'html2pdf.js';
 
 // Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
@@ -821,31 +820,28 @@ const SlyceInvoice = () => {
         .replaceAll('{bank_bic}', selectedProfile.bank_bic)
         .replace('{contact_details}', contactDetailsHtml);
 
-      // Instead of sending to main process, generate PDF directly
-      const element = document.createElement('div');
-      element.innerHTML = html;
-      
-      const opt = {
-        margin: 10, // Small margin to prevent content touching the edge
-        filename: `${selectedCustomer.name}_${currentInvoiceNumber}.pdf`,
-        html2canvas: { scale: 2 },
-        jsPDF: { 
-          format: 'a4', 
-          orientation: 'portrait'
+      // Generate PDF using main process
+      const pdfBuffer = await window.electronAPI.generatePDF({
+        html,
+        options: {
+          format: 'A4',
+          margin: {
+            top: '10mm',
+            right: '10mm',
+            bottom: '10mm',
+            left: '10mm'
+          }
         }
-      };
+      });
 
-      // Generate PDF
-      const pdf = await html2pdf().set(opt).from(element).outputPdf('arraybuffer');
-      
       // Save the PDF
       const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
-      const saved = await window.electronAPI.saveInvoice(pdf, fileName);
+      const saved = await window.electronAPI.saveInvoice(pdfBuffer, fileName);
 
       if (saved) {
         if (previewSettings.showPreview) {
           // Create Blob and URL for preview
-          const blob = new Blob([pdf], { type: 'application/pdf' });
+          const blob = new Blob([pdfBuffer], { type: 'application/pdf' });
           const pdfUrl = URL.createObjectURL(blob);
           
           setPdfPreview({
