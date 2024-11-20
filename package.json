@@ -1,11 +1,11 @@
 {
   "name": "slyce-invoice-electron",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "Professional invoice creation and management application",
   "author": {
-    "name": "Your Name",
-    "email": "your.email@example.com"
+    "name": "roadmaus",
+    "email": "roadmaus@proton.me"
   },
   "main": "main.cjs",
   "dependencies": {
@@ -52,7 +52,6 @@
     "lucide-react": "^0.408.0",
     "next-themes": "^0.3.0",
     "polished": "^4.3.1",
-    "puppeteer": "^23.8.0",
     "react": "^18.2.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.2.0",
@@ -130,7 +129,7 @@
     ]
   },
   "build": {
-    "appId": "com.yourdomain.slyce-invoice",
+    "appId": "roadmaus.slyce-invoice",
     "productName": "Slyce Invoice",
     "directories": {
       "buildResources": "build",
@@ -207,7 +206,7 @@
         }
       ],
       "category": "Office",
-      "maintainer": "Your Name <your.email@example.com>"
+      "maintainer": "roadmaus"
     }
   }
 }

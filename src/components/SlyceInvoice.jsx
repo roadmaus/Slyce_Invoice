@@ -26,6 +26,7 @@ import { TITLE_KEYS, ACADEMIC_TITLE_KEYS, TITLE_STORAGE_VALUES, ACADEMIC_STORAGE
 import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
 import { BUSINESS_KEYS, BUSINESS_STORAGE_VALUES, BUSINESS_TRANSLATIONS } from '@/constants/businessMappings';
 import LoadingOverlay from './LoadingOverlay';
+import html2pdf from 'html2pdf.js';
 
 // Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
@@ -640,11 +641,9 @@ const SlyceInvoice = () => {
     if (!validateInvoice()) return;
 
     setIsLoading(prev => ({ ...prev, invoice: true }));
+    const currentLanguage = i18n.language;
     
     try {
-      // Store current language
-      const currentLanguage = i18n.language;
-      
       // Determine invoice language
       let invoiceLang = invoiceLanguage;
       if (invoiceLanguage === 'auto') {
@@ -822,65 +821,58 @@ const SlyceInvoice = () => {
         .replaceAll('{bank_bic}', selectedProfile.bank_bic)
         .replace('{contact_details}', contactDetailsHtml);
 
-      // Generate PDF using Puppeteer through Electron
-      const pdfData = await window.electronAPI.generatePDF({
-        html,
-        options: {
-          format: 'A4',
-          margin: {
-            top: '48px',
-            right: '48px',
-            bottom: '48px',
-            left: '48px'
-          },
-          printBackground: true,
-          preferCSSPageSize: true
+      // Instead of sending to main process, generate PDF directly
+      const element = document.createElement('div');
+      element.innerHTML = html;
+      
+      const opt = {
+        margin: 10, // Small margin to prevent content touching the edge
+        filename: `${selectedCustomer.name}_${currentInvoiceNumber}.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { 
+          format: 'a4', 
+          orientation: 'portrait'
         }
-      });
+      };
 
-      if (pdfData) {
-        const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
-        const saved = await window.electronAPI.saveInvoice(pdfData, fileName);
+      // Generate PDF
+      const pdf = await html2pdf().set(opt).from(element).outputPdf('arraybuffer');
+      
+      // Save the PDF
+      const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
+      const saved = await window.electronAPI.saveInvoice(pdf, fileName);
 
-        if (saved) {
-          if (previewSettings.showPreview) {
-            // Convert the Buffer to ArrayBuffer
-            const arrayBuffer = pdfData.buffer.slice(
-              pdfData.byteOffset, 
-              pdfData.byteOffset + pdfData.byteLength
-            );
-            // Create Blob and URL for preview
-            const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
-            const pdfUrl = URL.createObjectURL(blob);
-            
-            setPdfPreview({
-              show: true,
-              data: pdfUrl,
-              fileName: fileName
-            });
-          } else {
-            toast.success(t('messages.success.invoiceGenerated'));
-            
-            const nextNumber = generateInvoiceNumber(
-              currentInvoiceNumber, 
-              selectedProfile.company_name, 
-              true
-            );
-            setCurrentInvoiceNumber(nextNumber);
-            setInvoiceItems([]);
-            setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
-          }
-
-          // Save the current invoice number
-          const updatedNumbers = {
-            ...profileInvoiceNumbers,
-            [selectedProfile.company_name]: currentInvoiceNumber
-          };
-          setProfileInvoiceNumbers(updatedNumbers);
-          await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
+      if (saved) {
+        if (previewSettings.showPreview) {
+          // Create Blob and URL for preview
+          const blob = new Blob([pdf], { type: 'application/pdf' });
+          const pdfUrl = URL.createObjectURL(blob);
+          
+          setPdfPreview({
+            show: true,
+            data: pdfUrl,
+            fileName: fileName
+          });
         } else {
-          toast.error(t('messages.error.savingInvoice'));
+          toast.success(t('messages.success.invoiceGenerated'));
+          
+          const nextNumber = generateInvoiceNumber(
+            currentInvoiceNumber, 
+            selectedProfile.company_name, 
+            true
+          );
+          setCurrentInvoiceNumber(nextNumber);
+          setInvoiceItems([]);
+          setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
         }
+
+        // Save the current invoice number
+        const updatedNumbers = {
+          ...profileInvoiceNumbers,
+          [selectedProfile.company_name]: currentInvoiceNumber
+        };
+        setProfileInvoiceNumbers(updatedNumbers);
+        await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
       } else {
         toast.error(t('messages.error.savingInvoice'));
       }
