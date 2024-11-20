@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { PlusCircle, Trash2, Search, X, Save, Loader2 } from 'lucide-react';
+import { PlusCircle, Trash2, Search, X, Save, Loader2, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import InvoiceTotals from '../InvoiceTotals';
 import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
@@ -41,6 +41,7 @@ const InvoiceTab = ({
   setProfileInvoiceNumbers,
   selectedCurrency,
   formatCurrency,
+  generateXRechnungFile,
 }) => {
   const { t, i18n } = useTranslation();
 
@@ -79,9 +80,9 @@ const InvoiceTab = ({
               {t('invoice.recipient.title')}
             </h3>
             <Select
-              value={selectedCustomer?.name || ''}
+              value={selectedCustomer?.id || ''}
               onValueChange={(value) => {
-                const customer = customers.find(c => c.name === value);
+                const customer = customers.find(c => c.id === value);
                 setSelectedCustomer(customer);
               }}
             >
@@ -91,21 +92,24 @@ const InvoiceTab = ({
               <SelectContent className="select-content">
                 {customers.map((customer) => (
                   <SelectItem 
-                    key={customer.name} 
-                    value={customer.name}
+                    key={customer.id} 
+                    value={customer.id}
                     className="select-item"
                   >
-                    {(() => {
-                      const parts = [];
-                      if (customer.title && customer.title !== 'neutral') {
-                        parts.push(getTranslatedTitle(customer.title));
-                      }
-                      if (customer.zusatz && customer.zusatz !== 'none') {
-                        parts.push(getTranslatedAcademicTitle(customer.zusatz));
-                      }
-                      parts.push(customer.name);
-                      return parts.join(' ');
-                    })()}
+                    {customer.firma 
+                      ? `${customer.company_name}${customer.contact_person ? ` (${customer.contact_person})` : ''}`
+                      : (() => {
+                          const parts = [];
+                          if (customer.title && customer.title !== 'neutral') {
+                            parts.push(getTranslatedTitle(customer.title));
+                          }
+                          if (customer.zusatz && customer.zusatz !== 'none') {
+                            parts.push(getTranslatedAcademicTitle(customer.zusatz));
+                          }
+                          parts.push(customer.name);
+                          return parts.join(' ');
+                        })()
+                    }
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -415,7 +419,25 @@ const InvoiceTab = ({
         )}
 
         {/* Total and Generate Section */}
-        <div className="mt-6 flex justify-end items-center">
+        <div className="mt-6 flex justify-end items-center gap-2">
+          <Button 
+            variant="outline"
+            onClick={generateXRechnungFile} 
+            disabled={isLoading.xrechnung}
+            className="min-w-[200px]"
+          >
+            {isLoading.xrechnung ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                {t('invoice.actions.generatingXRechnung')}
+              </>
+            ) : (
+              <>
+                <FileText className="h-4 w-4 mr-2" />
+                {t('invoice.actions.generateXRechnung')}
+              </>
+            )}
+          </Button>
           <Button 
             onClick={generateInvoice} 
             disabled={isLoading.invoice}

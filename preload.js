@@ -26,4 +26,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteTemplate: (templatePath) => ipcRenderer.invoke('deleteTemplate', templatePath),
   renameTemplate: (templatePath, newName) => ipcRenderer.invoke('renameTemplate', templatePath, newName),
   generatePDF: (data) => ipcRenderer.invoke('generatePDF', data),
+  saveXRechnung: (xmlContent, fileName) => ipcRenderer.invoke('saveXRechnung', xmlContent, fileName),
 });

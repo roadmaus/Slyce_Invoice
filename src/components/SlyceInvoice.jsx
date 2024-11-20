@@ -27,6 +27,8 @@ import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageM
 import { BUSINESS_KEYS, BUSINESS_STORAGE_VALUES, BUSINESS_TRANSLATIONS } from '@/constants/businessMappings';
 import LoadingOverlay from './LoadingOverlay';
 import html2pdf from 'html2pdf.js';
+import { generateXRechnung } from '@/utils/xrechnung';
+import { resetBusinessProfile } from '@/constants/businessProfile';
 
 // Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
@@ -296,39 +298,54 @@ const getTranslatedBusinessField = (storedValue, fieldKey, language) => {
   return translatedValue || storedValue;
 };
 
+// Create a constant for the default business profile structure
+const DEFAULT_BUSINESS_PROFILE = {
+  company_name: '',
+  company_street: '',
+  company_postalcode: '',
+  company_city: '',
+  tax_number: '',
+  tax_id: '',
+  bank_institute: '',
+  bank_iban: '',
+  bank_bic: '',         // Keep only one instance
+  contact_details: '',
+  invoice_save_path: '',
+  vat_enabled: false,
+  vat_rate: 19,
+  // New XRechnung fields
+  vat_number: '',
+  phone: '',
+  email: '',
+  contact_name: '',
+  bank_account: ''      // IBAN for XRechnung
+};
+
 const SlyceInvoice = () => {
   const { t, i18n } = useTranslation();
 
   // Business Profiles State
   const [businessProfiles, setBusinessProfiles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
-  const [newProfile, setNewProfile] = useState({
-    company_name: '',
-    company_street: '',
-    company_postalcode: '',
-    company_city: '',
-    tax_number: '',
-    tax_id: '',
-    bank_institute: '',
-    bank_iban: '',
-    bank_bic: '',
-    contact_details: '',
-    invoice_save_path: '',
-    vat_enabled: false,
-    vat_rate: 19,
-  });
+  const [newProfile, setNewProfile] = useState(resetBusinessProfile());
 
   // Customers State
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [newCustomer, setNewCustomer] = useState({
+    id: generateUniqueId(),
     title: '',
     zusatz: '',
     name: '',
     street: '',
     postal_code: '',
     city: '',
+    country: 'DE',
     firma: false,
+    company_name: '',
+    contact_person: '',
+    vat_number: '',
+    endpoint_scheme_id: '0204',
   });
 
 
@@ -372,6 +389,7 @@ const SlyceInvoice = () => {
     invoice: false,
     export: false,
     import: false,
+    xrechnung: false,
   });
 
   // Add new state for search
@@ -480,21 +498,7 @@ const SlyceInvoice = () => {
     const isFirstProfile = businessProfiles.length === 0;
 
     setBusinessProfiles([...businessProfiles, newProfile]);
-    setNewProfile({
-      company_name: '',
-      company_street: '',
-      company_postalcode: '',
-      company_city: '',
-      tax_number: '',
-      tax_id: '',
-      bank_institute: '',
-      bank_iban: '',
-      bank_bic: '',
-      contact_details: '',
-      invoice_save_path: '',
-      vat_enabled: false,
-      vat_rate: 19,
-    });
+    setNewProfile(resetBusinessProfile());
     setShowNewProfileDialog(false);
 
     // If this is the first profile, set it as the default
@@ -525,7 +529,12 @@ const SlyceInvoice = () => {
       street: '',
       postal_code: '',
       city: '',
+      country: 'DE',
       firma: false,
+      company_name: '',
+      contact_person: '',
+      vat_number: '',
+      endpoint_scheme_id: '0204',
     });
     setShowNewCustomerDialog(false);
   };
@@ -890,7 +899,6 @@ const SlyceInvoice = () => {
 
   // Form Rendering Functions
   const renderBusinessProfileForm = (profile, setProfile) => {
-    const { t } = useTranslation();
     return (
       <div className="space-y-4">
         <div>
@@ -1001,6 +1009,53 @@ const SlyceInvoice = () => {
             </div>
           )}
         </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label>{t('business.form.vatNumber')}</Label>
+            <Input
+              value={profile.vat_number}
+              onChange={(e) => setProfile({ ...profile, vat_number: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>{t('business.form.phone')}</Label>
+            <Input
+              value={profile.phone}
+              onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+            />
+          </div>
+        </div>
+        <div>
+          <Label>{t('business.form.email')}</Label>
+          <Input
+            type="email"
+            value={profile.email}
+            onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+          />
+        </div>
+        <div>
+          <Label>{t('business.form.contactName')}</Label>
+          <Input
+            value={profile.contact_name}
+            onChange={(e) => setProfile({ ...profile, contact_name: e.target.value })}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label>{t('business.form.bankAccount')}</Label>
+            <Input
+              value={profile.bank_account}
+              onChange={(e) => setProfile({ ...profile, bank_account: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>{t('business.form.bankBic')}</Label>
+            <Input
+              value={profile.bank_bic}
+              onChange={(e) => setProfile({ ...profile, bank_bic: e.target.value })}
+            />
+          </div>
+        </div>
       </div>
     );
   };
@@ -1073,13 +1128,66 @@ const renderCustomerForm = (customer, setCustomer) => {
             </Select>
           </div>
         </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={customer.firma}
+            onCheckedChange={(checked) => setCustomer({ 
+              ...customer, 
+              firma: checked,
+              // Clear personal titles if switching to business
+              title: checked ? '' : customer.title,
+              zusatz: checked ? '' : customer.zusatz
+            })}
+          />
+          <Label>{t('customers.form.businessCustomer')}</Label>
+        </div>
+        {customer.firma && (
+          <div>
+            <Label>{t('customers.form.companyName')}</Label>
+            <Input
+              value={customer.company_name || ''}
+              onChange={(e) => setCustomer({ 
+                ...customer, 
+                company_name: e.target.value 
+              })}
+            />
+          </div>
+        )}
+        {customer.firma && (
+          <div>
+            <Label>{t('customers.form.contactPerson')}</Label>
+            <Input
+              value={customer.contact_person || ''}
+              onChange={(e) => setCustomer({ 
+                ...customer, 
+                contact_person: e.target.value 
+              })}
+            />
+          </div>
+        )}
         <div>
-          <Label>{t('customers.form.name')}</Label>
+          <Label>
+            {customer.firma 
+              ? t('customers.form.legalName')
+              : t('customers.form.name')}
+          </Label>
           <Input
             value={customer.name}
             onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
           />
         </div>
+        {customer.firma && (
+          <div>
+            <Label>{t('customers.form.vatNumber')}</Label>
+            <Input
+              value={customer.vat_number || ''}
+              onChange={(e) => setCustomer({ 
+                ...customer, 
+                vat_number: e.target.value 
+              })}
+            />
+          </div>
+        )}
         <div>
           <Label>{t('customers.form.street')}</Label>
           <Input
@@ -1103,12 +1211,25 @@ const renderCustomerForm = (customer, setCustomer) => {
             />
           </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Switch
-            checked={customer.firma}
-            onCheckedChange={(checked) => setCustomer({ ...customer, firma: checked })}
-          />
-          <Label>{t('customers.form.businessCustomer')}</Label>
+        <div>
+          <Label>{t('customers.form.country')}</Label>
+          <Select
+            value={customer.country || 'DE'}
+            onValueChange={(value) => setCustomer({ 
+              ...customer, 
+              country: value 
+            })}
+          >
+            <SelectTrigger className="bg-background border-border">
+              <SelectValue placeholder={t('customers.form.selectCountry')} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="DE">{t('countries.DE')}</SelectItem>
+              <SelectItem value="AT">{t('countries.AT')}</SelectItem>
+              <SelectItem value="CH">{t('countries.CH')}</SelectItem>
+              {/* Add more countries as needed */}
+            </SelectContent>
+          </Select>
         </div>
       </div>
     );
@@ -1205,21 +1326,7 @@ const handleProfileDialog = (existingProfile = null) => {
   if (existingProfile) {
     setNewProfile(existingProfile);
   } else {
-    setNewProfile({
-      company_name: '',
-      company_street: '',
-      company_postalcode: '',
-      company_city: '',
-      tax_number: '',
-      tax_id: '',
-      bank_institute: '',
-      bank_iban: '',
-      bank_bic: '',
-      contact_details: '',
-      invoice_save_path: '',
-      vat_enabled: false,
-      vat_rate: 19,
-    });
+    setNewProfile(resetBusinessProfile());
   }
   setShowNewProfileDialog(true);
 };
@@ -1230,14 +1337,19 @@ const handleCustomerDialog = (existingCustomer = null) => {
     setNewCustomer(existingCustomer);
   } else {
     setNewCustomer({
-      id: '',
-      title: TITLE_STORAGE_VALUES[TITLE_KEYS.NEUTRAL], // Default to neutral
-      zusatz: ACADEMIC_STORAGE_VALUES[ACADEMIC_TITLE_KEYS.NONE], // Default to none
+      id: generateUniqueId(),
+      title: '',
+      zusatz: '',
       name: '',
       street: '',
       postal_code: '',
       city: '',
+      country: 'DE',
       firma: false,
+      company_name: '',
+      contact_person: '',
+      vat_number: '',
+      endpoint_scheme_id: '0204',
     });
   }
   setShowNewCustomerDialog(true);
@@ -1476,6 +1588,54 @@ const updateInvoiceLanguage = async (language) => {
   }
 };
 
+// Add this function inside the SlyceInvoice component
+const generateXRechnungFile = async () => {
+  if (!validateInvoice()) return;
+
+  try {
+    setIsLoading(prev => ({ ...prev, xrechnung: true }));
+
+    // Calculate totals
+    const netTotal = calculateTotal();
+    const vatRate = selectedProfile.vat_enabled ? (selectedProfile.vat_rate || 19) : 0;
+    const vatAmount = selectedProfile.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
+    const totalAmount = netTotal + vatAmount;
+
+    // Generate XRechnung XML
+    const xRechnungXml = generateXRechnung({
+      invoice: {
+        number: currentInvoiceNumber,
+        date: new Date(),
+        startDate: invoiceDates.startDate,
+        endDate: invoiceDates.endDate || invoiceDates.startDate
+      },
+      seller: selectedProfile,
+      buyer: selectedCustomer,
+      items: invoiceItems,
+      vatRate,
+      vatAmount,
+      netTotal,
+      totalAmount,
+      currency: selectedCurrency
+    });
+
+    // Save the XML file
+    const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}_xrechnung`;
+    const saved = await window.electronAPI.saveXRechnung(xRechnungXml, fileName);
+
+    if (saved) {
+      toast.success(t('messages.success.xrechnungGenerated'));
+    } else {
+      toast.error(t('messages.error.savingXRechnung'));
+    }
+  } catch (error) {
+    console.error('Error generating XRechnung:', error);
+    toast.error(t('messages.error.generatingXRechnung'));
+  } finally {
+    setIsLoading(prev => ({ ...prev, xrechnung: false }));
+  }
+};
+
 // Main Render
   return (
     <>
@@ -1537,6 +1697,7 @@ const updateInvoiceLanguage = async (language) => {
               setProfileInvoiceNumbers={setProfileInvoiceNumbers}
               selectedCurrency={selectedCurrency}
               formatCurrency={formatCurrency}
+              generateXRechnungFile={generateXRechnungFile}
             />
           </TabsContent>
 

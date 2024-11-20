@@ -108,7 +108,13 @@
       "name": "Name",
       "street": "Straße",
       "postalCode": "Postleitzahl",
-      "city": "Stadt"
+      "city": "Stadt",
+      "companyName": "Firmenname",
+      "legalName": "Rechtlicher Name",
+      "contactPerson": "Ansprechpartner",
+      "vatNumber": "USt-IdNr.",
+      "country": "Land",
+      "selectCountry": "Land auswählen"
     },
     "actions": {
       "add": "Kunde hinzufügen",
@@ -420,5 +426,10 @@
       "setServiceDate": "Bitte geben Sie das Leistungsdatum an.",
       "addItem": "Bitte fügen Sie mindestens eine Rechnungsposition hinzu."
     }
+  },
+  "countries": {
+    "DE": "Deutschland",
+    "AT": "Österreich",
+    "CH": "Schweiz"
   }
 }

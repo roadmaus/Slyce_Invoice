@@ -483,6 +483,50 @@ function registerIpcHandlers() {
       throw error;
     }
   });
+
+  ipcMain.handle('saveXRechnung', async (event, xmlContent, fileName) => {
+    try {
+      const { filePath } = await dialog.showSaveDialog({
+        title: 'Save XRechnung XML',
+        defaultPath: path.join(app.getPath('documents'), `${fileName}.xml`),
+        filters: [
+          { name: 'XML Files', extensions: ['xml'] }
+        ],
+        properties: ['createDirectory']
+      });
+      
+      if (filePath) {
+        // Get the settings from store for consistent save location
+        const settings = store.get('previewSettings');
+        const customPath = settings?.savePath;
+
+        let savePath;
+        if (customPath && customPath.trim() !== '') {
+          // Use custom path if set and not empty
+          const year = new Date().getFullYear().toString();
+          const yearDir = path.join(customPath, year);
+          
+          // Create year directory in custom path if it doesn't exist
+          fs.mkdirSync(yearDir, { recursive: true });
+          
+          const safeFileName = fileName.replace(/[/\\?%*:|"<>]/g, '-');
+          savePath = path.join(yearDir, `${safeFileName}.xml`);
+        } else {
+          // Use the selected file path
+          savePath = filePath;
+        }
+
+        // Write the XML content to the file
+        await fs.promises.writeFile(savePath, xmlContent, 'utf8');
+        console.log('XRechnung saved to:', savePath); // Debug log
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error saving XRechnung:', error);
+      return false;
+    }
+  });
 }
 
 app.whenReady().then(() => {

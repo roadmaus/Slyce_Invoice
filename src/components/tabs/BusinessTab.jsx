@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Switch } from '@/components/ui/switch';
 import { PlusCircle, Edit, Trash2, Building2, MapPin, Receipt, Landmark, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { resetBusinessProfile } from '@/constants/businessProfile';
 
 const BusinessTab = ({ 
   businessProfiles, 
@@ -32,21 +33,7 @@ const BusinessTab = ({
           <Dialog open={showNewProfileDialog} onOpenChange={(open) => {
             if (!open) {
               // Reset state when dialog closes
-              setNewProfile({
-                company_name: '',
-                company_street: '',
-                company_postalcode: '',
-                company_city: '',
-                tax_number: '',
-                tax_id: '',
-                bank_institute: '',
-                bank_iban: '',
-                bank_bic: '',
-                contact_details: '',
-                invoice_save_path: '',
-                vat_enabled: false,
-                vat_rate: 19,
-              });
+              setNewProfile(resetBusinessProfile());
             }
             setShowNewProfileDialog(open);
           }}>
@@ -70,21 +57,7 @@ const BusinessTab = ({
                 <Button 
                   variant="outline" 
                   onClick={() => {
-                    setNewProfile({
-                      company_name: '',
-                      company_street: '',
-                      company_postalcode: '',
-                      company_city: '',
-                      tax_number: '',
-                      tax_id: '',
-                      bank_institute: '',
-                      bank_iban: '',
-                      bank_bic: '',
-                      contact_details: '',
-                      invoice_save_path: '',
-                      vat_enabled: false,
-                      vat_rate: 19,
-                    });
+                    setNewProfile(resetBusinessProfile());
                     setShowNewProfileDialog(false);
                   }}
                 >
@@ -105,7 +78,6 @@ const BusinessTab = ({
                     const isFirstProfile = businessProfiles.length === 0;
                     setBusinessProfiles([...businessProfiles, newProfile]);
                     
-                    // If this is the first profile, set it as default
                     if (isFirstProfile) {
                       setDefaultProfileId(newProfile.company_name);
                       setSelectedProfile(newProfile);
@@ -113,21 +85,7 @@ const BusinessTab = ({
                   }
                   
                   // Clear the state after saving
-                  setNewProfile({
-                    company_name: '',
-                    company_street: '',
-                    company_postalcode: '',
-                    company_city: '',
-                    tax_number: '',
-                    tax_id: '',
-                    bank_institute: '',
-                    bank_iban: '',
-                    bank_bic: '',
-                    contact_details: '',
-                    invoice_save_path: '',
-                    vat_enabled: false,
-                    vat_rate: 19,
-                  });
+                  setNewProfile(resetBusinessProfile());
                   setShowNewProfileDialog(false);
                 }}>
                   {newProfile.company_name ? t('business.actions.save') : t('business.actions.add')}
