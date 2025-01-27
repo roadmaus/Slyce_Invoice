@@ -10,14 +10,21 @@
       "selectProfile": "Geschäftsprofil auswählen",
       "number": {
         "label": "Rechnungsnummer",
-        "hint": "Die Rechnungsnummer wird automatisch generiert, aber Sie können sie auch manuell setzen."
+        "hint": "Rechnungsnummer wird automatisch generiert"
       },
+      "reference": {
+        "label": "Referenz",
+        "placeholder": "Referenznummer oder -text eingeben"
+      },
+      "markAsPaid": "Als bezahlt markieren",
+      "paid": "BEZAHLT",
       "date": {
         "label": "Rechnungsdatum",
         "serviceDate": "Leistungsdatum",
         "servicePeriod": "Leistungszeitraum",
         "startOfService": "Beginn der Leistung",
-        "endOfService": "Ende der Leistung"
+        "endOfService": "Ende der Leistung",
+        "showDate": "Datum anzeigen"
       }
     },
     "items": {
@@ -65,10 +72,12 @@
     },
     "servicePeriod": {
       "range": "Für den Leistungszeitraum vom {startDate} bis {endDate} stelle ich Ihnen folgendes in Rechnung:",
-      "single": "Für die Leistungen am {date} stelle ich Ihnen folgendes in Rechnung:"
+      "single": "Für die Leistungen am {date} stelle ich Ihnen folgendes in Rechnung:",
+      "noDate": "Für die erbrachten Leistungen berechne ich Ihnen folgendes:"
     },
     "payment": {
-      "instruction": "Bitte überweisen Sie den Betrag von {amount} innerhalb der nächsten 7 Werktage auf folgendes Konto:"
+      "instruction": "Bitte überweisen Sie den Betrag von {amount} innerhalb der nächsten 7 Werktage auf folgendes Konto:",
+      "paid": "Der Betrag von {amount} wurde bereits bezahlt. Vielen Dank für Ihren Auftrag."
     },
     "banking": {
       "name": "Name",

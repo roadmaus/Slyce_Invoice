@@ -352,7 +352,10 @@ const SlyceInvoice = () => {
     startDate: '',
     endDate: '',
     hasDateRange: true,
+    showDate: true,
   });
+  const [invoiceReference, setInvoiceReference] = useState('');
+  const [invoicePaid, setInvoicePaid] = useState(false);
 
   // UI State
   const [showNewProfileDialog, setShowNewProfileDialog] = useState(false);
@@ -736,15 +739,17 @@ const SlyceInvoice = () => {
       const totalAmount = netTotal + vatAmount;
 
       // Format service period text
-      const servicePeriodText = invoiceDates.hasDateRange
-        ? t('invoice.servicePeriod.range', {
-            startDate: formatDate(invoiceDates.startDate),
-            endDate: formatDate(invoiceDates.endDate)
-          }).replace('{startDate}', formatDate(invoiceDates.startDate))
-            .replace('{endDate}', formatDate(invoiceDates.endDate))
-        : t('invoice.servicePeriod.single', {
-            date: formatDate(invoiceDates.startDate)
-          }).replace('{date}', formatDate(invoiceDates.startDate));
+      const servicePeriodText = !invoiceDates.showDate
+        ? t('invoice.servicePeriod.noDate')
+        : invoiceDates.hasDateRange
+          ? t('invoice.servicePeriod.range', {
+              startDate: formatDate(invoiceDates.startDate),
+              endDate: formatDate(invoiceDates.endDate)
+            }).replace('{startDate}', formatDate(invoiceDates.startDate))
+              .replace('{endDate}', formatDate(invoiceDates.endDate))
+          : t('invoice.servicePeriod.single', {
+              date: formatDate(invoiceDates.startDate)
+            }).replace('{date}', formatDate(invoiceDates.startDate));
 
       // Create VAT-related HTML
       const vatNoticeHtml = selectedProfile.vat_enabled
@@ -764,6 +769,14 @@ const SlyceInvoice = () => {
         `${t('invoice.details.date.label')}: ${formatDate(new Date())}`
       ].join('<br>');
 
+      // Add reference text if present
+      const referenceText = invoiceReference 
+        ? `<br>${t('invoice.details.reference.label')}: ${invoiceReference}` 
+        : '';
+
+      // Remove paid status label - we'll only show it in the payment text
+      const paidStatus = '';
+
       // Format invoice items
       const formattedInvoiceItems = invoiceItems.map((item, index) => `
         <tr>
@@ -778,9 +791,13 @@ const SlyceInvoice = () => {
       // Format payment instruction with amount
       const selectedCurrency = await window.electronAPI.getData('currency') || DEFAULT_CURRENCY;
       
-      const paymentInstruction = t('invoice.payment.instruction', {
-        amount: formatCurrency(totalAmount, 'de-DE', selectedCurrency.code)
-      }).replace('{amount}', formatCurrency(totalAmount, 'de-DE', selectedCurrency.code));
+      const paymentInstruction = invoicePaid
+        ? t('invoice.payment.paid', {
+            amount: formatCurrency(totalAmount, 'de-DE', selectedCurrency.code)
+          }).replace('{amount}', formatCurrency(totalAmount, 'de-DE', selectedCurrency.code))
+        : t('invoice.payment.instruction', {
+            amount: formatCurrency(totalAmount, 'de-DE', selectedCurrency.code)
+          }).replace('{amount}', formatCurrency(totalAmount, 'de-DE', selectedCurrency.code));
 
       // Format contact details - only include if they exist
       const contactDetailsHtml = selectedProfile.contact_details 
@@ -797,6 +814,8 @@ const SlyceInvoice = () => {
         .replaceAll('{tax_id}', selectedProfile.tax_id)
         .replaceAll('{customer_address}', customerAddress)
         .replaceAll('{invoice_number_date}', invoiceNumberDate)
+        .replaceAll('{reference_text}', referenceText)
+        .replaceAll('{paid_status}', paidStatus)
         .replaceAll('{greeting}', customerGreeting)
         .replaceAll('{service_period_text}', servicePeriodText)
         .replaceAll('{position_label}', t('invoice.items.position'))
@@ -863,7 +882,7 @@ const SlyceInvoice = () => {
           );
           setCurrentInvoiceNumber(nextNumber);
           setInvoiceItems([]);
-          setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
+          setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true, showDate: true });
         }
 
         // Save the current invoice number
@@ -1312,7 +1331,7 @@ const PreviewDialog = () => (
         URL.revokeObjectURL(pdfPreview.data);
         setPdfPreview({ show: false, data: null, fileName: '' });
         setInvoiceItems([]);
-        setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true });
+        setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true, showDate: true });
         if (selectedProfile) {
           const nextNumber = generateInvoiceNumber(
             currentInvoiceNumber, 
@@ -1537,6 +1556,10 @@ const updateInvoiceLanguage = async (language) => {
               setProfileInvoiceNumbers={setProfileInvoiceNumbers}
               selectedCurrency={selectedCurrency}
               formatCurrency={formatCurrency}
+              invoiceReference={invoiceReference}
+              setInvoiceReference={setInvoiceReference}
+              invoicePaid={invoicePaid}
+              setInvoicePaid={setInvoicePaid}
             />
           </TabsContent>
 

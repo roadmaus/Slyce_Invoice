@@ -41,6 +41,10 @@ const InvoiceTab = ({
   setProfileInvoiceNumbers,
   selectedCurrency,
   formatCurrency,
+  invoiceReference,
+  setInvoiceReference,
+  invoicePaid,
+  setInvoicePaid,
 }) => {
   const { t, i18n } = useTranslation();
 
@@ -161,9 +165,9 @@ const InvoiceTab = ({
               </SelectContent>
             </Select>
 
-            <div>
+            <div className="space-y-2">
               <Label>{t('invoice.details.number.label')}</Label>
-              <Input 
+              <Input
                 value={currentInvoiceNumber}
                 onChange={(e) => {
                   const newNumber = e.target.value;
@@ -179,24 +183,35 @@ const InvoiceTab = ({
                     });
                   }
                 }}
-                className="bg-background border-border"
+                placeholder={t('invoice.details.number.hint')}
               />
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {t('invoice.details.number.hint')}
-              </p>
             </div>
-            
+
+            <div className="space-y-2">
+              <Label>{t('invoice.details.reference.label')}</Label>
+              <Input
+                value={invoiceReference}
+                onChange={(e) => setInvoiceReference(e.target.value)}
+                placeholder={t('invoice.details.reference.placeholder')}
+              />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={invoicePaid}
+                onCheckedChange={setInvoicePaid}
+              />
+              <Label>{t('invoice.details.markAsPaid')}</Label>
+            </div>
+
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Switch
-                  checked={invoiceDates.hasDateRange}
+                  checked={invoiceDates.showDate}
                   onCheckedChange={(checked) => setInvoiceDates({
                     ...invoiceDates,
-                    hasDateRange: checked,
-                    startDate: '',
-                    endDate: ''
+                    showDate: checked
                   })}
-                  disabled={invoiceItems.length > 0}
                   className="
                     data-[state=checked]:!bg-[hsl(var(--chart-2))] 
                     data-[state=unchecked]:!bg-[hsl(var(--muted-foreground))] 
@@ -206,37 +221,64 @@ const InvoiceTab = ({
                   "
                 />
                 <Label className="text-sm text-muted-foreground">
-                  {invoiceDates.hasDateRange ? t('invoice.details.date.servicePeriod') : t('invoice.details.date.serviceDate')}
+                  {t('invoice.details.date.showDate')}
                 </Label>
               </div>
-              
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <Label>{invoiceDates.hasDateRange ? t('invoice.details.date.startOfService') : t('invoice.details.date.serviceDate')}</Label>
-                  <Input 
-                    type="date"
-                    value={invoiceDates.startDate}
-                    onChange={(e) => setInvoiceDates({
-                      ...invoiceDates,
-                      startDate: e.target.value,
-                      endDate: invoiceDates.hasDateRange ? invoiceDates.endDate : e.target.value
-                    })}
-                  />
-                </div>
-                {invoiceDates.hasDateRange && (
-                  <div className="space-y-1">
-                    <Label>{t('invoice.details.date.endOfService')}</Label>
-                    <Input 
-                      type="date"
-                      value={invoiceDates.endDate}
-                      onChange={(e) => setInvoiceDates({
+
+              {invoiceDates.showDate && (
+                <>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      checked={invoiceDates.hasDateRange}
+                      onCheckedChange={(checked) => setInvoiceDates({
                         ...invoiceDates,
-                        endDate: e.target.value
+                        hasDateRange: checked,
+                        startDate: '',
+                        endDate: ''
                       })}
+                      disabled={invoiceItems.length > 0}
+                      className="
+                        data-[state=checked]:!bg-[hsl(var(--chart-2))] 
+                        data-[state=unchecked]:!bg-[hsl(var(--muted-foreground))] 
+                        data-[state=unchecked]:!opacity-50
+                        data-[state=unchecked]:hover:!opacity-70
+                        transition-colors
+                      "
                     />
+                    <Label className="text-sm text-muted-foreground">
+                      {invoiceDates.hasDateRange ? t('invoice.details.date.servicePeriod') : t('invoice.details.date.serviceDate')}
+                    </Label>
                   </div>
-                )}
-              </div>
+                  
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label>{invoiceDates.hasDateRange ? t('invoice.details.date.startOfService') : t('invoice.details.date.serviceDate')}</Label>
+                      <Input 
+                        type="date"
+                        value={invoiceDates.startDate}
+                        onChange={(e) => setInvoiceDates({
+                          ...invoiceDates,
+                          startDate: e.target.value,
+                          endDate: invoiceDates.hasDateRange ? invoiceDates.endDate : e.target.value
+                        })}
+                      />
+                    </div>
+                    {invoiceDates.hasDateRange && (
+                      <div className="space-y-1">
+                        <Label>{t('invoice.details.date.endOfService')}</Label>
+                        <Input 
+                          type="date"
+                          value={invoiceDates.endDate}
+                          onChange={(e) => setInvoiceDates({
+                            ...invoiceDates,
+                            endDate: e.target.value
+                          })}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

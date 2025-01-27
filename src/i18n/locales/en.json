@@ -10,14 +10,21 @@
       "selectProfile": "Select Business Profile",
       "number": {
         "label": "Invoice Number",
-        "hint": "The invoice number will be generated automatically, but you can also set it manually."
+        "hint": "Invoice number will be generated automatically"
       },
+      "reference": {
+        "label": "Reference",
+        "placeholder": "Enter reference number or text"
+      },
+      "markAsPaid": "Mark as Paid",
+      "paid": "PAID",
       "date": {
         "label": "Invoice Date",
         "serviceDate": "Service Date",
         "servicePeriod": "Service Period",
         "startOfService": "Start of Service",
-        "endOfService": "End of Service"
+        "endOfService": "End of Service",
+        "showDate": "Show Date"
       }
     },
     "items": {
@@ -65,10 +72,12 @@
     },
     "servicePeriod": {
       "range": "For the service period from {startDate} to {endDate}, I am charging you the following:",
-      "single": "For the services on {date}, I am charging you the following:"
+      "single": "For the services on {date}, I am charging you the following:",
+      "noDate": "For the provided services, I am charging you the following:"
     },
     "payment": {
-      "instruction": "Please transfer the amount of {amount} within the next 7 business days to the following account:"
+      "instruction": "Please transfer the amount of {amount} within the next 7 business days to the following account:",
+      "paid": "The amount of {amount} has been paid. Thank you for your business."
     },
     "banking": {
       "name": "Name",
