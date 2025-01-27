@@ -800,6 +800,13 @@ const SlyceInvoice = () => {
       const referenceText = invoiceReference 
         ? invoiceReference 
         : '';
+      
+      // Create reference section HTML only if there's content
+      const referenceSectionHtml = invoiceReference
+        ? `<div class="reference-section" style="margin: 24px 0;">
+            <p style="margin: 0;"><strong>Betreff:</strong> ${invoiceReference}</p>
+          </div>`
+        : '';
 
       // Remove paid status label - we'll only show it in the payment text
       const paidStatus = '';
@@ -841,7 +848,7 @@ const SlyceInvoice = () => {
         .replaceAll('{tax_id}', selectedProfile.tax_id)
         .replaceAll('{customer_address}', customerAddress)
         .replaceAll('{invoice_number_date}', invoiceNumberDate)
-        .replaceAll('{reference_text}', referenceText)
+        .replaceAll('{reference_section}', referenceSectionHtml)
         .replaceAll('{paid_status}', paidStatus)
         .replaceAll('{greeting}', customerGreeting)
         .replaceAll('{service_period_text}', servicePeriodText)
