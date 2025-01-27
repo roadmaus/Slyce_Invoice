@@ -641,7 +641,34 @@ const SlyceInvoice = () => {
 
   // Update the generateInvoice function
   const generateInvoice = async () => {
-    if (!validateInvoice()) return;
+    // Custom validation before proceeding
+    if (!selectedCustomer) {
+      toast.error(t('messages.validation.selectCustomer'));
+      return;
+    }
+
+    if (!selectedProfile) {
+      toast.error(t('messages.validation.selectProfile'));
+      return;
+    }
+
+    // Only validate dates if they are being shown
+    if (invoiceDates.showDate) {
+      if (invoiceDates.hasDateRange && (!invoiceDates.startDate || !invoiceDates.endDate)) {
+        toast.error(t('messages.validation.setServicePeriod'));
+        return;
+      }
+
+      if (!invoiceDates.hasDateRange && !invoiceDates.startDate) {
+        toast.error(t('messages.validation.setServiceDate'));
+        return;
+      }
+    }
+
+    if (invoiceItems.length === 0) {
+      toast.error(t('messages.validation.addItem'));
+      return;
+    }
 
     setIsLoading(prev => ({ ...prev, invoice: true }));
     const currentLanguage = i18n.language;
@@ -771,7 +798,7 @@ const SlyceInvoice = () => {
 
       // Add reference text if present
       const referenceText = invoiceReference 
-        ? `<br>${t('invoice.details.reference.label')}: ${invoiceReference}` 
+        ? invoiceReference 
         : '';
 
       // Remove paid status label - we'll only show it in the payment text
@@ -1171,6 +1198,7 @@ const renderCustomerForm = (customer, setCustomer) => {
     updateDateRangeToggle(newItems);
   };
 
+  // Validation function
   const validateInvoice = () => {
     if (!selectedCustomer) {
       toast.error(t('messages.validation.selectCustomer'));
@@ -1182,14 +1210,17 @@ const renderCustomerForm = (customer, setCustomer) => {
       return false;
     }
 
-    if (invoiceDates.hasDateRange && (!invoiceDates.startDate || !invoiceDates.endDate)) {
-      toast.error(t('messages.validation.setServicePeriod'));
-      return false;
-    }
+    // Only validate dates if they are being shown
+    if (invoiceDates.showDate) {
+      if (invoiceDates.hasDateRange && (!invoiceDates.startDate || !invoiceDates.endDate)) {
+        toast.error(t('messages.validation.setServicePeriod'));
+        return false;
+      }
 
-    if (!invoiceDates.hasDateRange && !invoiceDates.startDate) {
-      toast.error(t('messages.validation.setServiceDate'));
-      return false;
+      if (!invoiceDates.hasDateRange && !invoiceDates.startDate) {
+        toast.error(t('messages.validation.setServiceDate'));
+        return false;
+      }
     }
 
     if (invoiceItems.length === 0) {
