@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from 'next-themes';
-import { Moon, Sun, Monitor, Save, Upload, Loader2, FolderOpen, Trash2, FileEdit } from 'lucide-react';
+import { Moon, Sun, Monitor, Save, Upload, Loader2, FolderOpen, Trash2, FileEdit, Globe, Coins, Palette, FileText, Database, ChevronRight, Check } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
@@ -10,6 +10,14 @@ import '@/i18n/config';
 import TemplateEditor from '../TemplateEditor';
 import { api } from '@/lib/api';
 import { SUPPORTED_CURRENCIES, DEFAULT_CURRENCY } from '@/constants/currencies';
+
+const SECTIONS = [
+  { id: 'language', icon: Globe },
+  { id: 'currency', icon: Coins },
+  { id: 'appearance', icon: Palette },
+  { id: 'pdf', icon: FileText },
+  { id: 'data', icon: Database },
+];
 
 const SettingsTab = () => {
   const { theme, setTheme } = useTheme();
@@ -22,8 +30,8 @@ const SettingsTab = () => {
   const [showTemplateEditor, setShowTemplateEditor] = React.useState(false);
   const [selectedCurrency, setSelectedCurrency] = React.useState(DEFAULT_CURRENCY);
   const [invoiceLanguage, setInvoiceLanguage] = React.useState('auto');
+  const [activeSection, setActiveSection] = React.useState('language');
 
-  // Load settings on mount
   React.useEffect(() => {
     const loadAll = async () => {
       try {
@@ -133,214 +141,308 @@ const SettingsTab = () => {
     ...(showSwabian ? [{ value: 'swg', label: 'Schwäbisch', flag: '🦁' }] : [])
   ];
 
+  const sectionLabels = {
+    language: t('settings.language.title'),
+    currency: t('settings.currency.title'),
+    appearance: t('settings.appearance.title'),
+    pdf: t('settings.pdf.title'),
+    data: t('settings.dataManagement.title'),
+  };
+
+  const sectionSummaries = {
+    language: languages.find(l => l.value === language)?.label || 'English',
+    currency: `${selectedCurrency.symbol} ${selectedCurrency.code}`,
+    appearance: theme === 'light' ? t('settings.appearance.themes.light.label') : theme === 'dark' ? t('settings.appearance.themes.dark.label') : t('settings.appearance.themes.system.label'),
+    pdf: previewSettings.showPreview ? 'Preview ON' : 'Preview OFF',
+    data: '',
+  };
+
   return (
     <div className="b-page">
-      {/* Language */}
-      <div className="b-settings-section">
-        <div className="b-section-title">{t('settings.language.title')}</div>
-        <div className="b-section-desc">{t('settings.language.description')}</div>
-        <div className="b-option-grid">
-          {languages.map(({ value, label, flag }) => (
+      <div className="stg-layout">
+        {/* Sidebar Navigation */}
+        <nav className="stg-nav">
+          {SECTIONS.map(({ id, icon: Icon }) => (
             <button
-              key={value}
-              onClick={() => handleLanguageClick(value)}
-              className="b-option-btn"
-              data-active={language === value}
+              key={id}
+              className="stg-nav-item"
+              data-active={activeSection === id}
+              onClick={() => setActiveSection(id)}
             >
-              <span className="b-option-icon">{flag}</span>
-              <span className="b-option-label">{label}</span>
+              <Icon className="stg-nav-icon" />
+              <div className="stg-nav-text">
+                <span className="stg-nav-label">{sectionLabels[id]}</span>
+                {sectionSummaries[id] && (
+                  <span className="stg-nav-summary">{sectionSummaries[id]}</span>
+                )}
+              </div>
+              <ChevronRight className="stg-nav-arrow" />
             </button>
           ))}
-        </div>
-      </div>
+        </nav>
 
-      {/* Currency */}
-      <div className="b-settings-section">
-        <div className="b-section-title">{t('settings.currency.title')}</div>
-        <div className="b-section-desc">{t('settings.currency.description')}</div>
-        <div className="b-option-grid">
-          {SUPPORTED_CURRENCIES.map(({ code, symbol, name }) => (
-            <button
-              key={code}
-              onClick={() => updateCurrency({ code, symbol, name })}
-              className="b-option-btn"
-              data-active={selectedCurrency.code === code}
-            >
-              <span className="b-option-icon">{symbol}</span>
-              <span className="b-option-label">{name}</span>
-              <span className="b-option-sub">{code}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+        {/* Content Panel */}
+        <div className="stg-content">
+          {/* Language Section */}
+          {activeSection === 'language' && (
+            <div className="stg-panel">
+              <div className="stg-panel-header">
+                <h2 className="stg-panel-title">{t('settings.language.title')}</h2>
+                <p className="stg-panel-desc">{t('settings.language.description')}</p>
+              </div>
 
-      {/* Appearance */}
-      <div className="b-settings-section">
-        <div className="b-section-title">{t('settings.appearance.title')}</div>
-        <div className="b-section-desc">{t('settings.appearance.description')}</div>
-        <div className="b-option-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-          {[
-            { value: 'light', icon: Sun, label: t('settings.appearance.themes.light.label') },
-            { value: 'dark', icon: Moon, label: t('settings.appearance.themes.dark.label') },
-            { value: 'system', icon: Monitor, label: t('settings.appearance.themes.system.label') },
-          ].map(({ value, icon: Icon, label }) => (
-            <button
-              key={value}
-              onClick={() => setTheme(value)}
-              className="b-option-btn"
-              data-active={theme === value}
-            >
-              <Icon style={{ width: 24, height: 24, marginBottom: 6 }} />
-              <span className="b-option-label">{label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+              <div className="stg-subsection">
+                <div className="stg-subsection-label">{t('settings.language.title')}</div>
+                <div className="stg-lang-list">
+                  {languages.map(({ value, label, flag }) => (
+                    <button
+                      key={value}
+                      onClick={() => handleLanguageClick(value)}
+                      className="stg-lang-item"
+                      data-active={language === value}
+                    >
+                      <span className="stg-lang-flag">{flag}</span>
+                      <span className="stg-lang-name">{label}</span>
+                      {language === value && <Check className="stg-lang-check" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-      {/* PDF Settings */}
-      <div className="b-settings-section">
-        <div className="b-section-title">{t('settings.pdf.title')}</div>
-        <div className="b-section-desc">{t('settings.pdf.description')}</div>
-        <div className="b-toggle-row">
-          <div>
-            <div className="b-toggle-label">{t('settings.pdf.preview.label')}</div>
-            <div className="b-toggle-desc">{t('settings.pdf.preview.description')}</div>
-          </div>
-          <Switch
-            checked={previewSettings.showPreview}
-            onCheckedChange={(checked) => updatePreviewSettings({ ...previewSettings, showPreview: checked })}
-          />
-        </div>
-        <div style={{ marginTop: '16px' }}>
-          <div className="b-toggle-label">{t('settings.pdf.save.label')}</div>
-          <div className="b-toggle-desc" style={{ marginBottom: '8px' }}>{t('settings.pdf.save.description')}</div>
-          <div className="b-path-row">
-            <input
-              className="b-path-input"
-              value={previewSettings.savePath}
-              readOnly
-              placeholder={t('settings.pdf.save.placeholder')}
-            />
-            <button className="b-btn" onClick={handleSelectDirectory}>
-              <FolderOpen style={{ width: 14, height: 14 }} />
-              {t('settings.pdf.save.browse')}
-            </button>
-          </div>
-          {!previewSettings.savePath && (
-            <div className="b-toggle-desc" style={{ marginTop: '8px' }}>{t('settings.pdf.save.noPath')}</div>
+              <div className="stg-divider" />
+
+              <div className="stg-subsection">
+                <div className="stg-subsection-label">{t('settings.language.invoiceLanguage')}</div>
+                <p className="stg-subsection-desc">{t('settings.language.invoiceLanguageDescription')}</p>
+                <RadioGroup
+                  value={invoiceLanguage}
+                  onValueChange={handleInvoiceLanguageChange}
+                  className="stg-lang-list"
+                >
+                  {[
+                    { value: 'auto', label: t('settings.language.invoiceLanguages.auto'), flag: '🌐' },
+                    ...languages
+                  ].map(({ value, label, flag }) => (
+                    <div key={value}>
+                      <RadioGroupItem value={value} id={`invoice-lang-${value}`} className="peer sr-only" />
+                      <Label
+                        htmlFor={`invoice-lang-${value}`}
+                        className="stg-lang-item"
+                        data-active={invoiceLanguage === value}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <span className="stg-lang-flag">{flag}</span>
+                        <span className="stg-lang-name">{label}</span>
+                        {invoiceLanguage === value && <Check className="stg-lang-check" />}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+            </div>
+          )}
+
+          {/* Currency Section */}
+          {activeSection === 'currency' && (
+            <div className="stg-panel">
+              <div className="stg-panel-header">
+                <h2 className="stg-panel-title">{t('settings.currency.title')}</h2>
+                <p className="stg-panel-desc">{t('settings.currency.description')}</p>
+              </div>
+              <div className="stg-lang-list">
+                {SUPPORTED_CURRENCIES.map(({ code, symbol, name }) => (
+                  <button
+                    key={code}
+                    onClick={() => updateCurrency({ code, symbol, name })}
+                    className="stg-lang-item"
+                    data-active={selectedCurrency.code === code}
+                  >
+                    <span className="stg-currency-symbol">{symbol}</span>
+                    <span className="stg-lang-name">{name}</span>
+                    <span className="stg-currency-code">{code}</span>
+                    {selectedCurrency.code === code && <Check className="stg-lang-check" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Appearance Section */}
+          {activeSection === 'appearance' && (
+            <div className="stg-panel">
+              <div className="stg-panel-header">
+                <h2 className="stg-panel-title">{t('settings.appearance.title')}</h2>
+                <p className="stg-panel-desc">{t('settings.appearance.description')}</p>
+              </div>
+              <div className="stg-theme-grid">
+                {[
+                  { value: 'light', icon: Sun, label: t('settings.appearance.themes.light.label') },
+                  { value: 'dark', icon: Moon, label: t('settings.appearance.themes.dark.label') },
+                  { value: 'system', icon: Monitor, label: t('settings.appearance.themes.system.label') },
+                ].map(({ value, icon: Icon, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => setTheme(value)}
+                    className="stg-theme-card"
+                    data-active={theme === value}
+                  >
+                    <Icon className="stg-theme-icon" />
+                    <span className="stg-theme-label">{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* PDF Section */}
+          {activeSection === 'pdf' && (
+            <div className="stg-panel">
+              <div className="stg-panel-header">
+                <h2 className="stg-panel-title">{t('settings.pdf.title')}</h2>
+                <p className="stg-panel-desc">{t('settings.pdf.description')}</p>
+              </div>
+
+              <div className="stg-row">
+                <div className="stg-row-text">
+                  <div className="stg-row-label">{t('settings.pdf.preview.label')}</div>
+                  <div className="stg-row-desc">{t('settings.pdf.preview.description')}</div>
+                </div>
+                <Switch
+                  checked={previewSettings.showPreview}
+                  onCheckedChange={(checked) => updatePreviewSettings({ ...previewSettings, showPreview: checked })}
+                />
+              </div>
+
+              <div className="stg-divider" />
+
+              <div className="stg-subsection">
+                <div className="stg-row-label">{t('settings.pdf.save.label')}</div>
+                <div className="stg-row-desc" style={{ marginBottom: 12 }}>{t('settings.pdf.save.description')}</div>
+                <div className="b-path-row">
+                  <input
+                    className="b-path-input"
+                    value={previewSettings.savePath}
+                    readOnly
+                    placeholder={t('settings.pdf.save.placeholder')}
+                  />
+                  <button className="b-btn" onClick={handleSelectDirectory}>
+                    <FolderOpen style={{ width: 14, height: 14 }} />
+                    {t('settings.pdf.save.browse')}
+                  </button>
+                </div>
+                {!previewSettings.savePath && (
+                  <div className="stg-row-desc" style={{ marginTop: 8 }}>{t('settings.pdf.save.noPath')}</div>
+                )}
+              </div>
+
+              <div className="stg-divider" />
+
+              <div className="stg-subsection">
+                <div className="stg-row-label">{t('settings.invoice.template')}</div>
+                <div className="stg-row-desc" style={{ marginBottom: 12 }}>{t('settings.invoice.templateDescription')}</div>
+                <button className="b-btn" onClick={() => setShowTemplateEditor(true)}>
+                  <FileEdit style={{ width: 14, height: 14 }} />
+                  {t('settings.actions.editTemplate')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Data Section */}
+          {activeSection === 'data' && (
+            <div className="stg-panel">
+              <div className="stg-panel-header">
+                <h2 className="stg-panel-title">{t('settings.dataManagement.title')}</h2>
+                <p className="stg-panel-desc">{t('settings.dataManagement.description')}</p>
+              </div>
+
+              <div className="stg-action-list">
+                <div className="stg-action-item">
+                  <div className="stg-action-info">
+                    <Save className="stg-action-icon" />
+                    <div>
+                      <div className="stg-row-label">{t('settings.dataManagement.export.title')}</div>
+                      <div className="stg-row-desc">{t('settings.dataManagement.export.description')}</div>
+                    </div>
+                  </div>
+                  <button
+                    className="b-btn"
+                    disabled={isLoading.export}
+                    onClick={async () => {
+                      setIsLoading(prev => ({ ...prev, export: true }));
+                      try {
+                        const success = await api.exportData();
+                        toast[success ? 'success' : 'error'](t(`settings.dataManagement.export.${success ? 'success' : 'error'}`));
+                      } catch { toast.error(t('settings.dataManagement.export.genericError')); }
+                      finally { setIsLoading(prev => ({ ...prev, export: false })); }
+                    }}
+                  >
+                    {isLoading.export ? <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} /> : <Save style={{ width: 14, height: 14 }} />}
+                    {t('settings.dataManagement.export.button')}
+                  </button>
+                </div>
+
+                <div className="stg-action-item">
+                  <div className="stg-action-info">
+                    <Upload className="stg-action-icon" />
+                    <div>
+                      <div className="stg-row-label">{t('settings.dataManagement.import.title')}</div>
+                      <div className="stg-row-desc">{t('settings.dataManagement.import.description')}</div>
+                    </div>
+                  </div>
+                  <button
+                    className="b-btn"
+                    disabled={isLoading.import}
+                    onClick={async () => {
+                      setIsLoading(prev => ({ ...prev, import: true }));
+                      try {
+                        const importedData = await api.importData();
+                        if (importedData) {
+                          window.dispatchEvent(new CustomEvent('dataImported', { detail: importedData }));
+                          toast.success(t('settings.dataManagement.import.success'));
+                        } else { toast.error(t('settings.dataManagement.import.error')); }
+                      } catch { toast.error(t('settings.dataManagement.import.genericError')); }
+                      finally { setIsLoading(prev => ({ ...prev, import: false })); }
+                    }}
+                  >
+                    {isLoading.import ? <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} /> : <Upload style={{ width: 14, height: 14 }} />}
+                    {t('settings.dataManagement.import.button')}
+                  </button>
+                </div>
+
+                <div className="stg-divider" />
+
+                <div className="stg-action-item stg-action-destructive">
+                  <div className="stg-action-info">
+                    <Trash2 className="stg-action-icon" style={{ color: 'hsl(var(--destructive))' }} />
+                    <div>
+                      <div className="stg-row-label" style={{ color: 'hsl(var(--destructive))' }}>{t('settings.dataManagement.reset.title')}</div>
+                      <div className="stg-row-desc">{t('settings.dataManagement.reset.description')}</div>
+                    </div>
+                  </div>
+                  <button
+                    className="b-btn b-btn-destructive"
+                    onClick={async () => {
+                      if (!window.confirm(t('settings.dataManagement.reset.confirm'))) return;
+                      try {
+                        await api.clearAllData();
+                        setLanguage('en'); setShowSwabian(false); setClickedLanguages(new Set());
+                        setPreviewSettings({ showPreview: true, savePath: '' });
+                        setTheme('system'); await i18n.changeLanguage('en');
+                        window.dispatchEvent(new CustomEvent('settingsReset'));
+                        toast.success(t('settings.dataManagement.reset.success'));
+                        setTimeout(() => window.location.reload(), 1500);
+                      } catch { toast.error(t('settings.dataManagement.reset.error')); }
+                    }}
+                  >
+                    <Trash2 style={{ width: 14, height: 14 }} />
+                    {t('settings.dataManagement.reset.button')}
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
         </div>
-      </div>
-
-      {/* Data Management */}
-      <div className="b-settings-section">
-        <div className="b-section-title">{t('settings.dataManagement.title')}</div>
-        <div className="b-section-desc">{t('settings.dataManagement.description')}</div>
-        <div className="b-data-grid">
-          {[
-            {
-              icon: Save, title: t('settings.dataManagement.export.title'),
-              description: t('settings.dataManagement.export.description'),
-              buttonText: t('settings.dataManagement.export.button'),
-              loading: isLoading.export,
-              onClick: async () => {
-                setIsLoading(prev => ({ ...prev, export: true }));
-                try {
-                  const success = await api.exportData();
-                  toast[success ? 'success' : 'error'](t(`settings.dataManagement.export.${success ? 'success' : 'error'}`));
-                } catch { toast.error(t('settings.dataManagement.export.genericError')); }
-                finally { setIsLoading(prev => ({ ...prev, export: false })); }
-              }
-            },
-            {
-              icon: Upload, title: t('settings.dataManagement.import.title'),
-              description: t('settings.dataManagement.import.description'),
-              buttonText: t('settings.dataManagement.import.button'),
-              loading: isLoading.import,
-              onClick: async () => {
-                setIsLoading(prev => ({ ...prev, import: true }));
-                try {
-                  const importedData = await api.importData();
-                  if (importedData) {
-                    window.dispatchEvent(new CustomEvent('dataImported', { detail: importedData }));
-                    toast.success(t('settings.dataManagement.import.success'));
-                  } else { toast.error(t('settings.dataManagement.import.error')); }
-                } catch { toast.error(t('settings.dataManagement.import.genericError')); }
-                finally { setIsLoading(prev => ({ ...prev, import: false })); }
-              }
-            },
-            {
-              icon: FileEdit, title: t('settings.invoice.template'),
-              description: t('settings.invoice.templateDescription'),
-              buttonText: t('settings.actions.editTemplate'),
-              onClick: () => setShowTemplateEditor(true)
-            },
-            {
-              icon: Trash2, title: t('settings.dataManagement.reset.title'),
-              description: t('settings.dataManagement.reset.description'),
-              buttonText: t('settings.dataManagement.reset.button'),
-              destructive: true,
-              onClick: async () => {
-                if (!window.confirm(t('settings.dataManagement.reset.confirm'))) return;
-                try {
-                  await api.clearAllData();
-                  setLanguage('en'); setShowSwabian(false); setClickedLanguages(new Set());
-                  setPreviewSettings({ showPreview: true, savePath: '' });
-                  setTheme('system'); await i18n.changeLanguage('en');
-                  window.dispatchEvent(new CustomEvent('settingsReset'));
-                  toast.success(t('settings.dataManagement.reset.success'));
-                  setTimeout(() => window.location.reload(), 1500);
-                } catch { toast.error(t('settings.dataManagement.reset.error')); }
-              }
-            }
-          ].map(({ icon: Icon, title, description, buttonText, loading, onClick, destructive }) => (
-            <div key={title} className="b-data-card">
-              <div className="b-data-card-title">
-                <Icon style={{ width: 16, height: 16, color: destructive ? 'hsl(var(--destructive))' : undefined }} />
-                <span style={{ color: destructive ? 'hsl(var(--destructive))' : undefined }}>{title}</span>
-              </div>
-              <div className="b-data-card-desc">{description}</div>
-              <button
-                className={destructive ? 'b-btn b-btn-destructive' : 'b-btn'}
-                onClick={onClick}
-                disabled={loading}
-                style={{ width: '100%', justifyContent: 'center' }}
-              >
-                {loading ? <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} /> : <Icon style={{ width: 14, height: 14 }} />}
-                {buttonText}
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Invoice Language */}
-      <div className="b-settings-section">
-        <div className="b-section-title">{t('settings.language.invoiceLanguage')}</div>
-        <div className="b-section-desc">{t('settings.language.invoiceLanguageDescription')}</div>
-        <RadioGroup
-          value={invoiceLanguage}
-          onValueChange={handleInvoiceLanguageChange}
-          className="b-option-grid"
-        >
-          {[
-            { value: 'auto', label: t('settings.language.invoiceLanguages.auto'), flag: '🌐' },
-            ...languages
-          ].map(({ value, label, flag }) => (
-            <div key={value}>
-              <RadioGroupItem value={value} id={`invoice-lang-${value}`} className="peer sr-only" />
-              <Label
-                htmlFor={`invoice-lang-${value}`}
-                className="b-option-btn"
-                data-active={invoiceLanguage === value}
-                style={{ cursor: 'pointer' }}
-              >
-                <span className="b-option-icon">{flag}</span>
-                <span className="b-option-label">{label}</span>
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
       </div>
 
       {showTemplateEditor && <TemplateEditor onClose={() => setShowTemplateEditor(false)} />}
