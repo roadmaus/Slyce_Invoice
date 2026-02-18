@@ -44,7 +44,7 @@
     "date-fns": "^3.6.0",
     "electron-store": "7.0.3",
     "embla-carousel-react": "^8.1.6",
-    "html2pdf.js": "^0.10.3",
+    "html2pdf.js": "^0.14.0",
     "i18next": "^23.16.5",
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-http-backend": "^2.6.2",
@@ -97,7 +97,9 @@
     "rimraf": "^5.0.5",
     "@humanwhocodes/config-array": "npm:@eslint/config-array@latest",
     "@humanwhocodes/object-schema": "npm:@eslint/object-schema@latest",
-    "inflight": "^2.0.1"
+    "inflight": "^2.0.1",
+    "tar": ">=7.5.8",
+    "ajv": ">=8.18.0"
   },
   "scripts": {
     "dev": "vite",
@@ -114,6 +116,13 @@
     "dist:win-x64": "npm run build && electron-builder --win --x64",
     "dist:win-arm64": "npm run build && electron-builder --win --arm64",
     "dist:all": "npm run build && electron-builder -mwl --x64 --arm64"
+  },
+  "pnpm": {
+    "overrides": {
+      "tar": ">=7.5.8",
+      "ajv": ">=8.18.0",
+      "jspdf": ">=4.1.0"
+    }
   },
   "browserslist": {
     "production": [
