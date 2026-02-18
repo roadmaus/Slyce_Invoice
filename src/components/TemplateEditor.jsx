@@ -5,6 +5,7 @@ import { Loader2, Save, RotateCcw, Copy, LayoutGrid, Pencil, Trash } from 'lucid
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { api } from '@/lib/api';
 
 const TemplateEditor = ({ onClose }) => {
   const { t } = useTranslation();
@@ -23,7 +24,7 @@ const TemplateEditor = ({ onClose }) => {
   const loadTemplate = async () => {
     setIsLoading(true);
     try {
-      const content = await window.electronAPI.getInvoiceTemplate();
+      const content = await api.getInvoiceTemplate();
       if (content) {
         setTemplate(content);
         setPreview(content);
@@ -46,7 +47,7 @@ const TemplateEditor = ({ onClose }) => {
 
   const loadRecentTemplates = async () => {
     try {
-      const templates = await window.electronAPI.getRecentTemplates();
+      const templates = await api.getRecentTemplates();
       setRecentTemplates(templates || []);
     } catch (error) {
       console.error('Error loading recent templates:', error);
@@ -70,9 +71,9 @@ const TemplateEditor = ({ onClose }) => {
   const loadSampleData = async () => {
     try {
       // Load customers, business profiles, and tags
-      const customers = await window.electronAPI.getData('customers') || [];
-      const profiles = await window.electronAPI.getData('businessProfiles') || [];
-      const tags = await window.electronAPI.getData('quickTags') || [];
+      const customers = await api.getData('customers') || [];
+      const profiles = await api.getData('businessProfiles') || [];
+      const tags = await api.getData('quickTags') || [];
 
       // Only set sample data if we have at least one of each
       if (customers.length > 0 && profiles.length > 0 && tags.length > 0) {
@@ -91,7 +92,7 @@ const TemplateEditor = ({ onClose }) => {
     setIsLoading(true);
     try {
       // Only save as new template if content was edited
-      await window.electronAPI.saveTemplate(template, !isTemplateEdited);
+      await api.saveTemplate(template, !isTemplateEdited);
       toast.success(t('settings.success.templateSave'));
       await loadRecentTemplates();
       setOriginalTemplate(template);
@@ -107,7 +108,7 @@ const TemplateEditor = ({ onClose }) => {
     if (confirm(t('settings.confirmations.resetTemplate'))) {
       setIsLoading(true);
       try {
-        await window.electronAPI.resetTemplate();
+        await api.resetTemplate();
         await loadTemplate();
         setEditingTemplate({ isDefault: true });
         toast.success(t('settings.success.templateReset'));
@@ -127,7 +128,7 @@ const TemplateEditor = ({ onClose }) => {
   const handleTemplateSelect = async (templatePath) => {
     setIsLoading(true);
     try {
-      const content = await window.electronAPI.loadTemplateFromPath(templatePath);
+      const content = await api.loadTemplateFromPath(templatePath);
       if (content) {
         setTemplate(content);
         setPreview(content);
@@ -147,7 +148,7 @@ const TemplateEditor = ({ onClose }) => {
     event.stopPropagation();
     if (confirm(t('settings.confirmations.deleteTemplate'))) {
       try {
-        await window.electronAPI.deleteTemplate(templatePath);
+        await api.deleteTemplate(templatePath);
         toast.success(t('settings.success.templateDelete'));
         await loadRecentTemplates();
       } catch (error) {
@@ -165,7 +166,7 @@ const TemplateEditor = ({ onClose }) => {
 
   const submitRename = async () => {
     try {
-      await window.electronAPI.renameTemplate(editingTemplate.path, newTemplateName);
+      await api.renameTemplate(editingTemplate.path, newTemplateName);
       toast.success(t('settings.success.templateRename'));
       await loadRecentTemplates();
       setShowRenameDialog(false);

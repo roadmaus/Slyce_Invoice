@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Invoice</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #7f8c8d;
+            --border-color: #ecf0f1;
+            --background-color: #ffffff;
+            --subtle-bg: #f9fafb;
+        }
+
+        @page {
+            size: A4;
+            margin: 40px;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            color: var(--primary-color);
+            font-size: 14px;
+            line-height: 1.6;
+            background-color: var(--background-color);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 60px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-color);
+            position: relative;
+            border-radius: 4px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--primary-color);
+        }
+
+        .company-address {
+            text-align: right;
+            color: var(--accent-color);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 50px;
+        }
+
+        .recipient-info {
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        .invoice-info {
+            text-align: right;
+            background: var(--subtle-bg);
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 200px;
+        }
+
+        .invoice-title {
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+
+        .greeting-section {
+            margin-bottom: 40px;
+            line-height: 1.6;
+            color: var(--secondary-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+        }
+
+        th, td {
+            padding: 15px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--accent-color);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background-color: var(--subtle-bg);
+        }
+
+        tbody tr:hover {
+            background-color: var(--subtle-bg);
+        }
+
+        .amount-summary {
+            width: 350px;
+            margin-left: auto;
+            margin-right: 0;
+            margin-top: 30px;
+        }
+
+        .amount-summary td {
+            padding: 12px 0;
+        }
+
+        .amount-summary tr:last-child {
+            font-weight: 600;
+            font-size: 16px;
+            border-top: 2px solid var(--border-color);
+            border-bottom: none;
+        }
+
+        .amount-summary tr td:last-child {
+            text-align: right;
+        }
+
+        .payment-info {
+            margin-top: 50px;
+            border-top: 2px solid var(--border-color);
+            padding-top: 30px;
+            color: var(--secondary-color);
+        }
+
+        .banking-info {
+            margin: 30px 0;
+            background-color: var(--subtle-bg);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .banking-info p {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .banking-info p span:first-child {
+            color: var(--accent-color);
+            margin-right: 20px;
+        }
+
+        .contact-details {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--accent-color);
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            body, .banking-info {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <div class="logo-text">{company_name}</div>
+        </div>
+        <div class="company-address">
+            {company_street}<br>
+            {company_postalcode} {company_city}<br>
+            <p>{tax_number_label}: {tax_number}<br>
+            {tax_id_label}: {tax_id}</p>
+        </div>
+    </div>
+
+    <div class="invoice-details">
+        <div class="recipient-info">
+            <div class="invoice-title">INVOICE</div>
+            {customer_address}
+        </div>
+        <div class="invoice-info">
+            {invoice_number_date}
+        </div>
+    </div>
+
+    {reference_section}
+
+    <div class="greeting-section">
+        <p>{greeting}</p>
+        <p>{service_period_text}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>{position_label}</th>
+                <th>{quantity_label}</th>
+                <th>{description_label}</th>
+                <th>{unit_price_label}</th>
+                <th>{total_label}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {invoice_items}
+        </tbody>
+    </table>
+
+    <table class="amount-summary">
+        <tr>
+            <td>{net_amount_label}</td>
+            <td>{net_amount}</td>
+        </tr>
+        {vat_row}
+        <tr>
+            <td>{total_amount_label}</td>
+            <td>{total_amount}</td>
+        </tr>
+    </table>
+
+    <div class="payment-info">
+        <p>{payment_instruction}</p>
+        
+        {vat_notice}
+        
+        <div class="banking-info">
+            <p><span>{bank_institute_label}</span> <span>{bank_institute}</span></p>
+            <p><span>{bank_iban_label}</span> <span>{bank_iban}</span></p>
+            <p><span>{bank_bic_label}</span> <span>{bank_bic}</span></p>
+        </div>
+
+        <p>{thank_you_note}</p>
+        <p>{closing}<br>{company_name}</p>
+    </div>
+
+    <div class="contact-details">
+        {contact_details}
+    </div>
+</body>
+</html>

@@ -20,7 +20,6 @@ export default defineConfig({
     assetsDir: '.',
     emptyOutDir: true,
     rollupOptions: {
-      external: ['electron'],
     }
   },
   optimizeDeps: {

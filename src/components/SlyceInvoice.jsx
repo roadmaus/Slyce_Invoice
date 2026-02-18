@@ -27,6 +27,7 @@ import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageM
 import { BUSINESS_KEYS, BUSINESS_STORAGE_VALUES, BUSINESS_TRANSLATIONS } from '@/constants/businessMappings';
 import LoadingOverlay from './LoadingOverlay';
 import html2pdf from 'html2pdf.js';
+import { api } from '@/lib/api';
 
 // Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
@@ -413,11 +414,11 @@ const SlyceInvoice = () => {
   useEffect(() => {
     const loadSavedData = async () => {
       try {
-        const savedProfiles = await window.electronAPI.getData('businessProfiles');
-        const savedCustomers = await window.electronAPI.getData('customers');
-        const savedTags = await window.electronAPI.getData('quickTags');
-        const savedInvoiceNumbers = await window.electronAPI.getData('profileInvoiceNumbers') || {};
-        const savedCurrency = await window.electronAPI.getData('currency');
+        const savedProfiles = await api.getData('businessProfiles');
+        const savedCustomers = await api.getData('customers');
+        const savedTags = await api.getData('quickTags');
+        const savedInvoiceNumbers = await api.getData('profileInvoiceNumbers') || {};
+        const savedCurrency = await api.getData('currency');
 
         if (savedProfiles) setBusinessProfiles(savedProfiles);
         if (savedCustomers) {
@@ -454,13 +455,13 @@ const SlyceInvoice = () => {
   useEffect(() => {
     if (isInitialized) {
       const saveData = async () => {
-        await window.electronAPI.setData('businessProfiles', businessProfiles);
-        await window.electronAPI.setData('customers', customers);
-        await window.electronAPI.setData('quickTags', quickTags);
-        await window.electronAPI.setData('profileInvoiceNumbers', profileInvoiceNumbers);
-        await window.electronAPI.setData('currency', selectedCurrency);
+        await api.setData('businessProfiles', businessProfiles);
+        await api.setData('customers', customers);
+        await api.setData('quickTags', quickTags);
+        await api.setData('profileInvoiceNumbers', profileInvoiceNumbers);
+        await api.setData('currency', selectedCurrency);
         if (defaultProfileId) {
-          await window.electronAPI.setData('defaultProfileId', defaultProfileId);
+          await api.setData('defaultProfileId', defaultProfileId);
         }
       };
       saveData();
@@ -622,7 +623,7 @@ const SlyceInvoice = () => {
   // Add this useEffect to load the setting
   useEffect(() => {
     const loadInvoiceLanguage = async () => {
-      const settings = await window.electronAPI.getData('invoiceLanguageSettings');
+      const settings = await api.getData('invoiceLanguageSettings');
       if (settings?.invoiceLanguage) {
         setInvoiceLanguage(settings.invoiceLanguage);
       }
@@ -688,7 +689,7 @@ const SlyceInvoice = () => {
       // Switch to invoice language
       await i18n.changeLanguage(invoiceLang);
 
-      const template = await window.electronAPI.getInvoiceTemplate();
+      const template = await api.getInvoiceTemplate();
       
       // Use the same formatting function for both address and greeting
       const customerAddress = formatCustomerAddress(selectedCustomer, invoiceLang);
@@ -823,7 +824,7 @@ const SlyceInvoice = () => {
       `).join('');
 
       // Format payment instruction with amount
-      const selectedCurrency = await window.electronAPI.getData('currency') || DEFAULT_CURRENCY;
+      const selectedCurrency = await api.getData('currency') || DEFAULT_CURRENCY;
       
       const paymentInstruction = invoicePaid
         ? t('invoice.payment.paid', {
@@ -893,7 +894,8 @@ const SlyceInvoice = () => {
       
       // Save the PDF
       const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
-      const saved = await window.electronAPI.saveInvoice(pdf, fileName);
+      const settings = await api.getData('previewSettings');
+      const saved = await api.saveInvoice(pdf, fileName, settings?.savePath);
 
       if (saved) {
         if (previewSettings.showPreview) {
@@ -925,7 +927,7 @@ const SlyceInvoice = () => {
           [selectedProfile.company_name]: currentInvoiceNumber
         };
         setProfileInvoiceNumbers(updatedNumbers);
-        await window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers);
+        await api.setData('profileInvoiceNumbers', updatedNumbers);
       } else {
         toast.error(t('messages.error.savingInvoice'));
       }
@@ -1342,7 +1344,7 @@ useEffect(() => {
 // Add this useEffect to load preview settings
 useEffect(() => {
   const loadPreviewSettings = async () => {
-    const settings = await window.electronAPI.getData('previewSettings');
+    const settings = await api.getData('previewSettings');
     if (settings) {
       setPreviewSettings(settings);
     }
@@ -1382,7 +1384,7 @@ const PreviewDialog = () => (
             [selectedProfile.company_name]: nextNumber
           };
           setProfileInvoiceNumbers(updatedNumbers);
-          window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
+          api.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
             console.error('Error saving invoice number:', error);
           });
         }
@@ -1450,7 +1452,7 @@ useEffect(() => {
         [profileId]: newNumber
       };
       setProfileInvoiceNumbers(updatedNumbers);
-      window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
+      api.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
         console.error('Error saving invoice number:', error);
       });
     } else {
@@ -1466,7 +1468,7 @@ useEffect(() => {
 useEffect(() => {
   const loadDefaultProfile = async () => {
     try {
-      const savedDefaultId = await window.electronAPI.getData('defaultProfileId');
+      const savedDefaultId = await api.getData('defaultProfileId');
       if (savedDefaultId && businessProfiles.length > 0) {
         const defaultProfile = businessProfiles.find(p => p.company_name === savedDefaultId);
         if (defaultProfile) {
@@ -1487,7 +1489,7 @@ useEffect(() => {
 // Add this useEffect to handle currency changes
 useEffect(() => {
   const loadCurrency = async () => {
-    const saved = await window.electronAPI.getData('currency');
+    const saved = await api.getData('currency');
     if (saved) {
       setSelectedCurrency(saved);
     }
@@ -1524,7 +1526,7 @@ const formatCurrency = (amount) => {
 // Add this with other function declarations
 const updateInvoiceLanguage = async (language) => {
   try {
-    await window.electronAPI.setData('invoiceLanguageSettings', { invoiceLanguage: language });
+    await api.setData('invoiceLanguageSettings', { invoiceLanguage: language });
     setInvoiceLanguage(language);
     toast.success(t('settings.success.language'));
   } catch (error) {

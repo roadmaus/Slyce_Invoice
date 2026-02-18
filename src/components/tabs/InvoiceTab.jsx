@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { PlusCircle, Trash2, Search, X, Save, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { api } from '@/lib/api';
 import InvoiceTotals from '../InvoiceTotals';
 import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
 import { TITLE_KEYS, ACADEMIC_TITLE_KEYS, TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES } from '@/constants/titleMappings';
@@ -178,7 +179,7 @@ const InvoiceTab = ({
                       [selectedProfile.company_name]: newNumber
                     };
                     setProfileInvoiceNumbers(updatedNumbers);
-                    window.electronAPI.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
+                    api.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
                       console.error('Error saving invoice number:', error);
                     });
                   }

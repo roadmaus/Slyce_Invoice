@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import '@/i18n/config';
 import TemplateEditor from '../TemplateEditor';
+import { api } from '@/lib/api';
 import { SUPPORTED_CURRENCIES, DEFAULT_CURRENCY } from '@/constants/currencies';
 
 const SettingsTab = () => {
@@ -37,7 +38,7 @@ const SettingsTab = () => {
   React.useEffect(() => {
     const loadPreviewSettings = async () => {
       try {
-        const settings = await window.electronAPI.getData('previewSettings');
+        const settings = await api.getData('previewSettings');
         if (settings) {
           setPreviewSettings({
             showPreview: settings.showPreview ?? true,
@@ -60,7 +61,7 @@ const SettingsTab = () => {
         savePath: newSettings.savePath ?? ''
       };
       setPreviewSettings(sanitizedSettings);
-      await window.electronAPI.setData('previewSettings', sanitizedSettings);
+      await api.setData('previewSettings', sanitizedSettings);
       window.dispatchEvent(new CustomEvent('previewSettingsChanged', { 
         detail: sanitizedSettings 
       }));
@@ -79,13 +80,7 @@ const SettingsTab = () => {
 
   const handleSelectDirectory = async () => {
     try {
-      if (!window.electronAPI?.selectDirectory) {
-        console.error('selectDirectory API not available');
-        toast.error(t('settings.errors.directorySelection.notAvailable'));
-        return;
-      }
-
-      const path = await window.electronAPI.selectDirectory();
+      const path = await api.selectDirectory();
       if (path) {
         await updatePreviewSettings({ 
           ...previewSettings, 
@@ -103,7 +98,7 @@ const SettingsTab = () => {
   React.useEffect(() => {
     const loadLanguageSettings = async () => {
       try {
-        const settings = await window.electronAPI.getData('languageSettings');
+        const settings = await api.getData('languageSettings');
         if (settings?.language) {
           setLanguage(settings.language);
           await i18n.changeLanguage(settings.language);
@@ -118,7 +113,7 @@ const SettingsTab = () => {
 
   const updateLanguage = async (newLanguage) => {
     try {
-      await window.electronAPI.setData('languageSettings', { language: newLanguage });
+      await api.setData('languageSettings', { language: newLanguage });
       setLanguage(newLanguage);
       await i18n.changeLanguage(newLanguage);
       window.dispatchEvent(new CustomEvent('languageChanged', { 
@@ -135,7 +130,7 @@ const SettingsTab = () => {
   React.useEffect(() => {
     // Check if Swabian was previously unlocked
     const checkSwabianUnlock = async () => {
-      const settings = await window.electronAPI.getData('swabianUnlocked');
+      const settings = await api.getData('swabianUnlocked');
       setShowSwabian(!!settings?.unlocked);
     };
     checkSwabianUnlock();
@@ -155,7 +150,7 @@ const SettingsTab = () => {
     const standardLanguages = ['en', 'de', 'es', 'ko', 'fr', 'zh', 'ja', 'pt', 'ru', 'hi', 'ar', 'it', 'nl', 'tr', 'vi', 'th'];
     if (standardLanguages.every(lang => newClickedLanguages.has(lang))) {
       setShowSwabian(true);
-      await window.electronAPI.setData('swabianUnlocked', { unlocked: true });
+      await api.setData('swabianUnlocked', { unlocked: true });
       toast.success('🦁 Schwäbisch freigschalded!', {
         duration: 2000,
       });
@@ -163,8 +158,8 @@ const SettingsTab = () => {
   };
 
   const handleShowTemplate = async () => {
-    const templatePath = await window.electronAPI.getTemplatePath();
-    window.electronAPI.showItemInFolder(templatePath);
+    const templatePath = await api.getTemplatePath();
+    api.showItemInFolder(templatePath);
   };
 
   // Add to existing useEffect or create new one for loading settings
@@ -172,7 +167,7 @@ const SettingsTab = () => {
     const loadSettings = async () => {
       try {
         // ... existing settings loading ...
-        const savedCurrency = await window.electronAPI.getData('currency');
+        const savedCurrency = await api.getData('currency');
         if (savedCurrency) {
           setSelectedCurrency(savedCurrency);
         }
@@ -187,7 +182,7 @@ const SettingsTab = () => {
   // Add handler for currency updates
   const updateCurrency = async (newCurrency) => {
     try {
-      await window.electronAPI.setData('currency', newCurrency);
+      await api.setData('currency', newCurrency);
       setSelectedCurrency(newCurrency);
       window.dispatchEvent(new CustomEvent('currencyChanged', { 
         detail: newCurrency 
@@ -203,7 +198,7 @@ const SettingsTab = () => {
   React.useEffect(() => {
     const loadInvoiceLanguageSettings = async () => {
       try {
-        const settings = await window.electronAPI.getData('invoiceLanguageSettings');
+        const settings = await api.getData('invoiceLanguageSettings');
         if (settings?.invoiceLanguage) {
           setInvoiceLanguage(settings.invoiceLanguage);
         }
@@ -217,7 +212,7 @@ const SettingsTab = () => {
   // Add handler for toggle
   const handleInvoiceLanguageChange = async (newLanguage) => {
     try {
-      await window.electronAPI.setData('invoiceLanguageSettings', { invoiceLanguage: newLanguage });
+      await api.setData('invoiceLanguageSettings', { invoiceLanguage: newLanguage });
       setInvoiceLanguage(newLanguage);
       window.dispatchEvent(new CustomEvent('invoiceLanguageChanged', { 
         detail: { invoiceLanguage: newLanguage } 
@@ -464,7 +459,7 @@ const SettingsTab = () => {
                     onClick: async () => {
                       setIsLoading(prev => ({ ...prev, export: true }));
                       try {
-                        const success = await window.electronAPI.exportData();
+                        const success = await api.exportData();
                         if (success) {
                           toast.success(t('settings.dataManagement.export.success'));
                         } else {
@@ -486,7 +481,7 @@ const SettingsTab = () => {
                     onClick: async () => {
                       setIsLoading(prev => ({ ...prev, import: true }));
                       try {
-                        const importedData = await window.electronAPI.importData();
+                        const importedData = await api.importData();
                         if (importedData) {
                           window.dispatchEvent(new CustomEvent('dataImported', { 
                             detail: importedData 
@@ -523,7 +518,7 @@ const SettingsTab = () => {
                       
                       if (confirmed) {
                         try {
-                          await window.electronAPI.clearAllData();
+                          await api.clearAllData();
                           setLanguage('en');
                           setShowSwabian(false);
                           setClickedLanguages(new Set());

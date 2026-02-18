@@ -9,6 +9,7 @@ import { PlusCircle, Edit, Trash2, Tags } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
 import { SUPPORTED_CURRENCIES, DEFAULT_CURRENCY } from '@/constants/currencies';
+import { api } from '@/lib/api';
 
 const TagsTab = ({
   quickTags,
@@ -31,7 +32,7 @@ const TagsTab = ({
   React.useEffect(() => {
     const loadCurrency = async () => {
       try {
-        const savedCurrency = await window.electronAPI.getData('currency');
+        const savedCurrency = await api.getData('currency');
         if (savedCurrency) {
           setSelectedCurrency(savedCurrency);
         }
