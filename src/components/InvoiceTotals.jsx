@@ -9,29 +9,33 @@ const InvoiceTotals = ({ items, profile, selectedCurrency, formatCurrency }) => 
   const total = subtotal + vatAmount;
 
   return (
-    <div className="flex justify-end">
-      <div className="w-full max-w-[300px] space-y-2">
-        <div className="flex justify-between items-center text-sm">
-          <span className="text-muted-foreground">{t('invoice.totals.netAmount')}</span>
-          <span className="font-medium">{formatCurrency(subtotal)}</span>
+    <div className="flex justify-end border-t-2 border-foreground pt-4">
+      <div className="w-full max-w-[320px] space-y-1">
+        <div className="flex justify-between items-center py-1">
+          <span className="text-xs uppercase tracking-widest font-mono text-muted-foreground">
+            {t('invoice.totals.netAmount')}
+          </span>
+          <span className="font-mono font-bold text-sm">{formatCurrency(subtotal)}</span>
         </div>
 
         {profile?.vat_enabled && (
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-muted-foreground">
+          <div className="flex justify-between items-center py-1">
+            <span className="text-xs uppercase tracking-widest font-mono text-muted-foreground">
               {t('invoice.totals.vat', { rate: profile.vat_rate })}
             </span>
-            <span className="font-medium">{formatCurrency(vatAmount)}</span>
+            <span className="font-mono font-bold text-sm">{formatCurrency(vatAmount)}</span>
           </div>
         )}
 
-        <div className="flex justify-between items-center pt-2 border-t border-border">
-          <span className="font-medium">{t('invoice.totals.totalAmount')}</span>
-          <span className="font-semibold text-lg">{formatCurrency(total)}</span>
+        <div className="flex justify-between items-center pt-3 mt-2 border-t-2 border-foreground">
+          <span className="text-xs uppercase tracking-widest font-bold font-mono">
+            {t('invoice.totals.totalAmount')}
+          </span>
+          <span className="font-mono font-black text-lg">{formatCurrency(total)}</span>
         </div>
       </div>
     </div>
   );
 };
 
-export default InvoiceTotals; 
+export default InvoiceTotals;

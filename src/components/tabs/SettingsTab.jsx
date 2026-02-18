@@ -1,14 +1,10 @@
 import React from 'react';
 import { useTheme } from 'next-themes';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Moon, Sun, Monitor, Save, Upload, Loader2, Info, FolderOpen, Trash2, FileEdit } from 'lucide-react';
+import { Moon, Sun, Monitor, Save, Upload, Loader2, FolderOpen, Trash2, FileEdit } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
-import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
-import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import '@/i18n/config';
 import TemplateEditor from '../TemplateEditor';
@@ -19,61 +15,44 @@ const SettingsTab = () => {
   const { theme, setTheme } = useTheme();
   const { t, i18n } = useTranslation();
   const [language, setLanguage] = React.useState('en');
-  const [isLoading, setIsLoading] = React.useState({
-    export: false,
-    import: false
-  });
-  const [previewSettings, setPreviewSettings] = React.useState({
-    showPreview: true,
-    savePath: ''
-  });
+  const [isLoading, setIsLoading] = React.useState({ export: false, import: false });
+  const [previewSettings, setPreviewSettings] = React.useState({ showPreview: true, savePath: '' });
   const [clickedLanguages, setClickedLanguages] = React.useState(new Set());
   const [showSwabian, setShowSwabian] = React.useState(false);
   const [showTemplateEditor, setShowTemplateEditor] = React.useState(false);
   const [selectedCurrency, setSelectedCurrency] = React.useState(DEFAULT_CURRENCY);
-  const [useGermanInvoices, setUseGermanInvoices] = React.useState(true);
   const [invoiceLanguage, setInvoiceLanguage] = React.useState('auto');
 
-  // Load preview settings on mount
+  // Load settings on mount
   React.useEffect(() => {
-    const loadPreviewSettings = async () => {
+    const loadAll = async () => {
       try {
         const settings = await api.getData('previewSettings');
-        if (settings) {
-          setPreviewSettings({
-            showPreview: settings.showPreview ?? true,
-            savePath: settings.savePath ?? ''
-          });
-        }
+        if (settings) setPreviewSettings({ showPreview: settings.showPreview ?? true, savePath: settings.savePath ?? '' });
+        const langSettings = await api.getData('languageSettings');
+        if (langSettings?.language) { setLanguage(langSettings.language); await i18n.changeLanguage(langSettings.language); }
+        const swabian = await api.getData('swabianUnlocked');
+        setShowSwabian(!!swabian?.unlocked);
+        const savedCurrency = await api.getData('currency');
+        if (savedCurrency) setSelectedCurrency(savedCurrency);
+        const invLangSettings = await api.getData('invoiceLanguageSettings');
+        if (invLangSettings?.invoiceLanguage) setInvoiceLanguage(invLangSettings.invoiceLanguage);
       } catch (error) {
         console.error('Error loading settings:', error);
-        toast.error(t('settings.errors.loadSettings'));
       }
     };
-    loadPreviewSettings();
-  }, []);
+    loadAll();
+  }, [i18n]);
 
-  // Save preview settings when changed
   const updatePreviewSettings = async (newSettings) => {
     try {
-      const sanitizedSettings = {
-        showPreview: newSettings.showPreview ?? true,
-        savePath: newSettings.savePath ?? ''
-      };
+      const sanitizedSettings = { showPreview: newSettings.showPreview ?? true, savePath: newSettings.savePath ?? '' };
       setPreviewSettings(sanitizedSettings);
       await api.setData('previewSettings', sanitizedSettings);
-      window.dispatchEvent(new CustomEvent('previewSettingsChanged', { 
-        detail: sanitizedSettings 
-      }));
-      
-      // Show different success messages based on what changed
-      if (newSettings.savePath !== previewSettings.savePath) {
-        toast.success(t('settings.success.saveLocation'));
-      } else if (newSettings.showPreview !== previewSettings.showPreview) {
-        toast.success(t('settings.success.previewToggle'));
-      }
+      window.dispatchEvent(new CustomEvent('previewSettingsChanged', { detail: sanitizedSettings }));
+      if (newSettings.savePath !== previewSettings.savePath) toast.success(t('settings.success.saveLocation'));
+      else if (newSettings.showPreview !== previewSettings.showPreview) toast.success(t('settings.success.previewToggle'));
     } catch (error) {
-      console.error('Error updating settings:', error);
       toast.error(t('settings.errors.updateSettings'));
     }
   };
@@ -81,571 +60,290 @@ const SettingsTab = () => {
   const handleSelectDirectory = async () => {
     try {
       const path = await api.selectDirectory();
-      if (path) {
-        await updatePreviewSettings({ 
-          ...previewSettings, 
-          savePath: path 
-        });
-        toast.success(t('settings.success.saveLocation'));
-      }
+      if (path) { await updatePreviewSettings({ ...previewSettings, savePath: path }); toast.success(t('settings.success.saveLocation')); }
     } catch (error) {
-      console.error('Directory selection error:', error);
       toast.error(t('settings.errors.directorySelection.error'));
     }
   };
-
-  // Load language settings on mount
-  React.useEffect(() => {
-    const loadLanguageSettings = async () => {
-      try {
-        const settings = await api.getData('languageSettings');
-        if (settings?.language) {
-          setLanguage(settings.language);
-          await i18n.changeLanguage(settings.language);
-        }
-      } catch (error) {
-        console.error('Error loading language settings:', error);
-        toast.error(t('settings.errors.loadLanguage'));
-      }
-    };
-    loadLanguageSettings();
-  }, [i18n]);
 
   const updateLanguage = async (newLanguage) => {
     try {
       await api.setData('languageSettings', { language: newLanguage });
       setLanguage(newLanguage);
       await i18n.changeLanguage(newLanguage);
-      window.dispatchEvent(new CustomEvent('languageChanged', { 
-        detail: { language: newLanguage } 
-      }));
+      window.dispatchEvent(new CustomEvent('languageChanged', { detail: { language: newLanguage } }));
       toast.success(t('settings.success.language'));
     } catch (error) {
-      console.error('Error updating language:', error);
       toast.error(t('settings.errors.updateLanguage'));
     }
   };
 
-  // Add after other useEffects
-  React.useEffect(() => {
-    // Check if Swabian was previously unlocked
-    const checkSwabianUnlock = async () => {
-      const settings = await api.getData('swabianUnlocked');
-      setShowSwabian(!!settings?.unlocked);
-    };
-    checkSwabianUnlock();
-  }, []);
-
   const handleLanguageClick = async (value) => {
-    // First handle the normal language change
     await updateLanguage(value);
-
-    // Then handle the easter egg logic
-    if (showSwabian) return; // Don't track if already unlocked
-
+    if (showSwabian) return;
     const newClickedLanguages = new Set(clickedLanguages).add(value);
     setClickedLanguages(newClickedLanguages);
-
-    // If all standard languages have been clicked
     const standardLanguages = ['en', 'de', 'es', 'ko', 'fr', 'zh', 'ja', 'pt', 'ru', 'hi', 'ar', 'it', 'nl', 'tr', 'vi', 'th'];
     if (standardLanguages.every(lang => newClickedLanguages.has(lang))) {
       setShowSwabian(true);
       await api.setData('swabianUnlocked', { unlocked: true });
-      toast.success('🦁 Schwäbisch freigschalded!', {
-        duration: 2000,
-      });
+      toast.success('🦁 Schwäbisch freigschalded!', { duration: 2000 });
     }
   };
 
-  const handleShowTemplate = async () => {
-    const templatePath = await api.getTemplatePath();
-    api.showItemInFolder(templatePath);
-  };
-
-  // Add to existing useEffect or create new one for loading settings
-  React.useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        // ... existing settings loading ...
-        const savedCurrency = await api.getData('currency');
-        if (savedCurrency) {
-          setSelectedCurrency(savedCurrency);
-        }
-      } catch (error) {
-        console.error('Error loading currency settings:', error);
-        toast.error(t('settings.errors.loadCurrency'));
-      }
-    };
-    loadSettings();
-  }, []);
-
-  // Add handler for currency updates
   const updateCurrency = async (newCurrency) => {
     try {
       await api.setData('currency', newCurrency);
       setSelectedCurrency(newCurrency);
-      window.dispatchEvent(new CustomEvent('currencyChanged', { 
-        detail: newCurrency 
-      }));
+      window.dispatchEvent(new CustomEvent('currencyChanged', { detail: newCurrency }));
       toast.success(t('settings.success.currency'));
     } catch (error) {
-      console.error('Error updating currency:', error);
       toast.error(t('settings.errors.updateCurrency'));
     }
   };
 
-  // Add after other useEffects
-  React.useEffect(() => {
-    const loadInvoiceLanguageSettings = async () => {
-      try {
-        const settings = await api.getData('invoiceLanguageSettings');
-        if (settings?.invoiceLanguage) {
-          setInvoiceLanguage(settings.invoiceLanguage);
-        }
-      } catch (error) {
-        console.error('Error loading invoice language settings:', error);
-      }
-    };
-    loadInvoiceLanguageSettings();
-  }, []);
-
-  // Add handler for toggle
   const handleInvoiceLanguageChange = async (newLanguage) => {
     try {
       await api.setData('invoiceLanguageSettings', { invoiceLanguage: newLanguage });
       setInvoiceLanguage(newLanguage);
-      window.dispatchEvent(new CustomEvent('invoiceLanguageChanged', { 
-        detail: { invoiceLanguage: newLanguage } 
-      }));
+      window.dispatchEvent(new CustomEvent('invoiceLanguageChanged', { detail: { invoiceLanguage: newLanguage } }));
       toast.success(t('settings.success.invoiceLanguage'));
     } catch (error) {
-      console.error('Error updating invoice language:', error);
       toast.error(t('settings.errors.updateInvoiceLanguage'));
     }
   };
 
+  const languages = [
+    { value: 'en', label: 'English', flag: '🇺🇸' },
+    { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
+    { value: 'es', label: 'Español', flag: '🇪🇸' },
+    { value: 'ko', label: '한국어', flag: '🇰🇷' },
+    { value: 'fr', label: 'Français', flag: '🇫🇷' },
+    { value: 'zh', label: '中文', flag: '🇨🇳' },
+    { value: 'ja', label: '日本語', flag: '🇯🇵' },
+    { value: 'pt', label: 'Português', flag: '🇵🇹' },
+    { value: 'ru', label: 'Русский', flag: '🇷🇺' },
+    { value: 'hi', label: 'हिन्दी', flag: '🇮🇳' },
+    { value: 'ar', label: 'العربية', flag: '🇸🇦' },
+    { value: 'it', label: 'Italiano', flag: '🇮🇹' },
+    { value: 'nl', label: 'Nederlands', flag: '🇳🇱' },
+    { value: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+    { value: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
+    { value: 'th', label: 'ไทย', flag: '🇹🇭' },
+    ...(showSwabian ? [{ value: 'swg', label: 'Schwäbisch', flag: '🦁' }] : [])
+  ];
+
   return (
-    <div className="container max-w-4xl mx-auto">
-      <Card className="border-none shadow-none">
-        <CardContent className="p-6">
-          <div className="flex flex-col space-y-8">
-            {/* Language Section */}
-            <section>
-              <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  {t('settings.language.title')}
-                </h2>
-                <Info className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground mb-6">
-                {t('settings.language.description')}
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { value: 'en', label: 'English', flag: '🇺🇸' },
-                  { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
-                  { value: 'es', label: 'Español', flag: '🇪🇸' },
-                  { value: 'ko', label: '한국어', flag: '🇰🇷' },
-                  { value: 'fr', label: 'Français', flag: '🇫🇷' },
-                  { value: 'zh', label: '中文', flag: '🇨🇳' },
-                  { value: 'ja', label: '日本語', flag: '🇯🇵' },
-                  { value: 'pt', label: 'Português', flag: '🇵🇹' },
-                  { value: 'ru', label: 'Русский', flag: '🇷🇺' },
-                  { value: 'hi', label: 'हिन्दी', flag: '🇮🇳' },
-                  { value: 'ar', label: 'العربية', flag: '🇸🇦' },
-                  { value: 'it', label: 'Italiano', flag: '🇮🇹' },
-                  { value: 'nl', label: 'Nederlands', flag: '🇳🇱' },
-                  { value: 'tr', label: 'Türkçe', flag: '🇹🇷' },
-                  { value: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
-                  { value: 'th', label: 'ไทย', flag: '🇹🇭' },
-                  ...(showSwabian ? [{ 
-                    value: 'swg', 
-                    label: 'Schwäbisch', 
-                    flag: '🦁'  // Using lion emoji for Swabian flag
-                  }] : [])
-                ].map(({ value, label, flag }) => (
-                  <button
-                    key={value}
-                    onClick={() => handleLanguageClick(value)}
-                    className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
-                      ${language === value 
-                        ? 'border-primary bg-primary/5 shadow-sm' 
-                        : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
-                  >
-                    <span className="text-2xl mb-2">{flag}</span>
-                    <h3 className={`font-medium ${language === value ? 'text-primary' : ''}`}>
-                      {label}
-                    </h3>
-                  </button>
-                ))}
-              </div>
-            </section>
+    <div className="b-page">
+      {/* Language */}
+      <div className="b-settings-section">
+        <div className="b-section-title">{t('settings.language.title')}</div>
+        <div className="b-section-desc">{t('settings.language.description')}</div>
+        <div className="b-option-grid">
+          {languages.map(({ value, label, flag }) => (
+            <button
+              key={value}
+              onClick={() => handleLanguageClick(value)}
+              className="b-option-btn"
+              data-active={language === value}
+            >
+              <span className="b-option-icon">{flag}</span>
+              <span className="b-option-label">{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-            <Separator />
+      {/* Currency */}
+      <div className="b-settings-section">
+        <div className="b-section-title">{t('settings.currency.title')}</div>
+        <div className="b-section-desc">{t('settings.currency.description')}</div>
+        <div className="b-option-grid">
+          {SUPPORTED_CURRENCIES.map(({ code, symbol, name }) => (
+            <button
+              key={code}
+              onClick={() => updateCurrency({ code, symbol, name })}
+              className="b-option-btn"
+              data-active={selectedCurrency.code === code}
+            >
+              <span className="b-option-icon">{symbol}</span>
+              <span className="b-option-label">{name}</span>
+              <span className="b-option-sub">{code}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-            {/* Add Currency Section after Language Section */}
-            <section>
-              <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  {t('settings.currency.title')}
-                </h2>
-                <Info className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground mb-6">
-                {t('settings.currency.description')}
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {SUPPORTED_CURRENCIES.map(({ code, symbol, name }) => (
-                  <button
-                    key={code}
-                    onClick={() => updateCurrency({ code, symbol, name })}
-                    className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
-                      ${selectedCurrency.code === code 
-                        ? 'border-primary bg-primary/5 shadow-sm' 
-                        : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
-                  >
-                    <span className="text-2xl mb-2">{symbol}</span>
-                    <h3 className={`font-medium ${selectedCurrency.code === code ? 'text-primary' : ''}`}>
-                      {name}
-                    </h3>
-                    <span className="text-xs text-muted-foreground mt-1">
-                      {code}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </section>
+      {/* Appearance */}
+      <div className="b-settings-section">
+        <div className="b-section-title">{t('settings.appearance.title')}</div>
+        <div className="b-section-desc">{t('settings.appearance.description')}</div>
+        <div className="b-option-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+          {[
+            { value: 'light', icon: Sun, label: t('settings.appearance.themes.light.label') },
+            { value: 'dark', icon: Moon, label: t('settings.appearance.themes.dark.label') },
+            { value: 'system', icon: Monitor, label: t('settings.appearance.themes.system.label') },
+          ].map(({ value, icon: Icon, label }) => (
+            <button
+              key={value}
+              onClick={() => setTheme(value)}
+              className="b-option-btn"
+              data-active={theme === value}
+            >
+              <Icon style={{ width: 24, height: 24, marginBottom: 6 }} />
+              <span className="b-option-label">{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-            <Separator />
-
-            {/* Appearance Section */}
-            <section>
-              <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  {t('settings.appearance.title')}
-                </h2>
-                <Info className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground mb-6">
-                {t('settings.appearance.description')}
-              </p>
-              <div className="grid grid-cols-3 gap-4">
-                {[
-                  { 
-                    value: 'light', 
-                    icon: Sun, 
-                    label: t('settings.appearance.themes.light.label'), 
-                    description: t('settings.appearance.themes.light.description') 
-                  },
-                  { 
-                    value: 'dark', 
-                    icon: Moon, 
-                    label: t('settings.appearance.themes.dark.label'), 
-                    description: t('settings.appearance.themes.dark.description') 
-                  },
-                  { 
-                    value: 'system', 
-                    icon: Monitor, 
-                    label: t('settings.appearance.themes.system.label'), 
-                    description: t('settings.appearance.themes.system.description') 
-                  }
-                ].map(({ value, icon: Icon, label, description }) => (
-                  <button
-                    key={value}
-                    onClick={() => setTheme(value)}
-                    className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 
-                      ${theme === value 
-                        ? 'border-primary bg-primary/5 shadow-sm' 
-                        : 'border-muted hover:border-primary/50 hover:bg-accent'}`}
-                  >
-                    <Icon className={`w-8 h-8 mb-2 ${theme === value ? 'text-primary' : 'text-muted-foreground'}`} />
-                    <h3 className="font-medium mb-1">{label}</h3>
-                    <p className="text-xs text-center text-muted-foreground">{description}</p>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* PDF Preview Settings Section */}
-            <section>
-              <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  {t('settings.pdf.title')}
-                </h2>
-                <Info className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground mb-6">
-                {t('settings.pdf.description')}
-              </p>
-              <div className="space-y-6">
-                {/* Preview Toggle */}
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label className="text-base">
-                      {t('settings.pdf.preview.label')}
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      {t('settings.pdf.preview.description')}
-                    </p>
-                  </div>
-                  <Switch
-                    checked={previewSettings.showPreview}
-                    onCheckedChange={(checked) => 
-                      updatePreviewSettings({ ...previewSettings, showPreview: checked })
-                    }
-                    className={!previewSettings.showPreview ? "data-[state=unchecked]:bg-destructive" : ""}
-                  />
-                </div>
-
-                {/* Save Path Setting */}
-                <div className="space-y-2">
-                  <Label className="text-base">
-                    {t('settings.pdf.save.label')}
-                  </Label>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    {t('settings.pdf.save.description')}
-                  </p>
-                  <div className="flex gap-2">
-                    <Input
-                      value={previewSettings.savePath}
-                      onChange={(e) => 
-                        updatePreviewSettings({ ...previewSettings, savePath: e.target.value })
-                      }
-                      placeholder={t('settings.pdf.save.placeholder')}
-                      className="flex-1"
-                      readOnly
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={handleSelectDirectory}
-                      className="flex-shrink-0"
-                    >
-                      <FolderOpen className="w-4 h-4 mr-2" />
-                      {t('settings.pdf.save.browse')}
-                    </Button>
-                  </div>
-                  {!previewSettings.savePath && (
-                    <p className="text-sm text-muted-foreground mt-2">
-                      {t('settings.pdf.save.noPath')}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Data Management Section */}
-            <section>
-              <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  {t('settings.dataManagement.title')}
-                </h2>
-                <Info className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground mb-6">
-                {t('settings.dataManagement.description')}
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  {
-                    icon: Save,
-                    title: t('settings.dataManagement.export.title'),
-                    description: t('settings.dataManagement.export.description'),
-                    buttonText: t('settings.dataManagement.export.button'),
-                    loading: isLoading.export,
-                    onClick: async () => {
-                      setIsLoading(prev => ({ ...prev, export: true }));
-                      try {
-                        const success = await api.exportData();
-                        if (success) {
-                          toast.success(t('settings.dataManagement.export.success'));
-                        } else {
-                          toast.error(t('settings.dataManagement.export.error'));
-                        }
-                      } catch (error) {
-                        toast.error(t('settings.dataManagement.export.genericError'));
-                      } finally {
-                        setIsLoading(prev => ({ ...prev, export: false }));
-                      }
-                    }
-                  },
-                  {
-                    icon: Upload,
-                    title: t('settings.dataManagement.import.title'),
-                    description: t('settings.dataManagement.import.description'),
-                    buttonText: t('settings.dataManagement.import.button'),
-                    loading: isLoading.import,
-                    onClick: async () => {
-                      setIsLoading(prev => ({ ...prev, import: true }));
-                      try {
-                        const importedData = await api.importData();
-                        if (importedData) {
-                          window.dispatchEvent(new CustomEvent('dataImported', { 
-                            detail: importedData 
-                          }));
-                          toast.success(t('settings.dataManagement.import.success'));
-                        } else {
-                          toast.error(t('settings.dataManagement.import.error'));
-                        }
-                      } catch (error) {
-                        toast.error(t('settings.dataManagement.import.genericError'));
-                      } finally {
-                        setIsLoading(prev => ({ ...prev, import: false }));
-                      }
-                    }
-                  },
-                  {
-                    icon: FileEdit,
-                    title: t('settings.invoice.template'),
-                    description: t('settings.invoice.templateDescription'),
-                    buttonText: t('settings.actions.editTemplate'),
-                    onClick: () => setShowTemplateEditor(true)
-                  },
-                  {
-                    icon: Trash2,
-                    title: t('settings.dataManagement.reset.title'),
-                    description: t('settings.dataManagement.reset.description'),
-                    buttonText: t('settings.dataManagement.reset.button'),
-                    variant: 'destructive',
-                    className: 'border-destructive/50',
-                    onClick: async () => {
-                      const confirmed = window.confirm(
-                        t('settings.dataManagement.reset.confirm')
-                      );
-                      
-                      if (confirmed) {
-                        try {
-                          await api.clearAllData();
-                          setLanguage('en');
-                          setShowSwabian(false);
-                          setClickedLanguages(new Set());
-                          setPreviewSettings({
-                            showPreview: true,
-                            savePath: ''
-                          });
-                          setTheme('system');
-                          await i18n.changeLanguage('en');
-                          window.dispatchEvent(new CustomEvent('settingsReset'));
-                          toast.success(t('settings.dataManagement.reset.success'));
-                          setTimeout(() => {
-                            window.location.reload();
-                          }, 1500);
-                        } catch (error) {
-                          console.error('Error resetting data:', error);
-                          toast.error(t('settings.dataManagement.reset.error'));
-                        }
-                      }
-                    }
-                  }
-                ].map(({ icon: Icon, title, description, buttonText, loading, onClick, variant, className }) => (
-                  <Card 
-                    key={title}
-                    className={`relative overflow-hidden border transition-all hover:shadow-md hover:border-primary/50 ${className || ''}`}
-                  >
-                    <CardContent className="p-6 flex flex-col h-full">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Icon className={`w-5 h-5 ${variant === 'destructive' ? 'text-destructive' : 'text-primary'}`} />
-                        <h3 className={`font-medium ${variant === 'destructive' ? 'text-destructive' : ''}`}>{title}</h3>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {description}
-                      </p>
-                      <div className="flex-grow" />
-                      <Button
-                        variant={variant || 'secondary'}
-                        onClick={onClick}
-                        disabled={loading}
-                        className="mt-6 w-full"
-                      >
-                        {loading ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            {buttonText}
-                          </>
-                        ) : (
-                          <>
-                            <Icon className="w-4 h-4 mr-2" />
-                            {buttonText}
-                          </>
-                        )}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Language Toggle Section */}
-            <section>
-              <div className="flex items-center gap-2 mb-6">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  {t('settings.language.invoiceLanguage')}
-                </h2>
-                <Info className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground mb-6">
-                {t('settings.language.invoiceLanguageDescription')}
-              </p>
-              <RadioGroup 
-                value={invoiceLanguage} 
-                onValueChange={handleInvoiceLanguageChange}
-                className="grid grid-cols-2 md:grid-cols-4 gap-4"
-              >
-                {[
-                  { value: 'auto', label: t('settings.language.invoiceLanguages.auto'), flag: '🌐' },
-                  { value: 'en', label: 'English', flag: '🇺🇸' },
-                  { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
-                  { value: 'es', label: 'Español', flag: '🇪🇸' },
-                  { value: 'ko', label: '한국어', flag: '🇰🇷' },
-                  { value: 'fr', label: 'Français', flag: '🇫🇷' },
-                  { value: 'zh', label: '中文', flag: '🇨🇳' },
-                  { value: 'ja', label: '日本語', flag: '🇯🇵' },
-                  { value: 'pt', label: 'Português', flag: '🇵🇹' },
-                  { value: 'ru', label: 'Русский', flag: '🇷🇺' },
-                  { value: 'hi', label: 'हिन्दी', flag: '🇮🇳' },
-                  { value: 'ar', label: 'العربية', flag: '🇸🇦' },
-                  { value: 'it', label: 'Italiano', flag: '🇮🇹' },
-                  { value: 'nl', label: 'Nederlands', flag: '🇳🇱' },
-                  { value: 'tr', label: 'Türkçe', flag: '🇹🇷' },
-                  { value: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
-                  { value: 'th', label: 'ไทย', flag: '🇹🇭' },
-                  ...(showSwabian ? [{ 
-                    value: 'swg', 
-                    label: 'Schwäbisch', 
-                    flag: '🦁'
-                  }] : [])
-                ].map(({ value, label, flag }) => (
-                  <div key={value}>
-                    <RadioGroupItem
-                      value={value}
-                      id={`invoice-lang-${value}`}
-                      className="peer sr-only"
-                    />
-                    <Label
-                      htmlFor={`invoice-lang-${value}`}
-                      className="flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200
-                        peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5
-                        hover:border-primary/50 hover:bg-accent cursor-pointer"
-                    >
-                      <span className="text-2xl mb-2">{flag}</span>
-                      <span className="font-medium">{label}</span>
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </section>
+      {/* PDF Settings */}
+      <div className="b-settings-section">
+        <div className="b-section-title">{t('settings.pdf.title')}</div>
+        <div className="b-section-desc">{t('settings.pdf.description')}</div>
+        <div className="b-toggle-row">
+          <div>
+            <div className="b-toggle-label">{t('settings.pdf.preview.label')}</div>
+            <div className="b-toggle-desc">{t('settings.pdf.preview.description')}</div>
           </div>
-        </CardContent>
-      </Card>
+          <Switch
+            checked={previewSettings.showPreview}
+            onCheckedChange={(checked) => updatePreviewSettings({ ...previewSettings, showPreview: checked })}
+          />
+        </div>
+        <div style={{ marginTop: '16px' }}>
+          <div className="b-toggle-label">{t('settings.pdf.save.label')}</div>
+          <div className="b-toggle-desc" style={{ marginBottom: '8px' }}>{t('settings.pdf.save.description')}</div>
+          <div className="b-path-row">
+            <input
+              className="b-path-input"
+              value={previewSettings.savePath}
+              readOnly
+              placeholder={t('settings.pdf.save.placeholder')}
+            />
+            <button className="b-btn" onClick={handleSelectDirectory}>
+              <FolderOpen style={{ width: 14, height: 14 }} />
+              {t('settings.pdf.save.browse')}
+            </button>
+          </div>
+          {!previewSettings.savePath && (
+            <div className="b-toggle-desc" style={{ marginTop: '8px' }}>{t('settings.pdf.save.noPath')}</div>
+          )}
+        </div>
+      </div>
 
-      {showTemplateEditor && (
-        <TemplateEditor onClose={() => setShowTemplateEditor(false)} />
-      )}
+      {/* Data Management */}
+      <div className="b-settings-section">
+        <div className="b-section-title">{t('settings.dataManagement.title')}</div>
+        <div className="b-section-desc">{t('settings.dataManagement.description')}</div>
+        <div className="b-data-grid">
+          {[
+            {
+              icon: Save, title: t('settings.dataManagement.export.title'),
+              description: t('settings.dataManagement.export.description'),
+              buttonText: t('settings.dataManagement.export.button'),
+              loading: isLoading.export,
+              onClick: async () => {
+                setIsLoading(prev => ({ ...prev, export: true }));
+                try {
+                  const success = await api.exportData();
+                  toast[success ? 'success' : 'error'](t(`settings.dataManagement.export.${success ? 'success' : 'error'}`));
+                } catch { toast.error(t('settings.dataManagement.export.genericError')); }
+                finally { setIsLoading(prev => ({ ...prev, export: false })); }
+              }
+            },
+            {
+              icon: Upload, title: t('settings.dataManagement.import.title'),
+              description: t('settings.dataManagement.import.description'),
+              buttonText: t('settings.dataManagement.import.button'),
+              loading: isLoading.import,
+              onClick: async () => {
+                setIsLoading(prev => ({ ...prev, import: true }));
+                try {
+                  const importedData = await api.importData();
+                  if (importedData) {
+                    window.dispatchEvent(new CustomEvent('dataImported', { detail: importedData }));
+                    toast.success(t('settings.dataManagement.import.success'));
+                  } else { toast.error(t('settings.dataManagement.import.error')); }
+                } catch { toast.error(t('settings.dataManagement.import.genericError')); }
+                finally { setIsLoading(prev => ({ ...prev, import: false })); }
+              }
+            },
+            {
+              icon: FileEdit, title: t('settings.invoice.template'),
+              description: t('settings.invoice.templateDescription'),
+              buttonText: t('settings.actions.editTemplate'),
+              onClick: () => setShowTemplateEditor(true)
+            },
+            {
+              icon: Trash2, title: t('settings.dataManagement.reset.title'),
+              description: t('settings.dataManagement.reset.description'),
+              buttonText: t('settings.dataManagement.reset.button'),
+              destructive: true,
+              onClick: async () => {
+                if (!window.confirm(t('settings.dataManagement.reset.confirm'))) return;
+                try {
+                  await api.clearAllData();
+                  setLanguage('en'); setShowSwabian(false); setClickedLanguages(new Set());
+                  setPreviewSettings({ showPreview: true, savePath: '' });
+                  setTheme('system'); await i18n.changeLanguage('en');
+                  window.dispatchEvent(new CustomEvent('settingsReset'));
+                  toast.success(t('settings.dataManagement.reset.success'));
+                  setTimeout(() => window.location.reload(), 1500);
+                } catch { toast.error(t('settings.dataManagement.reset.error')); }
+              }
+            }
+          ].map(({ icon: Icon, title, description, buttonText, loading, onClick, destructive }) => (
+            <div key={title} className="b-data-card">
+              <div className="b-data-card-title">
+                <Icon style={{ width: 16, height: 16, color: destructive ? 'hsl(var(--destructive))' : undefined }} />
+                <span style={{ color: destructive ? 'hsl(var(--destructive))' : undefined }}>{title}</span>
+              </div>
+              <div className="b-data-card-desc">{description}</div>
+              <button
+                className={destructive ? 'b-btn b-btn-destructive' : 'b-btn'}
+                onClick={onClick}
+                disabled={loading}
+                style={{ width: '100%', justifyContent: 'center' }}
+              >
+                {loading ? <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} /> : <Icon style={{ width: 14, height: 14 }} />}
+                {buttonText}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Invoice Language */}
+      <div className="b-settings-section">
+        <div className="b-section-title">{t('settings.language.invoiceLanguage')}</div>
+        <div className="b-section-desc">{t('settings.language.invoiceLanguageDescription')}</div>
+        <RadioGroup
+          value={invoiceLanguage}
+          onValueChange={handleInvoiceLanguageChange}
+          className="b-option-grid"
+        >
+          {[
+            { value: 'auto', label: t('settings.language.invoiceLanguages.auto'), flag: '🌐' },
+            ...languages
+          ].map(({ value, label, flag }) => (
+            <div key={value}>
+              <RadioGroupItem value={value} id={`invoice-lang-${value}`} className="peer sr-only" />
+              <Label
+                htmlFor={`invoice-lang-${value}`}
+                className="b-option-btn"
+                data-active={invoiceLanguage === value}
+                style={{ cursor: 'pointer' }}
+              >
+                <span className="b-option-icon">{flag}</span>
+                <span className="b-option-label">{label}</span>
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
+
+      {showTemplateEditor && <TemplateEditor onClose={() => setShowTemplateEditor(false)} />}
     </div>
   );
 };

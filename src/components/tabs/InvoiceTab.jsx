@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -49,253 +48,245 @@ const InvoiceTab = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  // Helper function to get translated title
   const getTranslatedTitle = (storedTitle) => {
-    // Skip diverse titles
     if (storedTitle === TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
       return '';
     }
-
-    // Find the key for the stored German value
     const titleKey = Object.entries(TITLE_STORAGE_VALUES)
       .find(([_, value]) => value === storedTitle)?.[0];
-
-    // Get translation for current language, fallback to English
     const translations = TITLE_TRANSLATIONS[i18n.language] || TITLE_TRANSLATIONS['en'];
     return titleKey ? translations[titleKey] : storedTitle;
   };
 
-  // Helper function to get translated academic title
   const getTranslatedAcademicTitle = (storedTitle) => {
     const titleKey = Object.entries(ACADEMIC_STORAGE_VALUES)
       .find(([_, value]) => value === storedTitle)?.[0];
-
     const translations = ACADEMIC_TRANSLATIONS[i18n.language] || ACADEMIC_TRANSLATIONS['en'];
     return titleKey ? translations[titleKey] : storedTitle;
   };
 
   return (
-    <Card className="border-border">
-      <CardContent className="responsive-p space-y-6">
-        <div className="grid grid-cols-12 gap-6">
-          {/* Customer Selection Section */}
-          <div className="col-span-12 lg:col-span-4 xl:col-span-3 space-y-4">
-            <h3 className="text-lg font-medium text-foreground">
-              {t('invoice.recipient.title')}
-            </h3>
-            <Select
-              value={selectedCustomer?.name || ''}
-              onValueChange={(value) => {
-                const customer = customers.find(c => c.name === value);
-                setSelectedCustomer(customer);
-              }}
-            >
-              <SelectTrigger className="bg-background border-border">
-                <SelectValue placeholder={t('invoice.recipient.selectCustomer')} />
-              </SelectTrigger>
-              <SelectContent className="select-content">
-                {customers.map((customer) => (
-                  <SelectItem 
-                    key={customer.name} 
-                    value={customer.name}
-                    className="select-item"
-                  >
-                    {(() => {
-                      const parts = [];
-                      if (customer.title && customer.title !== 'neutral') {
-                        parts.push(getTranslatedTitle(customer.title));
-                      }
-                      if (customer.zusatz && customer.zusatz !== 'none') {
-                        parts.push(getTranslatedAcademicTitle(customer.zusatz));
-                      }
-                      parts.push(customer.name);
-                      return parts.join(' ');
-                    })()}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+    <div className="brutalist-invoice">
+      {/* Header bar */}
+      <div className="brutalist-header">
+        <span className="brutalist-title">INVOICE</span>
+        <span className="font-mono text-sm tracking-tight opacity-70">
+          {currentInvoiceNumber || '—'}
+        </span>
+      </div>
 
-            {selectedCustomer && (
-              <div className="space-y-2">
-                <Input 
-                  value={selectedCustomer.street}
+      {/* 3-column top section */}
+      <div className="brutalist-grid-3">
+        {/* Column 1: Recipient */}
+        <div className="brutalist-section">
+          <div className="brutalist-label">{t('invoice.recipient.title')}</div>
+          <Select
+            value={selectedCustomer?.name || ''}
+            onValueChange={(value) => {
+              const customer = customers.find(c => c.name === value);
+              setSelectedCustomer(customer);
+            }}
+          >
+            <SelectTrigger className="brutalist-input">
+              <SelectValue placeholder={t('invoice.recipient.selectCustomer')} />
+            </SelectTrigger>
+            <SelectContent className="select-content">
+              {customers.map((customer) => (
+                <SelectItem
+                  key={customer.name}
+                  value={customer.name}
+                  className="select-item font-mono text-sm"
+                >
+                  {(() => {
+                    const parts = [];
+                    if (customer.title && customer.title !== 'neutral') {
+                      parts.push(getTranslatedTitle(customer.title));
+                    }
+                    if (customer.zusatz && customer.zusatz !== 'none') {
+                      parts.push(getTranslatedAcademicTitle(customer.zusatz));
+                    }
+                    parts.push(customer.name);
+                    return parts.join(' ');
+                  })()}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {selectedCustomer && (
+            <div className="space-y-1 mt-2">
+              <input
+                value={selectedCustomer.street}
+                readOnly
+                className="brutalist-input brutalist-input-readonly w-full"
+              />
+              <div className="grid grid-cols-2 gap-0">
+                <input
+                  value={selectedCustomer.postal_code}
                   readOnly
-                  className="bg-muted"
+                  className="brutalist-input brutalist-input-readonly w-full border-r-0"
                 />
-                <div className="grid grid-cols-2 gap-2">
-                  <Input 
-                    value={selectedCustomer.postal_code}
-                    readOnly
-                    className="bg-muted"
-                  />
-                  <Input 
-                    value={selectedCustomer.city}
-                    readOnly
-                    className="bg-muted"
-                  />
-                </div>
+                <input
+                  value={selectedCustomer.city}
+                  readOnly
+                  className="brutalist-input brutalist-input-readonly w-full"
+                />
               </div>
-            )}
+            </div>
+          )}
+        </div>
+
+        {/* Column 2: Details */}
+        <div className="brutalist-section brutalist-border-l">
+          <div className="brutalist-label">{t('invoice.details.title')}</div>
+          <Select
+            value={selectedProfile?.company_name || ''}
+            onValueChange={(value) => {
+              const profile = businessProfiles.find(p => p.company_name === value);
+              setSelectedProfile(profile);
+            }}
+          >
+            <SelectTrigger className="brutalist-input">
+              <SelectValue placeholder={t('invoice.details.selectProfile')} />
+            </SelectTrigger>
+            <SelectContent>
+              {businessProfiles.map((profile) => (
+                <SelectItem
+                  key={profile.company_name}
+                  value={profile.company_name}
+                  className="font-mono text-sm"
+                >
+                  {profile.company_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <div className="mt-2">
+            <div className="brutalist-field-label">{t('invoice.details.number.label')}</div>
+            <Input
+              value={currentInvoiceNumber}
+              onChange={(e) => {
+                const newNumber = e.target.value;
+                setCurrentInvoiceNumber(newNumber);
+                if (selectedProfile) {
+                  const updatedNumbers = {
+                    ...profileInvoiceNumbers,
+                    [selectedProfile.company_name]: newNumber
+                  };
+                  setProfileInvoiceNumbers(updatedNumbers);
+                  api.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
+                    console.error('Error saving invoice number:', error);
+                  });
+                }
+              }}
+              placeholder={t('invoice.details.number.hint')}
+              className="brutalist-input font-mono"
+            />
           </div>
 
-          {/* Invoice Details Section */}
-          <div className="col-span-12 lg:col-span-4 xl:col-span-5 space-y-4">
-            <h3 className="text-lg font-medium">
-              {t('invoice.details.title')}
-            </h3>
-            <Select
-              value={selectedProfile?.company_name || ''}
-              onValueChange={(value) => {
-                const profile = businessProfiles.find(p => p.company_name === value);
-                setSelectedProfile(profile);
-              }}
-            >
-              <SelectTrigger className="bg-background border-border">
-                <SelectValue placeholder={t('invoice.details.selectProfile')} />
-              </SelectTrigger>
-              <SelectContent>
-                {businessProfiles.map((profile) => (
-                  <SelectItem 
-                    key={profile.company_name} 
-                    value={profile.company_name}
-                  >
-                    {profile.company_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="mt-2">
+            <div className="brutalist-field-label">{t('invoice.details.reference.label')}</div>
+            <Input
+              value={invoiceReference}
+              onChange={(e) => setInvoiceReference(e.target.value)}
+              placeholder={t('invoice.details.reference.placeholder')}
+              className="brutalist-input font-mono"
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label>{t('invoice.details.number.label')}</Label>
-              <Input
-                value={currentInvoiceNumber}
-                onChange={(e) => {
-                  const newNumber = e.target.value;
-                  setCurrentInvoiceNumber(newNumber);
-                  if (selectedProfile) {
-                    const updatedNumbers = {
-                      ...profileInvoiceNumbers,
-                      [selectedProfile.company_name]: newNumber
-                    };
-                    setProfileInvoiceNumbers(updatedNumbers);
-                    api.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
-                      console.error('Error saving invoice number:', error);
-                    });
-                  }
-                }}
-                placeholder={t('invoice.details.number.hint')}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>{t('invoice.details.reference.label')}</Label>
-              <Input
-                value={invoiceReference}
-                onChange={(e) => setInvoiceReference(e.target.value)}
-                placeholder={t('invoice.details.reference.placeholder')}
-              />
-            </div>
-
-            <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-3 mt-3">
+            <div className="flex items-center gap-2">
               <Switch
                 checked={invoicePaid}
                 onCheckedChange={setInvoicePaid}
               />
-              <Label>{t('invoice.details.markAsPaid')}</Label>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={invoiceDates.showDate}
-                  onCheckedChange={(checked) => setInvoiceDates({
-                    ...invoiceDates,
-                    showDate: checked
-                  })}
-                  className="
-                    data-[state=checked]:!bg-[hsl(var(--chart-2))] 
-                    data-[state=unchecked]:!bg-[hsl(var(--muted-foreground))] 
-                    data-[state=unchecked]:!opacity-50
-                    data-[state=unchecked]:hover:!opacity-70
-                    transition-colors
-                  "
-                />
-                <Label className="text-sm text-muted-foreground">
-                  {t('invoice.details.date.showDate')}
-                </Label>
-              </div>
-
-              {invoiceDates.showDate && (
-                <>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={invoiceDates.hasDateRange}
-                      onCheckedChange={(checked) => setInvoiceDates({
-                        ...invoiceDates,
-                        hasDateRange: checked,
-                        startDate: '',
-                        endDate: ''
-                      })}
-                      disabled={invoiceItems.length > 0}
-                      className="
-                        data-[state=checked]:!bg-[hsl(var(--chart-2))] 
-                        data-[state=unchecked]:!bg-[hsl(var(--muted-foreground))] 
-                        data-[state=unchecked]:!opacity-50
-                        data-[state=unchecked]:hover:!opacity-70
-                        transition-colors
-                      "
-                    />
-                    <Label className="text-sm text-muted-foreground">
-                      {invoiceDates.hasDateRange ? t('invoice.details.date.servicePeriod') : t('invoice.details.date.serviceDate')}
-                    </Label>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <Label>{invoiceDates.hasDateRange ? t('invoice.details.date.startOfService') : t('invoice.details.date.serviceDate')}</Label>
-                      <Input 
-                        type="date"
-                        value={invoiceDates.startDate}
-                        onChange={(e) => setInvoiceDates({
-                          ...invoiceDates,
-                          startDate: e.target.value,
-                          endDate: invoiceDates.hasDateRange ? invoiceDates.endDate : e.target.value
-                        })}
-                      />
-                    </div>
-                    {invoiceDates.hasDateRange && (
-                      <div className="space-y-1">
-                        <Label>{t('invoice.details.date.endOfService')}</Label>
-                        <Input 
-                          type="date"
-                          value={invoiceDates.endDate}
-                          onChange={(e) => setInvoiceDates({
-                            ...invoiceDates,
-                            endDate: e.target.value
-                          })}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
+              <span className="brutalist-field-label mb-0">{t('invoice.details.markAsPaid')}</span>
             </div>
           </div>
 
-          {/* Quick Tags Section */}
-          <div className="col-span-12 lg:col-span-4 xl:col-span-4 space-y-4">
-            <div className="flex items-center justify-between gap-2">
-              <h3 className="text-lg font-medium">Quick Entry</h3>
-              <div className="relative flex items-center gap-2">
-                {showTagSearch ? (
-                  <div className="flex items-center">
+          <div className="mt-2 space-y-2">
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={invoiceDates.showDate}
+                onCheckedChange={(checked) => setInvoiceDates({
+                  ...invoiceDates,
+                  showDate: checked
+                })}
+              />
+              <span className="brutalist-field-label mb-0">
+                {t('invoice.details.date.showDate')}
+              </span>
+            </div>
+
+            {invoiceDates.showDate && (
+              <>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={invoiceDates.hasDateRange}
+                    onCheckedChange={(checked) => setInvoiceDates({
+                      ...invoiceDates,
+                      hasDateRange: checked,
+                      startDate: '',
+                      endDate: ''
+                    })}
+                    disabled={invoiceItems.length > 0}
+                  />
+                  <span className="brutalist-field-label mb-0">
+                    {invoiceDates.hasDateRange ? t('invoice.details.date.servicePeriod') : t('invoice.details.date.serviceDate')}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-0">
+                  <div>
+                    <div className="brutalist-field-label">
+                      {invoiceDates.hasDateRange ? t('invoice.details.date.startOfService') : t('invoice.details.date.serviceDate')}
+                    </div>
                     <Input
+                      type="date"
+                      value={invoiceDates.startDate}
+                      onChange={(e) => setInvoiceDates({
+                        ...invoiceDates,
+                        startDate: e.target.value,
+                        endDate: invoiceDates.hasDateRange ? invoiceDates.endDate : e.target.value
+                      })}
+                      className="brutalist-input font-mono border-r-0"
+                    />
+                  </div>
+                  {invoiceDates.hasDateRange && (
+                    <div>
+                      <div className="brutalist-field-label">{t('invoice.details.date.endOfService')}</div>
+                      <Input
+                        type="date"
+                        value={invoiceDates.endDate}
+                        onChange={(e) => setInvoiceDates({
+                          ...invoiceDates,
+                          endDate: e.target.value
+                        })}
+                        className="brutalist-input font-mono"
+                      />
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Column 3: Quick Tags */}
+        <div className="brutalist-section brutalist-border-l">
+          <div className="flex items-center justify-between">
+            <div className="brutalist-label">Quick Entry</div>
+            <div className="flex items-center">
+              {showTagSearch ? (
+                <div className="flex items-center">
+                  <div className="relative">
+                    <input
                       type="text"
-                      placeholder="Search tags..."
+                      placeholder="Search..."
                       value={tagSearch}
                       onChange={(e) => setTagSearch(e.target.value)}
-                      className="w-[200px] pl-8"
+                      className="brutalist-input font-mono text-xs w-[140px] pl-6 h-7"
                       autoFocus
                       onKeyDown={(e) => {
                         if (e.key === 'Escape') {
@@ -304,181 +295,166 @@ const InvoiceTab = ({
                         }
                       }}
                     />
-                    <Search 
-                      className="w-4 h-4 absolute left-2.5 text-gray-500" 
-                    />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 ml-1"
-                      onClick={() => {
-                        setShowTagSearch(false);
-                        setTagSearch('');
-                      }}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+                    <Search className="w-3 h-3 absolute left-1.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   </div>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => setShowTagSearch(true)}
+                  <button
+                    className="ml-1 p-1 hover:bg-foreground/10"
+                    onClick={() => {
+                      setShowTagSearch(false);
+                      setTagSearch('');
+                    }}
                   >
-                    <Search className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            </div>
-            <div className="relative">
-              <div className="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto pr-2 pb-12 pt-1">
-                {quickTags
-                  .filter(tag => 
-                    tag.visible && 
-                    selectedProfile && 
-                    (tag.personas || []).includes(selectedProfile.company_name) &&
-                    tag.name.toLowerCase().includes(tagSearch.toLowerCase())
-                  )
-                  .map((tag, index) => {
-                    const TagIcon = Icons[tag.icon];
-                    return (
-                      <button
-                        key={index}
-                        onClick={() => handleQuickTagClick(tag)}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm 
-                          bg-background/50 hover:bg-background border border-border/50 hover:border-border
-                          transition-colors duration-200 group relative"
-                        title={`${tag.description}\n${selectedCurrency.symbol}${parseFloat(tag.rate).toFixed(2)} × ${tag.quantity}`}
-                      >
-                        <div className="w-2 h-2 rounded-full" 
-                          style={{ backgroundColor: adjustColorForDarkMode(tag.color || '#e2e8f0', isDarkMode) }} 
-                        />
-                        <span className="text-foreground/90">{tag.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {selectedCurrency.symbol}{parseFloat(tag.rate).toFixed(2)}
-                        </span>
-                      </button>
-                    );
-                  })}
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-            </div>
-          </div>
-        </div>
-
-        {/* Invoice Items Section */}
-        <div className="mt-6">
-          <div className="overflow-x-auto rounded-md">
-            <div className="min-w-[600px] p-4">
-              <div className="grid grid-cols-12 gap-4 mb-4 font-medium text-foreground">
-                <div className="col-span-1">Pos.</div>
-                <div className="col-span-2">{t('invoice.items.quantity')}</div>
-                <div className="col-span-5">{t('invoice.items.description')}</div>
-                <div className="col-span-2">{t('invoice.items.rate')}</div>
-                <div className="col-span-1">{t('invoice.items.total')}</div>
-                <div className="col-span-1"></div>
-              </div>
-
-              {invoiceItems.map((item, index) => (
-                <div key={index} className="grid grid-cols-12 gap-2 mb-4 mx-0.5">
-                  <div className="col-span-1">
-                    <Input
-                      value={index + 1}
-                      readOnly
-                      className="bg-muted text-center"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <Input
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) => updateInvoiceItem(index, 'quantity', parseFloat(e.target.value))}
-                      min="0"
-                      step="0.5"
-                    />
-                  </div>
-                  <div className="col-span-5">
-                    <Input
-                      value={item.description}
-                      onChange={(e) => updateInvoiceItem(index, 'description', e.target.value)}
-                      placeholder={t('invoice.items.description')}
-                      className="w-full bg-background border-border"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <Input
-                      type="number"
-                      value={item.rate}
-                      onChange={(e) => updateInvoiceItem(index, 'rate', parseFloat(e.target.value))}
-                      min="0"
-                      step="0.01"
-                      placeholder={`Rate in ${selectedCurrency.symbol}`}
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <Input
-                      value={formatCurrency(item.quantity * item.rate)}
-                      readOnly
-                      className="bg-background border-border"
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => deleteInvoiceItem(index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+                    <X className="h-3 w-3" />
+                  </button>
                 </div>
-              ))}
-
-              <Button
-                variant="outline"
-                onClick={() => addInvoiceItem(invoiceDates.hasDateRange)}
-                className="mt-4"
-              >
-                <PlusCircle className="h-4 w-4 mr-2" />
-                {t('invoice.items.addItem')}
-              </Button>
+              ) : (
+                <button
+                  className="p-1 hover:bg-foreground/10"
+                  onClick={() => setShowTagSearch(true)}
+                >
+                  <Search className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
           </div>
+          <div className="relative mt-1">
+            <div className="flex flex-wrap gap-1 max-h-[220px] overflow-y-auto pb-8 pt-1">
+              {quickTags
+                .filter(tag =>
+                  tag.visible &&
+                  selectedProfile &&
+                  (tag.personas || []).includes(selectedProfile.company_name) &&
+                  tag.name.toLowerCase().includes(tagSearch.toLowerCase())
+                )
+                .map((tag, index) => {
+                  const TagIcon = Icons[tag.icon];
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleQuickTagClick(tag)}
+                      className="brutalist-tag group"
+                      title={`${tag.description}\n${selectedCurrency.symbol}${parseFloat(tag.rate).toFixed(2)} × ${tag.quantity}`}
+                    >
+                      <div className="w-2 h-2"
+                        style={{ backgroundColor: adjustColorForDarkMode(tag.color || '#e2e8f0', isDarkMode) }}
+                      />
+                      <span className="text-foreground/90">{tag.name}</span>
+                      <span className="text-[10px] font-mono text-muted-foreground">
+                        {selectedCurrency.symbol}{parseFloat(tag.rate).toFixed(2)}
+                      </span>
+                    </button>
+                  );
+                })}
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+          </div>
         </div>
+      </div>
 
-        {/* Add the totals component */}
-        {invoiceItems.length > 0 && (
-          <InvoiceTotals 
-            items={invoiceItems} 
+      {/* Items Table */}
+      <div className="brutalist-table-wrap">
+        <table className="brutalist-table">
+          <thead>
+            <tr>
+              <th className="w-[50px]">#</th>
+              <th className="w-[80px]">{t('invoice.items.quantity')}</th>
+              <th>{t('invoice.items.description')}</th>
+              <th className="w-[120px]">{t('invoice.items.rate')}</th>
+              <th className="w-[120px]">{t('invoice.items.total')}</th>
+              <th className="w-[44px]"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {invoiceItems.map((item, index) => (
+              <tr key={index}>
+                <td>
+                  <span className="brutalist-pos">{String(index + 1).padStart(2, '0')}</span>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) => updateInvoiceItem(index, 'quantity', parseFloat(e.target.value))}
+                    min="0"
+                    step="0.5"
+                    className="brutalist-cell-input"
+                  />
+                </td>
+                <td>
+                  <input
+                    value={item.description}
+                    onChange={(e) => updateInvoiceItem(index, 'description', e.target.value)}
+                    placeholder={t('invoice.items.description')}
+                    className="brutalist-cell-input w-full"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    value={item.rate}
+                    onChange={(e) => updateInvoiceItem(index, 'rate', parseFloat(e.target.value))}
+                    min="0"
+                    step="0.01"
+                    className="brutalist-cell-input text-right"
+                  />
+                </td>
+                <td>
+                  <span className="font-mono text-sm font-bold text-right block">
+                    {formatCurrency(item.quantity * item.rate)}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    onClick={() => deleteInvoiceItem(index)}
+                    className="p-1 hover:bg-destructive/20 hover:text-destructive transition-colors"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <button
+          onClick={() => addInvoiceItem(invoiceDates.hasDateRange)}
+          className="brutalist-add-btn"
+        >
+          <PlusCircle className="h-3.5 w-3.5" />
+          <span>{t('invoice.items.addItem')}</span>
+        </button>
+      </div>
+
+      {/* Totals */}
+      {invoiceItems.length > 0 && (
+        <div className="p-4">
+          <InvoiceTotals
+            items={invoiceItems}
             profile={selectedProfile}
             selectedCurrency={selectedCurrency}
             formatCurrency={formatCurrency}
           />
-        )}
-
-        {/* Total and Generate Section */}
-        <div className="mt-6 flex justify-end items-center">
-          <Button 
-            onClick={generateInvoice} 
-            disabled={isLoading.invoice}
-            className="min-w-[200px]"
-          >
-            {isLoading.invoice ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                {t('invoice.actions.generating')}
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4 mr-2" />
-                {t('invoice.actions.generate')}
-              </>
-            )}
-          </Button>
         </div>
-      </CardContent>
-    </Card>
+      )}
+
+      {/* Generate Button */}
+      <button
+        onClick={generateInvoice}
+        disabled={isLoading.invoice}
+        className="brutalist-generate-btn"
+      >
+        {isLoading.invoice ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span>{t('invoice.actions.generating')}</span>
+          </>
+        ) : (
+          <>
+            <Save className="h-4 w-4" />
+            <span>{t('invoice.actions.generate')}</span>
+          </>
+        )}
+      </button>
+    </div>
   );
 };
 

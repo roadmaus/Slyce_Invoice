@@ -1539,28 +1539,28 @@ const updateInvoiceLanguage = async (language) => {
   return (
     <>
       {isLoading.invoice && <LoadingOverlay />}
-      <div className="container-large space-y-6">
+      <div className="container-large">
         <Toaster position="top-right" expand={true} richColors />
         <Tabs defaultValue="invoice" className="w-full">
-          <TabsList className="bg-muted">
-            <TabsTrigger value="invoice" className="data-[state=active]:bg-background">
-              <FileText className="w-4 h-4 mr-2" />
+          <TabsList className="b-tabs">
+            <TabsTrigger value="invoice" className="b-tab">
+              <FileText />
               {t('invoice.title')}
             </TabsTrigger>
-            <TabsTrigger value="customers" className="data-[state=active]:bg-background">
-              <Users className="w-4 h-4 mr-2" />
+            <TabsTrigger value="customers" className="b-tab">
+              <Users />
               {t('customers.title')}
             </TabsTrigger>
-            <TabsTrigger value="business" className="data-[state=active]:bg-background">
-              <Building2 className="w-4 h-4 mr-2" />
+            <TabsTrigger value="business" className="b-tab">
+              <Building2 />
               {t('business.title')}
             </TabsTrigger>
-            <TabsTrigger value="tags" className="data-[state=active]:bg-background">
-              <Tags className="w-4 h-4 mr-2" />
+            <TabsTrigger value="tags" className="b-tab">
+              <Tags />
               {t('tags.title')}
             </TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-background">
-              <Settings className="w-4 h-4 mr-2" />
+            <TabsTrigger value="settings" className="b-tab">
+              <Settings />
               {t('settings.title')}
             </TabsTrigger>
           </TabsList>
@@ -1664,25 +1664,24 @@ const updateInvoiceLanguage = async (language) => {
           </TabsContent>
         </Tabs>
 
-        {/* Add this dialog component near your other dialogs */}
         <Dialog open={showWarningDialog} onOpenChange={setShowWarningDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Missing Values</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="b-heading" style={{ fontSize: '0.85rem' }}>Missing Values</DialogTitle>
+              <DialogDescription className="b-mono" style={{ fontSize: '0.75rem' }}>
                 Rate or quantity is empty. Would you like to set them to 0 and continue?
               </DialogDescription>
             </DialogHeader>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => {
+            <div className="flex justify-end gap-2 p-4">
+              <button className="b-btn b-btn-outline" onClick={() => {
                 setShowWarningDialog(false);
                 setPendingTag(null);
               }}>
                 Cancel
-              </Button>
-              <Button onClick={() => proceedWithAddingTag(pendingTag)}>
+              </button>
+              <button className="b-btn" onClick={() => proceedWithAddingTag(pendingTag)}>
                 Set to 0 and Continue
-              </Button>
+              </button>
             </div>
           </DialogContent>
         </Dialog>
