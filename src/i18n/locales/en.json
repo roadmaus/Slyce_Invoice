@@ -16,6 +16,7 @@
         "label": "Reference",
         "placeholder": "Enter reference number or text"
       },
+      "dueDate": "Payment Due Date",
       "markAsPaid": "Mark as Paid",
       "paid": "PAID",
       "date": {
@@ -286,6 +287,11 @@
       "preview": {
         "label": "Show PDF preview",
         "description": "Shows a preview of the PDF before saving"
+      },
+      "eRechnung": {
+        "label": "e-Rechnung (ZUGFeRD)",
+        "description": "Embed structured XML into PDFs for EN 16931 compliance",
+        "toggle": "e-Rechnung setting updated"
       },
       "save": {
         "label": "Save location",

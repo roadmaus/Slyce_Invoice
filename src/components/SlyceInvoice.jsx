@@ -28,6 +28,7 @@ import { BUSINESS_KEYS, BUSINESS_STORAGE_VALUES, BUSINESS_TRANSLATIONS } from '@
 import LoadingOverlay from './LoadingOverlay';
 import html2pdf from 'html2pdf.js';
 import { api } from '@/lib/api';
+import { createZugferdPdf } from '@/lib/zugferd';
 
 // Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
@@ -357,6 +358,8 @@ const SlyceInvoice = () => {
   });
   const [invoiceReference, setInvoiceReference] = useState('');
   const [invoicePaid, setInvoicePaid] = useState(false);
+  const [invoiceDueDate, setInvoiceDueDate] = useState('');
+  const [eRechnungEnabled, setERechnungEnabled] = useState(false);
 
   // UI State
   const [showNewProfileDialog, setShowNewProfileDialog] = useState(false);
@@ -419,8 +422,10 @@ const SlyceInvoice = () => {
         const savedTags = await api.getData('quickTags');
         const savedInvoiceNumbers = await api.getData('profileInvoiceNumbers') || {};
         const savedCurrency = await api.getData('currency');
+        const savedERechnung = await api.getData('eRechnungEnabled');
 
         if (savedProfiles) setBusinessProfiles(savedProfiles);
+        if (savedERechnung !== null && savedERechnung !== undefined) setERechnungEnabled(savedERechnung);
         if (savedCustomers) {
           const customersWithIds = savedCustomers.map(customer => 
             customer.id ? customer : { ...customer, id: generateUniqueId() }
@@ -890,8 +895,26 @@ const SlyceInvoice = () => {
       };
 
       // Generate PDF
-      const pdf = await html2pdf().set(opt).from(element).outputPdf('arraybuffer');
-      
+      let pdf = await html2pdf().set(opt).from(element).outputPdf('arraybuffer');
+
+      // Embed ZUGFeRD XML if e-Rechnung is enabled
+      if (eRechnungEnabled) {
+        try {
+          pdf = await createZugferdPdf(pdf, {
+            invoiceNumber: currentInvoiceNumber,
+            date: new Date(),
+            profile: selectedProfile,
+            customer: selectedCustomer,
+            items: invoiceItems,
+            currency: selectedCurrency,
+            dueDate: invoiceDueDate || null,
+          });
+        } catch (zugferdError) {
+          console.error('ZUGFeRD embedding failed:', zugferdError);
+          toast.error('e-Rechnung XML embedding failed, saving plain PDF.');
+        }
+      }
+
       // Save the PDF
       const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
       const settings = await api.getData('previewSettings');
@@ -1356,9 +1379,15 @@ useEffect(() => {
     setPreviewSettings(event.detail);
   };
   window.addEventListener('previewSettingsChanged', handleSettingsChange);
-  
+
+  const handleERechnungChange = (event) => {
+    setERechnungEnabled(event.detail);
+  };
+  window.addEventListener('eRechnungChanged', handleERechnungChange);
+
   return () => {
     window.removeEventListener('previewSettingsChanged', handleSettingsChange);
+    window.removeEventListener('eRechnungChanged', handleERechnungChange);
   };
 }, []);
 
@@ -1600,6 +1629,8 @@ const updateInvoiceLanguage = async (language) => {
               setInvoiceReference={setInvoiceReference}
               invoicePaid={invoicePaid}
               setInvoicePaid={setInvoicePaid}
+              invoiceDueDate={invoiceDueDate}
+              setInvoiceDueDate={setInvoiceDueDate}
             />
           </TabsContent>
 

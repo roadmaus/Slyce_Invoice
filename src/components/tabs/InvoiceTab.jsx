@@ -45,6 +45,8 @@ const InvoiceTab = ({
   setInvoiceReference,
   invoicePaid,
   setInvoicePaid,
+  invoiceDueDate,
+  setInvoiceDueDate,
 }) => {
   const { t, i18n } = useTranslation();
 
@@ -191,6 +193,16 @@ const InvoiceTab = ({
               value={invoiceReference}
               onChange={(e) => setInvoiceReference(e.target.value)}
               placeholder={t('invoice.details.reference.placeholder')}
+              className="brutalist-input font-mono"
+            />
+          </div>
+
+          <div className="mt-2">
+            <div className="brutalist-field-label">{t('invoice.details.dueDate')}</div>
+            <Input
+              type="date"
+              value={invoiceDueDate}
+              onChange={(e) => setInvoiceDueDate(e.target.value)}
               className="brutalist-input font-mono"
             />
           </div>

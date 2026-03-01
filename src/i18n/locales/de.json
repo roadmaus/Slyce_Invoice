@@ -16,6 +16,7 @@
         "label": "Referenz",
         "placeholder": "Referenznummer oder -text eingeben"
       },
+      "dueDate": "Zahlungsziel",
       "markAsPaid": "Als bezahlt markieren",
       "paid": "BEZAHLT",
       "date": {
@@ -280,6 +281,11 @@
       "preview": {
         "label": "PDF-Vorschau anzeigen",
         "description": "Zeigt eine Vorschau der PDF an, bevor sie gespeichert wird"
+      },
+      "eRechnung": {
+        "label": "e-Rechnung (ZUGFeRD)",
+        "description": "Strukturiertes XML in PDFs einbetten für EN 16931-Konformität",
+        "toggle": "e-Rechnung-Einstellung aktualisiert"
       },
       "save": {
         "label": "Speicherort",

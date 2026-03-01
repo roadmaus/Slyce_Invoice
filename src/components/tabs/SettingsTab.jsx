@@ -31,6 +31,7 @@ const SettingsTab = () => {
   const [selectedCurrency, setSelectedCurrency] = React.useState(DEFAULT_CURRENCY);
   const [invoiceLanguage, setInvoiceLanguage] = React.useState('auto');
   const [activeSection, setActiveSection] = React.useState('language');
+  const [eRechnungEnabled, setERechnungEnabled] = React.useState(false);
 
   React.useEffect(() => {
     const loadAll = async () => {
@@ -45,6 +46,8 @@ const SettingsTab = () => {
         if (savedCurrency) setSelectedCurrency(savedCurrency);
         const invLangSettings = await api.getData('invoiceLanguageSettings');
         if (invLangSettings?.invoiceLanguage) setInvoiceLanguage(invLangSettings.invoiceLanguage);
+        const savedERechnung = await api.getData('eRechnungEnabled');
+        if (savedERechnung !== null && savedERechnung !== undefined) setERechnungEnabled(savedERechnung);
       } catch (error) {
         console.error('Error loading settings:', error);
       }
@@ -333,6 +336,24 @@ const SettingsTab = () => {
                 {!previewSettings.savePath && (
                   <div className="stg-row-desc" style={{ marginTop: 8 }}>{t('settings.pdf.save.noPath')}</div>
                 )}
+              </div>
+
+              <div className="stg-divider" />
+
+              <div className="stg-row">
+                <div className="stg-row-text">
+                  <div className="stg-row-label">{t('settings.pdf.eRechnung.label')}</div>
+                  <div className="stg-row-desc">{t('settings.pdf.eRechnung.description')}</div>
+                </div>
+                <Switch
+                  checked={eRechnungEnabled}
+                  onCheckedChange={async (checked) => {
+                    setERechnungEnabled(checked);
+                    await api.setData('eRechnungEnabled', checked);
+                    window.dispatchEvent(new CustomEvent('eRechnungChanged', { detail: checked }));
+                    toast.success(t('settings.pdf.eRechnung.toggle'));
+                  }}
+                />
               </div>
 
               <div className="stg-divider" />
