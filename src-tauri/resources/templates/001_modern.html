@@ -1,231 +1,349 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rechnung</title>
+    <title>Invoice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --apple-gray: #86868b;
-            --apple-light-gray: #f5f5f7;
-            --apple-border: #d2d2d7;
-            --apple-blue: #0066cc;
+            --bg: #ffffff;
+            --ink: #0f172a;
+            --ink-2: #334155;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --line-strong: #0f172a;
+            --accent: #4f46e5;
+            --tint: #f8fafc;
         }
 
-        @page {
-            size: A4;
-            margin: 48px;
+        @page { size: A4; margin: 0; }
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--ink);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-            margin: 0;
-            padding: 48px;
-            color: #1d1d1f;
-            font-size: 14px;
-            line-height: 1.47059;
-            background-color: white;
+            font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.55;
+            padding: 52px 56px 44px;
             -webkit-font-smoothing: antialiased;
         }
 
-        .header,
-        .invoice-details,
-        .greeting-section,
-        table,
-        .payment-info,
-        .banking-info {
-            page-break-inside: avoid;
+        .mono {
+            font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+            font-variant-ligatures: none;
+            font-variant-numeric: tabular-nums;
         }
 
-        .payment-info {
-            page-break-before: auto;
-        }
-
-        .contact-details,
-        .page-number {
-            page-break-after: auto;
-        }
-
-        tr {
-            page-break-inside: avoid;
-        }
-
-        thead {
-            display: table-header-group;
-        }
-
+        /* ── HEADER ───────────────────────────── */
         .header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 72px;
             align-items: flex-start;
+            padding-bottom: 26px;
+            border-bottom: 1px solid var(--line);
         }
 
-        .logo {
+        .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
-
-        .logo-icon {
+        .brand .mark {
             width: 40px;
             height: 40px;
-            background: #000000;
+            background: var(--ink);
             border-radius: 8px;
             position: relative;
         }
-
-        .logo-text {
-            font-size: 21px;
+        .brand .mark::after {
+            content: "";
+            position: absolute;
+            inset: 10px;
+            border: 2px solid var(--bg);
+            border-radius: 3px;
+        }
+        .brand .name {
+            font-size: 15pt;
             font-weight: 600;
-            letter-spacing: -0.022em;
+            letter-spacing: -0.01em;
+            color: var(--ink);
         }
 
-        .company-address {
+        .header-meta {
             text-align: right;
-            color: var(--apple-gray);
-            font-size: 12px;
-            line-height: 1.33337;
         }
-
-        .invoice-details {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 48px;
+        .header-meta .label {
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 8pt;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--muted);
+            margin: 0 0 4px;
         }
-
-        .recipient-info {
-            max-width: 280px;
-            line-height: 1.4;
-        }
-
-        .invoice-info {
-            text-align: right;
-            color: var(--apple-gray);
-        }
-
-        .invoice-title {
-            font-size: 28px;
+        .header-meta .title {
+            font-size: 28pt;
             font-weight: 600;
-            letter-spacing: -0.003em;
-            margin-bottom: 36px;
-            color: #1d1d1f;
+            letter-spacing: -0.025em;
+            color: var(--ink);
+            line-height: 1;
+            margin: 0;
         }
 
+        /* ── PARTIES ──────────────────────────── */
+        .parties {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 28px;
+            margin-top: 32px;
+        }
+
+        .party-label {
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 8pt;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--muted);
+            margin: 0 0 10px;
+        }
+        .party-body {
+            font-size: 10pt;
+            line-height: 1.55;
+            color: var(--ink);
+        }
+        .party-body p { margin: 2px 0; }
+        .party-body strong {
+            font-weight: 600;
+            color: var(--ink);
+        }
+        .party-body .sub {
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 8.5pt;
+            color: var(--muted);
+            margin-top: 8px;
+            line-height: 1.65;
+        }
+
+        .reference-block:not(:empty) {
+            margin: 22px 0 0;
+            padding: 12px 16px;
+            background: var(--tint);
+            border-left: 3px solid var(--accent);
+            font-size: 9.5pt;
+            color: var(--ink-2);
+        }
+
+        .reference-block p { margin: 0; }
+
+        /* ── GREETING ─────────────────────────── */
         .greeting-section {
-            margin-bottom: 36px;
-            line-height: 1.4;
+            margin: 30px 0 24px;
+            font-size: 10.5pt;
+            line-height: 1.65;
+            color: var(--ink-2);
+            max-width: 78ch;
         }
+        .greeting-section p { margin: 0 0 6px; }
 
-        table {
+        /* ── ITEMS TABLE ──────────────────────── */
+        table.items {
             width: 100%;
             border-collapse: collapse;
-            margin: 36px 0;
+            margin: 16px 0 0;
+            font-size: 10pt;
         }
-
-        th, td {
-            padding: 12px 8px;
+        table.items thead th {
             text-align: left;
-            border-bottom: 1px solid var(--apple-border);
-        }
-
-        th {
-            font-weight: 600;
-            color: var(--apple-gray);
-            font-size: 12px;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 8pt;
             text-transform: uppercase;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            font-weight: 500;
+            padding: 12px 10px;
+            border-top: 1px solid var(--line-strong);
+            border-bottom: 1px solid var(--line);
         }
-
-        .amount-summary {
-            width: 320px;
-            margin-left: auto;
-            margin-right: 0;
-            border: none;
+        table.items tbody td {
+            padding: 14px 10px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: top;
+            color: var(--ink);
         }
+        table.items tbody tr:last-child td { border-bottom: 1px solid var(--line-strong); }
 
-        .amount-summary tr td:last-child {
+        table.items td:nth-child(1) {
+            width: 36px;
+            color: var(--muted);
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 9pt;
+        }
+        table.items td:nth-child(2) {
+            width: 60px;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 9.5pt;
+            font-variant-numeric: tabular-nums;
+        }
+        table.items td:nth-child(4),
+        table.items td:nth-child(5) {
             text-align: right;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 9.5pt;
+            font-variant-numeric: tabular-nums;
         }
+        table.items th:nth-child(4),
+        table.items th:nth-child(5) { text-align: right; }
 
-        .amount-summary tr:last-child {
+        /* ── TOTALS ───────────────────────────── */
+        .totals-wrap {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        table.amount-summary {
+            width: 340px;
+            border-collapse: collapse;
+        }
+        table.amount-summary td {
+            padding: 9px 0;
+            font-size: 10pt;
+        }
+        table.amount-summary tr td:first-child {
+            color: var(--muted);
+        }
+        table.amount-summary tr td:last-child {
+            text-align: right;
+            font-family: "IBM Plex Mono", monospace;
+            font-variant-numeric: tabular-nums;
+            color: var(--ink);
+        }
+        table.amount-summary tr:last-child td {
+            border-top: 1px solid var(--line-strong);
+            padding-top: 16px;
+            padding-bottom: 6px;
+            font-size: 13pt;
             font-weight: 600;
-            font-size: 16px;
+            color: var(--ink);
+        }
+        table.amount-summary tr:last-child td:first-child {
+            font-family: "IBM Plex Sans", sans-serif;
+            font-weight: 600;
+            color: var(--ink);
         }
 
+        /* ── PAYMENT / BANKING ────────────────── */
         .payment-info {
-            margin-top: 48px;
-            border-top: 1px solid var(--apple-border);
-            padding-top: 24px;
-            color: var(--apple-gray);
+            margin-top: 36px;
+            padding-top: 26px;
+            border-top: 1px solid var(--line);
+        }
+        .payment-info > p {
+            margin: 0 0 12px;
+            font-size: 10pt;
+            line-height: 1.6;
+            color: var(--ink-2);
         }
 
         .banking-info {
-            margin-top: 36px;
-            background-color: var(--apple-light-gray);
-            padding: 24px;
-            border-radius: 12px;
+            margin-top: 18px;
+            padding: 20px 24px;
+            background: var(--tint);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px 20px;
+            font-size: 9.5pt;
         }
-
+        .banking-info::before {
+            content: "";
+            display: none;
+        }
         .banking-info p {
-            margin: 8px 0;
+            margin: 0;
+            display: contents;
+        }
+        .banking-info p::before {
+            content: "";
+            display: block;
         }
 
+        .closing {
+            margin-top: 22px;
+            font-size: 10pt;
+            color: var(--ink-2);
+            line-height: 1.6;
+        }
+
+        /* ── FOOTER ───────────────────────────── */
         .contact-details {
+            margin-top: 36px;
+            padding-top: 18px;
+            border-top: 1px solid var(--line);
             text-align: center;
-            margin-top: 48px;
-            margin-bottom: 24px;
-            font-size: 11px;
-            color: var(--apple-gray);
-            page-break-inside: avoid;
-        }
-
-        .page-number {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 11px;
-            color: var(--apple-gray);
-        }
-
-        .medium-bold {
-            font-weight: 600;
-            color: #1d1d1f;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 8pt;
+            color: var(--muted);
+            letter-spacing: 0.04em;
         }
 
         @media print {
-            body {
-                padding: 0;
-            }
-
-            body, .banking-info {
+            body { padding: 38px 42px; }
+            body, .banking-info, .reference-block, .header, table.items thead th {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                page-break-inside: avoid;
             }
+            tr, thead { page-break-inside: avoid; }
+            thead { display: table-header-group; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">
-            <div class="logo-icon"></div>
-            <div class="logo-text">LOGO</div>
+        <div class="brand">
+            <div class="mark"></div>
+            <div class="name">{company_name}</div>
         </div>
-        <div class="company-address">
-            {company_name}<br>
-            {company_street}<br>
-            {company_postalcode} {company_city}<br>
-            <p>{tax_number_label}: {tax_number}<br>
-            {tax_id_label}: {tax_id}</p>
+        <div class="header-meta">
+            <p class="label">{invoice_heading}</p>
+            <p class="title">#</p>
         </div>
     </div>
 
-    <div class="invoice-details">
-        <div class="recipient-info">
-            {customer_address}
+    <div class="parties">
+        <div>
+            <p class="party-label">{from_label}</p>
+            <div class="party-body">
+                <p><strong>{company_name}</strong></p>
+                <p>{company_street}</p>
+                <p>{company_postalcode} {company_city}</p>
+                <div class="sub">
+                    {tax_number_label}: {tax_number}<br>
+                    {tax_id_label}: {tax_id}
+                </div>
+            </div>
         </div>
-        <div class="invoice-info">
-            {invoice_number_date}
-            {paid_status}
+        <div>
+            <p class="party-label">{billed_to_label}</p>
+            <div class="party-body">
+                {customer_address}
+                {paid_status}
+            </div>
+        </div>
+        <div>
+            <p class="party-label">{details_label}</p>
+            <div class="party-body">
+                <div class="sub" style="margin-top:0;">{invoice_number_date}</div>
+            </div>
         </div>
     </div>
 
@@ -236,7 +354,7 @@
         <p>{service_period_text}</p>
     </div>
 
-    <table>
+    <table class="items">
         <thead>
             <tr>
                 <th>{position_label}</th>
@@ -251,31 +369,29 @@
         </tbody>
     </table>
 
-    <table class="amount-summary">
-        <tr>
-            <td>{net_amount_label}:</td>
-            <td>{net_amount}</td>
-        </tr>
-        {vat_row}
-        <tr>
-            <td>{total_amount_label}:</td>
-            <td>{total_amount}</td>
-        </tr>
-    </table>
+    <div class="totals-wrap">
+        <table class="amount-summary">
+            <tr>
+                <td>{net_amount_label}</td>
+                <td>{net_amount}</td>
+            </tr>
+            {vat_row}
+            <tr>
+                <td>{total_amount_label}</td>
+                <td>{total_amount}</td>
+            </tr>
+        </table>
+    </div>
 
     <div class="payment-info">
         <p>{payment_instruction}</p>
-        
         {vat_notice}
-        
         <div class="banking-info">
-            {bank_institute_label}: {bank_institute}
+            <p>{bank_institute_label}: {bank_institute}</p>
             <p>{bank_iban_label}: {bank_iban}</p>
             <p>{bank_bic_label}: {bank_bic}</p>
         </div>
-
-        <p>{thank_you_note}</p>
-        <p>{closing}<br>{company_name}</p>
+        <p class="closing">{thank_you_note}<br>{closing}<br><strong>{company_name}</strong></p>
     </div>
 
     <div class="contact-details">

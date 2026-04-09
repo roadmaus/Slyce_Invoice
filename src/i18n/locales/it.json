@@ -42,7 +42,9 @@
       "generate": "Genera fattura",
       "generating": "Generazione in corso...",
       "preview": "Anteprima",
-      "save": "Salva"
+      "save": "Salva",
+      "accept": "Salva e accetta",
+      "reject": "Scarta"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "Grazie per la fiducia. Non vedo l'ora di collaborare nuovamente con Lei.",
       "regards": "Cordiali saluti"
+    },
+    "template": {
+      "from": "Da",
+      "billedTo": "Fatturato a",
+      "details": "Dettagli",
+      "issuedBy": "Emesso da",
+      "heading": "Fattura",
+      "document": "Documento"
     }
   },
   "customers": {

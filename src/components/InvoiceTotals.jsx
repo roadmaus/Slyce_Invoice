@@ -1,12 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { computeInvoiceAmounts } from '@/lib/invoiceGenerator';
 
 const InvoiceTotals = ({ items, profile, selectedCurrency, formatCurrency }) => {
   const { t } = useTranslation();
-
-  const subtotal = items.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
-  const vatAmount = profile?.vat_enabled ? (subtotal * (profile.vat_rate / 100)) : 0;
-  const total = subtotal + vatAmount;
+  const { netTotal, vatRate, vatAmount, totalAmount } = computeInvoiceAmounts(items, profile);
 
   return (
     <div className="flex justify-end border-t-2 border-foreground pt-4">
@@ -15,13 +13,13 @@ const InvoiceTotals = ({ items, profile, selectedCurrency, formatCurrency }) => 
           <span className="text-xs uppercase tracking-widest font-mono text-muted-foreground">
             {t('invoice.totals.netAmount')}
           </span>
-          <span className="font-mono font-bold text-sm">{formatCurrency(subtotal)}</span>
+          <span className="font-mono font-bold text-sm">{formatCurrency(netTotal)}</span>
         </div>
 
         {profile?.vat_enabled && (
           <div className="flex justify-between items-center py-1">
             <span className="text-xs uppercase tracking-widest font-mono text-muted-foreground">
-              {t('invoice.totals.vat', { rate: profile.vat_rate })}
+              {t('invoice.totals.vat', { rate: vatRate })}
             </span>
             <span className="font-mono font-bold text-sm">{formatCurrency(vatAmount)}</span>
           </div>
@@ -31,7 +29,7 @@ const InvoiceTotals = ({ items, profile, selectedCurrency, formatCurrency }) => 
           <span className="text-xs uppercase tracking-widest font-bold font-mono">
             {t('invoice.totals.totalAmount')}
           </span>
-          <span className="font-mono font-black text-lg">{formatCurrency(total)}</span>
+          <span className="font-mono font-black text-lg">{formatCurrency(totalAmount)}</span>
         </div>
       </div>
     </div>

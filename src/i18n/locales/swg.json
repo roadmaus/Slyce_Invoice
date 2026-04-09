@@ -42,7 +42,9 @@
       "generate": "Rächnung macha",
       "generating": "Wird grad gmacht...",
       "preview": "Vorschau",
-      "save": "Schbeicha"
+      "save": "Schbeicha",
+      "accept": "Schbeicha & annehma",
+      "reject": "Verwärfa"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "Vielen Dank für dei Vertraua. I freu mi auf d'weitere Zammarbeit.",
       "regards": "Ade und bleib gsund"
+    },
+    "template": {
+      "from": "Vo",
+      "billedTo": "Rechnong an",
+      "details": "Details",
+      "issuedBy": "Ausgschtellt vo",
+      "heading": "Rechnong",
+      "document": "Dokument"
     }
   },
   "customers": {

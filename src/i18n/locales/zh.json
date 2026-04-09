@@ -42,7 +42,9 @@
       "generate": "生成发票",
       "generating": "正在生成...",
       "preview": "预览",
-      "save": "保存"
+      "save": "保存",
+      "accept": "保存并确认",
+      "reject": "丢弃"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "感谢您的惠顾。期待与您继续合作。",
       "regards": "此致"
+    },
+    "template": {
+      "from": "来自",
+      "billedTo": "开票给",
+      "details": "详情",
+      "issuedBy": "开具方",
+      "heading": "发票",
+      "document": "文件"
     }
   },
   "customers": {

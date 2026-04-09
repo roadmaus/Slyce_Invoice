@@ -42,7 +42,9 @@
       "generate": "청구서 생성",
       "generating": "생성 중...",
       "preview": "미리보기",
-      "save": "저장"
+      "save": "저장",
+      "accept": "저장 및 승인",
+      "reject": "삭제"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "거래해 주셔서 감사합니다. 앞으로도 좋은 협력 관계를 유지하기를 바랍니다.",
       "regards": "감사합니다"
+    },
+    "template": {
+      "from": "보낸 사람",
+      "billedTo": "청구 대상",
+      "details": "세부사항",
+      "issuedBy": "발행인",
+      "heading": "청구서",
+      "document": "문서"
     }
   },
   "customers": {

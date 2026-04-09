@@ -50,7 +50,9 @@
       "generate": "Generate Invoice",
       "generating": "Generating...",
       "preview": "Preview",
-      "save": "Save"
+      "save": "Save",
+      "accept": "Save & Accept",
+      "reject": "Discard"
     },
     "greeting": {
       "mr": {
@@ -87,6 +89,14 @@
     "closing": {
       "thankYou": "Thank you for your business. I look forward to working with you again.",
       "regards": "Kind regards"
+    },
+    "template": {
+      "from": "From",
+      "billedTo": "Billed to",
+      "details": "Details",
+      "issuedBy": "Issued by",
+      "heading": "Invoice",
+      "document": "Document"
     }
   },
   "customers": {

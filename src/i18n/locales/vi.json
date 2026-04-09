@@ -42,7 +42,9 @@
       "generate": "Tạo hóa đơn",
       "generating": "Đang tạo...",
       "preview": "Xem trước",
-      "save": "Lưu"
+      "save": "Lưu",
+      "accept": "Lưu và chấp nhận",
+      "reject": "Hủy bỏ"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "Cảm ơn quý khách đã tin tưởng. Rất mong được tiếp tục hợp tác.",
       "regards": "Trân trọng"
+    },
+    "template": {
+      "from": "Từ",
+      "billedTo": "Hóa đơn gửi đến",
+      "details": "Chi tiết",
+      "issuedBy": "Phát hành bởi",
+      "heading": "Hóa đơn",
+      "document": "Tài liệu"
     }
   },
   "customers": {

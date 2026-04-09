@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import * as Icons from 'lucide-react';
 import { 
@@ -23,14 +22,11 @@ import InvoiceTab from './tabs/InvoiceTab';
 import TagsTab from './tabs/TagsTab';
 import { DEFAULT_CURRENCY } from '@/constants/currencies';
 import { TITLE_KEYS, ACADEMIC_TITLE_KEYS, TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES } from '@/constants/titleMappings';
-import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
-import { BUSINESS_KEYS, BUSINESS_STORAGE_VALUES, BUSINESS_TRANSLATIONS } from '@/constants/businessMappings';
 import LoadingOverlay from './LoadingOverlay';
-import html2pdf from 'html2pdf.js';
+import InvoicePreviewDialog from './InvoicePreviewDialog';
 import { api } from '@/lib/api';
-import { createZugferdPdf } from '@/lib/zugferd';
+import { generateInvoicePdf, saveInvoicePdf } from '@/lib/invoiceGenerator';
 
-// Helper Functions
 const generateInvoiceNumber = (lastNumber, profileId, forceGenerate = false) => {
   if (!profileId) {
     console.warn('No profile ID provided for invoice number generation');
@@ -86,7 +82,6 @@ const validateCustomer = (customer) => {
   return required.every(field => customer[field]?.trim());
 };
 
-// Add this near other constants
 const PREDEFINED_COLORS = [
   { name: 'Gray', value: '#D1D5DB' },
   { name: 'Pink', value: '#FCE7F3' },
@@ -104,198 +99,53 @@ const PREDEFINED_COLORS = [
   { name: 'Mint', value: '#A7F3D0' },
 ];
 
-// Add this helper function at the top with other helper functions
-const generateUniqueId = () => {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+const generateUniqueId = () =>
+  Date.now().toString(36) + Math.random().toString(36).substr(2);
+
+const EMPTY_PROFILE = {
+  company_name: '', company_street: '', company_postalcode: '', company_city: '',
+  tax_number: '', tax_id: '', bank_institute: '', bank_iban: '', bank_bic: '',
+  contact_details: '', invoice_save_path: '', vat_enabled: false, vat_rate: 19,
+};
+
+const EMPTY_CUSTOMER = {
+  id: '', title: TITLE_STORAGE_VALUES[TITLE_KEYS.NEUTRAL],
+  zusatz: ACADEMIC_STORAGE_VALUES[ACADEMIC_TITLE_KEYS.NONE],
+  name: '', street: '', postal_code: '', city: '', firma: false,
+};
+
+const EMPTY_TAG = {
+  name: '', description: '', rate: '', quantity: '',
+  color: PREDEFINED_COLORS[0].value, hasDateRange: true, visible: true, personas: [],
 };
 
 
-// Add this helper function near other helper functions
 const adjustColorForDarkMode = (hexColor, isDark) => {
   if (!isDark) return hexColor;
-  
-  // Convert hex to RGB
-  const r = parseInt(hexColor.slice(1, 3), 16);
-  const g = parseInt(hexColor.slice(3, 5), 16);
-  const b = parseInt(hexColor.slice(5, 7), 16);
-  
-  // Add transparency for dark mode
+  const r = Number.parseInt(hexColor.slice(1, 3), 16);
+  const g = Number.parseInt(hexColor.slice(3, 5), 16);
+  const b = Number.parseInt(hexColor.slice(5, 7), 16);
   return `rgba(${r}, ${g}, ${b}, 0.3)`;
 };
 
-// Date formatting
-const formatDate = (date) => {
-  return new Intl.DateTimeFormat('de-DE', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  }).format(new Date(date));
-};
-
-// Add these helper functions at the top of your file
-const getTranslatedTitle = (storedTitle, language) => {
-  // Find the key for the stored German value
-  const titleKey = Object.entries(TITLE_STORAGE_VALUES)
-    .find(([_, value]) => value === storedTitle)?.[0];
-
-  // Debug logging
-  console.log('Stored Title:', storedTitle);
-  console.log('Title Key:', titleKey);
-  console.log('Language:', language);
-  console.log('Available Translations:', TITLE_TRANSLATIONS[language]);
-
-  // If no key found or neutral, return empty string
-  if (!titleKey || titleKey === TITLE_KEYS.NEUTRAL) return '';
-
-  // Get translations for the requested language, fallback to German if not found
-  const translations = TITLE_TRANSLATIONS[language] || TITLE_TRANSLATIONS['de'];
-  
-  // Get the translated title
-  const translatedTitle = translations[titleKey];
-  console.log('Translated Title:', translatedTitle);
-
-  return translatedTitle || storedTitle;
-};
-
-// Add this helper function alongside getTranslatedTitle
-const getTranslatedAcademicTitle = (storedTitle, language) => {
-  // Find the key for the stored value
-  const academicKey = Object.entries(ACADEMIC_STORAGE_VALUES)
-    .find(([_, value]) => value === storedTitle)?.[0];
-
-  // If no key found or none, return empty string
-  if (!academicKey || academicKey === ACADEMIC_TITLE_KEYS.NONE) return '';
-
-  // Get translations for the requested language, fallback to English
-  const translations = ACADEMIC_TRANSLATIONS[language] || ACADEMIC_TRANSLATIONS['en'];
-  
-  // Get the translated title
-  const translatedTitle = translations[academicKey];
-
-  return translatedTitle || storedTitle;
-};
-
-// Add this new helper function
-const formatCustomerName = (customer, language, includeTitle = true, includeHonorific = true) => {
-  const parts = [];
-
-  // Handle title translation (e.g., Mr/Mrs)
-  if (includeTitle && customer.title && customer.title !== 'neutral') {
-    // Skip diverse title in address formatting
-    if (customer.title !== TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
-      const translatedTitle = getTranslatedTitle(customer.title, language);
-      if (translatedTitle) {
-        parts.push(translatedTitle);
-      }
+const tagBgCache = new Map();
+const getTagBackground = (color, isDark) => {
+  const key = `${color}-${isDark}`;
+  if (tagBgCache.has(key)) return tagBgCache.get(key);
+  let result;
+  if (isDark) {
+    const rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+    if (rgb) {
+      const r = Number.parseInt(rgb[1], 16);
+      const g = Number.parseInt(rgb[2], 16);
+      const b = Number.parseInt(rgb[3], 16);
+      result = `linear-gradient(135deg, rgba(${r}, ${g}, ${b}, 0.15) 0%, rgba(${r}, ${g}, ${b}, 0.05) 100%)`;
     }
+  } else {
+    result = `linear-gradient(135deg, ${color}40 0%, ${color}20 100%)`;
   }
-
-  // Handle academic title (e.g., Prof/Dr)
-  if (includeHonorific && customer.zusatz && customer.zusatz !== 'none') {
-    const translatedAcademicTitle = getTranslatedAcademicTitle(customer.zusatz, language);
-    if (translatedAcademicTitle) {
-      parts.push(translatedAcademicTitle);
-    }
-  }
-
-  // Add name
-  parts.push(customer.name);
-
-  // For Japanese/Chinese, add honorific suffix if in greeting
-  if (includeHonorific && ['ja', 'zh'].includes(language)) {
-    const honorific = language === 'ja' ? '様' : '先生';
-    return parts.join(' ') + honorific;
-  }
-
-  return parts.join(' ');
-};
-
-// Update formatCustomerAddress to use the new function
-const formatCustomerAddress = (customer, language) => {
-  const addressParts = [];
-
-  // Use the new unified formatting function
-  addressParts.push(formatCustomerName(customer, language));
-  addressParts.push(customer.street);
-  addressParts.push(`${customer.postal_code} ${customer.city}`);
-
-  return addressParts.filter(Boolean).join('<br>');
-};
-
-// Update the formatGreeting function
-const formatGreeting = (customer, language, t) => {
-  // If it's a business customer, use business greeting
-  if (customer.firma) {
-    return t('invoice.greeting.business');
-  }
-
-  // Map the stored title value back to the TITLE_KEY
-  const titleKey = Object.entries(TITLE_STORAGE_VALUES)
-    .find(([_, value]) => value === customer.title)?.[0];
-
-  // Map TITLE_KEYS to the greeting keys used in locale files
-  const greetingKeyMap = {
-    [TITLE_KEYS.MR]: 'mr',
-    [TITLE_KEYS.MRS]: 'mrs',
-    [TITLE_KEYS.DIVERSE]: 'diverse',
-    [TITLE_KEYS.NEUTRAL]: 'neutral'
-  };
-
-  // Get the greeting key, defaulting to neutral if not found
-  const greetingKey = greetingKeyMap[titleKey] || 'neutral';
-
-  // Check if customer has an academic title
-  const hasAcademicTitle = customer.zusatz && 
-    customer.zusatz !== ACADEMIC_STORAGE_VALUES[ACADEMIC_TITLE_KEYS.NONE];
-
-  // Get the full i18n key path based on whether there's an academic title
-  const greetingPath = `invoice.greeting.${greetingKey}.${hasAcademicTitle ? 'academic' : 'default'}`;
-
-  // Get the greeting template from i18n
-  const greetingTemplate = t(greetingPath);
-
-  // Get the translated academic title if needed
-  const academicTitle = hasAcademicTitle 
-    ? getTranslatedAcademicTitle(customer.zusatz, language)
-    : '';
-
-  // Extract name parts
-  const nameParts = customer.name.split(' ');
-  const lastName = nameParts[nameParts.length - 1];
-  const fullName = customer.name;
-
-  // Replace placeholders in the template
-  return greetingTemplate
-    .replace('{title}', academicTitle)
-    .replace('{last_name}', lastName)
-    .replace('{full_name}', fullName);
-};
-
-// Add this helper function alongside other translation helpers
-const getTranslatedBusinessField = (storedValue, fieldKey, language) => {
-  // Debug log to see what we're getting
-  console.log('Translation input:', { storedValue, fieldKey, language });
-
-  // Find the key for the stored value by matching against BUSINESS_STORAGE_VALUES
-  const businessKey = Object.entries(BUSINESS_STORAGE_VALUES)
-    .find(([_, value]) => value === storedValue)?.[0] 
-    || Object.entries(BUSINESS_STORAGE_VALUES)
-    .find(([_, value]) => storedValue.includes(value))?.[0]
-    || fieldKey;
-
-  // Get translations for the requested language, fallback to English
-  const translations = BUSINESS_TRANSLATIONS[language] || BUSINESS_TRANSLATIONS['en'];
-  
-  // Get the translated value
-  const translatedValue = translations[businessKey];
-
-  console.log('Translation result:', {
-    businessKey,
-    translations,
-    translatedValue
-  });
-
-  return translatedValue || storedValue;
+  tagBgCache.set(key, result);
+  return result;
 };
 
 const SlyceInvoice = () => {
@@ -304,48 +154,17 @@ const SlyceInvoice = () => {
   // Business Profiles State
   const [businessProfiles, setBusinessProfiles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
-  const [newProfile, setNewProfile] = useState({
-    company_name: '',
-    company_street: '',
-    company_postalcode: '',
-    company_city: '',
-    tax_number: '',
-    tax_id: '',
-    bank_institute: '',
-    bank_iban: '',
-    bank_bic: '',
-    contact_details: '',
-    invoice_save_path: '',
-    vat_enabled: false,
-    vat_rate: 19,
-  });
+  const [newProfile, setNewProfile] = useState({ ...EMPTY_PROFILE });
 
   // Customers State
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [newCustomer, setNewCustomer] = useState({
-    title: '',
-    zusatz: '',
-    name: '',
-    street: '',
-    postal_code: '',
-    city: '',
-    firma: false,
-  });
+  const [newCustomer, setNewCustomer] = useState({ ...EMPTY_CUSTOMER });
 
 
   // Quick Tags State
   const [quickTags, setQuickTags] = useState([]);
-  const [newTag, setNewTag] = useState({
-    name: '',
-    description: '',
-    rate: '',
-    quantity: '',
-    color: PREDEFINED_COLORS[0].value,
-    hasDateRange: true,
-    visible: true,
-    personas: [],
-  });
+  const [newTag, setNewTag] = useState({ ...EMPTY_TAG });
 
   // Invoice State
   const [invoiceItems, setInvoiceItems] = useState([]);
@@ -370,48 +189,29 @@ const SlyceInvoice = () => {
   // Default Profile State
   const [defaultProfileId, setDefaultProfileId] = useState(null);
 
-  // Add a new state for the warning dialog
   const [showWarningDialog, setShowWarningDialog] = useState(false);
   const [pendingTag, setPendingTag] = useState(null);
 
-  // Add new loading states
   const [isLoading, setIsLoading] = useState({
     invoice: false,
     export: false,
     import: false,
   });
 
-  // Add new state for search
   const [tagSearch, setTagSearch] = useState('');
 
   // Add state for search visibility
   const [showTagSearch, setShowTagSearch] = useState(false);
 
-  // Add this to your state declarations
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.classList.contains('dark')
   );
 
-  // Add new state for PDF preview
-  const [pdfPreview, setPdfPreview] = useState({
-    show: false,
-    data: null,
-    fileName: ''
-  });
-
-  // Add this to your state declarations
-  const [previewSettings, setPreviewSettings] = React.useState({
-    showPreview: true
-  });
-
-  // Add new state for profile-specific invoice numbers
+  const [pendingInvoice, setPendingInvoice] = useState(null);
   const [profileInvoiceNumbers, setProfileInvoiceNumbers] = useState({});
-
-  // Add this with other state declarations
   const [selectedCurrency, setSelectedCurrency] = useState(DEFAULT_CURRENCY);
-
-  // In SlyceInvoice.jsx, add invoiceLanguage to state declarations
   const [invoiceLanguage, setInvoiceLanguage] = useState('auto');
+  const [savePath, setSavePath] = useState('');
 
   // Load saved data on component mount
   useEffect(() => {
@@ -456,22 +256,13 @@ const SlyceInvoice = () => {
     };
   }, []);
 
-  // Save data whenever it changes
-  useEffect(() => {
-    if (isInitialized) {
-      const saveData = async () => {
-        await api.setData('businessProfiles', businessProfiles);
-        await api.setData('customers', customers);
-        await api.setData('quickTags', quickTags);
-        await api.setData('profileInvoiceNumbers', profileInvoiceNumbers);
-        await api.setData('currency', selectedCurrency);
-        if (defaultProfileId) {
-          await api.setData('defaultProfileId', defaultProfileId);
-        }
-      };
-      saveData();
-    }
-  }, [businessProfiles, customers, quickTags, defaultProfileId, profileInvoiceNumbers, selectedCurrency, isInitialized]);
+  // Per-key persistence — only writes the key that actually changed
+  useEffect(() => { if (isInitialized) api.setData('businessProfiles', businessProfiles); }, [businessProfiles, isInitialized]);
+  useEffect(() => { if (isInitialized) api.setData('customers', customers); }, [customers, isInitialized]);
+  useEffect(() => { if (isInitialized) api.setData('quickTags', quickTags); }, [quickTags, isInitialized]);
+  useEffect(() => { if (isInitialized) api.setData('profileInvoiceNumbers', profileInvoiceNumbers); }, [profileInvoiceNumbers, isInitialized]);
+  useEffect(() => { if (isInitialized) api.setData('currency', selectedCurrency); }, [selectedCurrency, isInitialized]);
+  useEffect(() => { if (isInitialized && defaultProfileId) api.setData('defaultProfileId', defaultProfileId); }, [defaultProfileId, isInitialized]);
 
   // Business Profile Management
   const addBusinessProfile = () => {
@@ -489,21 +280,7 @@ const SlyceInvoice = () => {
     const isFirstProfile = businessProfiles.length === 0;
 
     setBusinessProfiles([...businessProfiles, newProfile]);
-    setNewProfile({
-      company_name: '',
-      company_street: '',
-      company_postalcode: '',
-      company_city: '',
-      tax_number: '',
-      tax_id: '',
-      bank_institute: '',
-      bank_iban: '',
-      bank_bic: '',
-      contact_details: '',
-      invoice_save_path: '',
-      vat_enabled: false,
-      vat_rate: 19,
-    });
+    setNewProfile({ ...EMPTY_PROFILE });
     setShowNewProfileDialog(false);
 
     // If this is the first profile, set it as the default
@@ -526,16 +303,7 @@ const SlyceInvoice = () => {
     };
 
     setCustomers([...customers, customerWithId]);
-    setNewCustomer({
-      id: '',
-      title: '',
-      zusatz: '',
-      name: '',
-      street: '',
-      postal_code: '',
-      city: '',
-      firma: false,
-    });
+    setNewCustomer({ ...EMPTY_CUSTOMER });
     setShowNewCustomerDialog(false);
   };
 
@@ -557,7 +325,6 @@ const SlyceInvoice = () => {
     proceedWithAddingTag(newTag);
   };
 
-  // Add a new function to handle the actual tag addition
   const proceedWithAddingTag = (tagToAdd) => {
     const tagWithPersona = {
       ...tagToAdd,
@@ -571,47 +338,24 @@ const SlyceInvoice = () => {
     }
 
     setQuickTags([...quickTags, tagWithPersona]);
-    setNewTag({
-      name: '',
-      description: '',
-      rate: '',
-      quantity: '',
-      color: PREDEFINED_COLORS[0].value,
-      hasDateRange: true,
-      visible: true,
-      personas: [],
-    });
+    setNewTag({ ...EMPTY_TAG });
     setShowNewTagDialog(false);
     setShowWarningDialog(false);
     setPendingTag(null);
   };
 
-// Invoice Management Functions
   const addInvoiceItem = (hasDateRange = true) => {
-    setInvoiceItems(prev => [
-      ...prev,
-      {
-        description: '',
-        quantity: 1,
-        rate: 0,
-        total: 0,
-        hasDateRange,
-      },
-    ]);
-    
-    // Update the date range toggle without clearing existing dates
-    updateDateRangeToggle([...invoiceItems, { hasDateRange }]);
+    const newItem = { description: '', quantity: 1, rate: 0, hasDateRange };
+    setInvoiceItems(prev => {
+      const next = [...prev, newItem];
+      updateDateRangeToggle(next);
+      return next;
+    });
   };
 
   const updateInvoiceItem = (index, field, value) => {
     const newItems = [...invoiceItems];
-    if (field === 'quantity' || field === 'rate') {
-      // Ensure these are numbers
-      newItems[index][field] = parseFloat(value) || 0;
-    } else {
-      newItems[index][field] = value;
-    }
-    newItems[index].total = newItems[index].quantity * newItems[index].rate;
+    newItems[index][field] = (field === 'quantity' || field === 'rate') ? (parseFloat(value) || 0) : value;
     setInvoiceItems(newItems);
   };
 
@@ -621,11 +365,6 @@ const SlyceInvoice = () => {
     updateDateRangeToggle(newItems);
   };
 
-  const calculateTotal = () => {
-    return invoiceItems.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
-  };
-
-  // Add this useEffect to load the setting
   useEffect(() => {
     const loadInvoiceLanguage = async () => {
       const settings = await api.getData('invoiceLanguageSettings');
@@ -645,330 +384,99 @@ const SlyceInvoice = () => {
     };
   }, []);
 
-  // Update the generateInvoice function
+  // Generate invoice PDF for preview (does NOT save to disk)
   const generateInvoice = async () => {
-    // Custom validation before proceeding
-    if (!selectedCustomer) {
-      toast.error(t('messages.validation.selectCustomer'));
-      return;
-    }
-
-    if (!selectedProfile) {
-      toast.error(t('messages.validation.selectProfile'));
-      return;
-    }
-
-    // Only validate dates if they are being shown
+    if (!selectedCustomer) { toast.error(t('messages.validation.selectCustomer')); return; }
+    if (!selectedProfile) { toast.error(t('messages.validation.selectProfile')); return; }
     if (invoiceDates.showDate) {
       if (invoiceDates.hasDateRange && (!invoiceDates.startDate || !invoiceDates.endDate)) {
-        toast.error(t('messages.validation.setServicePeriod'));
-        return;
+        toast.error(t('messages.validation.setServicePeriod')); return;
       }
-
       if (!invoiceDates.hasDateRange && !invoiceDates.startDate) {
-        toast.error(t('messages.validation.setServiceDate'));
-        return;
+        toast.error(t('messages.validation.setServiceDate')); return;
       }
     }
-
-    if (invoiceItems.length === 0) {
-      toast.error(t('messages.validation.addItem'));
-      return;
-    }
+    if (invoiceItems.length === 0) { toast.error(t('messages.validation.addItem')); return; }
 
     setIsLoading(prev => ({ ...prev, invoice: true }));
-    const currentLanguage = i18n.language;
-    
     try {
-      // Determine invoice language
-      let invoiceLang = invoiceLanguage;
-      if (invoiceLanguage === 'auto') {
-        // Use customer's country/region to determine language
-        if (selectedCustomer?.country === 'DE' || selectedCustomer?.country === 'AT' || selectedCustomer?.country === 'CH') {
-          invoiceLang = 'de';
-        } else {
-          invoiceLang = 'en'; // Default to English for auto
-        }
-      }
-      
-      // Switch to invoice language
-      await i18n.changeLanguage(invoiceLang);
-
-      const template = await api.getInvoiceTemplate();
-      
-      // Use the same formatting function for both address and greeting
-      const customerAddress = formatCustomerAddress(selectedCustomer, invoiceLang);
-      const customerGreeting = formatGreeting(selectedCustomer, invoiceLang, t);
-
-      // Get translations for business fields
-      const taxNumberLabel = await getTranslatedBusinessField(
-        BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.TAX_NUMBER],
-        'taxNumber',
-        invoiceLang
-      );
-      
-      const taxIdLabel = await getTranslatedBusinessField(
-        BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.TAX_ID],
-        'taxId',
-        invoiceLang
-      );
-
-      // Prepare template data
-      const templateData = {
-        customer_address: customerAddress,
-        customer_greeting: customerGreeting,
-        // ... other template data ...
-        
-        // Tax information with labels
-        tax_number_label: taxNumberLabel,
-        tax_id_label: taxIdLabel,
-        tax_number: selectedProfile.tax_number,
-        tax_id: selectedProfile.tax_id,
-        bank_institute_label: getTranslatedBusinessField(
-          BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.BANK_INSTITUTE],
-          BUSINESS_KEYS.BANK_INSTITUTE,
-          invoiceLang
-        ),
-        bank_iban_label: getTranslatedBusinessField(
-          BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.BANK_IBAN],
-          BUSINESS_KEYS.BANK_IBAN,
-          invoiceLang
-        ),
-        bank_bic_label: getTranslatedBusinessField(
-          BUSINESS_STORAGE_VALUES[BUSINESS_KEYS.BANK_BIC],
-          BUSINESS_KEYS.BANK_BIC,
-          invoiceLang
-        ),
-        // The actual values remain unchanged
-        bank_institute: selectedProfile.bank_institute,
-        bank_iban: selectedProfile.bank_iban,
-        bank_bic: selectedProfile.bank_bic
-      };
-
-      // Replace placeholders in template
-      let html = template;
-      
-      // Log the values before replacement
-      console.log('Tax Labels:', {
-        tax_number_label: templateData.tax_number_label,
-        tax_id_label: templateData.tax_id_label,
-        tax_number: templateData.tax_number,
-        tax_id: templateData.tax_id
+      const { pdfArrayBuffer, fileName } = await generateInvoicePdf({
+        profile: selectedProfile,
+        customer: selectedCustomer,
+        items: invoiceItems,
+        invoiceDates,
+        currentInvoiceNumber,
+        invoiceReference,
+        invoicePaid,
+        invoiceDueDate,
+        invoiceLanguageSetting: invoiceLanguage,
+        eRechnungEnabled,
+        selectedCurrency,
+        i18n,
+        t,
+        formatCurrency,
       });
 
-      // Replace each placeholder
-      Object.entries(templateData).forEach(([key, value]) => {
-        const placeholder = `{${key}}`;
-        html = html.replaceAll(placeholder, value || '');
+      // Hold PDF in memory for preview — nothing saved yet
+      // WKWebView doesn't support blob URLs in iframes, so use a base64 data URL
+      const bytes = new Uint8Array(pdfArrayBuffer);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const dataUrl = `data:application/pdf;base64,${btoa(binary)}`;
+      setPendingInvoice({
+        pdfArrayBuffer,
+        fileName,
+        blobUrl: dataUrl,
       });
-
-      // Log a snippet of the HTML after replacement
-      console.log('HTML after replacement (snippet):', html.substring(0, 500));
-
-      // Calculate amounts
-      const netTotal = calculateTotal();
-      const vatRate = selectedProfile.vat_enabled ? (selectedProfile.vat_rate || 19) : 0;
-      const vatAmount = selectedProfile.vat_enabled ? (netTotal * (vatRate / 100)) : 0;
-      const totalAmount = netTotal + vatAmount;
-
-      // Format service period text
-      const servicePeriodText = !invoiceDates.showDate
-        ? t('invoice.servicePeriod.noDate')
-        : invoiceDates.hasDateRange
-          ? t('invoice.servicePeriod.range', {
-              startDate: formatDate(invoiceDates.startDate),
-              endDate: formatDate(invoiceDates.endDate)
-            }).replace('{startDate}', formatDate(invoiceDates.startDate))
-              .replace('{endDate}', formatDate(invoiceDates.endDate))
-          : t('invoice.servicePeriod.single', {
-              date: formatDate(invoiceDates.startDate)
-            }).replace('{date}', formatDate(invoiceDates.startDate));
-
-      // Create VAT-related HTML
-      const vatNoticeHtml = selectedProfile.vat_enabled
-        ? `<p>${t('invoice.totals.vatNotice.enabled')}</p>`
-        : `<p>${t('invoice.totals.vatNotice.disabled')}</p>`;
-
-      const vatRowHtml = selectedProfile.vat_enabled 
-        ? `<tr>
-            <td>${t('invoice.totals.vat', { rate: vatRate })}:</td>
-            <td>${formatCurrency(vatAmount)}</td>
-          </tr>`
-        : '';
-
-      // Format invoice header
-      const invoiceNumberDate = [
-        `${t('invoice.details.number.label')}: ${currentInvoiceNumber}`,
-        `${t('invoice.details.date.label')}: ${formatDate(new Date())}`
-      ].join('<br>');
-
-      // Add reference text if present
-      const referenceText = invoiceReference 
-        ? invoiceReference 
-        : '';
-      
-      // Create reference section HTML only if there's content
-      const referenceSectionHtml = invoiceReference
-        ? `<div class="reference-section" style="margin: 24px 0;">
-            <p style="margin: 0;"><strong>Betreff:</strong> ${invoiceReference}</p>
-          </div>`
-        : '';
-
-      // Remove paid status label - we'll only show it in the payment text
-      const paidStatus = '';
-
-      // Format invoice items
-      const formattedInvoiceItems = invoiceItems.map((item, index) => `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${item.quantity}</td>
-          <td>${item.description}</td>
-          <td>${formatCurrency(item.rate)}</td>
-          <td>${formatCurrency(item.quantity * item.rate)}</td>
-        </tr>
-      `).join('');
-
-      // Format payment instruction with amount
-      const selectedCurrency = await api.getData('currency') || DEFAULT_CURRENCY;
-      
-      const paymentInstruction = invoicePaid
-        ? t('invoice.payment.paid', {
-            amount: formatCurrency(totalAmount, 'de-DE', selectedCurrency.code)
-          }).replace('{amount}', formatCurrency(totalAmount, 'de-DE', selectedCurrency.code))
-        : t('invoice.payment.instruction', {
-            amount: formatCurrency(totalAmount, 'de-DE', selectedCurrency.code)
-          }).replace('{amount}', formatCurrency(totalAmount, 'de-DE', selectedCurrency.code));
-
-      // Format contact details - only include if they exist
-      const contactDetailsHtml = selectedProfile.contact_details 
-        ? selectedProfile.contact_details.split('\n').join('<br>')
-        : '';
-
-      // Replace all placeholders
-      html = html
-        .replaceAll('{company_name}', selectedProfile.company_name)
-        .replaceAll('{company_street}', selectedProfile.company_street)
-        .replaceAll('{company_postalcode}', selectedProfile.company_postalcode)
-        .replaceAll('{company_city}', selectedProfile.company_city)
-        .replaceAll('{tax_number}', selectedProfile.tax_number)
-        .replaceAll('{tax_id}', selectedProfile.tax_id)
-        .replaceAll('{customer_address}', customerAddress)
-        .replaceAll('{invoice_number_date}', invoiceNumberDate)
-        .replaceAll('{reference_section}', referenceSectionHtml)
-        .replaceAll('{paid_status}', paidStatus)
-        .replaceAll('{greeting}', customerGreeting)
-        .replaceAll('{service_period_text}', servicePeriodText)
-        .replaceAll('{position_label}', t('invoice.items.position'))
-        .replaceAll('{quantity_label}', t('invoice.items.quantity'))
-        .replaceAll('{description_label}', t('invoice.items.description'))
-        .replaceAll('{unit_price_label}', t('invoice.items.rate'))
-        .replaceAll('{total_label}', t('invoice.items.total'))
-        .replaceAll('{net_amount_label}', t('invoice.totals.netAmount'))
-        .replaceAll('{total_amount_label}', t('invoice.totals.totalAmount'))
-        .replaceAll('{payment_instruction}', paymentInstruction)
-        .replaceAll('{thank_you_note}', t('invoice.closing.thankYou'))
-        .replaceAll('{closing}', t('invoice.closing.regards'))
-        .replaceAll('{name_label}', t('invoice.banking.name'))
-        .replaceAll('{bank_label}', t('invoice.banking.institute'))
-        .replaceAll('{invoice_items}', formattedInvoiceItems)
-        .replaceAll('{net_amount}', formatCurrency(netTotal))
-        .replaceAll('{vat_row}', vatRowHtml)
-        .replaceAll('{vat_notice}', vatNoticeHtml)
-        .replaceAll('{total_amount}', formatCurrency(totalAmount))
-        .replaceAll('{bank_institute}', selectedProfile.bank_institute)
-        .replaceAll('{bank_iban}', selectedProfile.bank_iban)
-        .replaceAll('{bank_bic}', selectedProfile.bank_bic)
-        .replace('{contact_details}', contactDetailsHtml);
-
-      // Instead of sending to main process, generate PDF directly
-      const element = document.createElement('div');
-      element.innerHTML = html;
-      
-      const opt = {
-        margin: 10, // Small margin to prevent content touching the edge
-        filename: `${selectedCustomer.name}_${currentInvoiceNumber}.pdf`,
-        html2canvas: { scale: 2 },
-        jsPDF: { 
-          format: 'a4', 
-          orientation: 'portrait'
-        }
-      };
-
-      // Generate PDF
-      let pdf = await html2pdf().set(opt).from(element).outputPdf('arraybuffer');
-
-      // Embed ZUGFeRD XML if e-Rechnung is enabled
-      if (eRechnungEnabled) {
-        try {
-          pdf = await createZugferdPdf(pdf, {
-            invoiceNumber: currentInvoiceNumber,
-            date: new Date(),
-            profile: selectedProfile,
-            customer: selectedCustomer,
-            items: invoiceItems,
-            currency: selectedCurrency,
-            dueDate: invoiceDueDate || null,
-          });
-        } catch (zugferdError) {
-          console.error('ZUGFeRD embedding failed:', zugferdError);
-          toast.error('e-Rechnung XML embedding failed, saving plain PDF.');
-        }
-      }
-
-      // Save the PDF
-      const fileName = `${selectedCustomer.name}_${currentInvoiceNumber}`;
-      const settings = await api.getData('previewSettings');
-      const saved = await api.saveInvoice(pdf, fileName, settings?.savePath);
-
-      if (saved) {
-        if (previewSettings.showPreview) {
-          // Create Blob and URL for preview
-          const blob = new Blob([pdf], { type: 'application/pdf' });
-          const pdfUrl = URL.createObjectURL(blob);
-          
-          setPdfPreview({
-            show: true,
-            data: pdfUrl,
-            fileName: fileName
-          });
-        } else {
-          toast.success(t('messages.success.invoiceGenerated'));
-          
-          const nextNumber = generateInvoiceNumber(
-            currentInvoiceNumber, 
-            selectedProfile.company_name, 
-            true
-          );
-          setCurrentInvoiceNumber(nextNumber);
-          setInvoiceItems([]);
-          setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true, showDate: true });
-        }
-
-        // Save the current invoice number
-        const updatedNumbers = {
-          ...profileInvoiceNumbers,
-          [selectedProfile.company_name]: currentInvoiceNumber
-        };
-        setProfileInvoiceNumbers(updatedNumbers);
-        await api.setData('profileInvoiceNumbers', updatedNumbers);
-      } else {
-        toast.error(t('messages.error.savingInvoice'));
-      }
-
-      // Switch back to original language
-      await i18n.changeLanguage(currentLanguage);
     } catch (error) {
       console.error('Error generating invoice:', error);
       toast.error(t('messages.error.generatingInvoice'));
-      await i18n.changeLanguage(currentLanguage);
     } finally {
       setIsLoading(prev => ({ ...prev, invoice: false }));
     }
   };
 
+  // Accept: save PDF to disk, advance invoice number, clear form
+  const acceptInvoice = async () => {
+    if (!pendingInvoice) return;
+    try {
+      const saved = await saveInvoicePdf(pendingInvoice.pdfArrayBuffer, pendingInvoice.fileName, savePath);
+      if (saved) {
+        toast.success(t('messages.success.invoiceGenerated'));
+        // Advance invoice number
+        const nextNumber = generateInvoiceNumber(currentInvoiceNumber, selectedProfile.company_name, true);
+        setCurrentInvoiceNumber(nextNumber);
+        const updatedNumbers = { ...profileInvoiceNumbers, [selectedProfile.company_name]: nextNumber };
+        setProfileInvoiceNumbers(updatedNumbers);
+        await api.setData('profileInvoiceNumbers', updatedNumbers);
+        // Clear form
+        setInvoiceItems([]);
+        setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true, showDate: true });
+        setInvoiceReference('');
+        setInvoicePaid(false);
+        setInvoiceDueDate('');
+      } else {
+        toast.error(t('messages.error.savingInvoice'));
+      }
+    } catch (error) {
+      console.error('Error saving invoice:', error);
+      toast.error(t('messages.error.savingInvoice'));
+    } finally {
+      cleanupPreview();
+    }
+  };
+
+  // Reject: discard PDF, keep form data intact
+  const rejectInvoice = () => {
+    cleanupPreview();
+  };
+
+  const cleanupPreview = () => {
+    setPendingInvoice(null);
+  };
+
   // Form Rendering Functions
   const renderBusinessProfileForm = (profile, setProfile) => {
-    const { t } = useTranslation();
     return (
       <div className="space-y-4">
         <div>
@@ -1084,8 +592,7 @@ const SlyceInvoice = () => {
   };
 
 const renderCustomerForm = (customer, setCustomer) => {
-    const { t } = useTranslation();
-    
+
     // Helper function to get the title key from storage value
     const getTitleKeyFromStorage = (storageValue) => {
       return Object.entries(TITLE_STORAGE_VALUES)
@@ -1192,7 +699,6 @@ const renderCustomerForm = (customer, setCustomer) => {
     );
   };
 
-  // Helper Functions
   const updateDateRangeToggle = (items) => {
     const needsDateRange = items.some(item => item.hasDateRange);
     setInvoiceDates(prev => ({
@@ -1209,7 +715,6 @@ const renderCustomerForm = (customer, setCustomer) => {
       description: tag.description,
       quantity: parseFloat(tag.quantity),
       rate: parseFloat(tag.rate),
-      total: parseFloat(tag.quantity) * parseFloat(tag.rate),
       hasDateRange: tag.hasDateRange,
     };
 
@@ -1230,102 +735,21 @@ const renderCustomerForm = (customer, setCustomer) => {
     updateDateRangeToggle(newItems);
   };
 
-  // Validation function
-  const validateInvoice = () => {
-    if (!selectedCustomer) {
-      toast.error(t('messages.validation.selectCustomer'));
-      return false;
-    }
-
-    if (!selectedProfile) {
-      toast.error(t('messages.validation.selectProfile'));
-      return false;
-    }
-
-    // Only validate dates if they are being shown
-    if (invoiceDates.showDate) {
-      if (invoiceDates.hasDateRange && (!invoiceDates.startDate || !invoiceDates.endDate)) {
-        toast.error(t('messages.validation.setServicePeriod'));
-        return false;
-      }
-
-      if (!invoiceDates.hasDateRange && !invoiceDates.startDate) {
-        toast.error(t('messages.validation.setServiceDate'));
-        return false;
-      }
-    }
-
-    if (invoiceItems.length === 0) {
-      toast.error(t('messages.validation.addItem'));
-      return false;
-    }
-
-    return true;
-  };
-
-// Update the dialog trigger for editing
 const handleTagDialog = (existingTag = null) => {
-  if (existingTag) {
-    setNewTag(existingTag);
-  } else {
-    setNewTag({
-      name: '',
-      description: '',
-      rate: '',
-      quantity: '',
-      color: PREDEFINED_COLORS[0].value,
-      hasDateRange: true,
-      visible: true,
-      personas: [],
-    });
-  }
+  setNewTag(existingTag || { ...EMPTY_TAG });
   setShowNewTagDialog(true);
 };
 
-// Update the handlers for business profiles
 const handleProfileDialog = (existingProfile = null) => {
-  if (existingProfile) {
-    setNewProfile(existingProfile);
-  } else {
-    setNewProfile({
-      company_name: '',
-      company_street: '',
-      company_postalcode: '',
-      company_city: '',
-      tax_number: '',
-      tax_id: '',
-      bank_institute: '',
-      bank_iban: '',
-      bank_bic: '',
-      contact_details: '',
-      invoice_save_path: '',
-      vat_enabled: false,
-      vat_rate: 19,
-    });
-  }
+  setNewProfile(existingProfile || { ...EMPTY_PROFILE });
   setShowNewProfileDialog(true);
 };
 
-// Update the handler for customers
 const handleCustomerDialog = (existingCustomer = null) => {
-  if (existingCustomer) {
-    setNewCustomer(existingCustomer);
-  } else {
-    setNewCustomer({
-      id: '',
-      title: TITLE_STORAGE_VALUES[TITLE_KEYS.NEUTRAL], // Default to neutral
-      zusatz: ACADEMIC_STORAGE_VALUES[ACADEMIC_TITLE_KEYS.NONE], // Default to none
-      name: '',
-      street: '',
-      postal_code: '',
-      city: '',
-      firma: false,
-    });
-  }
+  setNewCustomer(existingCustomer || { ...EMPTY_CUSTOMER });
   setShowNewCustomerDialog(true);
 };
 
-// Add this useEffect to listen for theme changes
 useEffect(() => {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
@@ -1343,7 +767,6 @@ useEffect(() => {
   return () => observer.disconnect();
 }, []);
 
-// Add this to your existing useEffect hooks
 useEffect(() => {
   const handleDataImport = (event) => {
     const importedData = event.detail;
@@ -1364,108 +787,20 @@ useEffect(() => {
   return () => window.removeEventListener('dataImported', handleDataImport);
 }, []);
 
-// Add this useEffect to load preview settings
+// Listen for e-Rechnung setting changes
 useEffect(() => {
-  const loadPreviewSettings = async () => {
-    const settings = await api.getData('previewSettings');
-    if (settings) {
-      setPreviewSettings(settings);
-    }
-  };
-  loadPreviewSettings();
-
-  // Listen for settings changes
-  const handleSettingsChange = (event) => {
-    setPreviewSettings(event.detail);
-  };
-  window.addEventListener('previewSettingsChanged', handleSettingsChange);
-
-  const handleERechnungChange = (event) => {
-    setERechnungEnabled(event.detail);
-  };
+  const handleERechnungChange = (event) => setERechnungEnabled(event.detail);
+  const handleSettingsChange = (event) => setSavePath(event.detail?.savePath || '');
   window.addEventListener('eRechnungChanged', handleERechnungChange);
-
+  window.addEventListener('previewSettingsChanged', handleSettingsChange);
+  api.getData('previewSettings').then(s => { if (s?.savePath) setSavePath(s.savePath); });
   return () => {
-    window.removeEventListener('previewSettingsChanged', handleSettingsChange);
     window.removeEventListener('eRechnungChanged', handleERechnungChange);
+    window.removeEventListener('previewSettingsChanged', handleSettingsChange);
   };
 }, []);
 
-// Add this near your other dialogs
-const PreviewDialog = () => (
-  <Dialog 
-    open={pdfPreview.show} 
-    onOpenChange={(open) => {
-      if (!open) {
-        URL.revokeObjectURL(pdfPreview.data);
-        setPdfPreview({ show: false, data: null, fileName: '' });
-        setInvoiceItems([]);
-        setInvoiceDates({ startDate: '', endDate: '', hasDateRange: true, showDate: true });
-        if (selectedProfile) {
-          const nextNumber = generateInvoiceNumber(
-            currentInvoiceNumber, 
-            selectedProfile.company_name, 
-            true
-          );
-          setCurrentInvoiceNumber(nextNumber);
-          const updatedNumbers = {
-            ...profileInvoiceNumbers,
-            [selectedProfile.company_name]: nextNumber
-          };
-          setProfileInvoiceNumbers(updatedNumbers);
-          api.setData('profileInvoiceNumbers', updatedNumbers).catch(error => {
-            console.error('Error saving invoice number:', error);
-          });
-        }
-      }
-    }}
-    className="z-[99]"
-  >
-    <DialogContent className="pdf-preview-content">
-      <DialogHeader>
-        <DialogTitle>{t('invoice.actions.preview')} - {pdfPreview.fileName}</DialogTitle>
-      </DialogHeader>
-      <div className="pdf-container">
-        <iframe
-          src={pdfPreview.data}
-          width="100%"
-          height="100%"
-          style={{ border: 'none' }}
-          title="PDF Preview"
-        />
-      </div>
-    </DialogContent>
-  </Dialog>
-);
-
-const getTagBackground = (() => {
-  const cache = new Map();
-  
-  return (color, isDark) => {
-    const key = `${color}-${isDark}`;
-    if (cache.has(key)) {
-      return cache.get(key);
-    }
-    
-    let result;
-    if (isDark) {
-      const rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
-      if (rgb) {
-        const r = parseInt(rgb[1], 16);
-        const g = parseInt(rgb[2], 16);
-        const b = parseInt(rgb[3], 16);
-        result = `linear-gradient(135deg, rgba(${r}, ${g}, ${b}, 0.15) 0%, rgba(${r}, ${g}, ${b}, 0.05) 100%)`;
-      }
-    } else {
-      result = `linear-gradient(135deg, ${color}40 0%, ${color}20 100%)`;
-    }
-    
-    cache.set(key, result);
-    return result;
-  };
-})();
-
-// Add effect to initialize/update invoice number when profile changes
+// Initialize/update invoice number when profile changes
 useEffect(() => {
   if (selectedProfile) {
     const profileId = selectedProfile.company_name;
@@ -1493,7 +828,6 @@ useEffect(() => {
   }
 }, [selectedProfile]);
 
-// Add effect to handle default profile
 useEffect(() => {
   const loadDefaultProfile = async () => {
     try {
@@ -1515,25 +849,6 @@ useEffect(() => {
   }
 }, [isInitialized, businessProfiles]);
 
-// Add this useEffect to handle currency changes
-useEffect(() => {
-  const loadCurrency = async () => {
-    const saved = await api.getData('currency');
-    if (saved) {
-      setSelectedCurrency(saved);
-    }
-  };
-  loadCurrency();
-
-  const handleCurrencyChange = (event) => {
-    setSelectedCurrency(event.detail);
-  };
-  window.addEventListener('currencyChanged', handleCurrencyChange);
-  
-  return () => {
-    window.removeEventListener('currencyChanged', handleCurrencyChange);
-  };
-}, []);
 
 // Add formatCurrency inside the component
 const formatCurrency = (amount) => {
@@ -1552,7 +867,6 @@ const formatCurrency = (amount) => {
   }).format(amount);
 };
 
-// Add this with other function declarations
 const updateInvoiceLanguage = async (language) => {
   try {
     await api.setData('invoiceLanguageSettings', { invoiceLanguage: language });
@@ -1570,7 +884,7 @@ const updateInvoiceLanguage = async (language) => {
       {isLoading.invoice && <LoadingOverlay />}
       <div className="container-large">
         <Toaster position="top-right" expand={true} richColors />
-        <Tabs defaultValue="invoice" className="w-full">
+        <Tabs defaultValue="invoice" className="w-full flex-1 flex flex-col min-h-0">
           <TabsList className="b-tabs">
             <TabsTrigger value="invoice" className="b-tab">
               <FileText />
@@ -1594,7 +908,7 @@ const updateInvoiceLanguage = async (language) => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="invoice">
+          <TabsContent value="invoice" className="flex-1 flex flex-col min-h-0">
             <InvoiceTab 
               customers={customers}
               selectedCustomer={selectedCustomer}
@@ -1717,8 +1031,14 @@ const updateInvoiceLanguage = async (language) => {
           </DialogContent>
         </Dialog>
 
-        {/* Add these dialogs at the bottom */}
-        <PreviewDialog />
+        {/* Invoice preview with accept/reject */}
+        {pendingInvoice && (
+          <InvoicePreviewDialog
+            preview={pendingInvoice}
+            onAccept={acceptInvoice}
+            onReject={rejectInvoice}
+          />
+        )}
       </div>
     </>
   );

@@ -44,7 +44,6 @@ export const api = {
     return invoke('save_invoice', { pdfData, fileName, customSavePath: customSavePath || null });
   },
   getInvoiceTemplate: () => invoke('get_invoice_template'),
-  getTemplate: () => invoke('get_invoice_template'),
   getTemplatePath: () => invoke('get_template_path'),
   saveTemplate: (content, isDefault) => invoke('save_template', { content, isDefault }),
   resetTemplate: () => invoke('reset_template'),

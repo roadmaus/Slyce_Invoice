@@ -3,11 +3,15 @@ use std::path::{Path, PathBuf};
 use tauri::{AppHandle, Manager};
 use serde::Serialize;
 
+const BUNDLED_PREFIX: &str = "bundled:";
+
 #[derive(Serialize)]
 pub struct TemplateInfo {
     pub name: String,
     pub path: String,
     pub modified: String,
+    pub content: String,
+    pub bundled: bool,
 }
 
 fn get_template_directory(app: &AppHandle) -> PathBuf {
@@ -19,46 +23,74 @@ fn get_bundled_templates_dir(app: &AppHandle) -> PathBuf {
     app.path().resource_dir().expect("failed to get resource dir").join("resources").join("templates")
 }
 
+/// Read a sorted list of bundled template filenames (e.g. "001_modern.html").
+fn list_bundled_template_filenames(app: &AppHandle) -> Vec<String> {
+    let dir = get_bundled_templates_dir(app);
+    let mut names: Vec<String> = fs::read_dir(&dir)
+        .into_iter()
+        .flatten()
+        .flatten()
+        .filter(|e| e.path().extension().map_or(false, |ext| ext == "html"))
+        .filter_map(|e| e.file_name().to_str().map(|s| s.to_string()))
+        .collect();
+    names.sort();
+    names
+}
+
+/// Resolve a bundled template filename to its absolute path on disk.
+/// Filename must be a plain file name with no path separators.
+fn resolve_bundled_template(app: &AppHandle, filename: &str) -> Result<PathBuf, String> {
+    if filename.contains('/') || filename.contains('\\') || filename.contains("..") {
+        return Err("Invalid bundled template name".to_string());
+    }
+    let path = get_bundled_templates_dir(app).join(filename);
+    if !path.exists() {
+        return Err(format!("Bundled template not found: {}", filename));
+    }
+    Ok(path)
+}
+
+fn read_first_bundled_template(app: &AppHandle) -> Result<String, String> {
+    let names = list_bundled_template_filenames(app);
+    let first = names.first().ok_or("No bundled templates available")?;
+    let path = resolve_bundled_template(app, first)?;
+    fs::read_to_string(&path).map_err(|e| e.to_string())
+}
+
+/// Remove legacy auto-copied bundled templates from the user templates dir.
+/// Older versions of the app copied every bundled template into app_data on
+/// first run, which froze users on stale designs and made fresh bundled
+/// updates invisible. This sweeps those copies away so the bundle becomes
+/// the single source of truth.
+fn migrate_legacy_bundled_copies(app: &AppHandle) {
+    let user_dir = get_template_directory(app);
+    for name in list_bundled_template_filenames(app) {
+        let legacy_copy = user_dir.join(&name);
+        if legacy_copy.exists() {
+            let _ = fs::remove_file(&legacy_copy);
+        }
+    }
+}
+
+/// Ensures the user templates directory and the active template file exist.
+/// The active template is a working copy the editor reads/writes; on first
+/// run it is seeded from the first bundled template.
 fn ensure_templates_exist(app: &AppHandle) -> Result<PathBuf, String> {
     let template_dir = get_template_directory(app);
-    let default_template_path = template_dir.join("invoice_template.html");
+    let active_path = template_dir.join("invoice_template.html");
 
-    // Create template directory if it doesn't exist
     if !template_dir.exists() {
         fs::create_dir_all(&template_dir).map_err(|e| e.to_string())?;
     }
 
-    // Copy all bundled templates if not present
-    let bundled_dir = get_bundled_templates_dir(app);
-    if bundled_dir.exists() {
-        if let Ok(entries) = fs::read_dir(&bundled_dir) {
-            for entry in entries.flatten() {
-                let file_name = entry.file_name();
-                let user_path = template_dir.join(&file_name);
-                if !user_path.exists() {
-                    let _ = fs::copy(entry.path(), &user_path);
-                }
-            }
-        }
+    migrate_legacy_bundled_copies(app);
+
+    if !active_path.exists() {
+        let content = read_first_bundled_template(app)?;
+        fs::write(&active_path, content).map_err(|e| e.to_string())?;
     }
 
-    // Ensure at least one template exists
-    let templates: Vec<_> = fs::read_dir(&template_dir)
-        .map_err(|e| e.to_string())?
-        .filter_map(|e| e.ok())
-        .filter(|e| e.path().extension().map_or(false, |ext| ext == "html"))
-        .collect();
-
-    if templates.is_empty() {
-        return Err("No templates found in templates directory".to_string());
-    }
-
-    // Set first template as default if default doesn't exist
-    if !default_template_path.exists() {
-        fs::copy(templates[0].path(), &default_template_path).map_err(|e| e.to_string())?;
-    }
-
-    Ok(default_template_path)
+    Ok(active_path)
 }
 
 #[tauri::command]
@@ -131,108 +163,137 @@ pub async fn save_template(
 
 #[tauri::command]
 pub async fn reset_template(app: AppHandle) -> Result<bool, String> {
-    let template_dir = get_template_directory(&app);
-    let user_template_path = template_dir.join("invoice_template.html");
-    let bundled_dir = get_bundled_templates_dir(&app);
-
-    let entries: Vec<_> = fs::read_dir(&bundled_dir)
-        .map_err(|e| e.to_string())?
-        .filter_map(|e| e.ok())
-        .collect();
-
-    if let Some(first) = entries.first() {
-        fs::copy(first.path(), &user_template_path).map_err(|e| e.to_string())?;
-        Ok(true)
-    } else {
-        Ok(false)
-    }
+    let active_path = ensure_templates_exist(&app)?;
+    let content = read_first_bundled_template(&app)?;
+    fs::write(&active_path, content).map_err(|e| e.to_string())?;
+    Ok(true)
 }
 
 #[tauri::command]
 pub async fn get_recent_templates(app: AppHandle) -> Result<Vec<TemplateInfo>, String> {
-    let template_dir = get_template_directory(&app);
-    let default_template_path = ensure_templates_exist(&app)?;
-    let default_normalized = default_template_path.canonicalize().unwrap_or(default_template_path);
+    let _ = ensure_templates_exist(&app)?;
 
-    let mut templates = Vec::new();
-    let entries = fs::read_dir(&template_dir).map_err(|e| e.to_string())?;
+    let mut bundled_templates: Vec<TemplateInfo> = Vec::new();
+    let mut user_templates: Vec<TemplateInfo> = Vec::new();
 
-    for entry in entries.flatten() {
-        let path = entry.path();
-        if path.extension().map_or(true, |ext| ext != "html") {
-            continue;
-        }
-        let canonical = path.canonicalize().unwrap_or(path.clone());
-        if canonical == default_normalized {
-            continue;
-        }
-
-        let name = path
+    // Bundled templates — read directly from resources, never copied.
+    for filename in list_bundled_template_filenames(&app) {
+        let path = match resolve_bundled_template(&app, &filename) {
+            Ok(p) => p,
+            Err(_) => continue,
+        };
+        let content = fs::read_to_string(&path).unwrap_or_default();
+        let name = Path::new(&filename)
             .file_stem()
             .unwrap_or_default()
             .to_string_lossy()
-            .to_string()
-            .trim_start_matches("template_")
-            .replace('-', " ");
+            .to_string();
 
-        let modified = entry
-            .metadata()
-            .ok()
-            .and_then(|m| m.modified().ok())
-            .map(|t| {
-                let datetime: chrono::DateTime<chrono::Local> = t.into();
-                datetime.format("%m/%d/%Y").to_string()
-            })
-            .unwrap_or_default();
-
-        templates.push(TemplateInfo {
+        bundled_templates.push(TemplateInfo {
             name,
-            path: path.to_string_lossy().to_string(),
-            modified,
+            path: format!("{}{}", BUNDLED_PREFIX, filename),
+            modified: "—".to_string(),
+            content,
+            bundled: true,
         });
     }
 
-    // Sort by modified date descending
-    templates.sort_by(|a, b| b.modified.cmp(&a.modified));
-    Ok(templates)
+    // User templates from app data dir (excluding the active working copy).
+    let template_dir = get_template_directory(&app);
+    let active_path = template_dir.join("invoice_template.html");
+    let active_canonical = active_path.canonicalize().unwrap_or(active_path);
+
+    if let Ok(entries) = fs::read_dir(&template_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.extension().map_or(true, |ext| ext != "html") {
+                continue;
+            }
+            let canonical = path.canonicalize().unwrap_or(path.clone());
+            if canonical == active_canonical {
+                continue;
+            }
+
+            let name = path
+                .file_stem()
+                .unwrap_or_default()
+                .to_string_lossy()
+                .to_string()
+                .trim_start_matches("template_")
+                .replace('-', " ");
+
+            let modified = entry
+                .metadata()
+                .ok()
+                .and_then(|m| m.modified().ok())
+                .map(|t| {
+                    let datetime: chrono::DateTime<chrono::Local> = t.into();
+                    datetime.format("%m/%d/%Y").to_string()
+                })
+                .unwrap_or_default();
+
+            let content = fs::read_to_string(&path).unwrap_or_default();
+
+            user_templates.push(TemplateInfo {
+                name,
+                path: path.to_string_lossy().to_string(),
+                modified,
+                content,
+                bundled: false,
+            });
+        }
+    }
+
+    // User templates most-recent-first, then bundled appended in filename order.
+    user_templates.sort_by(|a, b| b.modified.cmp(&a.modified));
+    let mut out = bundled_templates;
+    out.extend(user_templates);
+    Ok(out)
 }
 
 #[tauri::command]
 pub async fn load_template_from_path(app: AppHandle, path: String) -> Result<String, String> {
-    let template_dir = get_template_directory(&app);
-    let template_path = Path::new(&path);
+    let active_path = ensure_templates_exist(&app)?;
 
-    // Validate path is within templates directory
-    let canonical_path = template_path.canonicalize().map_err(|e| e.to_string())?;
-    let canonical_dir = template_dir.canonicalize().map_err(|e| e.to_string())?;
-    if !canonical_path.starts_with(&canonical_dir) {
-        return Err("Invalid template path".to_string());
-    }
+    // Bundled templates are addressed via the `bundled:<filename>` scheme so
+    // the frontend never needs to know where the resource dir lives.
+    let content = if let Some(filename) = path.strip_prefix(BUNDLED_PREFIX) {
+        let resolved = resolve_bundled_template(&app, filename)?;
+        fs::read_to_string(&resolved).map_err(|e| e.to_string())?
+    } else {
+        let template_dir = get_template_directory(&app);
+        let template_path = Path::new(&path);
+        let canonical_path = template_path.canonicalize().map_err(|e| e.to_string())?;
+        let canonical_dir = template_dir.canonicalize().map_err(|e| e.to_string())?;
+        if !canonical_path.starts_with(&canonical_dir) {
+            return Err("Invalid template path".to_string());
+        }
+        fs::read_to_string(template_path).map_err(|e| e.to_string())?
+    };
 
-    let content = fs::read_to_string(template_path).map_err(|e| e.to_string())?;
-
-    // Also set as default template
-    let default_path = ensure_templates_exist(&app)?;
-    fs::write(&default_path, &content).map_err(|e| e.to_string())?;
-
+    fs::write(&active_path, &content).map_err(|e| e.to_string())?;
     Ok(content)
 }
 
 #[tauri::command]
 pub async fn delete_template(app: AppHandle, path: String) -> Result<bool, String> {
+    if path.starts_with(BUNDLED_PREFIX) {
+        return Err("Cannot delete a bundled template".to_string());
+    }
+
     let template_dir = get_template_directory(&app);
     let template_path = Path::new(&path);
-    let default_path = ensure_templates_exist(&app)?;
+    let active_path = ensure_templates_exist(&app)?;
 
     let canonical_path = template_path.canonicalize().map_err(|e| e.to_string())?;
     let canonical_dir = template_dir.canonicalize().map_err(|e| e.to_string())?;
-    let canonical_default = default_path.canonicalize().unwrap_or(default_path);
+    let canonical_active = active_path.canonicalize().unwrap_or(active_path);
 
     if !canonical_path.starts_with(&canonical_dir) {
         return Err("Invalid template path".to_string());
     }
-    if canonical_path == canonical_default {
-        return Err("Cannot delete default template".to_string());
+    if canonical_path == canonical_active {
+        return Err("Cannot delete active template".to_string());
     }
 
     fs::remove_file(template_path).map_err(|e| e.to_string())?;
@@ -245,19 +306,23 @@ pub async fn rename_template(
     path: String,
     new_name: String,
 ) -> Result<String, String> {
+    if path.starts_with(BUNDLED_PREFIX) {
+        return Err("Cannot rename a bundled template".to_string());
+    }
+
     let template_dir = get_template_directory(&app);
     let template_path = Path::new(&path);
-    let default_path = ensure_templates_exist(&app)?;
+    let active_path = ensure_templates_exist(&app)?;
 
     let canonical_path = template_path.canonicalize().map_err(|e| e.to_string())?;
     let canonical_dir = template_dir.canonicalize().map_err(|e| e.to_string())?;
-    let canonical_default = default_path.canonicalize().unwrap_or(default_path);
+    let canonical_active = active_path.canonicalize().unwrap_or(active_path);
 
     if !canonical_path.starts_with(&canonical_dir) {
         return Err("Invalid template path".to_string());
     }
-    if canonical_path == canonical_default {
-        return Err("Cannot rename default template".to_string());
+    if canonical_path == canonical_active {
+        return Err("Cannot rename active template".to_string());
     }
 
     let new_path = template_dir.join(format!("template_{}.html", new_name));

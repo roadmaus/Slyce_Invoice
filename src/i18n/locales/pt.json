@@ -42,7 +42,9 @@
       "generate": "Gerar Fatura",
       "generating": "Gerando...",
       "preview": "Visualizar",
-      "save": "Salvar"
+      "save": "Salvar",
+      "accept": "Salvar e aceitar",
+      "reject": "Descartar"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "Obrigado pela sua confiança. Aguardo ansiosamente nossa próxima colaboração.",
       "regards": "Atenciosamente"
+    },
+    "template": {
+      "from": "De",
+      "billedTo": "Faturado para",
+      "details": "Detalhes",
+      "issuedBy": "Emitido por",
+      "heading": "Fatura",
+      "document": "Documento"
     }
   },
   "customers": {

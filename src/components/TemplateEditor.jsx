@@ -169,25 +169,56 @@ const TemplateEditor = ({ onClose }) => {
                   className="relative group cursor-pointer border-2 border-transparent hover:border-foreground p-4 transition-colors"
                   onClick={() => { handleTemplateSelect(tmpl.path); setShowGallery(false); }}
                 >
-                  <div className="aspect-[3/4] mb-2 bg-muted overflow-hidden border border-foreground/10">
-                    {tmpl.preview ? (
-                      <img src={tmpl.preview} alt={tmpl.name} className="w-full h-full object-contain" loading="lazy" />
+                  <div className="aspect-[3/4] mb-2 bg-white overflow-hidden border border-foreground/10 relative">
+                    {tmpl.content ? (
+                      <iframe
+                        srcDoc={tmpl.content}
+                        title={tmpl.name}
+                        sandbox=""
+                        className="absolute top-0 left-0"
+                        style={{
+                          width: '794px',
+                          height: '1123px',
+                          transform: 'scale(0.28)',
+                          transformOrigin: 'top left',
+                          pointerEvents: 'none',
+                          border: 0,
+                        }}
+                      />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
                       </div>
                     )}
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
-                      <button className="b-icon-btn" onClick={(e) => handleRename(tmpl.path, e)}>
-                        <Pencil />
-                      </button>
-                      <button className="b-icon-btn b-icon-btn-destructive" onClick={(e) => handleDelete(tmpl.path, e)}>
-                        <Trash />
-                      </button>
-                    </div>
+                    {!tmpl.bundled && (
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                        <button className="b-icon-btn" onClick={(e) => handleRename(tmpl.path, e)}>
+                          <Pencil />
+                        </button>
+                        <button className="b-icon-btn b-icon-btn-destructive" onClick={(e) => handleDelete(tmpl.path, e)}>
+                          <Trash />
+                        </button>
+                      </div>
+                    )}
+                    {tmpl.bundled && (
+                      <div
+                        className="absolute top-2 left-2 b-mono"
+                        style={{
+                          fontSize: '9px',
+                          letterSpacing: '0.14em',
+                          textTransform: 'uppercase',
+                          padding: '3px 7px',
+                          background: 'hsl(var(--foreground))',
+                          color: 'hsl(var(--background))',
+                          border: '1px solid hsl(var(--foreground))',
+                        }}
+                      >
+                        Bundled
+                      </div>
+                    )}
                   </div>
                   <p className="b-mono text-sm truncate">{tmpl.name}</p>
-                  <p className="b-mono text-xs text-muted-foreground">{tmpl.modified}</p>
+                  <p className="b-mono text-xs text-muted-foreground">{tmpl.bundled ? 'Read-only' : tmpl.modified}</p>
                 </div>
               ))}
             </div>

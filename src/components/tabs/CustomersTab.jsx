@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Edit, Trash2, Building2, User2, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES, TITLE_KEYS, ACADEMIC_TITLE_KEYS } from '@/constants/titleMappings';
-import { ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
+import { getTranslatedTitle, getTranslatedAcademicTitle, formatCustomerName } from '@/lib/invoiceGenerator';
 
 const CustomersTab = ({
   customers,
@@ -24,36 +24,6 @@ const CustomersTab = ({
     id: '', title: '', zusatz: '', name: '', street: '', postal_code: '', city: '', firma: false,
   };
 
-  const getTranslatedAcademicTitle = (storedTitle) => {
-    const academicKey = Object.entries(ACADEMIC_STORAGE_VALUES)
-      .find(([_, value]) => value === storedTitle)?.[0];
-    if (academicKey) {
-      const translations = ACADEMIC_TRANSLATIONS[i18n.language] || ACADEMIC_TRANSLATIONS['en'];
-      return translations[academicKey];
-    }
-    return storedTitle;
-  };
-
-  const getCustomerDisplayName = (customer) => {
-    const parts = [];
-    if (customer.title &&
-        customer.title !== TITLE_STORAGE_VALUES.neutral &&
-        customer.title !== TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
-      const titleKey = Object.entries(TITLE_STORAGE_VALUES)
-        .find(([_, value]) => value === customer.title)?.[0]?.toLowerCase();
-      if (titleKey) parts.push(t(`customers.form.titles.${titleKey}`));
-    }
-    if (customer.zusatz && customer.zusatz !== ACADEMIC_STORAGE_VALUES.none) {
-      const academicKey = Object.entries(ACADEMIC_STORAGE_VALUES)
-        .find(([_, value]) => value === customer.zusatz)?.[0];
-      if (academicKey) {
-        const translations = ACADEMIC_TRANSLATIONS[i18n.language] || ACADEMIC_TRANSLATIONS['en'];
-        parts.push(translations[academicKey]);
-      }
-    }
-    parts.push(customer.name);
-    return parts.join(' ');
-  };
 
   return (
     <div className="b-page">
@@ -140,7 +110,7 @@ const CustomersTab = ({
                   ? <Building2 className="inline h-4 w-4 mr-2 opacity-50" />
                   : <User2 className="inline h-4 w-4 mr-2 opacity-50" />
                 }
-                {getCustomerDisplayName(customer)}
+                {formatCustomerName(customer, i18n.language)}
               </div>
 
               {/* Address */}
@@ -153,7 +123,7 @@ const CustomersTab = ({
               {/* Badges */}
               <div className="flex flex-wrap gap-2">
                 {customer.zusatz && customer.zusatz !== ACADEMIC_STORAGE_VALUES.none && (
-                  <div className="b-card-badge">{getTranslatedAcademicTitle(customer.zusatz)}</div>
+                  <div className="b-card-badge">{getTranslatedAcademicTitle(customer.zusatz, i18n.language)}</div>
                 )}
                 {customer.firma && (
                   <div className="b-card-badge">{t('customers.businessCustomer')}</div>

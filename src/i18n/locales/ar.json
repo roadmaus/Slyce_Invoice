@@ -42,7 +42,9 @@
       "generate": "إنشاء الفاتورة",
       "generating": "جاري الإنشاء...",
       "preview": "معاينة",
-      "save": "حفظ"
+      "save": "حفظ",
+      "accept": "حفظ وقبول",
+      "reject": "تجاهل"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "شكراً لثقتكم. نتطلع إلى استمرار تعاوننا.",
       "regards": "مع أطيب التحيات"
+    },
+    "template": {
+      "from": "من",
+      "billedTo": "فاتورة إلى",
+      "details": "تفاصيل",
+      "issuedBy": "صادر من",
+      "heading": "فاتورة",
+      "document": "مستند"
     }
   },
   "customers": {

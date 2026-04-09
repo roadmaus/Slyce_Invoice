@@ -42,7 +42,9 @@
       "generate": "Factuur maken",
       "generating": "Wordt gemaakt...",
       "preview": "Voorbeeld",
-      "save": "Opslaan"
+      "save": "Opslaan",
+      "accept": "Opslaan en accepteren",
+      "reject": "Verwerpen"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "Bedankt voor uw vertrouwen. Ik kijk uit naar onze verdere samenwerking.",
       "regards": "Met vriendelijke groet"
+    },
+    "template": {
+      "from": "Van",
+      "billedTo": "Gefactureerd aan",
+      "details": "Details",
+      "issuedBy": "Uitgegeven door",
+      "heading": "Factuur",
+      "document": "Document"
     }
   },
   "customers": {

@@ -42,7 +42,9 @@
       "generate": "Créer la facture",
       "generating": "Création en cours...",
       "preview": "Aperçu",
-      "save": "Enregistrer"
+      "save": "Enregistrer",
+      "accept": "Enregistrer et accepter",
+      "reject": "Rejeter"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "Je vous remercie de votre confiance et me réjouis de notre future collaboration.",
       "regards": "Cordialement"
+    },
+    "template": {
+      "from": "De",
+      "billedTo": "Facturé à",
+      "details": "Détails",
+      "issuedBy": "Émis par",
+      "heading": "Facture",
+      "document": "Document"
     }
   },
   "customers": {

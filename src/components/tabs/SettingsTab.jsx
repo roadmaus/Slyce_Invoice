@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from 'next-themes';
-import { Moon, Sun, Monitor, Save, Upload, Loader2, FolderOpen, Trash2, FileEdit, Globe, Coins, Palette, FileText, Database, ChevronRight, Check } from 'lucide-react';
+import { Moon, Sun, Monitor, Save, Upload, Loader2, FolderOpen, Trash2, FileEdit, Globe, Coins, Palette, FileText, Database, ChevronRight, Check, ArrowLeft } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
@@ -30,7 +30,7 @@ const SettingsTab = () => {
   const [showTemplateEditor, setShowTemplateEditor] = React.useState(false);
   const [selectedCurrency, setSelectedCurrency] = React.useState(DEFAULT_CURRENCY);
   const [invoiceLanguage, setInvoiceLanguage] = React.useState('auto');
-  const [activeSection, setActiveSection] = React.useState('language');
+  const [activeSection, setActiveSection] = React.useState(null);
   const [eRechnungEnabled, setERechnungEnabled] = React.useState(false);
 
   React.useEffect(() => {
@@ -162,30 +162,40 @@ const SettingsTab = () => {
 
   return (
     <div className="b-page">
-      <div className="stg-layout">
-        {/* Sidebar Navigation */}
-        <nav className="stg-nav">
-          {SECTIONS.map(({ id, icon: Icon }) => (
-            <button
-              key={id}
-              className="stg-nav-item"
-              data-active={activeSection === id}
-              onClick={() => setActiveSection(id)}
-            >
-              <Icon className="stg-nav-icon" />
-              <div className="stg-nav-text">
-                <span className="stg-nav-label">{sectionLabels[id]}</span>
-                {sectionSummaries[id] && (
-                  <span className="stg-nav-summary">{sectionSummaries[id]}</span>
-                )}
-              </div>
-              <ChevronRight className="stg-nav-arrow" />
-            </button>
-          ))}
-        </nav>
+      <div className="stg-shell">
+        {/* Main Menu */}
+        {activeSection === null && (
+          <nav className="stg-menu">
+            {SECTIONS.map(({ id, icon: Icon }) => (
+              <button
+                key={id}
+                className="stg-menu-item"
+                onClick={() => setActiveSection(id)}
+              >
+                <Icon className="stg-menu-icon" />
+                <div className="stg-menu-text">
+                  <span className="stg-menu-label">{sectionLabels[id]}</span>
+                  {sectionSummaries[id] && (
+                    <span className="stg-menu-summary">{sectionSummaries[id]}</span>
+                  )}
+                </div>
+                <ChevronRight className="stg-menu-arrow" />
+              </button>
+            ))}
+          </nav>
+        )}
 
-        {/* Content Panel */}
-        <div className="stg-content">
+        {/* Detail View */}
+        {activeSection !== null && (
+        <div className="stg-detail">
+          <div className="stg-detail-header">
+            <button className="stg-back-btn" onClick={() => setActiveSection(null)}>
+              <ArrowLeft style={{ width: 14, height: 14 }} />
+              {t('common.back', 'Back')}
+            </button>
+            <span className="stg-detail-title">{sectionLabels[activeSection]}</span>
+          </div>
+          <div className="stg-detail-body">
           {/* Language Section */}
           {activeSection === 'language' && (
             <div className="stg-panel">
@@ -194,51 +204,64 @@ const SettingsTab = () => {
                 <p className="stg-panel-desc">{t('settings.language.description')}</p>
               </div>
 
-              <div className="stg-subsection">
-                <div className="stg-subsection-label">{t('settings.language.title')}</div>
-                <div className="stg-lang-list">
+              <div className="stg-section">
+                <div className="stg-section-head">
+                  <span className="stg-section-label">{t('settings.language.title')}</span>
+                  <span className="stg-section-hint">{`${String(languages.length).padStart(2, '0')} / ${String(languages.length).padStart(2, '0')}`}</span>
+                </div>
+                <div className="stg-grid">
                   {languages.map(({ value, label, flag }) => (
                     <button
                       key={value}
                       onClick={() => handleLanguageClick(value)}
-                      className="stg-lang-item"
+                      className="stg-tile"
                       data-active={language === value}
                     >
-                      <span className="stg-lang-flag">{flag}</span>
-                      <span className="stg-lang-name">{label}</span>
-                      {language === value && <Check className="stg-lang-check" />}
+                      <div className="stg-tile-head">
+                        <span className="stg-tile-flag">{flag}</span>
+                        {language === value && <Check className="stg-tile-check" />}
+                      </div>
+                      <div className="stg-tile-body">
+                        <span className="stg-tile-name">{label}</span>
+                        <span className="stg-tile-meta">{value.toUpperCase()}</span>
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="stg-divider" />
-
-              <div className="stg-subsection">
-                <div className="stg-subsection-label">{t('settings.language.invoiceLanguage')}</div>
-                <p className="stg-subsection-desc">{t('settings.language.invoiceLanguageDescription')}</p>
+              <div className="stg-section">
+                <div className="stg-section-head">
+                  <span className="stg-section-label">{t('settings.language.invoiceLanguage')}</span>
+                  <span className="stg-section-hint">{t('settings.language.invoiceLanguageDescription')}</span>
+                </div>
                 <RadioGroup
                   value={invoiceLanguage}
                   onValueChange={handleInvoiceLanguageChange}
-                  className="stg-lang-list"
+                  className="stg-grid"
                 >
                   {[
                     { value: 'auto', label: t('settings.language.invoiceLanguages.auto'), flag: '🌐' },
                     ...languages
                   ].map(({ value, label, flag }) => (
-                    <div key={value}>
+                    <React.Fragment key={value}>
                       <RadioGroupItem value={value} id={`invoice-lang-${value}`} className="peer sr-only" />
                       <Label
                         htmlFor={`invoice-lang-${value}`}
-                        className="stg-lang-item"
+                        className="stg-tile"
                         data-active={invoiceLanguage === value}
                         style={{ cursor: 'pointer' }}
                       >
-                        <span className="stg-lang-flag">{flag}</span>
-                        <span className="stg-lang-name">{label}</span>
-                        {invoiceLanguage === value && <Check className="stg-lang-check" />}
+                        <div className="stg-tile-head">
+                          <span className="stg-tile-flag">{flag}</span>
+                          {invoiceLanguage === value && <Check className="stg-tile-check" />}
+                        </div>
+                        <div className="stg-tile-body">
+                          <span className="stg-tile-name">{label}</span>
+                          <span className="stg-tile-meta">{value.toUpperCase()}</span>
+                        </div>
                       </Label>
-                    </div>
+                    </React.Fragment>
                   ))}
                 </RadioGroup>
               </div>
@@ -252,20 +275,30 @@ const SettingsTab = () => {
                 <h2 className="stg-panel-title">{t('settings.currency.title')}</h2>
                 <p className="stg-panel-desc">{t('settings.currency.description')}</p>
               </div>
-              <div className="stg-lang-list">
-                {SUPPORTED_CURRENCIES.map(({ code, symbol, name }) => (
-                  <button
-                    key={code}
-                    onClick={() => updateCurrency({ code, symbol, name })}
-                    className="stg-lang-item"
-                    data-active={selectedCurrency.code === code}
-                  >
-                    <span className="stg-currency-symbol">{symbol}</span>
-                    <span className="stg-lang-name">{name}</span>
-                    <span className="stg-currency-code">{code}</span>
-                    {selectedCurrency.code === code && <Check className="stg-lang-check" />}
-                  </button>
-                ))}
+              <div className="stg-section">
+                <div className="stg-section-head">
+                  <span className="stg-section-label">{t('settings.currency.title')}</span>
+                  <span className="stg-section-hint">{selectedCurrency.code} — {selectedCurrency.name}</span>
+                </div>
+                <div className="stg-grid">
+                  {SUPPORTED_CURRENCIES.map(({ code, symbol, name }) => (
+                    <button
+                      key={code}
+                      onClick={() => updateCurrency({ code, symbol, name })}
+                      className="stg-tile"
+                      data-active={selectedCurrency.code === code}
+                    >
+                      <div className="stg-tile-head">
+                        <span className="stg-tile-symbol">{symbol}</span>
+                        {selectedCurrency.code === code && <Check className="stg-tile-check" />}
+                      </div>
+                      <div className="stg-tile-body">
+                        <span className="stg-tile-name">{name}</span>
+                        <span className="stg-tile-meta">{code}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -277,22 +310,28 @@ const SettingsTab = () => {
                 <h2 className="stg-panel-title">{t('settings.appearance.title')}</h2>
                 <p className="stg-panel-desc">{t('settings.appearance.description')}</p>
               </div>
-              <div className="stg-theme-grid">
-                {[
-                  { value: 'light', icon: Sun, label: t('settings.appearance.themes.light.label') },
-                  { value: 'dark', icon: Moon, label: t('settings.appearance.themes.dark.label') },
-                  { value: 'system', icon: Monitor, label: t('settings.appearance.themes.system.label') },
-                ].map(({ value, icon: Icon, label }) => (
-                  <button
-                    key={value}
-                    onClick={() => setTheme(value)}
-                    className="stg-theme-card"
-                    data-active={theme === value}
-                  >
-                    <Icon className="stg-theme-icon" />
-                    <span className="stg-theme-label">{label}</span>
-                  </button>
-                ))}
+              <div className="stg-section">
+                <div className="stg-section-head">
+                  <span className="stg-section-label">{t('settings.appearance.title')}</span>
+                  <span className="stg-section-hint">{theme === 'light' ? '01 / 03' : theme === 'dark' ? '02 / 03' : '03 / 03'}</span>
+                </div>
+                <div className="stg-theme-grid">
+                  {[
+                    { value: 'light', icon: Sun, label: t('settings.appearance.themes.light.label') },
+                    { value: 'dark', icon: Moon, label: t('settings.appearance.themes.dark.label') },
+                    { value: 'system', icon: Monitor, label: t('settings.appearance.themes.system.label') },
+                  ].map(({ value, icon: Icon, label }) => (
+                    <button
+                      key={value}
+                      onClick={() => setTheme(value)}
+                      className="stg-theme-card"
+                      data-active={theme === value}
+                    >
+                      <Icon className="stg-theme-icon" />
+                      <span className="stg-theme-label">{label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -305,66 +344,73 @@ const SettingsTab = () => {
                 <p className="stg-panel-desc">{t('settings.pdf.description')}</p>
               </div>
 
-              <div className="stg-row">
-                <div className="stg-row-text">
-                  <div className="stg-row-label">{t('settings.pdf.preview.label')}</div>
-                  <div className="stg-row-desc">{t('settings.pdf.preview.description')}</div>
+              <div className="stg-section">
+                <div className="stg-section-head">
+                  <span className="stg-section-label">{t('settings.pdf.title')}</span>
+                  <span className="stg-section-hint">{previewSettings.showPreview ? '> PREVIEW ON' : '> PREVIEW OFF'}</span>
                 </div>
-                <Switch
-                  checked={previewSettings.showPreview}
-                  onCheckedChange={(checked) => updatePreviewSettings({ ...previewSettings, showPreview: checked })}
-                />
-              </div>
 
-              <div className="stg-divider" />
-
-              <div className="stg-subsection">
-                <div className="stg-row-label">{t('settings.pdf.save.label')}</div>
-                <div className="stg-row-desc" style={{ marginBottom: 12 }}>{t('settings.pdf.save.description')}</div>
-                <div className="b-path-row">
-                  <input
-                    className="b-path-input"
-                    value={previewSettings.savePath}
-                    readOnly
-                    placeholder={t('settings.pdf.save.placeholder')}
+                <div className="stg-card-row">
+                  <div className="stg-row-text">
+                    <div className="stg-row-label">{t('settings.pdf.preview.label')}</div>
+                    <div className="stg-row-desc">{t('settings.pdf.preview.description')}</div>
+                  </div>
+                  <Switch
+                    checked={previewSettings.showPreview}
+                    onCheckedChange={(checked) => updatePreviewSettings({ ...previewSettings, showPreview: checked })}
                   />
-                  <button className="b-btn" onClick={handleSelectDirectory}>
-                    <FolderOpen style={{ width: 14, height: 14 }} />
-                    {t('settings.pdf.save.browse')}
-                  </button>
                 </div>
-                {!previewSettings.savePath && (
-                  <div className="stg-row-desc" style={{ marginTop: 8 }}>{t('settings.pdf.save.noPath')}</div>
-                )}
-              </div>
 
-              <div className="stg-divider" />
-
-              <div className="stg-row">
-                <div className="stg-row-text">
-                  <div className="stg-row-label">{t('settings.pdf.eRechnung.label')}</div>
-                  <div className="stg-row-desc">{t('settings.pdf.eRechnung.description')}</div>
+                <div className="stg-card-row stg-card-row-stack">
+                  <div className="stg-row-text">
+                    <div className="stg-row-label">{t('settings.pdf.save.label')}</div>
+                    <div className="stg-row-desc">{t('settings.pdf.save.description')}</div>
+                  </div>
+                  <div className="b-path-row">
+                    <input
+                      className="b-path-input"
+                      value={previewSettings.savePath}
+                      readOnly
+                      placeholder={t('settings.pdf.save.placeholder')}
+                    />
+                    <button className="b-btn" onClick={handleSelectDirectory}>
+                      <FolderOpen style={{ width: 14, height: 14 }} />
+                      {t('settings.pdf.save.browse')}
+                    </button>
+                  </div>
+                  {!previewSettings.savePath && (
+                    <div className="stg-row-desc">{t('settings.pdf.save.noPath')}</div>
+                  )}
                 </div>
-                <Switch
-                  checked={eRechnungEnabled}
-                  onCheckedChange={async (checked) => {
-                    setERechnungEnabled(checked);
-                    await api.setData('eRechnungEnabled', checked);
-                    window.dispatchEvent(new CustomEvent('eRechnungChanged', { detail: checked }));
-                    toast.success(t('settings.pdf.eRechnung.toggle'));
-                  }}
-                />
-              </div>
 
-              <div className="stg-divider" />
+                <div className="stg-card-row">
+                  <div className="stg-row-text">
+                    <div className="stg-row-label">{t('settings.pdf.eRechnung.label')}</div>
+                    <div className="stg-row-desc">{t('settings.pdf.eRechnung.description')}</div>
+                  </div>
+                  <Switch
+                    checked={eRechnungEnabled}
+                    onCheckedChange={async (checked) => {
+                      setERechnungEnabled(checked);
+                      await api.setData('eRechnungEnabled', checked);
+                      window.dispatchEvent(new CustomEvent('eRechnungChanged', { detail: checked }));
+                      toast.success(t('settings.pdf.eRechnung.toggle'));
+                    }}
+                  />
+                </div>
 
-              <div className="stg-subsection">
-                <div className="stg-row-label">{t('settings.invoice.template')}</div>
-                <div className="stg-row-desc" style={{ marginBottom: 12 }}>{t('settings.invoice.templateDescription')}</div>
-                <button className="b-btn" onClick={() => setShowTemplateEditor(true)}>
-                  <FileEdit style={{ width: 14, height: 14 }} />
-                  {t('settings.actions.editTemplate')}
-                </button>
+                <div className="stg-card-row stg-card-row-stack">
+                  <div className="stg-row-text">
+                    <div className="stg-row-label">{t('settings.invoice.template')}</div>
+                    <div className="stg-row-desc">{t('settings.invoice.templateDescription')}</div>
+                  </div>
+                  <div>
+                    <button className="b-btn" onClick={() => setShowTemplateEditor(true)}>
+                      <FileEdit style={{ width: 14, height: 14 }} />
+                      {t('settings.actions.editTemplate')}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -377,63 +423,74 @@ const SettingsTab = () => {
                 <p className="stg-panel-desc">{t('settings.dataManagement.description')}</p>
               </div>
 
-              <div className="stg-action-list">
-                <div className="stg-action-item">
-                  <div className="stg-action-info">
-                    <Save className="stg-action-icon" />
-                    <div>
-                      <div className="stg-row-label">{t('settings.dataManagement.export.title')}</div>
-                      <div className="stg-row-desc">{t('settings.dataManagement.export.description')}</div>
-                    </div>
-                  </div>
-                  <button
-                    className="b-btn"
-                    disabled={isLoading.export}
-                    onClick={async () => {
-                      setIsLoading(prev => ({ ...prev, export: true }));
-                      try {
-                        const success = await api.exportData();
-                        toast[success ? 'success' : 'error'](t(`settings.dataManagement.export.${success ? 'success' : 'error'}`));
-                      } catch { toast.error(t('settings.dataManagement.export.genericError')); }
-                      finally { setIsLoading(prev => ({ ...prev, export: false })); }
-                    }}
-                  >
-                    {isLoading.export ? <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} /> : <Save style={{ width: 14, height: 14 }} />}
-                    {t('settings.dataManagement.export.button')}
-                  </button>
+              <div className="stg-section">
+                <div className="stg-section-head">
+                  <span className="stg-section-label">{t('settings.dataManagement.title')}</span>
+                  <span className="stg-section-hint">BACKUP · RESTORE</span>
                 </div>
-
-                <div className="stg-action-item">
-                  <div className="stg-action-info">
-                    <Upload className="stg-action-icon" />
-                    <div>
-                      <div className="stg-row-label">{t('settings.dataManagement.import.title')}</div>
-                      <div className="stg-row-desc">{t('settings.dataManagement.import.description')}</div>
+                <div className="stg-action-list">
+                  <div className="stg-action-item">
+                    <div className="stg-action-info">
+                      <Save className="stg-action-icon" />
+                      <div>
+                        <div className="stg-row-label">{t('settings.dataManagement.export.title')}</div>
+                        <div className="stg-row-desc">{t('settings.dataManagement.export.description')}</div>
+                      </div>
                     </div>
+                    <button
+                      className="b-btn"
+                      disabled={isLoading.export}
+                      onClick={async () => {
+                        setIsLoading(prev => ({ ...prev, export: true }));
+                        try {
+                          const success = await api.exportData();
+                          toast[success ? 'success' : 'error'](t(`settings.dataManagement.export.${success ? 'success' : 'error'}`));
+                        } catch { toast.error(t('settings.dataManagement.export.genericError')); }
+                        finally { setIsLoading(prev => ({ ...prev, export: false })); }
+                      }}
+                    >
+                      {isLoading.export ? <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} /> : <Save style={{ width: 14, height: 14 }} />}
+                      {t('settings.dataManagement.export.button')}
+                    </button>
                   </div>
-                  <button
-                    className="b-btn"
-                    disabled={isLoading.import}
-                    onClick={async () => {
-                      setIsLoading(prev => ({ ...prev, import: true }));
-                      try {
-                        const importedData = await api.importData();
-                        if (importedData) {
-                          window.dispatchEvent(new CustomEvent('dataImported', { detail: importedData }));
-                          toast.success(t('settings.dataManagement.import.success'));
-                        } else { toast.error(t('settings.dataManagement.import.error')); }
-                      } catch { toast.error(t('settings.dataManagement.import.genericError')); }
-                      finally { setIsLoading(prev => ({ ...prev, import: false })); }
-                    }}
-                  >
-                    {isLoading.import ? <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} /> : <Upload style={{ width: 14, height: 14 }} />}
-                    {t('settings.dataManagement.import.button')}
-                  </button>
+
+                  <div className="stg-action-item">
+                    <div className="stg-action-info">
+                      <Upload className="stg-action-icon" />
+                      <div>
+                        <div className="stg-row-label">{t('settings.dataManagement.import.title')}</div>
+                        <div className="stg-row-desc">{t('settings.dataManagement.import.description')}</div>
+                      </div>
+                    </div>
+                    <button
+                      className="b-btn"
+                      disabled={isLoading.import}
+                      onClick={async () => {
+                        setIsLoading(prev => ({ ...prev, import: true }));
+                        try {
+                          const importedData = await api.importData();
+                          if (importedData) {
+                            window.dispatchEvent(new CustomEvent('dataImported', { detail: importedData }));
+                            toast.success(t('settings.dataManagement.import.success'));
+                          } else { toast.error(t('settings.dataManagement.import.error')); }
+                        } catch { toast.error(t('settings.dataManagement.import.genericError')); }
+                        finally { setIsLoading(prev => ({ ...prev, import: false })); }
+                      }}
+                    >
+                      {isLoading.import ? <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} /> : <Upload style={{ width: 14, height: 14 }} />}
+                      {t('settings.dataManagement.import.button')}
+                    </button>
+                  </div>
                 </div>
+              </div>
 
-                <div className="stg-divider" />
-
-                <div className="stg-action-item stg-action-destructive">
+              <div className="stg-section">
+                <div className="stg-section-head">
+                  <span className="stg-section-label" style={{ color: 'hsl(var(--destructive))' }}>DANGER ZONE</span>
+                  <span className="stg-section-hint">⚠ IRREVERSIBLE</span>
+                </div>
+                <div className="stg-action-list">
+                  <div className="stg-action-item stg-action-destructive">
                   <div className="stg-action-info">
                     <Trash2 className="stg-action-icon" style={{ color: 'hsl(var(--destructive))' }} />
                     <div>
@@ -460,10 +517,13 @@ const SettingsTab = () => {
                     {t('settings.dataManagement.reset.button')}
                   </button>
                 </div>
+                </div>
               </div>
             </div>
           )}
+          </div>
         </div>
+        )}
       </div>
 
       {showTemplateEditor && <TemplateEditor onClose={() => setShowTemplateEditor(false)} />}

@@ -3,217 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Invoice</title>
+    <title>Invoice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --accent-color: #7f8c8d;
-            --border-color: #ecf0f1;
-            --background-color: #ffffff;
-            --subtle-bg: #f9fafb;
+            --bg: #fdfcf9;
+            --ink: #1a1a1a;
+            --ink-2: #3a3a3a;
+            --muted: #6b6b6b;
+            --line: #d9d4c7;
+            --line-strong: #1a1a1a;
+            --tint: #f4f1e8;
         }
 
-        @page {
-            size: A4;
-            margin: 40px;
+        @page { size: A4; margin: 0; }
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--ink);
         }
 
         body {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 40px;
-            color: var(--primary-color);
-            font-size: 14px;
+            font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+            font-size: 11pt;
             line-height: 1.6;
-            background-color: var(--background-color);
+            padding: 56px 60px 46px;
             -webkit-font-smoothing: antialiased;
+            font-feature-settings: "kern", "onum";
         }
 
+        .sans {
+            font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* ── HEADER ───────────────────────────── */
         .header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 60px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 30px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            padding-bottom: 28px;
+            border-bottom: 2px solid var(--line-strong);
+            margin-bottom: 4px;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--primary-color);
-            position: relative;
-            border-radius: 4px;
-        }
-
-        .logo-text {
-            font-size: 24px;
+        .header .brand .name {
+            font-family: "Source Serif 4", serif;
             font-weight: 600;
-            letter-spacing: -0.02em;
-            color: var(--primary-color);
+            font-size: 22pt;
+            letter-spacing: -0.01em;
+            margin: 0;
+            line-height: 1.1;
+        }
+        .header .brand .tagline {
+            font-family: "Source Sans 3", sans-serif;
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--muted);
+            margin: 6px 0 0;
         }
 
-        .company-address {
+        .header .title {
             text-align: right;
-            color: var(--accent-color);
-            font-size: 13px;
-            line-height: 1.5;
+        }
+        .header .title .kicker {
+            font-family: "Source Sans 3", sans-serif;
+            font-size: 8.5pt;
+            text-transform: uppercase;
+            letter-spacing: 0.24em;
+            color: var(--muted);
+            margin: 0 0 4px;
+        }
+        .header .title h1 {
+            font-family: "Source Serif 4", serif;
+            font-weight: 400;
+            font-style: italic;
+            font-size: 34pt;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: -0.01em;
         }
 
-        .invoice-details {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 50px;
+        .header-rule {
+            height: 1px;
+            background: var(--line-strong);
+            margin: 3px 0 24px;
         }
 
-        .recipient-info {
-            max-width: 300px;
-            line-height: 1.5;
+        /* ── META / PARTIES ───────────────────── */
+        .parties {
+            display: grid;
+            grid-template-columns: 1.1fr 1.1fr 1fr;
+            gap: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--line);
         }
 
-        .invoice-info {
-            text-align: right;
-            background: var(--subtle-bg);
-            padding: 20px;
-            border-radius: 8px;
-            min-width: 200px;
+        .party-label {
+            font-family: "Source Sans 3", sans-serif;
+            font-size: 8pt;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--muted);
+            font-weight: 600;
+            margin: 0 0 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--line);
         }
 
-        .invoice-title {
-            font-size: 32px;
-            font-weight: 300;
-            letter-spacing: -0.02em;
-            margin-bottom: 30px;
-            color: var(--primary-color);
-        }
-
-        .greeting-section {
-            margin-bottom: 40px;
+        .party-body {
+            font-size: 10.5pt;
             line-height: 1.6;
-            color: var(--secondary-color);
+            color: var(--ink);
+        }
+        .party-body p { margin: 2px 0; }
+        .party-body strong { font-weight: 600; }
+        .party-body .sub {
+            font-family: "Source Sans 3", sans-serif;
+            font-size: 9pt;
+            color: var(--muted);
+            margin-top: 8px;
+            line-height: 1.5;
         }
 
-        table {
+        .reference-block:not(:empty) {
+            margin: 20px 0 0;
+            padding: 12px 18px;
+            background: var(--tint);
+            border: 1px solid var(--line);
+            font-size: 10pt;
+            color: var(--ink-2);
+        }
+        .reference-block p { margin: 0; }
+
+        /* ── GREETING ─────────────────────────── */
+        .greeting-section {
+            margin: 26px 0 22px;
+            font-size: 11pt;
+            line-height: 1.7;
+            color: var(--ink-2);
+            max-width: 76ch;
+        }
+        .greeting-section p { margin: 0 0 6px; }
+
+        /* ── ITEMS TABLE ──────────────────────── */
+        table.items {
             width: 100%;
             border-collapse: collapse;
-            margin: 40px 0;
+            margin: 14px 0 0;
+            font-size: 10.5pt;
         }
-
-        th, td {
-            padding: 15px 12px;
+        table.items thead th {
             text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            font-weight: 600;
-            color: var(--accent-color);
-            font-size: 12px;
+            font-family: "Source Sans 3", sans-serif;
+            font-size: 8.5pt;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            background-color: var(--subtle-bg);
-        }
-
-        tbody tr:hover {
-            background-color: var(--subtle-bg);
-        }
-
-        .amount-summary {
-            width: 350px;
-            margin-left: auto;
-            margin-right: 0;
-            margin-top: 30px;
-        }
-
-        .amount-summary td {
-            padding: 12px 0;
-        }
-
-        .amount-summary tr:last-child {
+            letter-spacing: 0.14em;
+            color: var(--muted);
             font-weight: 600;
-            font-size: 16px;
-            border-top: 2px solid var(--border-color);
-            border-bottom: none;
+            padding: 12px 10px;
+            border-top: 2px solid var(--line-strong);
+            border-bottom: 1px solid var(--line-strong);
         }
+        table.items tbody td {
+            padding: 14px 10px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: top;
+            font-size: 10.5pt;
+        }
+        table.items tbody tr:last-child td { border-bottom: 2px solid var(--line-strong); }
 
-        .amount-summary tr td:last-child {
+        table.items td:nth-child(1) {
+            width: 36px;
+            color: var(--muted);
+            font-style: italic;
+            font-variant-numeric: oldstyle-nums;
+        }
+        table.items td:nth-child(2) {
+            width: 60px;
+            font-variant-numeric: tabular-nums;
+        }
+        table.items td:nth-child(4),
+        table.items td:nth-child(5) {
             text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        table.items th:nth-child(4),
+        table.items th:nth-child(5) { text-align: right; }
+
+        /* ── TOTALS ───────────────────────────── */
+        .totals-wrap {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+        table.amount-summary {
+            width: 340px;
+            border-collapse: collapse;
+        }
+        table.amount-summary td {
+            padding: 9px 0;
+            font-size: 10.5pt;
+        }
+        table.amount-summary tr td:first-child {
+            color: var(--muted);
+            font-family: "Source Sans 3", sans-serif;
+            text-transform: uppercase;
+            font-size: 9pt;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+        table.amount-summary tr td:last-child {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        table.amount-summary tr:last-child td {
+            border-top: 1px solid var(--line-strong);
+            border-bottom: 3px double var(--line-strong);
+            padding: 16px 0 14px;
+            font-size: 15pt;
+            font-weight: 600;
+            color: var(--ink);
+        }
+        table.amount-summary tr:last-child td:first-child {
+            font-family: "Source Serif 4", serif;
+            text-transform: none;
+            font-style: italic;
+            font-weight: 500;
+            font-size: 15pt;
+            letter-spacing: 0;
+            color: var(--ink);
         }
 
+        /* ── PAYMENT ──────────────────────────── */
         .payment-info {
-            margin-top: 50px;
-            border-top: 2px solid var(--border-color);
-            padding-top: 30px;
-            color: var(--secondary-color);
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid var(--line);
+        }
+        .payment-info > p {
+            margin: 0 0 12px;
+            font-size: 10.5pt;
+            line-height: 1.65;
+            color: var(--ink-2);
         }
 
         .banking-info {
-            margin: 30px 0;
-            background-color: var(--subtle-bg);
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+            margin-top: 18px;
+            padding: 22px 26px;
+            background: var(--tint);
+            border: 1px solid var(--line);
+            font-size: 10pt;
         }
-
         .banking-info p {
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
+            margin: 6px 0;
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 16px;
         }
-
         .banking-info p span:first-child {
-            color: var(--accent-color);
-            margin-right: 20px;
+            color: var(--muted);
+            font-family: "Source Sans 3", sans-serif;
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
         }
 
+        .closing {
+            margin-top: 22px;
+            font-family: "Source Serif 4", serif;
+            font-style: italic;
+            font-size: 11pt;
+            color: var(--ink-2);
+            line-height: 1.6;
+        }
+
+        /* ── FOOTER ───────────────────────────── */
         .contact-details {
+            margin-top: 36px;
+            padding-top: 18px;
+            border-top: 1px solid var(--line);
             text-align: center;
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid var(--border-color);
-            font-size: 12px;
-            color: var(--accent-color);
+            font-family: "Source Sans 3", sans-serif;
+            font-size: 8.5pt;
+            letter-spacing: 0.08em;
+            color: var(--muted);
         }
 
         @media print {
-            body {
-                padding: 0;
-            }
-
-            body, .banking-info {
+            body { padding: 40px 44px; }
+            body, .banking-info, .reference-block, .header, .parties, table.items thead th {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                page-break-inside: avoid;
             }
+            tr, thead { page-break-inside: avoid; }
+            thead { display: table-header-group; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">
-            <div class="logo-icon"></div>
-            <div class="logo-text">{company_name}</div>
+        <div class="brand">
+            <h2 class="name">{company_name}</h2>
+            <p class="tagline">{company_street} · {company_postalcode} {company_city}</p>
         </div>
-        <div class="company-address">
-            {company_street}<br>
-            {company_postalcode} {company_city}<br>
-            <p>{tax_number_label}: {tax_number}<br>
-            {tax_id_label}: {tax_id}</p>
+        <div class="title">
+            <p class="kicker">{document_label}</p>
+            <h1>{invoice_heading}</h1>
         </div>
     </div>
 
-    <div class="invoice-details">
-        <div class="recipient-info">
-            <div class="invoice-title">INVOICE</div>
-            {customer_address}
+    <div class="parties">
+        <div>
+            <p class="party-label">{billed_to_label}</p>
+            <div class="party-body">
+                {customer_address}
+                {paid_status}
+            </div>
         </div>
-        <div class="invoice-info">
-            {invoice_number_date}
+        <div>
+            <p class="party-label">{issued_by_label}</p>
+            <div class="party-body">
+                <p><strong>{company_name}</strong></p>
+                <p>{company_street}</p>
+                <p>{company_postalcode} {company_city}</p>
+                <p class="sub">
+                    {tax_number_label}: {tax_number}<br>
+                    {tax_id_label}: {tax_id}
+                </p>
+            </div>
+        </div>
+        <div>
+            <p class="party-label">{details_label}</p>
+            <div class="party-body">
+                <p>{invoice_number_date}</p>
+            </div>
         </div>
     </div>
 
@@ -224,7 +355,7 @@
         <p>{service_period_text}</p>
     </div>
 
-    <table>
+    <table class="items">
         <thead>
             <tr>
                 <th>{position_label}</th>
@@ -239,31 +370,29 @@
         </tbody>
     </table>
 
-    <table class="amount-summary">
-        <tr>
-            <td>{net_amount_label}</td>
-            <td>{net_amount}</td>
-        </tr>
-        {vat_row}
-        <tr>
-            <td>{total_amount_label}</td>
-            <td>{total_amount}</td>
-        </tr>
-    </table>
+    <div class="totals-wrap">
+        <table class="amount-summary">
+            <tr>
+                <td>{net_amount_label}</td>
+                <td>{net_amount}</td>
+            </tr>
+            {vat_row}
+            <tr>
+                <td>{total_amount_label}</td>
+                <td>{total_amount}</td>
+            </tr>
+        </table>
+    </div>
 
     <div class="payment-info">
         <p>{payment_instruction}</p>
-        
         {vat_notice}
-        
         <div class="banking-info">
-            <p><span>{bank_institute_label}</span> <span>{bank_institute}</span></p>
-            <p><span>{bank_iban_label}</span> <span>{bank_iban}</span></p>
-            <p><span>{bank_bic_label}</span> <span>{bank_bic}</span></p>
+            <p><span>{bank_institute_label}</span><span>{bank_institute}</span></p>
+            <p><span>{bank_iban_label}</span><span>{bank_iban}</span></p>
+            <p><span>{bank_bic_label}</span><span>{bank_bic}</span></p>
         </div>
-
-        <p>{thank_you_note}</p>
-        <p>{closing}<br>{company_name}</p>
+        <p class="closing">{thank_you_note}<br>{closing} — {company_name}</p>
     </div>
 
     <div class="contact-details">

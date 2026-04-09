@@ -8,8 +8,9 @@ import { PlusCircle, Trash2, Search, X, Save, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { api } from '@/lib/api';
 import InvoiceTotals from '../InvoiceTotals';
-import { TITLE_TRANSLATIONS, ACADEMIC_TRANSLATIONS } from '@/constants/languageMappings';
+import BrutalistDatePicker from '../BrutalistDatePicker';
 import { TITLE_KEYS, ACADEMIC_TITLE_KEYS, TITLE_STORAGE_VALUES, ACADEMIC_STORAGE_VALUES } from '@/constants/titleMappings';
+import { getTranslatedTitle, getTranslatedAcademicTitle } from '@/lib/invoiceGenerator';
 
 const InvoiceTab = ({
   customers,
@@ -50,23 +51,6 @@ const InvoiceTab = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const getTranslatedTitle = (storedTitle) => {
-    if (storedTitle === TITLE_STORAGE_VALUES[TITLE_KEYS.DIVERSE]) {
-      return '';
-    }
-    const titleKey = Object.entries(TITLE_STORAGE_VALUES)
-      .find(([_, value]) => value === storedTitle)?.[0];
-    const translations = TITLE_TRANSLATIONS[i18n.language] || TITLE_TRANSLATIONS['en'];
-    return titleKey ? translations[titleKey] : storedTitle;
-  };
-
-  const getTranslatedAcademicTitle = (storedTitle) => {
-    const titleKey = Object.entries(ACADEMIC_STORAGE_VALUES)
-      .find(([_, value]) => value === storedTitle)?.[0];
-    const translations = ACADEMIC_TRANSLATIONS[i18n.language] || ACADEMIC_TRANSLATIONS['en'];
-    return titleKey ? translations[titleKey] : storedTitle;
-  };
-
   return (
     <div className="brutalist-invoice">
       {/* Header bar */}
@@ -102,10 +86,10 @@ const InvoiceTab = ({
                   {(() => {
                     const parts = [];
                     if (customer.title && customer.title !== 'neutral') {
-                      parts.push(getTranslatedTitle(customer.title));
+                      parts.push(getTranslatedTitle(customer.title, i18n.language));
                     }
                     if (customer.zusatz && customer.zusatz !== 'none') {
-                      parts.push(getTranslatedAcademicTitle(customer.zusatz));
+                      parts.push(getTranslatedAcademicTitle(customer.zusatz, i18n.language));
                     }
                     parts.push(customer.name);
                     return parts.join(' ');
@@ -199,11 +183,9 @@ const InvoiceTab = ({
 
           <div className="mt-2">
             <div className="brutalist-field-label">{t('invoice.details.dueDate')}</div>
-            <Input
-              type="date"
+            <BrutalistDatePicker
               value={invoiceDueDate}
-              onChange={(e) => setInvoiceDueDate(e.target.value)}
-              className="brutalist-input font-mono"
+              onChange={setInvoiceDueDate}
             />
           </div>
 
@@ -254,28 +236,24 @@ const InvoiceTab = ({
                     <div className="brutalist-field-label">
                       {invoiceDates.hasDateRange ? t('invoice.details.date.startOfService') : t('invoice.details.date.serviceDate')}
                     </div>
-                    <Input
-                      type="date"
+                    <BrutalistDatePicker
                       value={invoiceDates.startDate}
-                      onChange={(e) => setInvoiceDates({
+                      onChange={(v) => setInvoiceDates({
                         ...invoiceDates,
-                        startDate: e.target.value,
-                        endDate: invoiceDates.hasDateRange ? invoiceDates.endDate : e.target.value
+                        startDate: v,
+                        endDate: invoiceDates.hasDateRange ? invoiceDates.endDate : v
                       })}
-                      className="brutalist-input font-mono border-r-0"
                     />
                   </div>
                   {invoiceDates.hasDateRange && (
                     <div>
                       <div className="brutalist-field-label">{t('invoice.details.date.endOfService')}</div>
-                      <Input
-                        type="date"
+                      <BrutalistDatePicker
                         value={invoiceDates.endDate}
-                        onChange={(e) => setInvoiceDates({
+                        onChange={(v) => setInvoiceDates({
                           ...invoiceDates,
-                          endDate: e.target.value
+                          endDate: v
                         })}
-                        className="brutalist-input font-mono"
                       />
                     </div>
                   )}

@@ -50,7 +50,9 @@
       "generate": "Rechnung erstellen",
       "generating": "Wird erstellt...",
       "preview": "Vorschau",
-      "save": "Speichern"
+      "save": "Speichern",
+      "accept": "Speichern & Annehmen",
+      "reject": "Verwerfen"
     },
     "greeting": {
       "mr": {
@@ -87,6 +89,14 @@
     "closing": {
       "thankYou": "Ich bedanke mich für den Auftrag und freue mich auf weitere Zusammenarbeit.",
       "regards": "Mit freundlichen Grüßen"
+    },
+    "template": {
+      "from": "Von",
+      "billedTo": "Rechnung an",
+      "details": "Details",
+      "issuedBy": "Ausgestellt von",
+      "heading": "Rechnung",
+      "document": "Dokument"
     }
   },
   "customers": {

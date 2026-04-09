@@ -42,7 +42,9 @@
       "generate": "請求書を作成",
       "generating": "作成中...",
       "preview": "プレビュー",
-      "save": "保存"
+      "save": "保存",
+      "accept": "保存して承認",
+      "reject": "破棄"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "いつもお引き立ていただき、ありがとうございます。今後ともよろしくお願いいたします。",
       "regards": "敬具"
+    },
+    "template": {
+      "from": "差出人",
+      "billedTo": "請求先",
+      "details": "詳細",
+      "issuedBy": "発行元",
+      "heading": "請求書",
+      "document": "書類"
     }
   },
   "customers": {

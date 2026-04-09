@@ -42,7 +42,9 @@
       "generate": "Fatura oluştur",
       "generating": "Oluşturuluyor...",
       "preview": "Önizleme",
-      "save": "Kaydet"
+      "save": "Kaydet",
+      "accept": "Kaydet ve kabul et",
+      "reject": "Sil"
     },
     "greeting": {
       "mr": {
@@ -77,6 +79,14 @@
     "closing": {
       "thankYou": "Güveniniz için teşekkür ederim. Gelecekte tekrar birlikte çalışmayı dilerim.",
       "regards": "Saygılarımla"
+    },
+    "template": {
+      "from": "Kimden",
+      "billedTo": "Fatura edilen",
+      "details": "Detaylar",
+      "issuedBy": "Düzenleyen",
+      "heading": "Fatura",
+      "document": "Belge"
     }
   },
   "customers": {
